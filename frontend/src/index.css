@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light;
+  color: #1a1a1a;
+  background-color: #ffffff;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: #ffffff;
+  color: #1a1a1a;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Hide scrollbar but keep scroll functionality */
+.scrollbar-hide {
+  -ms-overflow-style: none !important;  /* IE and Edge */
+  scrollbar-width: none !important;  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none !important;  /* Chrome, Safari, Opera */
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* Global scrollbar hide for all elements */
+* {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+*::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari, Opera */
+  width: 0;
+  height: 0;
+}
+
+/* DragOverlay should follow mouse cursor and escape from parent containers */
+[data-dnd-kit-drag-overlay] {
+  position: fixed !important;
+  z-index: 99999 !important;
+  pointer-events: none !important;
+}
+
+/* Ensure DragOverlay can escape from overflow containers */
+[data-dnd-kit-drag-overlay] * {
+  pointer-events: none !important;
+}

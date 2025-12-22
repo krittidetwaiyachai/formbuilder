@@ -1,0 +1,213 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String         @id @default(uuid())
+  email        String         @unique
+  password     String
+  firstName    String?
+  lastName     String?
+  roleId       String
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  responses    FormResponse[]
+  formsCreated Form[]         @relation("FormCreator")
+  role         Role           @relation(fields: [roleId], references: [id])
+
+  @@map("users")
+}
+
+model Role {
+  id          String   @id @default(uuid())
+  name        RoleType @unique
+  description String?
+  permissions Json
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  users       User[]
+
+  @@map("roles")
+}
+
+model Form {
+  id           String           @id @default(uuid())
+  title        String
+  description  String?
+  status       FormStatus       @default(DRAFT)
+  isQuiz       Boolean          @default(false)
+  quizSettings Json?
+  createdById  String
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  conditions   FieldCondition[]
+  fields       Field[]
+  responses    FormResponse[]
+  createdBy    User             @relation("FormCreator", fields: [createdById], references: [id])
+  presetFields PresetField[]
+
+  @@map("forms")
+}
+
+model Field {
+  id              String           @id @default(uuid())
+  formId          String
+  type            FieldType
+  label           String
+  placeholder     String?
+  required        Boolean          @default(false)
+  validation      Json?
+  order           Int              @default(0)
+  options         Json?
+  correctAnswer   String?
+  score           Int?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  conditions      FieldCondition[] @relation("SourceField")
+  targetCondition FieldCondition[] @relation("TargetField")
+  form            Form             @relation(fields: [formId], references: [id], onDelete: Cascade)
+  answers         ResponseAnswer[]
+
+  @@map("fields")
+}
+
+model FieldCondition {
+  id            String   @id @default(uuid())
+  formId        String
+  sourceFieldId String
+  targetFieldId String
+  operator      String
+  value         String
+  action        String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  form          Form     @relation(fields: [formId], references: [id], onDelete: Cascade)
+  sourceField   Field    @relation("SourceField", fields: [sourceFieldId], references: [id], onDelete: Cascade)
+  targetField   Field    @relation("TargetField", fields: [targetFieldId], references: [id], onDelete: Cascade)
+
+  @@map("field_conditions")
+}
+
+model Preset {
+  id               String           @id @default(uuid())
+  name             String
+  description      String?
+  isPII            Boolean          @default(false)
+  sensitivityLevel SensitivityLevel @default(LOW)
+  version          Int              @default(1)
+  isActive         Boolean          @default(true)
+  createdById      String
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  fields           PresetField[]
+
+  @@unique([name, version])
+  @@map("presets")
+}
+
+model PresetField {
+  id          String    @id @default(uuid())
+  presetId    String
+  formId      String?
+  type        FieldType
+  label       String
+  placeholder String?
+  required    Boolean   @default(false)
+  validation  Json?
+  order       Int       @default(0)
+  options     Json?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  form        Form?     @relation(fields: [formId], references: [id], onDelete: Cascade)
+  preset      Preset    @relation(fields: [presetId], references: [id], onDelete: Cascade)
+
+  @@map("preset_fields")
+}
+
+model FormResponse {
+  id          String           @id @default(uuid())
+  formId      String
+  userId      String?
+  submittedAt DateTime         @default(now())
+  score       Int?
+  totalScore  Int?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  form        Form             @relation(fields: [formId], references: [id], onDelete: Cascade)
+  user        User?            @relation(fields: [userId], references: [id])
+  quizScore   QuizScore?
+  answers     ResponseAnswer[]
+
+  @@map("form_responses")
+}
+
+model ResponseAnswer {
+  id         String       @id @default(uuid())
+  responseId String
+  fieldId    String
+  value      String
+  isCorrect  Boolean?
+  createdAt  DateTime     @default(now())
+  field      Field        @relation(fields: [fieldId], references: [id])
+  response   FormResponse @relation(fields: [responseId], references: [id], onDelete: Cascade)
+
+  @@map("response_answers")
+}
+
+model QuizScore {
+  id         String       @id @default(uuid())
+  responseId String       @unique
+  score      Int
+  totalScore Int
+  percentage Float
+  createdAt  DateTime     @default(now())
+  response   FormResponse @relation(fields: [responseId], references: [id], onDelete: Cascade)
+
+  @@map("quiz_scores")
+}
+
+enum RoleType {
+  SUPER_ADMIN
+  ADMIN
+  EDITOR
+  VIEWER
+}
+
+enum FieldType {
+  TEXT
+  TEXTAREA
+  NUMBER
+  EMAIL
+  PHONE
+  DROPDOWN
+  CHECKBOX
+  RADIO
+  DATE
+  TIME
+  RATE
+  HEADER
+  FULLNAME
+  ADDRESS
+  PARAGRAPH
+  SUBMIT
+  DIVIDER
+  SECTION_COLLAPSE
+  PAGE_BREAK
+}
+
+enum SensitivityLevel {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum FormStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
