@@ -103,6 +103,34 @@ export interface Form {
   _count?: {
     responses: number;
   };
+  welcomeSettings?: WelcomeScreenSettings;
+  thankYouSettings?: ThankYouScreenSettings;
+  pageSettings?: PageSettings[];
+}
+
+export interface PageSettings {
+  id: string; // Unique ID for the page (could be UUID or simple generated ID)
+  title: string;
+  // We can add more specific page settings here later (e.g., hidden, logic)
+}
+
+export interface WelcomeScreenSettings {
+  title: string;
+  description: string;
+  buttonText: string;
+  showStartButton: boolean;
+  layout?: 'simple' | 'split-left' | 'split-right' | 'cover';
+  isActive?: boolean;
+}
+
+export interface ThankYouScreenSettings {
+  title: string;
+  message: string;
+  buttonText: string;
+  redirectUrl?: string; // Optional URL to redirect
+  autoRedirect?: boolean;
+  layout?: 'simple' | 'split-left' | 'split-right' | 'cover';
+  isActive?: boolean;
 }
 
 export interface Preset {

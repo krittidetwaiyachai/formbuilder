@@ -1,0 +1,15 @@
+src/components/form-builder/fields/FullNameField.tsx(3,1): error TS6133: 'User' is declared but its value is never read.
+src/components/form-builder/fields/HeaderField.tsx(21,3): error TS6133: 'fieldStyle' is declared but its value is never read.
+src/components/form-builder/fields/HeaderField.tsx(24,3): error TS6133: 'disabledClass' is declared but its value is never read.
+src/components/form-builder/fields/RateField.tsx(16,53): error TS6198: All destructured elements are unused.
+src/lib/api.ts(3,29): error TS2339: Property 'env' does not exist on type 'ImportMeta'.
+src/pages/DashboardPage.tsx(11,3): error TS6133: 'Users' is declared but its value is never read.
+src/pages/DashboardPage.tsx(13,3): error TS6133: 'Filter' is declared but its value is never read.
+src/pages/DashboardPage.tsx(14,3): error TS6133: 'ArrowUpDown' is declared but its value is never read.
+src/pages/FormBuilderPage.tsx(29,5): error TS6133: 'addField' is declared but its value is never read.
+src/pages/FormBuilderPage.tsx(30,5): error TS6133: 'deleteField' is declared but its value is never read.
+src/pages/FormBuilderPage.tsx(31,5): error TS6133: 'reorderFields' is declared but its value is never read.
+src/pages/FormBuilderPage.tsx(365,9): error TS6133: 'lastReorderTime' is declared but its value is never read.
+src/pages/FormBuilderPage.tsx(389,13): error TS6133: 'active' is declared but its value is never read.
+src/store/formStore.ts(2,23): error TS6133: 'FieldType' is declared but its value is never read.
+src/store/formStore.ts(204,13): error TS6133: 'response' is declared but its value is never read.

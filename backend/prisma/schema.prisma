@@ -42,6 +42,7 @@ model Form {
   status       FormStatus       @default(DRAFT)
   isQuiz       Boolean          @default(false)
   quizSettings Json?
+  pageSettings Json?
   createdById  String
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt

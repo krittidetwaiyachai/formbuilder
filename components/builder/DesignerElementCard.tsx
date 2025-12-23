@@ -51,9 +51,11 @@ export default function DesignerElementCard({
           onClick?.(e);
         }}
       >
-        <div className="absolute top-2 left-1/2 -translate-x-1/2 z-[50] cursor-move w-full flex justify-center h-6">
-          <div className="w-12 h-1.5 bg-gray-400 rounded-full" />
-        </div>
+        {isSelected && (
+          <div className="absolute top-2 left-1/2 -translate-x-1/2 z-[50] cursor-grab active:cursor-grabbing w-full flex justify-center h-6" title="Drag to move">
+            <div className="w-12 h-1.5 bg-gray-400 rounded-full" />
+          </div>
+        )}
         <div className="flex items-start gap-2">
           <div className="flex-1">
             <FormElementRenderer element={element} isDesigner />

@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { FieldType } from '@/types';
 import { useFormStore } from '@/store/formStore';
 import { useDraggable } from '@dnd-kit/core';
@@ -128,6 +129,34 @@ function FieldTypeButton({ fieldType }: { fieldType: { type: FieldType; label: s
   );
 }
 
+function SidebarCategory({ category }: { category: { name: string; fields: any[] } }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="border border-gray-200 rounded-md overflow-hidden bg-white">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold text-gray-700 uppercase tracking-wide hover:bg-gray-50 transition-colors"
+      >
+        <span>{category.name}</span>
+        {isOpen ? (
+          <ChevronDown className="h-4 w-4 text-gray-400" />
+        ) : (
+          <ChevronRight className="h-4 w-4 text-gray-400" />
+        )}
+      </button>
+      
+      {isOpen && (
+        <div className="p-2 space-y-2 bg-gray-50/50 border-t border-gray-100">
+          {category.fields.map((fieldType) => (
+            <FieldTypeButton key={fieldType.type} fieldType={fieldType} />
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function FieldSidebar() {
   return (
     <div className="w-64 bg-white h-full flex flex-col" style={{ overflow: 'visible' }}>
@@ -138,16 +167,7 @@ export default function FieldSidebar() {
       <div className="flex-1 overflow-y-auto p-4">
         <div className="space-y-6">
           {fieldCategories.map((category) => (
-            <div key={category.name}>
-              <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
-                {category.name}
-              </h4>
-              <div className="space-y-2">
-                {category.fields.map((fieldType) => (
-                  <FieldTypeButton key={fieldType.type} fieldType={fieldType} />
-                ))}
-              </div>
-            </div>
+            <SidebarCategory key={category.name} category={category} />
           ))}
         </div>
       </div>
