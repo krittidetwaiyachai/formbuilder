@@ -11,6 +11,10 @@ import { Type } from 'class-transformer';
 import { FieldType, FormStatus } from '@prisma/client';
 
 export class CreateFieldDto {
+  @IsOptional()
+  @IsString()
+  id?: string;
+
   @IsEnum(FieldType)
   type: FieldType;
 
@@ -42,6 +46,14 @@ export class CreateFieldDto {
   @IsOptional()
   @IsNumber()
   score?: number;
+
+  @IsOptional()
+  @IsString()
+  groupId?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  shrink?: boolean;
 }
 
 export class CreateFieldConditionDto {
@@ -59,6 +71,60 @@ export class CreateFieldConditionDto {
 
   @IsString()
   action: string;
+}
+
+export class CreateLogicConditionDto {
+  @IsOptional()
+  @IsString()
+  id?: string;
+
+  @IsOptional()
+  @IsString()
+  fieldId: string;
+
+  @IsString()
+  operator: string;
+
+  @IsOptional()
+  value?: any;
+}
+
+export class CreateLogicActionDto {
+  @IsOptional()
+  @IsString()
+  id?: string;
+
+  @IsString()
+  type: string;
+
+  @IsOptional()
+  @IsString()
+  fieldId: string;
+}
+
+export class CreateLogicRuleDto {
+  @IsOptional()
+  @IsString()
+  id?: string;
+
+  @IsString()
+  name: string;
+
+  @IsOptional()
+  @IsString()
+  logicType?: string; // AND / OR
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateLogicConditionDto)
+  conditions?: CreateLogicConditionDto[];
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateLogicActionDto)
+  actions?: CreateLogicActionDto[];
 }
 
 export class CreateFormDto {
@@ -85,6 +151,18 @@ export class CreateFormDto {
   };
 
   @IsOptional()
+  welcomeSettings?: any;
+
+  @IsOptional()
+  thankYouSettings?: any;
+
+  @IsOptional()
+  settings?: any;
+
+  @IsOptional()
+  pageSettings?: any;
+
+  @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CreateFieldDto)
@@ -95,5 +173,11 @@ export class CreateFormDto {
   @ValidateNested({ each: true })
   @Type(() => CreateFieldConditionDto)
   conditions?: CreateFieldConditionDto[];
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateLogicRuleDto)
+  logicRules?: CreateLogicRuleDto[];
 }
 

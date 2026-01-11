@@ -6,6 +6,7 @@ import {
   Param,
   UseGuards,
   Res,
+  Query,
 } from '@nestjs/common';
 import { ResponsesService } from './responses.service';
 import { CreateResponseDto } from './dto/create-response.dto';
@@ -22,9 +23,25 @@ export class ResponsesController {
   constructor(private readonly responsesService: ResponsesService) {}
 
   @Post()
-  @Public() // Public form submission
+  @Public()
   create(@Body() createResponseDto: CreateResponseDto) {
     return this.responsesService.create(createResponseDto);
+  }
+
+  @Get('check/:formId')
+  @Public()
+  checkSubmissionStatus(
+    @Param('formId') formId: string,
+    @Query('userId') userId?: string,
+    @Query('respondentEmail') respondentEmail?: string,
+    @Query('fingerprint') fingerprint?: string,
+  ) {
+    return this.responsesService.checkSubmissionStatus(
+      formId,
+      userId,
+      respondentEmail,
+      fingerprint,
+    );
   }
 
   @Get('form/:formId')

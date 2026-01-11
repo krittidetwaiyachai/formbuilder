@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Field, FieldType } from '@/types';
 import { useFormStore } from '@/store/formStore';
 import { ChevronRight, FileX } from 'lucide-react';
@@ -103,6 +103,9 @@ export const HeaderField: React.FC<HeaderFieldProps> = ({
   const headerSize = headerValidation?.size || 'DEFAULT';
   const headerAlignment = headerValidation?.alignment || 'LEFT';
   const headerSubheading = field.placeholder || '';
+  const headingImage = headerValidation?.headingImage || '';
+  const imagePosition = headerValidation?.imagePosition || 'CENTER';
+  const overlayOpacity = headerValidation?.overlayOpacity ?? 50;
   
   const getHeaderSizeClass = () => {
     switch (headerSize) {
@@ -120,35 +123,69 @@ export const HeaderField: React.FC<HeaderFieldProps> = ({
     }
   };
 
+  const hasBackgroundImage = headingImage && headingImage.startsWith('http') && imagePosition === 'BACKGROUND';
+
+  // State for Header
+  const [headerHtml, setHeaderHtml] = useState({ __html: field.label || 'Heading' });
+  const [subHeadingHtml, setSubHeadingHtml] = useState({ __html: field.placeholder || (isSelected ? 'Add a subheading...' : '') });
+
+  // Sync Header Label
+  React.useEffect(() => {
+     const currentText = headerInputRef.current?.textContent;
+     const newLabel = field.label || 'Heading';
+     if (currentText !== newLabel) {
+         setHeaderHtml({ __html: newLabel });
+     }
+  }, [field.label]);
+
+  // Sync Subheading
+  React.useEffect(() => {
+     const currentText = subheadingInputRef.current?.textContent;
+     const newSub = field.placeholder || (isSelected ? 'Add a subheading...' : '');
+     if (currentText !== newSub) {
+         setSubHeadingHtml({ __html: newSub });
+     }
+  }, [field.placeholder, isSelected]);
+
   return (
     <div 
         ref={headerContainerRef}
-        className="cursor-text"
+        className={`cursor-text relative ${hasBackgroundImage ? 'rounded-xl overflow-hidden min-h-80' : ''}`}
     >
+        {hasBackgroundImage && (
+          <>
+            <img 
+              src={headingImage} 
+              alt="" 
+              className="absolute inset-0 w-full h-full object-cover"
+              onError={(e) => {
+                (e.target as HTMLImageElement).style.display = 'none';
+              }}
+            />
+            <div 
+              className="absolute inset-0" 
+              style={{ backgroundColor: `rgba(0, 0, 0, ${overlayOpacity / 100})` }}
+            />
+          </>
+        )}
+        <div className={hasBackgroundImage ? `relative z-10 p-8 flex flex-col justify-center h-full min-h-80 ${
+          headerAlignment === 'CENTER' ? 'items-center' : 
+          headerAlignment === 'RIGHT' ? 'items-end' : 'items-start'
+        }` : ''}>
         <h2
           ref={headerInputRef}
           contentEditable={isSelected}
           suppressContentEditableWarning
-          className={`${getHeaderSizeClass()} font-bold text-black ${getHeaderAlignmentClass()} outline-none cursor-text`}
+          spellCheck={false}
+          className={`${getHeaderSizeClass()} font-bold bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent caretaker-gray-900 ${getHeaderAlignmentClass()} outline-none cursor-text leading-tight tracking-tight`}
           style={{ 
             pointerEvents: 'auto', 
             userSelect: 'text', 
             WebkitUserSelect: 'text',
-            minHeight: '1.5em'
+            minHeight: '1.5em',
+            caretColor: '#111827' // Force caret color
           }}
-          // We use dangerouslySetInnerHTML in the original, but here we can just use children if we sync?
-          // The original used: dangerouslySetInnerHTML={{ __html: field.label || ... }}
-          // And had a useEffect to sync.
-          // To keep it simple, I'll stick close to original but maybe use simple text if HTML isn't needed. 
-          // The original `labelHtml` state was interesting.
-          // For this refactor, let's assume we want to preserve that behavior.
-          // I'll skip the `dangerouslySetInnerHTML` for now and just set defaultValue/onBlur, 
-          // but contentEditable with React is tricky.
-          // I will use key={field.id} or similar to force re-render if needed, 
-          // OR better: use the exact same logic as original if possible.
-          // Since I can't easily lift the `useEffect` logic for synching straight into here without re-implementing,
-          // I will implement the logic inside this component.
-           dangerouslySetInnerHTML={{ __html: field.label || 'Heading' }}
+           dangerouslySetInnerHTML={headerHtml}
           onMouseDown={(e) => {
             e.stopPropagation();
             isFocusingRef.current = true;
@@ -161,6 +198,10 @@ export const HeaderField: React.FC<HeaderFieldProps> = ({
             if (!isSelected) {
               onSelect(field.id, true);
             }
+          }}
+          onInput={(e) => {
+             const newText = e.currentTarget.textContent || '';
+             updateField(field.id, { label: newText });
           }}
           onBlur={(e) => {
              const newText = e.currentTarget.textContent || '';
@@ -175,19 +216,20 @@ export const HeaderField: React.FC<HeaderFieldProps> = ({
             }
           }}
         />
-        {headerSubheading || headerSubheading === '' ? (
+        {(headerSubheading || isSelected) && (
           <p
             ref={subheadingInputRef}
             contentEditable={isSelected}
             suppressContentEditableWarning
-            className={`text-sm text-gray-600 mt-2 ${getHeaderAlignmentClass()} outline-none cursor-text`}
+            spellCheck={false}
+            className={`text-base text-gray-500 mt-3 ${getHeaderAlignmentClass()} outline-none cursor-text font-light`}
             style={{ 
-              pointerEvents: 'auto', 
-              userSelect: 'text', 
-              WebkitUserSelect: 'text',
-              minHeight: '1.5em'
+               pointerEvents: 'auto',
+               userSelect: 'text', 
+               WebkitUserSelect: 'text',
+               minHeight: '1.5em'
             }}
-             dangerouslySetInnerHTML={{ __html: field.placeholder || '' }}
+             dangerouslySetInnerHTML={subHeadingHtml}
             onMouseDown={(e) => {
               e.stopPropagation();
               isFocusingRef.current = true;
@@ -200,6 +242,10 @@ export const HeaderField: React.FC<HeaderFieldProps> = ({
               if (!isSelected) {
                 onSelect(field.id, true);
               }
+            }}
+            onInput={(e) => {
+               const newText = e.currentTarget.textContent || '';
+               updateField(field.id, { placeholder: newText });
             }}
             onBlur={(e) => {
                const newText = e.currentTarget.textContent || '';
@@ -214,19 +260,23 @@ export const HeaderField: React.FC<HeaderFieldProps> = ({
               }
             }}
           />
-        ) : null}
-         {(field.validation as any)?.headingImage && (
-          <div className={`mt-4 ${
-            headerAlignment === 'CENTER' ? 'flex justify-center' : 
-            headerAlignment === 'RIGHT' ? 'flex justify-end' : 'flex justify-start'
+        )}
+         {headingImage && headingImage.startsWith('http') && imagePosition !== 'BACKGROUND' && (
+          <div className={`mt-6 ${
+            imagePosition === 'CENTER' ? 'flex justify-center' : 
+            imagePosition === 'RIGHT' ? 'flex justify-end' : 'flex justify-start'
           }`}>
             <img 
-              src={(field.validation as any).headingImage} 
+              src={headingImage} 
               alt="Heading" 
-              className="max-w-full h-auto rounded-lg max-h-96 object-contain"
+              className="max-w-full h-auto rounded-xl shadow-lg object-contain"
+              onError={(e) => {
+                (e.target as HTMLImageElement).style.display = 'none';
+              }}
             />
           </div>
         )}
+        </div>
       </div>
   );
 };

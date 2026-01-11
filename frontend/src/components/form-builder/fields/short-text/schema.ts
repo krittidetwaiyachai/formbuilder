@@ -8,10 +8,12 @@ export const shortTextDefaultValues = {
   options: {
     width: 'FULL',
     labelAlignment: 'TOP',
+    subLabel: '',
   },
   validation: {
-    hasMaxLength: false,
-    maxLength: 100,
+    required: false,
     readOnly: false,
+    maxLength: 100,
+    hasMaxLength: false,
   }
 };

@@ -26,21 +26,19 @@ export const ParagraphField: React.FC<ParagraphFieldProps> = ({
   const editorRef = useRef<HTMLDivElement>(null);
 
   // Initial content
-  const [htmlContent] = useState({ __html: field.label || 'This is a paragraph. Click to edit.' });
+  const [htmlContent, setHtmlContent] = useState({ __html: field.label || 'This is a paragraph. Click to edit.' });
 
-  // Sync effect is less critical here since we use onBlur to save, 
-  // but if properties panel updates checking, we might want to update preview.
-  // However, for contentEditable, direct prop update re-renders can reset cursor position.
-  // So we avoid re-setting innerHTML while editing if possible.
-  
+  // Sync effect safely
   useEffect(() => {
-    if (editorRef.current && document.activeElement !== editorRef.current) {
-        if (editorRef.current.innerHTML !== field.label) {
-             // Only update if significantly different to avoid cursor jumps?
-             // Actually, for a pure paragraph field, syncing from properties panel (Textarea) 
-             // needs to update this view.
-             editorRef.current.innerHTML = field.label || '';
-        }
+    const currentText = editorRef.current?.innerHTML; // Use innerHTML for paragraph rich text structure? Or textContent? 
+    // Wait, Paragraph uses innerHTML in dangerouslySetInnerHTML.
+    // Ideally we should sync innerHTML. but browsers change HTML structure (e.g. adding <div> or <br>).
+    // Let's stick to simple text sync if possible, OR if it's rich text, we need to be careful.
+    // Given the previous code used innerHTML, let's try to match that.
+    
+    // Safety check: only update if prop is different from what is rendered
+    if (editorRef.current && currentText !== field.label) {
+         setHtmlContent({ __html: field.label || '' });
     }
   }, [field.label]);
 
@@ -61,6 +59,7 @@ export const ParagraphField: React.FC<ParagraphFieldProps> = ({
           ref={editorRef}
           contentEditable={isSelected}
           suppressContentEditableWarning
+          spellCheck={false}
           className={`text-sm text-black leading-relaxed outline-none cursor-text min-h-[1.5em] ${isSelected ? 'p-2 border border-dashed border-gray-300 rounded' : ''}`}
           style={{ 
             pointerEvents: 'auto', 
@@ -68,6 +67,10 @@ export const ParagraphField: React.FC<ParagraphFieldProps> = ({
             WebkitUserSelect: 'text',
           }}
           dangerouslySetInnerHTML={htmlContent}
+          onInput={(e) => {
+             const newHtml = e.currentTarget.innerHTML; 
+             updateField(field.id, { label: newHtml });
+          }}
           onBlur={(e) => {
              const newHtml = e.currentTarget.innerHTML;
              if (newHtml !== field.label) {

@@ -1,17 +1,12 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { useAuthStore } from './store/authStore';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import DashboardPage from './pages/DashboardPage';
-import FormBuilderPage from './pages/FormBuilderPage';
-import FormPreviewPage from './pages/FormPreviewPage';
-import ResponsesPage from './pages/ResponsesPage';
+import Dashboard from './pages/Dashboard';
+import FormEdit from './pages/FormEdit';
+import FormPreview from './pages/FormPreview';
+import PublicForm from './pages/PublicForm';
 import Layout from './components/Layout';
-
-function PrivateRoute({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated } = useAuthStore();
-  return isAuthenticated ? <>{children}</> : <Navigate to="/login" />;
-}
+import ActivityPage from './pages/ActivityPage';
+import AnalyticsPage from './pages/AnalyticsPage';
+import ProtectedRoute from './components/auth/ProtectedRoute';
 
 function App() {
   return (
@@ -22,32 +17,23 @@ function App() {
       }}
     >
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route
-          path="/"
-          element={
-            <PrivateRoute>
-              <Layout />
-            </PrivateRoute>
-          }
-        >
+        <Route path="/forms/:id/view" element={<PublicForm />} />
+        <Route path="/" element={<Layout />}>
           <Route index element={<Navigate to="/dashboard" />} />
-          <Route path="dashboard" element={<DashboardPage />} />
-          <Route path="forms/:id/builder" element={<FormBuilderPage />} />
-          <Route path="forms/:id/responses" element={<ResponsesPage />} />
+          <Route path="dashboard" element={<Dashboard />} />
+          
+          {/* Protected Routes */}
+          <Route element={<ProtectedRoute />}>
+             <Route path="forms/:id/builder" element={<FormEdit />} />
+             <Route path="forms/:id/activity" element={<ActivityPage />} />
+             <Route path="forms/:id/analytics" element={<AnalyticsPage />} />
+          </Route>
         </Route>
-        <Route
-          path="forms/:id/preview"
-          element={
-            <PrivateRoute>
-              <FormPreviewPage />
-            </PrivateRoute>
-          }
-        />
+        <Route path="forms/:id/preview" element={<FormPreview />} />
       </Routes>
     </BrowserRouter>
   );
 }
 
 export default App;
+

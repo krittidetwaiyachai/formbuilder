@@ -4,14 +4,16 @@ export const numberDefaultValues = {
   type: FieldType.NUMBER,
   label: 'Number',
   required: false,
-  placeholder: 'Enter a number',
+  placeholder: '',
   options: {
     width: 'FULL',
     labelAlignment: 'TOP',
+    subLabel: '',
   },
   validation: {
+    required: false,
     readOnly: false,
-    min: undefined,
-    max: undefined,
+    min: null,
+    max: null,
   }
 };

@@ -28,20 +28,20 @@ export const PhoneField: React.FC<PhoneFieldProps> = ({ field, fieldStyle, disab
                    placeholder="+1"
                   readOnly
                   tabIndex={-1}
-                  className={`w-full px-4 py-3.5 border ${fieldStyle.inputBorder} rounded-xl bg-green-50/20 text-black text-base shadow-sm text-center transition-all duration-300 ${disabledClass} group-hover:bg-white group-hover:shadow-md`}
+                  className={`w-full px-4 py-3.5 border ${fieldStyle.inputBorder} rounded-xl bg-green-50/20 text-black text-base shadow-sm text-center transition-all duration-300 ${disabledClass} group-hover/field:bg-white group-hover/field:shadow-md`}
                 />
              </div>
           )}
           <div className="flex-1 relative">
               <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none transition-colors duration-300">
-                <Phone className={`h-5 w-5 ${fieldStyle.iconColor} opacity-70 group-hover:opacity-100`} />
+                <Phone className={`h-5 w-5 ${fieldStyle.iconColor} opacity-70 group-hover/field:opacity-100`} />
               </div>
               <input
                 type="tel"
                 placeholder={phonePlaceholder}
                 readOnly
                 tabIndex={-1}
-                className={`w-full pl-12 pr-4 py-3.5 border ${fieldStyle.inputBorder} rounded-xl bg-green-50/20 text-black text-base shadow-sm transition-all duration-300 ${disabledClass} pointer-events-none group-hover:bg-white group-hover:shadow-md`}
+                className={`w-full pl-12 pr-4 py-3.5 border ${fieldStyle.inputBorder} rounded-xl bg-green-50/20 text-black text-base shadow-sm transition-all duration-300 ${disabledClass} pointer-events-none group-hover/field:bg-white group-hover/field:shadow-md`}
               />
           </div>
        </div>

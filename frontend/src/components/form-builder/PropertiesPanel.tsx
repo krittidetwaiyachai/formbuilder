@@ -1,25 +1,29 @@
 import { useState, useEffect, useRef } from 'react';
 import { useFormStore } from '@/store/formStore';
 import { FieldType } from '@/types';
-import { Settings, Palette } from 'lucide-react';
+import { Settings, GitBranch } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import LogicSidebarList from './LogicSidebarList';
 
 // Property Components
-import { DateProperties } from './fields/date/DateProperties';
-import { FullNameProperties } from './fields/full-name/FullNameProperties';
-import { EmailProperties } from './fields/email/EmailProperties';
-import { AddressProperties } from './fields/address/AddressProperties';
-import { PhoneProperties } from './fields/phone/PhoneProperties';
-import { ShortTextProperties } from './fields/short-text/ShortTextProperties';
-import { LongTextProperties } from './fields/long-text/LongTextProperties';
-import { ParagraphProperties } from './fields/paragraph/ParagraphProperties';
-import { DropdownProperties } from './fields/dropdown/DropdownProperties';
-import { RadioProperties } from './fields/radio/RadioProperties';
-import { CheckboxProperties } from './fields/checkbox/CheckboxProperties';
-import { NumberProperties } from './fields/number/NumberProperties';
-import { TimeProperties } from './fields/time/TimeProperties';
-import { SubmitProperties } from './fields/submit/SubmitProperties';
-import { HeaderProperties } from './fields/header/HeaderProperties';
-import { RateProperties } from './fields/rate/RateProperties';
+import { DateProperties } from '@/components/field-properties/advanced/DateProperties';
+import { FullNameProperties } from '@/components/field-properties/text/FullNameProperties';
+import { EmailProperties } from '@/components/field-properties/text/EmailProperties';
+import { AddressProperties } from '@/components/field-properties/advanced/AddressProperties';
+import { PhoneProperties } from '@/components/field-properties/text/PhoneProperties';
+import { ShortTextProperties } from '@/components/field-properties/text/ShortTextProperties';
+import { LongTextProperties } from '@/components/field-properties/text/LongTextProperties';
+import { ParagraphProperties } from '@/components/field-properties/text/ParagraphProperties';
+import { DropdownProperties } from '@/components/field-properties/choice/DropdownProperties';
+import { RadioProperties } from '@/components/field-properties/choice/RadioProperties';
+import { CheckboxProperties } from '@/components/field-properties/choice/CheckboxProperties';
+import { NumberProperties } from '@/components/field-properties/text/NumberProperties';
+import { TimeProperties } from '@/components/field-properties/advanced/TimeProperties';
+import { SubmitProperties } from '@/components/field-properties/advanced/SubmitProperties';
+import { HeaderProperties } from '@/components/field-properties/advanced/HeaderProperties';
+import { RateProperties } from '@/components/field-properties/advanced/RateProperties';
+import { MatrixProperties } from '@/components/field-properties/advanced/MatrixProperties';
+import { TableProperties } from '@/components/field-properties/advanced/TableProperties';
 
 // Extracted Shared/Specific Components
 import { SpecialPageProperties } from './properties/SpecialPageProperties';
@@ -32,9 +36,10 @@ interface PropertiesPanelProps {
 
 export default function PropertiesPanel({ currentPage = 0 }: PropertiesPanelProps) {
   const panelRef = useRef<HTMLDivElement>(null);
-  const { currentForm, selectedFieldId, updateField, updateForm, addField } = useFormStore();
+  const { currentForm, selectedFieldId, updateField, updateForm, addField, activeSidebarTab, setActiveSidebarTab } = useFormStore();
   const selectedField = currentForm?.fields?.find((f) => f.id === selectedFieldId);
-  const [activeTab, setActiveTab] = useState<'properties' | 'theme' | 'settings'>('properties');
+  const activeTab = activeSidebarTab;
+  const setActiveTab = setActiveSidebarTab;
 
   const [formTitle, setFormTitle] = useState(currentForm?.title || '');
   const [formDescription, setFormDescription] = useState(currentForm?.description || '');
@@ -45,6 +50,12 @@ export default function PropertiesPanel({ currentPage = 0 }: PropertiesPanelProp
       setFormDescription(currentForm.description || '');
     }
   }, [currentForm]);
+
+  useEffect(() => {
+    if (!selectedField && activeTab === 'properties') {
+      setActiveTab('settings');
+    }
+  }, [selectedField, activeTab, setActiveTab]);
 
   const handleFormUpdate = (field: string, value: any) => {
     if (!currentForm) return;
@@ -82,28 +93,44 @@ export default function PropertiesPanel({ currentPage = 0 }: PropertiesPanelProp
       {/* Top Section - Tabs */}
       <div className="border-b bg-white px-3 py-4">
         {/* Tabs */}
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1">
+          <AnimatePresence mode="popLayout">
+            {activeTab !== 'logic' && selectedField && (
+              <motion.button
+                key="properties-tab"
+                layout
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ 
+                  type: 'spring',
+                  stiffness: 400,
+                  damping: 30,
+                  mass: 0.8
+                }}
+                onClick={() => setActiveTab('properties')}
+                className={`flex-1 flex items-center justify-center gap-1 px-2 py-2 text-sm font-medium rounded-md border transition-colors ${
+                  activeTab === 'properties'
+                    ? 'bg-white border-gray-400 text-black shadow-sm'
+                    : 'bg-gray-100 border-gray-300 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                <Settings className="h-4 w-4" />
+                <span className="truncate">Properties</span>
+              </motion.button>
+            )}
+          </AnimatePresence>
+
           <button
-            onClick={() => setActiveTab('properties')}
+            onClick={() => setActiveTab('logic')}
             className={`flex-1 flex items-center justify-center gap-1 px-2 py-2 text-sm font-medium rounded-md border transition-colors ${
-              activeTab === 'properties'
+              activeTab === 'logic'
                 ? 'bg-white border-gray-400 text-black shadow-sm'
                 : 'bg-gray-100 border-gray-300 text-gray-600 hover:bg-gray-200'
             }`}
           >
-            <Settings className="h-4 w-4" />
-            <span className="truncate">Properties</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('theme')}
-            className={`flex-1 flex items-center justify-center gap-1 px-2 py-2 text-sm font-medium rounded-md border transition-colors ${
-              activeTab === 'theme'
-                ? 'bg-white border-gray-400 text-black shadow-sm'
-                : 'bg-gray-100 border-gray-300 text-gray-600 hover:bg-gray-200'
-            }`}
-          >
-            <Palette className="h-4 w-4" />
-            <span className="truncate">Theme</span>
+            <GitBranch className="h-4 w-4" />
+            <span className="truncate">Logic</span>
           </button>
           <button
             onClick={() => setActiveTab('settings')}
@@ -234,6 +261,20 @@ export default function PropertiesPanel({ currentPage = 0 }: PropertiesPanelProp
                     updateField={updateField}
                     duplicatesField={addField}
                   />
+                ) : selectedField.type === FieldType.MATRIX ? (
+                  <MatrixProperties
+                    field={selectedField}
+                    currentForm={currentForm}
+                    updateField={updateField}
+                    duplicatesField={addField}
+                  />
+                ) : selectedField.type === FieldType.TABLE ? (
+                  <TableProperties
+                    field={selectedField}
+                    currentForm={currentForm}
+                    updateField={updateField}
+                    duplicatesField={addField}
+                  />
                 ) : (
                   // Fallback for generic fields if any
                   <CommonFieldProperties 
@@ -259,6 +300,12 @@ export default function PropertiesPanel({ currentPage = 0 }: PropertiesPanelProp
             <h3 className="text-sm font-semibold text-black mb-4">Theme Settings</h3>
             <p className="text-sm text-gray-600">Theme customization coming soon...</p>
           </div>
+        )}
+
+        {/* Removed per-field logic properties - only show LogicSidebarList */}
+
+        {activeTab === 'logic' && (
+           <LogicSidebarList />
         )}
 
         {activeTab === 'settings' && (

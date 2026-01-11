@@ -8,8 +8,12 @@ export const emailDefaultValues = {
   options: {
     width: 'FULL',
     labelAlignment: 'TOP',
+    placeholder: 'example@email.com',
+    subLabel: '',
   },
   validation: {
+    required: false,
     readOnly: false,
+    confirmation: false, // For "confirm email" field
   }
 };

@@ -25,6 +25,9 @@ export enum FieldType {
   DIVIDER = 'DIVIDER',
   SECTION_COLLAPSE = 'SECTION_COLLAPSE',
   PAGE_BREAK = 'PAGE_BREAK',
+  GROUP = 'GROUP',
+  MATRIX = 'MATRIX',
+  TABLE = 'TABLE',
 }
 
 export enum FormStatus {
@@ -44,6 +47,7 @@ export interface User {
   email: string;
   firstName?: string;
   lastName?: string;
+  photoUrl?: string;
   role: {
     id: string;
     name: RoleType;
@@ -62,8 +66,10 @@ export interface Field {
   validation?: any;
   order: number;
   options?: any;
+  shrink?: boolean;
   correctAnswer?: string;
   score?: number;
+  groupId?: string;
 }
 
 export interface FieldCondition {
@@ -76,6 +82,27 @@ export interface FieldCondition {
   action: string;
 }
 
+export interface LogicCondition {
+  id: string;
+  fieldId: string;
+  operator: string;
+  value: string;
+}
+
+export interface LogicAction {
+  id: string;
+  type: 'show' | 'hide';
+  fieldId: string;
+}
+
+export interface LogicRule {
+  id: string;
+  name: string;
+  logicType: 'and' | 'or';
+  conditions: LogicCondition[];
+  actions: LogicAction[];
+}
+
 export interface Form {
   id: string;
   title: string;
@@ -83,9 +110,15 @@ export interface Form {
   status: FormStatus;
   isQuiz: boolean;
   quizSettings?: {
+    totalScore?: number;
+    releaseScoreMode?: 'immediately' | 'manual';
     showScore?: boolean;
     showAnswer?: boolean;
     showDetail?: boolean;
+    allowViewMissedQuestions?: boolean;
+    showExplanation?: boolean;
+    shuffleQuestions?: boolean;
+    requireSignIn?: boolean;
   };
   createdById: string;
   createdAt: string;
@@ -94,18 +127,40 @@ export interface Form {
   viewCount?: number;
   fields?: Field[];
   conditions?: FieldCondition[];
+  logicRules?: LogicRule[];
   createdBy?: {
     id: string;
     email: string;
     firstName?: string;
     lastName?: string;
+    photoUrl?: string;
   };
+  collaborators?: {
+    id: string;
+    email: string;
+    firstName?: string;
+    lastName?: string;
+    photoUrl?: string;
+  }[];
   _count?: {
     responses: number;
   };
   welcomeSettings?: WelcomeScreenSettings;
   thankYouSettings?: ThankYouScreenSettings;
   pageSettings?: PageSettings[];
+  settings?: FormSettings;
+}
+
+export interface FormSettings {
+  submitButtonText?: string;
+  successMessage?: string;
+  allowMultipleSubmissions?: boolean;
+  showProgressBar?: boolean;
+  collectEmail?: boolean;
+  footerText?: string;
+  showQuestionNumber?: boolean;
+  responseLimit?: number;
+  formLayout?: 'classic' | 'card';
 }
 
 export interface PageSettings {
@@ -121,16 +176,28 @@ export interface WelcomeScreenSettings {
   showStartButton: boolean;
   layout?: 'simple' | 'split-left' | 'split-right' | 'cover';
   isActive?: boolean;
+  backgroundImage?: string;
+  iconColor?: 'green' | 'blue' | 'purple' | 'orange' | 'pink' | 'red' | 'yellow' | 'gray' | 'white';
 }
 
 export interface ThankYouScreenSettings {
   title: string;
   message: string;
   buttonText: string;
-  redirectUrl?: string; // Optional URL to redirect
+  redirectUrl?: string;
   autoRedirect?: boolean;
+  redirectDelay?: number;
   layout?: 'simple' | 'split-left' | 'split-right' | 'cover';
   isActive?: boolean;
+  backgroundImage?: string;
+  footerText?: string;
+  showFooter?: boolean;
+  iconColor?: 'green' | 'blue' | 'purple' | 'orange' | 'pink' | 'red' | 'yellow' | 'gray' | 'white';
+  backgroundColor?: string;
+  showButton?: boolean;
+  buttonLink?: string;
+  showSocialShare?: boolean;
+  showConfetti?: boolean;
 }
 
 export interface Preset {

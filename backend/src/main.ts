@@ -2,8 +2,18 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 
+
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { join } from 'path';
+
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  
+  // Serve static assets from frontend/public
+  // Go up one level from backend CWD to reach module root, then frontend
+  app.useStaticAssets(join(process.cwd(), '..', 'frontend', 'public'), {
+    prefix: '/', 
+  });
   
   // Enable CORS
   app.enableCors({

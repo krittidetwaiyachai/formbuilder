@@ -8,6 +8,10 @@ import { FormsModule } from './forms/forms.module';
 import { PresetsModule } from './presets/presets.module';
 import { ResponsesModule } from './responses/responses.module';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { AssetsModule } from './assets/assets.module';
+import { ActivityLogModule } from './activity-log/activity-log.module';
+import { FoldersModule } from './folders/folders.module';
+
 
 @Module({
   imports: [
@@ -20,6 +24,9 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
     FormsModule,
     PresetsModule,
     ResponsesModule,
+    AssetsModule,
+    ActivityLogModule,
+    FoldersModule,
   ],
   providers: [
     {

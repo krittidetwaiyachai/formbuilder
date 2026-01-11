@@ -17,6 +17,14 @@ export class CreateResponseDto {
   @IsString()
   userId?: string;
 
+  @IsOptional()
+  @IsString()
+  respondentEmail?: string;
+
+  @IsOptional()
+  @IsString()
+  fingerprint?: string;
+
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CreateAnswerDto)

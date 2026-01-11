@@ -13,56 +13,78 @@ export const PreviewDateField: React.FC<PreviewFieldProps> = ({ field, register,
   const fieldName = `field_${field.id}`;
   const fieldError = errors[fieldName];
 
-  if (field.type === FieldType.DATE) {
-       return (
-        <div className="mb-4">
-          <label htmlFor={fieldName} className="block text-sm font-medium text-black mb-2">
+  const validation = field.validation || {};
+  const optionsSettings = (field.options && !Array.isArray(field.options)) ? field.options : {};
+  
+  const { 
+    labelAlignment = 'TOP', 
+    hoverText, 
+    subLabel,
+    readOnly,
+    hidden
+  } = { ...validation, ...optionsSettings };
+
+  if (hidden) return null;
+
+  const isRowLayout = labelAlignment === 'LEFT' || labelAlignment === 'RIGHT';
+  
+  // Helper to render label
+  const renderLabel = () => (
+     <>
+        <label htmlFor={fieldName} className={`block text-sm font-medium text-black ${isRowLayout ? 'min-w-[150px]' : 'mb-2'}`}>
             {field.label}
             {field.required && <span className="text-black ml-1">*</span>}
-          </label>
-          <div className="relative">
+        </label>
+        {subLabel && <p className="text-xs text-gray-500 mb-2">{subLabel}</p>}
+     </>
+  );
+
+  if (field.type === FieldType.DATE) {
+       return (
+        <div className={`mb-4 w-full ${isRowLayout ? 'flex items-start gap-4' : ''}`} title={hoverText}>
+          {renderLabel()}
+          <div className="relative w-full">
             <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
-              <Calendar className="h-4 w-4 text-teal-500" />
+              <Calendar className="h-4 w-4 text-gray-500" />
             </div>
             <input
               type="date"
               id={fieldName}
+              readOnly={readOnly}
               {...register(fieldName, {
                 required: field.required ? `${field.label} is required` : false,
               })}
-              className="w-full pl-10 pr-4 py-3 border-2 border-teal-300 rounded-xl bg-gradient-to-br from-teal-50 to-white text-black text-sm shadow-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all"
+              className={`w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl bg-white text-black text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all hover:border-gray-300 ${readOnly ? 'bg-gray-100 cursor-not-allowed' : ''}`}
             />
+             {fieldError && (
+                <p className="mt-1 text-sm text-red-600">{fieldError.message}</p>
+             )}
           </div>
-          {fieldError && (
-            <p className="mt-1 text-sm text-red-600">{fieldError.message}</p>
-          )}
         </div>
       );
   }
 
   if (field.type === FieldType.TIME) {
        return (
-        <div className="mb-4">
-          <label htmlFor={fieldName} className="block text-sm font-medium text-black mb-2">
-            {field.label}
-            {field.required && <span className="text-black ml-1">*</span>}
-          </label>
-          <div className="relative">
+        <div className={`mb-4 w-full ${isRowLayout ? 'flex items-start gap-4' : ''}`} title={hoverText}>
+          {renderLabel()}
+          <div className="relative w-full">
             <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
-              <Clock className="h-4 w-4 text-cyan-500" />
+              <Clock className="h-4 w-4 text-gray-500" />
             </div>
             <input
               type="time"
               id={fieldName}
+              readOnly={readOnly}
               {...register(fieldName, {
                 required: field.required ? `${field.label} is required` : false,
               })}
-              className="w-full pl-10 pr-4 py-3 border-2 border-cyan-300 rounded-xl bg-gradient-to-br from-cyan-50 to-white text-black text-sm shadow-md focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-all"
+              className={`w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl bg-white text-black text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all hover:border-gray-300 ${readOnly ? 'bg-gray-100 cursor-not-allowed' : ''}`}
             />
+            {fieldError && (
+                <p className="mt-1 text-sm text-red-600">{fieldError.message}</p>
+             )}
           </div>
-          {fieldError && (
-            <p className="mt-1 text-sm text-red-600">{fieldError.message}</p>
-          )}
         </div>
       );
   }

@@ -10,14 +10,20 @@ datasource db {
 model User {
   id           String         @id @default(uuid())
   email        String         @unique
-  password     String
+  password     String?
   firstName    String?
   lastName     String?
   roleId       String
+  googleId     String?        @unique
+  photoUrl     String?
+  provider     String         @default("local")
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
   responses    FormResponse[]
   formsCreated Form[]         @relation("FormCreator")
+  formsCollaborated Form[]    @relation("FormCollaborators")
+  activityLogs ActivityLog[]
+  folders      Folder[]
   role         Role           @relation(fields: [roleId], references: [id])
 
   @@map("users")
@@ -35,24 +41,62 @@ model Role {
   @@map("roles")
 }
 
+model Folder {
+  id        String   @id @default(uuid())
+  name      String
+  color     String?  @default("#6366f1")
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  forms     Form[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@map("folders")
+}
+
 model Form {
   id           String           @id @default(uuid())
   title        String
   description  String?
   status       FormStatus       @default(DRAFT)
   isQuiz       Boolean          @default(false)
-  quizSettings Json?
-  pageSettings Json?
+  viewCount    Int              @default(0)
+  quizSettings    Json?
+  welcomeSettings Json?
+  thankYouSettings Json?
+  settings        Json?
+  notificationSettings Json?
+  pageSettings    Json?
   createdById  String
+  folderId     String?
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
   conditions   FieldCondition[]
   fields       Field[]
   responses    FormResponse[]
   createdBy    User             @relation("FormCreator", fields: [createdById], references: [id])
+  folder       Folder?          @relation(fields: [folderId], references: [id], onDelete: SetNull)
+  collaborators User[]          @relation("FormCollaborators")
   presetFields PresetField[]
+  logicRules   LogicRule[]
+  activityLogs ActivityLog[]
+  views        FormView[]
 
   @@map("forms")
+}
+
+model FormView {
+  id          String   @id @default(uuid())
+  formId      String
+  fingerprint String
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+  form        Form     @relation(fields: [formId], references: [id], onDelete: Cascade)
+
+  @@unique([formId, fingerprint])
+  @@map("form_views")
 }
 
 model Field {
@@ -67,12 +111,18 @@ model Field {
   options         Json?
   correctAnswer   String?
   score           Int?
+  groupId         String?
+  shrink          Boolean          @default(false)
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
   conditions      FieldCondition[] @relation("SourceField")
   targetCondition FieldCondition[] @relation("TargetField")
+  logicConditions LogicCondition[]
+  logicActions    LogicAction[]
   form            Form             @relation(fields: [formId], references: [id], onDelete: Cascade)
   answers         ResponseAnswer[]
+  parentGroup     Field?           @relation("FieldGroup", fields: [groupId], references: [id], onDelete: Cascade)
+  childFields     Field[]          @relation("FieldGroup")
 
   @@map("fields")
 }
@@ -92,6 +142,43 @@ model FieldCondition {
   targetField   Field    @relation("TargetField", fields: [targetFieldId], references: [id], onDelete: Cascade)
 
   @@map("field_conditions")
+}
+
+model LogicRule {
+  id          String           @id @default(uuid())
+  formId      String
+  name        String
+  logicType   String           @default("and")
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  form        Form             @relation(fields: [formId], references: [id], onDelete: Cascade)
+  conditions  LogicCondition[]
+  actions     LogicAction[]
+
+  @@map("logic_rules")
+}
+
+model LogicCondition {
+  id       String    @id @default(uuid())
+  ruleId   String
+  fieldId  String?
+  operator String
+  value    String?
+  rule     LogicRule @relation(fields: [ruleId], references: [id], onDelete: Cascade)
+  field    Field?    @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+
+  @@map("logic_conditions")
+}
+
+model LogicAction {
+  id      String    @id @default(uuid())
+  ruleId  String
+  type    String
+  fieldId String?
+  rule    LogicRule @relation(fields: [ruleId], references: [id], onDelete: Cascade)
+  field   Field?    @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+
+  @@map("logic_actions")
 }
 
 model Preset {
@@ -134,6 +221,8 @@ model FormResponse {
   id          String           @id @default(uuid())
   formId      String
   userId      String?
+  respondentEmail String?
+  fingerprint String?
   submittedAt DateTime         @default(now())
   score       Int?
   totalScore  Int?
@@ -150,11 +239,11 @@ model FormResponse {
 model ResponseAnswer {
   id         String       @id @default(uuid())
   responseId String
-  fieldId    String
+  fieldId    String?
   value      String
   isCorrect  Boolean?
   createdAt  DateTime     @default(now())
-  field      Field        @relation(fields: [fieldId], references: [id])
+  field      Field?       @relation(fields: [fieldId], references: [id], onDelete: SetNull)
   response   FormResponse @relation(fields: [responseId], references: [id], onDelete: Cascade)
 
   @@map("response_answers")
@@ -199,6 +288,9 @@ enum FieldType {
   DIVIDER
   SECTION_COLLAPSE
   PAGE_BREAK
+  GROUP
+  MATRIX
+  TABLE
 }
 
 enum SensitivityLevel {
@@ -211,4 +303,18 @@ enum FormStatus {
   DRAFT
   PUBLISHED
   ARCHIVED
+}
+
+model ActivityLog {
+  id        String   @id @default(uuid())
+  formId    String
+  userId    String
+  action    String
+  details   Json?
+  createdAt DateTime @default(now())
+
+  form Form @relation(fields: [formId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("activity_logs")
 }

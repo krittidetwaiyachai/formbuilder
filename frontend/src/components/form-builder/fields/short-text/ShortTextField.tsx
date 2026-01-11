@@ -1,5 +1,5 @@
 import React from 'react';
-import { Field, FieldType } from '@/types';
+import { Field } from '@/types';
 import { Type } from 'lucide-react';
 
 interface ShortTextFieldProps {
@@ -14,34 +14,20 @@ interface ShortTextFieldProps {
 }
 
 export const ShortTextField: React.FC<ShortTextFieldProps> = ({ field, fieldStyle, disabledClass = "opacity-60 cursor-pointer" }) => {
-  const options = field.options || {};
-  const validation = field.validation || {};
-  const { width, customWidth, hoverText } = options;
-  const { maxLength, hasMaxLength } = validation;
-  // Previously TextField handled Number if type was 'Number', but we have NumberField for that.
-  // We'll keep it strictly text here or allow it if it falls back?
-  // Let's assume this is mostly for Short Text.
-  const isNumber = field.type === FieldType.NUMBER; 
+  const { hoverText, width, customWidth } = field.options || {};
 
   return (
     <div className="relative max-w-full group" title={hoverText}>
-      <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none transition-colors duration-300 group-hover:text-black">
-        {isNumber ? (
-            <div className="font-bold text-gray-400 text-sm">123</div>
-        ) : (
-            <Type className="h-5 w-5 text-gray-400" />
-        )}
+      <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none transition-colors duration-300 group-hover/field:text-black">
+        <Type className={`h-5 w-5 ${fieldStyle.iconColor} opacity-70 group-hover/field:opacity-100`} />
       </div>
       <input
-        id={field.id}
-        name={field.id}
-        type={isNumber ? "number" : "text"}
-        placeholder={field.placeholder || (isNumber ? 'Enter number...' : 'Enter text...')}
+        type="text"
+        placeholder={field.placeholder || 'Enter text...'}
         readOnly
         tabIndex={-1}
-        maxLength={!isNumber && hasMaxLength ? maxLength : undefined}
         style={width === 'FIXED' && customWidth ? { maxWidth: `${customWidth}px` } : {}}
-        className={`w-full pl-12 pr-4 py-3.5 border ${fieldStyle.inputBorder} rounded-xl bg-gray-50/50 text-black text-base shadow-sm transition-all duration-300 ${disabledClass} pointer-events-none group-hover:bg-white group-hover:shadow-md appearance-none`}
+        className={`w-full pl-12 pr-4 py-3.5 border ${fieldStyle.inputBorder || 'border-gray-200'} rounded-xl bg-white text-black text-base shadow-sm transition-all duration-300 ${disabledClass} pointer-events-none group-hover/field:border-blue-300 group-hover/field:shadow-md focus:ring-2 focus:ring-blue-100 outline-none`}
       />
     </div>
   );

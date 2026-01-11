@@ -32,24 +32,24 @@ body {
 
 /* Hide scrollbar but keep scroll functionality */
 .scrollbar-hide {
-  -ms-overflow-style: none !important;  /* IE and Edge */
-  scrollbar-width: none !important;  /* Firefox */
+  -ms-overflow-style: none !important; /* IE and Edge */
+  scrollbar-width: none !important; /* Firefox */
 }
 
 .scrollbar-hide::-webkit-scrollbar {
-  display: none !important;  /* Chrome, Safari, Opera */
+  display: none !important; /* Chrome, Safari, Opera */
   width: 0 !important;
   height: 0 !important;
 }
 
 /* Global scrollbar hide for all elements */
 * {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 *::-webkit-scrollbar {
-  display: none;  /* Chrome, Safari, Opera */
+  display: none; /* Chrome, Safari, Opera */
   width: 0;
   height: 0;
 }
@@ -64,4 +64,11 @@ body {
 /* Ensure DragOverlay can escape from overflow containers */
 [data-dnd-kit-drag-overlay] * {
   pointer-events: none !important;
+}
+
+/* Premium Glass Effect */
+.glass-card-nav {
+  @apply bg-white/80 backdrop-blur-md;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05),
+    0 2px 4px -1px rgba(0, 0, 0, 0.03);
 }

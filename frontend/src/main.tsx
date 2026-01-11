@@ -12,8 +12,13 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import { ToasterProvider } from './components/ui/toaster';
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+    <ToasterProvider>
+      <App />
+    </ToasterProvider>
+  </GoogleOAuthProvider>,
 )

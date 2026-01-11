@@ -18,14 +18,14 @@ export const DateField: React.FC<DateFieldProps> = ({ field, fieldStyle, disable
     return (
       <div className="relative max-w-sm group">
         <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none transition-colors duration-300">
-           <Clock className={`h-5 w-5 ${fieldStyle.iconColor} opacity-70 group-hover:opacity-100`} />
+           <Clock className={`h-5 w-5 ${fieldStyle.iconColor} opacity-70 group-hover/field:opacity-100`} />
         </div>
         <input
           type="text"
           placeholder="Select time..."
           readOnly
           tabIndex={-1}
-          className={`w-full pl-12 pr-4 py-3.5 border ${fieldStyle.inputBorder} rounded-xl bg-cyan-50/30 text-black text-base shadow-sm transition-all duration-300 ${disabledClass} pointer-events-none group-hover:bg-white group-hover:shadow-md`}
+          className={`w-full pl-12 pr-4 py-3.5 border ${fieldStyle.inputBorder} rounded-xl bg-cyan-50/30 text-black text-base shadow-sm transition-all duration-300 ${disabledClass} pointer-events-none group-hover/field:bg-white group-hover/field:shadow-md`}
         />
       </div>
     );
@@ -46,14 +46,14 @@ export const DateField: React.FC<DateFieldProps> = ({ field, fieldStyle, disable
              {liteMode ? (
                 <div className="relative group">
                   <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none transition-colors duration-300">
-                     <Calendar className={`h-5 w-5 ${fieldStyle.iconColor} opacity-70 group-hover:opacity-100`} />
+                     <Calendar className={`h-5 w-5 ${fieldStyle.iconColor} opacity-70 group-hover/field:opacity-100`} />
                   </div>
                   <input
                     type="text"
                     placeholder={dateFormat.replace(/-/g, separator)}
                     readOnly
                     tabIndex={-1}
-                    className={`w-full pl-12 pr-4 py-3.5 border ${fieldStyle.inputBorder} rounded-xl bg-teal-50/20 text-black text-base shadow-sm transition-all duration-300 ${disabledClass} group-hover:bg-white group-hover:shadow-md`}
+                    className={`w-full pl-12 pr-4 py-3.5 border ${fieldStyle.inputBorder} rounded-xl bg-teal-50/20 text-black text-base shadow-sm transition-all duration-300 ${disabledClass} group-hover/field:bg-white group-hover/field:shadow-md`}
                   />
                   <span className="text-xs text-gray-500 mt-1 block px-1">{dateSublabel}</span>
                 </div>
@@ -67,7 +67,7 @@ export const DateField: React.FC<DateFieldProps> = ({ field, fieldStyle, disable
                                     placeholder={part}
                                     readOnly
                                     tabIndex={-1}
-                                    className={`w-full px-3 py-3.5 border ${fieldStyle.inputBorder} rounded-xl bg-teal-50/20 text-black text-center text-sm shadow-sm transition-all duration-300 ${disabledClass} group-hover:bg-white group-hover:shadow-md`}
+                                    className={`w-full px-3 py-3.5 border ${fieldStyle.inputBorder} rounded-xl bg-teal-50/20 text-black text-center text-sm shadow-sm transition-all duration-300 ${disabledClass} group-hover/field:bg-white group-hover/field:shadow-md`}
                                   />
                                   <span className="text-xs text-gray-500 mt-1 block text-center">
                                       {part === 'MM' ? 'Month' : part === 'DD' ? 'Day' : 'Year'}
@@ -89,14 +89,14 @@ export const DateField: React.FC<DateFieldProps> = ({ field, fieldStyle, disable
               <div className="w-[120px]">
                    <div className="relative group">
                       <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none transition-colors duration-300">
-                         <Clock className={`h-4 w-4 ${fieldStyle.iconColor} opacity-70 group-hover:opacity-100`} />
+                         <Clock className={`h-4 w-4 ${fieldStyle.iconColor} opacity-70 group-hover/field:opacity-100`} />
                       </div>
                        <input
                         type="text"
                         placeholder="00 : 00 AM"
                         readOnly
                         tabIndex={-1}
-                        className={`w-full pl-9 pr-2 py-3.5 border ${fieldStyle.inputBorder} rounded-xl bg-teal-50/20 text-black text-sm shadow-sm transition-all duration-300 ${disabledClass} group-hover:bg-white group-hover:shadow-md`}
+                        className={`w-full pl-9 pr-2 py-3.5 border ${fieldStyle.inputBorder} rounded-xl bg-teal-50/20 text-black text-sm shadow-sm transition-all duration-300 ${disabledClass} group-hover/field:bg-white group-hover/field:shadow-md`}
                       />
                       <span className="text-xs text-gray-500 mt-1 block px-1">Time</span>
                    </div>

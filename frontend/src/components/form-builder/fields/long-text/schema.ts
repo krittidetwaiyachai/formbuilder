@@ -9,6 +9,7 @@ export const longTextDefaultValues = {
     width: 'FULL',
     labelAlignment: 'TOP',
     rows: 4,
+    editorMode: 'PLAIN_TEXT',
   },
   validation: {
     readOnly: false,

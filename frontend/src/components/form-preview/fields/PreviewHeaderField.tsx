@@ -1,17 +1,33 @@
 import React, { useState } from 'react';
 import { Field, FieldType } from '@/types';
-import { FileX, ChevronRight } from 'lucide-react';
+import { FileX, ChevronRight, X, ZoomIn } from 'lucide-react';
 
 interface PreviewFieldProps {
   field: Field;
 }
 
 export const PreviewHeaderField: React.FC<PreviewFieldProps> = ({ field }) => {
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [modalImageSrc, setModalImageSrc] = useState('');
+
+  const openImageModal = (src: string) => {
+    setModalImageSrc(src);
+    setIsImageModalOpen(true);
+  };
+
+  const closeImageModal = () => {
+    setIsImageModalOpen(false);
+    setModalImageSrc('');
+  };
+
   if (field.type === FieldType.HEADER) {
       const headerValidation = field.validation as any;
       const headerSize = headerValidation?.size || 'DEFAULT';
       const headerAlignment = headerValidation?.alignment || 'LEFT';
       const headerSubheading = field.placeholder || '';
+      const headingImage = headerValidation?.headingImage || '';
+      const imagePosition = headerValidation?.imagePosition || 'CENTER';
+      const overlayOpacity = headerValidation?.overlayOpacity ?? 50;
       
       const getHeaderSizeClass = () => {
         switch (headerSize) {
@@ -28,30 +44,86 @@ export const PreviewHeaderField: React.FC<PreviewFieldProps> = ({ field }) => {
           default: return 'text-left';
         }
       };
+
+      const hasBackgroundImage = headingImage && headingImage.startsWith('http') && imagePosition === 'BACKGROUND';
       
       return (
-        <div className="mb-6">
-          <h2 className={`${getHeaderSizeClass()} font-bold text-black ${getHeaderAlignmentClass()}`}>
-            {field.label || 'Heading'}
-          </h2>
-          {headerSubheading && (
-            <p className={`text-sm text-gray-600 mt-2 ${getHeaderAlignmentClass()}`}>
-              {headerSubheading}
-            </p>
-          )}
-           {(field.validation as any)?.headingImage && (
-              <div className={`mt-4 ${
-                headerAlignment === 'CENTER' ? 'flex justify-center' : 
-                headerAlignment === 'RIGHT' ? 'flex justify-end' : 'flex justify-start'
-              }`}>
+        <>
+          <div className={`mb-6 ${hasBackgroundImage ? 'relative rounded-xl overflow-hidden min-h-80 group cursor-pointer' : ''}`}>
+            {hasBackgroundImage && (
+              <>
                 <img 
-                  src={(field.validation as any).headingImage} 
-                  alt="Heading" 
-                  className="max-w-full h-auto rounded-lg max-h-96 object-contain"
+                  src={headingImage} 
+                  alt="" 
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  onClick={() => openImageModal(headingImage)}
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = 'none';
+                  }}
                 />
-              </div>
+                <div 
+                  className="absolute inset-0 transition-opacity duration-300" 
+                  style={{ backgroundColor: `rgba(0, 0, 0, ${overlayOpacity / 100})` }}
+                />
+                <div 
+                  className="absolute top-4 right-4 z-20 bg-white/20 backdrop-blur-sm rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer hover:bg-white/30"
+                  onClick={() => openImageModal(headingImage)}
+                >
+                  <ZoomIn className="w-5 h-5 text-white" />
+                </div>
+              </>
             )}
-        </div>
+            <div className={hasBackgroundImage ? `relative z-10 p-8 flex flex-col justify-center h-full min-h-80 ${
+              headerAlignment === 'CENTER' ? 'items-center' : 
+              headerAlignment === 'RIGHT' ? 'items-end' : 'items-start'
+            }` : ''}>
+              <h2 className={`${getHeaderSizeClass()} font-bold ${hasBackgroundImage ? 'text-white' : 'bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent'} ${getHeaderAlignmentClass()} leading-tight tracking-tight pb-1`}>
+                {field.label || 'Heading'}
+              </h2>
+              {headerSubheading && (
+                <p className={`text-base mt-3 ${hasBackgroundImage ? 'text-white/90' : 'text-gray-600'} ${getHeaderAlignmentClass()}`}>
+                  {headerSubheading}
+                </p>
+              )}
+              {headingImage && headingImage.startsWith('http') && imagePosition !== 'BACKGROUND' && (
+                <div className={`mt-6 ${
+                  imagePosition === 'CENTER' ? 'flex justify-center' : 
+                  imagePosition === 'RIGHT' ? 'flex justify-end' : 'flex justify-start'
+                }`}>
+                  <img 
+                    src={headingImage} 
+                    alt="Heading" 
+                    className="max-w-full h-auto rounded-xl shadow-lg object-contain cursor-pointer hover:opacity-90 transition-opacity"
+                    onClick={() => openImageModal(headingImage)}
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none';
+                    }}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+
+          {isImageModalOpen && (
+            <div 
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
+              onClick={closeImageModal}
+            >
+              <button 
+                className="absolute top-4 right-4 bg-white/20 hover:bg-white/30 rounded-full p-2 transition-colors"
+                onClick={closeImageModal}
+              >
+                <X className="w-6 h-6 text-white" />
+              </button>
+              <img 
+                src={modalImageSrc} 
+                alt="Enlarged" 
+                className="max-w-[90vw] max-h-[90vh] object-contain rounded-lg shadow-2xl"
+                onClick={(e) => e.stopPropagation()}
+              />
+            </div>
+          )}
+        </>
       );
   }
 

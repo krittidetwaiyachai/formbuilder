@@ -1,3 +1,4 @@
+
 import { ReactNode, useState } from 'react';
 import { RotateCcw } from 'lucide-react';
 
@@ -11,258 +12,109 @@ interface DeviceFrameProps {
 export default function DeviceFrame({ device, children }: DeviceFrameProps) {
   const [orientation, setOrientation] = useState<'portrait' | 'landscape'>('portrait');
 
-  const deviceConfig: {
-    desktop: { width: string; maxWidth: string; padding: string };
-    tablet: { portrait: { width: string; height: string; maxWidth: string; padding: string }; landscape: { width: string; height: string; maxWidth: string; padding: string } };
-    mobile: { portrait: { width: string; height: string; maxWidth: string; padding: string }; landscape: { width: string; height: string; maxWidth: string; padding: string } };
-  } = {
-    desktop: {
-      width: '100%',
-      maxWidth: '720px',
-      padding: 'p-4',
+  // Realistic device dimensions (based on common viewports)
+  // Mobile: iPhone 14 Pro (393x852)
+  // Tablet: iPad Air (820x1180) - Scaled down for viewing
+  const dimensions = {
+    mobile: {
+      portrait: { width: 393, height: 852 },
+      landscape: { width: 852, height: 393 }
     },
     tablet: {
-      portrait: {
-        width: '480px',
-        height: '640px',
-        maxWidth: '480px',
-        padding: 'p-4',
-      },
-      landscape: {
-        width: '640px',
-        height: '480px',
-        maxWidth: '640px',
-        padding: 'p-4',
-      },
-    },
-    mobile: {
-      portrait: {
-        width: '430px',
-        height: '932px',
-        maxWidth: '430px',
-        padding: 'p-5',
-      },
-      landscape: {
-        width: '932px',
-        height: '430px',
-        maxWidth: '932px',
-        padding: 'p-5',
-      },
-    },
-  };
-
-  const getConfig = () => {
-    if (device === 'desktop') {
-      return deviceConfig.desktop;
+      portrait: { width: 820, height: 1180 },
+      landscape: { width: 1180, height: 820 }
     }
-    return deviceConfig[device][orientation];
   };
 
-  const config = getConfig();
-  const isMobileOrTablet = device === 'tablet' || device === 'mobile';
-  const deviceConfigValue = isMobileOrTablet ? (config as any) : config;
+  const getDeviceStyle = () => {
+    if (device === 'desktop') return {};
+    
+    const dim = dimensions[device][orientation];
+    
+    // Scale down to fit in view if needed, but keep internal resolution correct
+    // Mobile usually fits, Tablet needs scaling
+    let scale = 1;
+    if (device === 'tablet') {
+        scale = 0.6; // Scale down tablet to fit on most screens
+    } else if (device === 'mobile') {
+        scale = 0.85; // Slight scale for mobile to fit comfortablt
+    }
 
-  // Render desktop browser frame - Using actual image frame
+    return {
+       width: dim.width,
+       height: dim.height,
+       transform: `scale(${scale})`,
+       transformOrigin: 'top center',
+       marginBottom: `-${dim.height * (1 - scale)}px` // Negative margin to reclaim space lost by scaling
+    };
+  };
+
+
+
+  // Render desktop browser frame
   if (device === 'desktop') {
-    // ใช้รูปภาพจริง - วางไฟล์รูปภาพใน frontend/public/desktop-frame.png
-    const desktopFrameImage = '/desktop-frame.png';
-
     return (
-      <div className="flex justify-center items-start bg-transparent p-4 sm:p-8 py-8">
-        {/* Frame Container - ใช้รูปภาพจริง */}
-        <div
-          className="relative"
-          style={{
-            width: config.width,
-            maxWidth: config.maxWidth,
-            height: '600px', // กำหนด height ให้ชัดเจน
-            filter: 'drop-shadow(0 20px 40px rgba(0, 0, 0, 0.3))',
-          }}
-        >
-          {/* Screen Area - พื้นที่แสดงเนื้อหา (transparent ในรูปภาพ) */}
-          <div
-            className="absolute overflow-hidden bg-white"
-            style={{
-              width: '92%',
-              height: '82%',
-              top: '9%',
-              left: '4%',
-              zIndex: 1,
-            }}
-          >
-            {/* Screen Content */}
-            <div className="bg-white w-full h-full overflow-y-auto relative">
-              {/* Content Padding */}
-              <div className={config.padding}>{children}</div>
-            </div>
-          </div>
-
-          {/* รูปภาพกรอบ desktop - อยู่ด้านบนสุด */}
-          <img 
-            src={desktopFrameImage}
-            alt="Desktop frame"
-            className="absolute inset-0 pointer-events-none"
-            style={{ 
-              zIndex: 10,
-              width: '100%',
-              height: '100%',
-              objectFit: 'contain',
-            }}
-          />
-        </div>
-      </div>
-    );
-  }
-
-  // Render tablet frame - Using actual image frame
-  if (device === 'tablet') {
-    const isLandscape = orientation === 'landscape';
-    const frameWidth = isLandscape ? '650px' : '500px';
-    const frameHeight = isLandscape ? '500px' : '650px';
-    // ลดขนาดหน้าจอให้เล็กลงเพื่อไม่ให้เกินกรอบรูป
-    const screenWidth = isLandscape ? '600px' : '450px';
-    const screenHeight = isLandscape ? '450px' : '600px';
-
-    // ใช้รูปภาพจริง - วางไฟล์รูปภาพใน frontend/public/tablet-frame.png
-    const tabletFrameImage = '/tablet-frame.png'; // หรือใช้ phone-frame.png ถ้ายังไม่มีรูป tablet
-
-    return (
-      <div className="flex flex-col items-center bg-transparent p-4 sm:p-8 py-8">
-        {/* Rotate Button - Above device */}
-        <button
-          onClick={() => setOrientation(prev => prev === 'portrait' ? 'landscape' : 'portrait')}
-          className="mb-4 bg-white shadow-lg hover:bg-gray-50 transition-all duration-200 h-10 w-10 rounded-md border border-gray-300 flex items-center justify-center"
-          title={`Switch to ${orientation === 'portrait' ? 'landscape' : 'portrait'} mode`}
-        >
-          <RotateCcw className="h-5 w-5" />
-        </button>
-        
-        {/* Frame Container - ใช้รูปภาพจริง */}
-        <div
-          className="relative"
-          style={{
-            width: frameWidth,
-            height: frameHeight,
-            filter: 'drop-shadow(0 20px 40px rgba(0, 0, 0, 0.3))',
-          }}
-        >
-          {/* Screen Area - พื้นที่แสดงเนื้อหา (transparent ในรูปภาพ) */}
-          <div
-            className="absolute overflow-hidden bg-white"
-            style={{
-              width: screenWidth,
-              height: screenHeight,
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              zIndex: 1,
-              borderRadius: '2rem',
-            }}
-          >
-            {/* Screen Content */}
-            <div className="bg-white w-full h-full overflow-y-auto relative" style={{ borderRadius: 'inherit' }}>
-              {/* Content Padding */}
-              <div className={deviceConfigValue.padding}>{children}</div>
-            </div>
-          </div>
-
-          {/* รูปภาพกรอบ tablet - อยู่ด้านหน้า (เพื่อให้กรอบทับเนื้อหา) */}
-          <img 
-            src={tabletFrameImage}
-            alt="Tablet frame"
-            className="absolute inset-0 pointer-events-none"
-            style={{ 
-              zIndex: 10,
-              width: '100%',
-              height: '100%',
-              objectFit: 'contain',
-              transform: !isLandscape 
-                ? 'rotate(90deg) scale(1.3)' 
-                : 'scale(1.0)',
-              transformOrigin: 'center center',
-            }}
-          />
-        </div>
-      </div>
-    );
-  }
-
-  // Render mobile frame - Using actual image frame
-  if (device === 'mobile') {
-    const isLandscape = orientation === 'landscape';
-    // Reduced size: ~50% of original iPhone 17 Pro Max dimensions
-    const frameWidth = isLandscape ? '475px' : '220px';
-    const frameHeight = isLandscape ? '220px' : '475px';
-    // ปรับขนาดหน้าจอให้เล็กลงเพื่อไม่ให้เกินกรอบโทรศัพท์
-    const screenWidth = isLandscape ? '442px' : '204px';
-    const screenHeight = isLandscape ? '204px' : '442px';
-
-    // ใช้รูปภาพจริง - วางไฟล์รูปภาพใน frontend/public/phone-frame.png
-    const phoneFrameImage = '/phone-frame.png';
-
-    return (
-      <div className="flex flex-col items-center bg-transparent p-4 sm:p-8 py-8">
-        {/* Rotate Button - Above device */}
-        <button
-          onClick={() => setOrientation(prev => prev === 'portrait' ? 'landscape' : 'portrait')}
-          className="mb-4 bg-white shadow-lg hover:bg-gray-50 transition-all duration-200 h-10 w-10 rounded-md border border-gray-300 flex items-center justify-center"
-          title={`Switch to ${orientation === 'portrait' ? 'landscape' : 'portrait'} mode`}
-        >
-          <RotateCcw className="h-5 w-5" />
-        </button>
-        
-        {/* Frame Container - ใช้รูปภาพจริง */}
-        <div
-          className="relative"
-          style={{
-            width: frameWidth,
-            height: frameHeight,
-            filter: 'drop-shadow(0 20px 40px rgba(0, 0, 0, 0.3))',
-          }}
-        >
-          {/* Screen Area - พื้นที่แสดงเนื้อหา (transparent ในรูปภาพ) */}
-          <div
-            className="absolute overflow-hidden bg-white"
-            style={{
-              width: screenWidth,
-              height: screenHeight,
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              zIndex: 1,
-              borderRadius: '2.5rem',
-            }}
-          >
-            {/* Screen Content */}
-            <div className="bg-white w-full h-full overflow-y-auto relative" style={{ borderRadius: 'inherit' }}>
-              {/* Content Padding */}
-              <div className={`${deviceConfigValue.padding} ${isLandscape && device === 'mobile' ? 'pt-12 pl-14' : ''}`}>
-                {children}
+      <div className="flex justify-center items-start bg-transparent p-4 sm:p-8 py-8 w-full">
+        <div className="w-full max-w-5xl bg-white rounded-lg shadow-2xl overflow-hidden border border-gray-200">
+           {/* Browser Header Mockup */}
+           <div className="bg-gray-100 border-b border-gray-200 p-3 flex items-center gap-2">
+              <div className="flex gap-1.5">
+                  <div className="w-3 h-3 rounded-full bg-red-400"></div>
+                  <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
+                  <div className="w-3 h-3 rounded-full bg-green-400"></div>
               </div>
-            </div>
-          </div>
-
-          {/* รูปภาพกรอบโทรศัพท์ - อยู่ด้านหน้า (เพื่อให้กรอบทับเนื้อหา) */}
-          <img 
-            src={phoneFrameImage}
-            alt="Phone frame"
-            className="absolute inset-0 pointer-events-none"
-            style={{ 
-              zIndex: 10,
-              width: '100%',
-              height: '100%',
-              objectFit: 'contain',
-              transform: isLandscape 
-                ? 'rotate(-90deg) scale(2.05)' 
-                : 'none',
-              transformOrigin: 'center center',
-            }}
-          />
+              <div className="flex-1 bg-white rounded-md h-6 mx-4 border border-gray-200"></div>
+           </div>
+           
+           {/* Content */}
+           <div className="h-[800px] overflow-y-auto bg-white relative">
+              {children}
+           </div>
         </div>
       </div>
     );
   }
 
-  return null;
+  // Common wrapper for tablet/mobile
+  return (
+    <div className="flex flex-col items-center justify-center bg-transparent p-8 w-full h-full">
+       <button
+          onClick={() => setOrientation(prev => prev === 'portrait' ? 'landscape' : 'portrait')}
+          className="mb-4 bg-white shadow-md hover:bg-gray-50 transition-all duration-200 h-10 px-4 rounded-full border border-gray-200 flex items-center gap-2 text-sm font-medium z-10"
+        >
+          <RotateCcw className="h-4 w-4" />
+          <span>Rotate</span>
+        </button>
+
+        <div 
+          className="relative transition-all duration-500 ease-in-out"
+          style={getDeviceStyle()}
+        >
+            {/* Device Bezel */}
+            <div 
+              className={`absolute inset-0 bg-gray-900 shadow-2xl pointer-events-none custom-device-shadow ${device === 'mobile' ? 'rounded-[3rem]' : 'rounded-[2rem]'}`}
+              style={{
+                 // Add specific styles if needed
+              }}
+            >
+               {/* Camera Notch/Island simulation would go here if detailed */}
+            </div>
+
+            {/* Screen Area */}
+            <div 
+               className={`absolute bg-white overflow-hidden ${device === 'mobile' ? 'rounded-[2.5rem] top-[6px] bottom-[6px] left-[6px] right-[6px]' : 'rounded-[1.5rem] top-[12px] bottom-[12px] left-[12px] right-[12px]'}`}
+            >
+               <div className="w-full h-full overflow-hidden select-none">
+                  {children}
+               </div>
+            </div>
+            
+            {/* Home Bar (iOS style) */}
+            {device === 'mobile' && (
+                <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 w-1/3 h-1.5 bg-gray-950/20 rounded-full pointer-events-none z-20 mix-blend-multiply"></div>
+            )}
+        </div>
+    </div>
+  );
 }
 

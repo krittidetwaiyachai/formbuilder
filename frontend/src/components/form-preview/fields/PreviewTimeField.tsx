@@ -81,6 +81,9 @@ export const PreviewTimeField: React.FC<PreviewFieldProps> = ({ field, register,
           {field.label}
           {field.required && <span className="text-red-500 ml-1">*</span>}
         </label>
+        {options.subLabel && options.subLabel !== 'Sublabel' && (
+            <p className="mt-1 text-xs text-gray-500">{options.subLabel}</p>
+        )}
       </div>
 
       <div className={`flex-1 min-w-0`} title={hoverText}>

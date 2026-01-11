@@ -460,6 +460,7 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
                       <DesignerElementCard
                         element={draggedElement}
                         isSelected={false}
+                        isOverlay={true}
                       />
                     </div>
                   );

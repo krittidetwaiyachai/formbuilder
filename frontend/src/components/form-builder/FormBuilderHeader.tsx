@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Check, X, Edit2, Undo2, Redo2, Eye, Send } from 'lucide-react';
+import { ArrowLeft, Check, X, Edit2, Undo2, Redo2, Eye, Share2, Copy, ExternalLink, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { Form } from '@/types';
+import { Form, FormStatus } from '@/types';
 import { useFormStore } from '@/store/formStore';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import CollaboratorListModal from '@/components/dashboard/CollaboratorListModal';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/custom-select';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import QRCode from 'react-qr-code';
 
 interface FormBuilderHeaderProps {
   currentForm: Form | null;
@@ -26,6 +32,28 @@ export default function FormBuilderHeader({
   
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [titleValue, setTitleValue] = useState('');
+  const [isShareOpen, setIsShareOpen] = useState(false);
+  const [isCollaboratorModalOpen, setIsCollaboratorModalOpen] = useState(false);
+
+  const titleEditRef = React.useRef<HTMLDivElement>(null);
+
+
+
+  // Handle click outside to cancel editing
+  useEffect(() => {
+    if (isEditingTitle) {
+      const handleClickOutside = (event: MouseEvent) => {
+        if (titleEditRef.current && !titleEditRef.current.contains(event.target as Node)) {
+          handleTitleCancel();
+        }
+      };
+
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }
+  }, [isEditingTitle]);
 
   // Sync title value when form updates
   useEffect(() => {
@@ -64,7 +92,10 @@ export default function FormBuilderHeader({
           </button>
           <div className="flex items-center gap-2">
             {isEditingTitle ? (
-              <div className="flex items-center gap-2">
+              <div 
+                  ref={titleEditRef}
+                  className="flex items-center gap-2"
+              >
                 <input
                   type="text"
                   value={titleValue}
@@ -138,12 +169,103 @@ export default function FormBuilderHeader({
               </span>
             ) : lastSaved ? (
               <span className="text-gray-500 flex items-center">
-                All changes saved at {lastSaved.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit', hour12: false })} น.
+                All changes saved at {lastSaved.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: false })}
                 <div className="ml-1.5 p-0.5 rounded-full bg-green-100">
                    <Check className="h-3 w-3 text-green-600" />
                 </div>
               </span>
-            ) : null}
+            ) : currentForm?.updatedAt ? (
+              <span className="text-gray-500 flex items-center">
+                Last saved at {new Date(currentForm.updatedAt).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: false })}
+                <div className="ml-1.5 p-0.5 rounded-full bg-green-100">
+                   <Check className="h-3 w-3 text-green-600" />
+                </div>
+              </span>
+            ) : (
+              <span className="text-gray-400 flex items-center">
+                Not saved yet
+              </span>
+            )}
+          </div>
+
+          <div className="w-px h-4 bg-gray-300 mx-1" />
+
+          {/* Status Dropdown */}
+          <div className="mr-2 w-32">
+            <Select 
+                value={currentForm?.status || 'DRAFT'} 
+                onValueChange={(value) => updateForm({ status: value as FormStatus })}
+            >
+                <SelectTrigger className="h-8 text-xs font-semibold bg-gray-100 border-none hover:bg-gray-200 focus:ring-0 focus:ring-offset-0">
+                    <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                    {[
+                        { label: 'DRAFT', value: FormStatus.DRAFT },
+                        { label: 'PUBLISHED', value: FormStatus.PUBLISHED },
+                        { label: 'ARCHIVED', value: FormStatus.ARCHIVED }
+                    ].map((status) => (
+                        <SelectItem key={status.value} value={status.value} className="text-xs font-medium">
+                            {status.label}
+                        </SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
+          </div>
+
+          <div className="w-px h-4 bg-gray-300 mx-1" />
+
+          {/* Collaborators Section */}
+          <div className="flex items-center gap-2 mr-2">
+            <div className="flex items-center -space-x-2">
+              {/* Owner Avatar */}
+              {currentForm?.createdBy && (
+                <div 
+                  className="relative w-8 h-8 rounded-full border-2 border-white bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-xs font-semibold shadow-sm hover:z-10 transition-all hover:scale-110"
+                  title={`${currentForm.createdBy.firstName || ''} ${currentForm.createdBy.lastName || ''} (Owner)`.trim() || currentForm.createdBy.email}
+                >
+                  {currentForm.createdBy.photoUrl ? (
+                    <img src={currentForm.createdBy.photoUrl} alt="" className="w-full h-full rounded-full object-cover" />
+                  ) : (
+                    <span>{(currentForm.createdBy.firstName?.[0] || currentForm.createdBy.email?.[0] || '?').toUpperCase()}</span>
+                  )}
+                </div>
+              )}
+              
+              {/* Collaborator Avatars (max 3) */}
+              {(currentForm?.collaborators || []).slice(0, 3).map((collaborator: any) => (
+                <div 
+                  key={collaborator.id}
+                  className="relative w-8 h-8 rounded-full border-2 border-white bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white text-xs font-semibold shadow-sm hover:z-10 transition-all hover:scale-110"
+                  title={`${collaborator.firstName || ''} ${collaborator.lastName || ''}`.trim() || collaborator.email}
+                >
+                  {collaborator.photoUrl ? (
+                    <img src={collaborator.photoUrl} alt="" className="w-full h-full rounded-full object-cover" />
+                  ) : (
+                    <span>{(collaborator.firstName?.[0] || collaborator.email?.[0] || '?').toUpperCase()}</span>
+                  )}
+                </div>
+              ))}
+
+              {/* More Collaborators Count Badge */}
+              {(currentForm?.collaborators || []).length > 3 && (
+                <div 
+                  className="relative w-8 h-8 rounded-full border-2 border-white bg-gray-300 flex items-center justify-center text-gray-700 text-xs font-bold shadow-sm"
+                  title={`+${(currentForm?.collaborators || []).length - 3} more`}
+                >
+                  +{(currentForm?.collaborators || []).length - 3}
+                </div>
+              )}
+            </div>
+
+            {/* Add Collaborator Button */}
+            <button
+              onClick={() => setIsCollaboratorModalOpen(true)}
+              className="w-8 h-8 rounded-full border-2 border-dashed border-gray-300 hover:border-black flex items-center justify-center text-gray-400 hover:text-black transition-all hover:bg-gray-50"
+              title="Invite collaborators"
+            >
+              <Plus className="h-4 w-4" />
+            </button>
           </div>
 
           <div className="w-px h-4 bg-gray-300 mx-1" />
@@ -174,12 +296,92 @@ export default function FormBuilderHeader({
             Preview
           </button>
           <button
-            onClick={() => handleSave(false)}
+            onClick={() => {
+                handleSave(true);
+                setIsShareOpen(true);
+            }}
             className="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800"
           >
-            <Send className="h-3.5 w-3.5 mr-1.5" />
-            Publish
+            <Share2 className="h-3.5 w-3.5 mr-1.5" />
+            Share
           </button>
+
+          <Dialog open={isShareOpen} onOpenChange={setIsShareOpen}>
+            <DialogContent className="sm:max-w-md bg-white">
+              <button
+                className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
+                onClick={() => setIsShareOpen(false)}
+              >
+                <X className="h-4 w-4" />
+                <span className="sr-only">Close</span>
+              </button>
+              <DialogHeader>
+                <DialogTitle>Share Form</DialogTitle>
+                <DialogDescription>
+                  Anyone with the link can view and submit this form.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="flex items-center space-x-2">
+                <div className="grid flex-1 gap-2">
+                  <Input
+                    readOnly
+                    value={`${window.location.origin}/forms/${currentForm?.id}/view`}
+                    className="h-9"
+                  />
+                </div>
+                <Button 
+                   type="button"
+                   variant="outline"
+                   size="sm"
+                   className="px-3"
+                   onClick={() => window.open(`${window.location.origin}/forms/${currentForm?.id}/view`, '_blank')}
+                   title="Open in new tab"
+                >
+                   <ExternalLink className="h-4 w-4" />
+                </Button>
+                <Button 
+                    type="submit" 
+                    size="sm" 
+                    className="px-3" 
+                    onClick={() => {
+                        navigator.clipboard.writeText(`${window.location.origin}/forms/${currentForm?.id}/view`);
+                        // Could add toast here
+                    }}
+                >
+                  <span className="sr-only">Copy</span>
+                  <Copy className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="flex justify-center py-6">
+                <div className="bg-white p-4 rounded-xl border-2 border-dashed border-gray-200">
+                    <QRCode
+                        value={`${window.location.origin}/forms/${currentForm?.id}/view`}
+                        size={200}
+                        style={{ height: "auto", maxWidth: "100%", width: "100%" }}
+                        viewBox={`0 0 256 256`}
+                    />
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+
+          {/* Collaborator Modal */}
+          {currentForm && (
+            <CollaboratorListModal
+              isOpen={isCollaboratorModalOpen}
+              onClose={() => setIsCollaboratorModalOpen(false)}
+              formId={currentForm.id}
+              formTitle={currentForm.title}
+              collaborators={[
+                ...(currentForm.createdBy ? [currentForm.createdBy] : []),
+                ...(currentForm.collaborators || [])
+              ]}
+              onUpdate={() => {
+                // Optionally trigger a refresh of form data here
+                // For now, collaborators will be updated on next page load
+              }}
+            />
+          )}
         </div>
       </div>
     </div>
