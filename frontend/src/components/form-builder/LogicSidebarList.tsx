@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { useFormStore } from '@/store/formStore';
 import { Edit2, Check, GitBranch, X, Trash2, ChevronDown } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { useTranslation } from 'react-i18next';
 
 export default function LogicSidebarList() {
+  const { t } = useTranslation();
   const { currentForm, updateLogicRule, deleteLogicRule, focusedLogicRuleId, setFocusedLogicRuleId } = useFormStore();
   const logicRules = currentForm?.logicRules || [];
   
@@ -29,8 +31,8 @@ export default function LogicSidebarList() {
     return (
       <div className="flex flex-col items-center justify-center h-full text-center p-4 text-gray-500">
         <GitBranch className="h-8 w-8 mb-2 opacity-50" />
-        <p className="text-sm font-medium">No Conditions Yet</p>
-        <p className="text-xs mt-1">Create conditions in the Logic canvas</p>
+        <p className="text-sm font-medium">{t('builder.logic.no_conditions')}</p>
+        <p className="text-xs mt-1">{t('builder.logic.sidebar_subtitle')}</p>
       </div>
     );
   }
@@ -38,9 +40,9 @@ export default function LogicSidebarList() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-gray-900">All Conditions</h3>
+        <h3 className="text-sm font-semibold text-gray-900">{t('builder.logic.sidebar_title')}</h3>
         <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-          {logicRules.length} rules
+          {logicRules.length} {t('builder.logic.rules_count_label')}
         </span>
       </div>
 
@@ -110,16 +112,16 @@ export default function LogicSidebarList() {
 
                 <div className="flex items-center gap-2">
                     <div className="flex items-center gap-2 text-xs text-gray-400 mr-1">
-                        <span>{conditionCount} IF</span>
+                        <span>{conditionCount} {t('builder.logic.if').toUpperCase()}</span>
                         <span>•</span>
-                        <span>{actionCount} THEN</span>
+                        <span>{actionCount} {t('builder.logic.then').toUpperCase()}</span>
                     </div>
 
                     {/* Delete Button */}
                     <button
                         onClick={(e) => {
                             e.stopPropagation();
-                            if (window.confirm('Are you sure you want to delete this rule?')) {
+                            if (window.confirm(t('builder.logic.delete_confirm'))) {
                                 deleteLogicRule(rule.id);
                             }
                         }}
@@ -141,13 +143,13 @@ export default function LogicSidebarList() {
                   <div className="pt-2 space-y-3">
                     {/* Conditions */}
                     <div>
-                        <div className="text-[10px] font-semibold text-gray-400 mb-1 uppercase tracking-wider">Conditions ({rule.logicType})</div>
+                        <div className="text-[10px] font-semibold text-gray-400 mb-1 uppercase tracking-wider">{t('builder.logic.conditions')} ({rule.logicType})</div>
                         <div className="space-y-1">
                             {rule.conditions.map((cond) => (
                                 <div key={cond.id} className="text-xs text-gray-600 bg-gray-50 rounded p-1.5 flex flex-wrap gap-1 items-center">
-                                    <span className="font-medium text-purple-600">IF</span>
+                                    <span className="font-medium text-purple-600">{t('builder.logic.if').toUpperCase()}</span>
                                     <span>{getFieldLabel(cond.fieldId)}</span>
-                                    <span className="text-gray-400">{cond.operator.toLowerCase().replace('_', ' ')}</span>
+                                    <span className="text-gray-400">{t(`builder.logic.op.${cond.operator.toLowerCase()}`)}</span>
                                     <span className="font-medium">"{cond.value}"</span>
                                 </div>
                             ))}
@@ -156,12 +158,12 @@ export default function LogicSidebarList() {
 
                     {/* Actions */}
                     <div>
-                        <div className="text-[10px] font-semibold text-gray-400 mb-1 uppercase tracking-wider">Actions</div>
+                        <div className="text-[10px] font-semibold text-gray-400 mb-1 uppercase tracking-wider">{t('builder.logic.actions')}</div>
                         <div className="space-y-1">
                             {rule.actions.map((action) => (
                                 <div key={action.id} className="text-xs text-gray-600 bg-gray-50 rounded p-1.5 flex flex-wrap gap-1 items-center">
                                     <span className={`font-medium ${action.type === 'show' ? 'text-green-600' : 'text-red-500'}`}>
-                                        {action.type.toUpperCase()}
+                                        {t(`builder.logic.action.${action.type.toLowerCase()}`).toUpperCase()}
                                     </span>
                                     <span>{getFieldLabel(action.fieldId)}</span>
                                 </div>
@@ -178,7 +180,7 @@ export default function LogicSidebarList() {
 
       <div className="pt-2 border-t border-gray-100">
         <p className="text-xs text-gray-400 text-center">
-          Click a rule to expand details
+          {t('builder.logic.click_expand')}
         </p>
       </div>
     </div>

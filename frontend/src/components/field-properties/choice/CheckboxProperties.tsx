@@ -1,8 +1,11 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Field } from '@/types';
 import { Copy } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup, SelectLabel } from '@/components/ui/custom-select';
+import { stripHtml } from '@/lib/ui/utils';
 import { parseOptions, formatOptionsToText } from './utils';
+import { PropertiesTabs } from '../common/PropertiesTabs';
 
 interface CheckboxPropertiesProps {
   field: Field;
@@ -11,6 +14,7 @@ interface CheckboxPropertiesProps {
 }
 
 export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, updateField, duplicatesField }) => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'general' | 'options' | 'surveying' | 'advanced'>('general');
 
   // We will now prioritize `options` for all settings to be consistent with other fields.
@@ -54,32 +58,22 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
   return (
     <div className="space-y-4">
       {/* Tabs */}
-      <div className="flex items-center gap-0.5 mb-4 bg-gray-100 p-1 rounded-md">
-        {['general', 'options', 'surveying', 'advanced'].map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab as any)}
-            className={`flex-1 px-2 py-1.5 text-[10px] font-medium rounded-md transition-colors uppercase whitespace-nowrap ${
-              activeTab === tab
-                ? 'bg-white text-black shadow-sm'
-                : 'text-gray-600 hover:text-black'
-            }`}
-          >
-            {tab === 'surveying' ? 'SURVEY' : tab}
-          </button>
-        ))}
-      </div>
+      <PropertiesTabs 
+        activeTab={activeTab} 
+        setActiveTab={setActiveTab} 
+        tabs={['general', 'options', 'surveying', 'advanced']} 
+      />
 
       {activeTab === 'general' && (
         <div className="space-y-4">
            {/* Field Label */}
            <div>
               <label className="block text-sm font-medium text-black mb-1">
-                Field Label
+                {t('builder.properties.field_label')}
               </label>
               <input
                 type="text"
-                value={field.label}
+                value={stripHtml(field.label)}
                 onChange={(e) => handleUpdate({ label: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
               />
@@ -88,10 +82,10 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
             {/* Label Alignment */}
             <div>
               <label className="block text-sm font-medium text-black mb-2">
-                Label Alignment
+                {t('builder.properties.label_alignment')}
               </label>
               <div className="flex gap-2">
-                {(['LEFT', 'RIGHT', 'TOP'] as const).map((align) => (
+                {(['LEFT', 'CENTER', 'TOP'] as const).map((align) => (
                   <button
                     key={align}
                     onClick={() => handleOptionUpdate('labelAlignment', align)}
@@ -101,7 +95,7 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
                         : 'bg-white text-black border-gray-400 hover:bg-gray-50'
                     }`}
                   >
-                    {align}
+                    {align === 'LEFT' ? t('builder.properties.left') : align === 'CENTER' ? t('builder.properties.center') : t('builder.properties.top')}
                   </button>
                 ))}
               </div>
@@ -110,7 +104,7 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
             {/* Required */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                  Required
+                  {t('builder.properties.required')}
               </label>
                <label className="relative inline-flex items-center cursor-pointer">
                 <input
@@ -122,24 +116,24 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
                 <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
               </label>
                <p className="mt-1 text-xs text-gray-500">
-                Prevent submission if this field is empty
+                {t('builder.properties.required_desc')}
               </p>
             </div>
 
             {/* Sublabel */}
             <div>
               <label className="block text-sm font-medium text-black mb-1">
-                Sublabel
+                {t('builder.properties.sublabel')}
               </label>
               <input
                 type="text"
                 value={options.subLabel || ''}
                 onChange={(e) => handleOptionUpdate('subLabel', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
-                placeholder="Additional description..."
+                placeholder={t('builder.properties.sublabel_desc')}
               />
               <p className="mt-1 text-xs text-gray-500">
-                Description shown below the field
+                {t('builder.properties.sublabel_desc')}
               </p>
             </div>
 
@@ -158,7 +152,7 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
                className="w-full mt-4 px-3 py-2 text-sm font-medium text-black bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
              >
                <Copy className="h-4 w-4" />
-               DUPLICATE
+               {t('builder.properties.duplicate')}
              </button>
         </div>
       )}
@@ -168,7 +162,7 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
             {/* Options List */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                 Options
+                 {t('builder.properties.options')}
                </label>
                <div className="border border-gray-400 rounded-md overflow-hidden bg-white">
                   <textarea
@@ -180,14 +174,14 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
                   />
                </div>
                <p className="mt-1 text-xs text-gray-500">
-                 Give options for users to select from. Enter each option on a new line.
+                 {t('builder.properties.options_desc')}
                </p>
             </div>
             
              {/* Predefined Options */}
              <div>
                 <label className="block text-sm font-medium text-black mb-1">
-                  Predefined Options
+                  {t('builder.properties.predefined_options')}
                 </label>
                 <Select 
                     onValueChange={(value) => {
@@ -224,7 +218,7 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
                     }}
                 >
                     <SelectTrigger className="w-full bg-white border-gray-400">
-                        <SelectValue placeholder="Select predefined list..." />
+                        <SelectValue placeholder={t('builder.properties.select_predefined')} />
                     </SelectTrigger>
                     <SelectContent>
                         <SelectGroup>
@@ -251,14 +245,14 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
                     </SelectContent>
                 </Select>
                 <p className="mt-1 text-xs text-gray-500">
-                  Select to replace current options with a predefined list
+                  {t('builder.properties.predefined_desc')}
                 </p>
             </div>
 
             {/* Calculation Values */}
              <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Calculation Values
+                {t('builder.properties.calculation_values')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -270,14 +264,14 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
                 </label>
                  <p className="mt-1 text-xs text-gray-500">
-                  Add values to be used in calculations
+                  {t('builder.properties.calculation_values_desc')}
                 </p>
             </div>
 
             {/* Display Other Option */}
              <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Display Other Option
+                {t('builder.properties.display_other_option')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -289,14 +283,14 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
                 </label>
                  <p className="mt-1 text-xs text-gray-500">
-                  Allow users to enter text when their selection is not available.
+                  {t('builder.properties.display_other_option_desc')}
                 </p>
             </div>
 
              {/* Spread to Columns */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Spread to Columns
+                {t('builder.properties.spread_to_columns')}
                </label>
                <div className="flex items-center gap-3">
                  <label className="relative inline-flex items-center cursor-pointer">
@@ -310,16 +304,16 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
                  </label>
                  {options.spreadToColumns && (
                    <span className="text-xs font-bold px-2 py-1 bg-gray-200 rounded text-gray-600">
-                        FIXED WIDTH
+                        {t('builder.properties.fixed_width')}
                    </span>
                  )}
                </div>
                  <p className="mt-1 text-xs text-gray-500">
-                  Spread options side by side into specified number of columns.
+                  {t('builder.properties.spread_to_columns_desc')}
                 </p>
                  {options.spreadToColumns && (
                      <div className="mt-2">
-                        <label className="block text-xs font-medium text-gray-700 mb-1">Column Count</label>
+                        <label className="block text-xs font-medium text-gray-700 mb-1">{t('builder.properties.column_count')}</label>
                         <input
                             type="number"
                             value={options.columns || 2}
@@ -339,7 +333,7 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
                {/* Entry Limits */}
                 <div>
                    <label className="block text-sm font-medium text-black mb-1">
-                    Entry Limits
+                    {t('builder.properties.entry_limits')}
                    </label>
                    <label className="relative inline-flex items-center cursor-pointer">
                       <input
@@ -351,12 +345,12 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
                       <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
                     </label>
                    <p className="mt-1 text-xs text-gray-500">
-                    Limit the minimum or maximum number of selections allowed.
+                    {t('builder.properties.entry_limits_desc')}
                    </p>
                    {options.entryLimits && (
                        <div className="mt-4 flex gap-4">
                            <div>
-                                <label className="block text-xs font-medium text-gray-700 mb-1">Minimum</label>
+                                <label className="block text-xs font-medium text-gray-700 mb-1">{t('builder.properties.min_selections_label')}</label>
                                 <input
                                     type="number"
                                     value={options.minSelections || ''}
@@ -366,7 +360,7 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
                                 />
                            </div>
                            <div>
-                                <label className="block text-xs font-medium text-gray-700 mb-1">Maximum</label>
+                                <label className="block text-xs font-medium text-gray-700 mb-1">{t('builder.properties.max_selections_label')}</label>
                                 <input
                                     type="number"
                                     value={options.maxSelections || ''}
@@ -382,7 +376,7 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
                {/* Shuffle Options */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Shuffle Options
+                {t('builder.properties.shuffle_options')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -394,7 +388,7 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
                 </label>
                 <p className="mt-1 text-xs text-gray-500">
-                 Display options in random order.
+                 {t('builder.properties.random_order_desc')}
                </p>
             </div>
            </div>
@@ -405,17 +399,17 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
             {/* Selected by Default */}
             <div>
                 <label className="block text-sm font-medium text-black mb-1">
-                  Selected by Default
+                  {t('builder.properties.selected_by_default')}
                 </label>
                 <Select 
                     value={options.defaultValue || ''} 
                     onValueChange={(val) => handleOptionUpdate('defaultValue', val)}
                 >
                     <SelectTrigger className="w-full bg-white border-gray-400">
-                        <SelectValue placeholder="No Selection" />
+                        <SelectValue placeholder={t('builder.properties.no_selection')} />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="_no_selection_">No Selection</SelectItem>
+                        <SelectItem value="_no_selection_">{t('builder.properties.no_selection')}</SelectItem>
                         {optionsList.map((opt: any, idx: number) => (
                             <SelectItem key={idx} value={opt.value}>
                                 {opt.label || opt.value}
@@ -424,14 +418,14 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
                     </SelectContent>
                 </Select>
                  <p className="mt-1 text-xs text-gray-500">
-                 Choose an option to be selected by default.
+                 {t('builder.properties.selected_by_default_desc')}
                 </p>
             </div>
 
             {/* Hover Text */}
              <div>
               <label className="block text-sm font-medium text-black mb-1">
-                Hover Text
+                {t('builder.properties.hover_text')}
               </label>
               <textarea
                 value={options.hoverText || ''}
@@ -440,14 +434,14 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
                 className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
               />
               <p className="mt-1 text-xs text-gray-500">
-                Show a description when a user hovers over this field
+                {t('builder.properties.hover_text_desc')}
               </p>
             </div>
 
              {/* Read Only */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Read Only
+                {t('builder.properties.read_only')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -459,14 +453,14 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
                 </label>
                <p className="mt-1 text-xs text-gray-500">
-                Prevent entry in this field
+                {t('builder.properties.read_only_desc')}
               </p>
             </div>
 
              {/* Shrink */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Shrink
+                {t('builder.properties.shrink')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -478,14 +472,14 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
                 </label>
                <p className="mt-1 text-xs text-gray-500">
-                Make field smaller
+                {t('builder.properties.shrink_desc')}
               </p>
             </div>
             
-            {/* Hide field */}
+             {/* Hide field */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Hide field
+                {t('builder.properties.hide_field')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -497,7 +491,7 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
                 </label>
                  <p className="mt-1 text-xs text-gray-500">
-                  Hide this field from the form
+                  {t('builder.properties.hide_field_desc') || "Hide this field from the form"}
                 </p>
             </div>
         </div>

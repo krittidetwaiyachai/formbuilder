@@ -1,7 +1,10 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Field } from '@/types';
 import { Copy } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/custom-select';
+import { stripHtml } from '@/lib/ui/utils';
+import { PropertiesTabs } from '../common/PropertiesTabs';
 
 interface ShortTextPropertiesProps {
   field: Field;
@@ -10,6 +13,7 @@ interface ShortTextPropertiesProps {
 }
 
 export const ShortTextProperties = ({ field, updateField, duplicatesField }: ShortTextPropertiesProps) => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'general' | 'options' | 'advanced'>('general');
 
   // Helper to safely access options/validation with default values
@@ -40,21 +44,7 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
 
   return (
     <>
-      <div className="flex items-center gap-1 mb-4 bg-gray-100 p-1 rounded-md">
-        {['general', 'options', 'advanced'].map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab as any)}
-            className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-colors uppercase ${
-              activeTab === tab
-                ? 'bg-white text-black shadow-sm'
-                : 'text-gray-600 hover:text-black'
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
-      </div>
+      <PropertiesTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
       <div className="space-y-4">
         {/* GENERAL TAB */}
@@ -63,11 +53,11 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
             {/* Field Label */}
             <div>
               <label className="block text-sm font-medium text-black mb-1">
-                Field Label
+                {t('builder.properties.field_label')}
               </label>
               <input
                 type="text"
-                value={field.label}
+                value={stripHtml(field.label)}
                 onChange={(e) => handleUpdate({ label: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
               />
@@ -76,10 +66,10 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
             {/* Label Alignment */}
             <div>
               <label className="block text-sm font-medium text-black mb-2">
-                Label Alignment
+                {t('builder.properties.label_alignment')}
               </label>
               <div className="flex gap-2">
-                {(['LEFT', 'RIGHT', 'TOP'] as const).map((align) => (
+                {(['LEFT', 'CENTER', 'TOP'] as const).map((align) => (
                   <button
                     key={align}
                     onClick={() => handleOptionUpdate('labelAlignment', align)}
@@ -89,7 +79,7 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
                         : 'bg-white text-black border-gray-400 hover:bg-gray-50'
                     }`}
                   >
-                    {align}
+                    {t(`builder.properties.${align.toLowerCase()}`)}
                   </button>
                 ))}
               </div>
@@ -99,7 +89,7 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
             {/* Required */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                  Required
+                  {t('builder.properties.required')}
               </label>
                <label className="relative inline-flex items-center cursor-pointer">
                 <input
@@ -111,14 +101,14 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
                 <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
               </label>
                <p className="mt-1 text-xs text-gray-500">
-                Prevent submission if this field is empty
+                {t('builder.properties.required_desc')}
               </p>
             </div>
 
             {/* Sublabel */}
             <div>
               <label className="block text-sm font-medium text-black mb-1">
-                Sublabel
+                {t('builder.properties.sublabel')}
               </label>
               <input
                 type="text"
@@ -127,7 +117,7 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
                 className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
               />
               <p className="mt-1 text-xs text-gray-500">
-                Add a short description below the field
+                {t('builder.properties.sublabel_desc')}
               </p>
             </div>
 
@@ -146,7 +136,7 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
               className="w-full mt-4 px-3 py-2 text-sm font-medium text-black bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
             >
               <Copy className="h-4 w-4" />
-              DUPLICATE
+              {t('builder.properties.duplicate')}
             </button>
           </div>
         )}
@@ -157,7 +147,7 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
             {/* Width */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Width
+                {t('builder.properties.width')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -176,19 +166,19 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
                         value={options.customWidth || 300}
                         onChange={(e) => handleOptionUpdate('customWidth', parseInt(e.target.value))}
                         className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
-                        placeholder="Width in px"
+                        placeholder={t('builder.properties.width_px_placeholder')}
                     />
                  </div>
               )}
                <p className="mt-1 text-xs text-gray-500">
-                The width of this field will change according to your form's width.
+                {t('builder.properties.width_desc')}
               </p>
             </div>
 
              {/* Input Mask */}
              <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Input Mask
+                {t('builder.properties.input_mask')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -207,13 +197,12 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
                         value={validation.inputMask || ''}
                         onChange={(e) => handleValidationUpdate('inputMask', e.target.value)}
                         className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
-                        placeholder="e.g. (###) ###-####"
+                        placeholder={t('builder.properties.input_mask_placeholder')}
                     />
                  </div>
               )}
                <p className="mt-1 text-xs text-gray-500">
-                Restrict users to match the format you specify.<br/>
-                Use @ symbol to mask letters, # for numbers and * for both.
+                {t('builder.properties.input_mask_format_desc')}
               </p>
             </div>
           </div>
@@ -225,7 +214,7 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
             {/* Placeholder */}
              <div>
               <label className="block text-sm font-medium text-black mb-1">
-                Placeholder
+                {t('builder.properties.placeholder')}
               </label>
               <input
                 type="text"
@@ -234,14 +223,14 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
                 className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
               />
               <p className="mt-1 text-xs text-gray-500">
-                Add an example inside the field
+                {t('builder.properties.placeholder_desc')}
               </p>
             </div>
 
             {/* Hover Text */}
             <div>
               <label className="block text-sm font-medium text-black mb-1">
-                Hover Text
+                {t('builder.properties.hover_text')}
               </label>
               <textarea
                 value={options.hoverText || ''}
@@ -250,14 +239,14 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
                 className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
               />
               <p className="mt-1 text-xs text-gray-500">
-                Show a description when a user hovers over this field
+                {t('builder.properties.hover_text_desc')}
               </p>
             </div>
 
              {/* Default Value */}
              <div>
               <label className="block text-sm font-medium text-black mb-1">
-                Default Value
+                {t('builder.properties.default_value')}
               </label>
               <input
                 type="text"
@@ -266,41 +255,41 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
                 className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
               />
               <p className="mt-1 text-xs text-gray-500">
-                Pre-populate this field with a default value
+                {t('builder.properties.default_value_desc')}
               </p>
             </div>
 
             {/* Validation */}
              <div>
               <label className="block text-sm font-medium text-black mb-1">
-                Validation
+                {t('builder.properties.validation')}
               </label>
               <Select
                 value={validation.type || 'None'}
                 onValueChange={(val) => handleValidationUpdate('type', val)}
               >
                 <SelectTrigger className="w-full bg-white border-gray-400">
-                    <SelectValue placeholder="Select validation..." />
+                    <SelectValue placeholder={t('builder.properties.select_validation')} />
                 </SelectTrigger>
                 <SelectContent>
-                    <SelectItem value="None">None</SelectItem>
-                    <SelectItem value="Email">Email</SelectItem>
-                    <SelectItem value="URL">URL</SelectItem>
-                    <SelectItem value="Alphabetic">Alphabetic</SelectItem>
-                    <SelectItem value="Alphanumeric">Alphanumeric</SelectItem>
-                    <SelectItem value="Numeric">Numeric</SelectItem>
-                    <SelectItem value="Regex">Regex</SelectItem>
+                    <SelectItem value="None">{t('builder.properties.validation_none')}</SelectItem>
+                    <SelectItem value="Email">{t('builder.properties.validation_email')}</SelectItem>
+                    <SelectItem value="URL">{t('builder.properties.validation_url')}</SelectItem>
+                    <SelectItem value="Alphabetic">{t('builder.properties.validation_alphabetic')}</SelectItem>
+                    <SelectItem value="Alphanumeric">{t('builder.properties.validation_alphanumeric')}</SelectItem>
+                    <SelectItem value="Numeric">{t('builder.properties.validation_numeric')}</SelectItem>
+                    <SelectItem value="Regex">{t('builder.properties.validation_regex')}</SelectItem>
                 </SelectContent>
               </Select>
                <p className="mt-1 text-xs text-gray-500">
-                Require entries to match a certain format
+                {t('builder.properties.validation_desc')}
               </p>
             </div>
 
              {/* Character Limit */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Character Limit
+                {t('builder.properties.character_limit')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -319,19 +308,19 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
                         value={validation.maxLength || 100}
                         onChange={(e) => handleValidationUpdate('maxLength', parseInt(e.target.value))}
                         className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
-                        placeholder="Max characters"
+                        placeholder={t('builder.properties.max_characters')}
                     />
                  </div>
               )}
                <p className="mt-1 text-xs text-gray-500">
-                Limit the number of characters allowed for this field
+                {t('builder.properties.char_limit_desc')}
               </p>
             </div>
 
              {/* Read Only */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Read Only
+                {t('builder.properties.read_only')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -343,14 +332,14 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
                 </label>
                <p className="mt-1 text-xs text-gray-500">
-                Prevent entry in this field
+                {t('builder.properties.read_only_desc')}
               </p>
             </div>
 
             {/* Shrink */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Shrink
+                {t('builder.properties.shrink')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -362,14 +351,14 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
                 </label>
                <p className="mt-1 text-xs text-gray-500">
-                Make field smaller
+                {t('builder.properties.shrink_desc')}
               </p>
             </div>
 
              {/* Hide Field */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Hide Field
+                {t('builder.properties.hide_field')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                   <input

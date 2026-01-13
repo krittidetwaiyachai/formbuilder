@@ -3,6 +3,7 @@ import { Field } from '@/types';
 import { useForm } from 'react-hook-form';
 import { User } from 'lucide-react';
 import { useFormStore } from '@/store/formStore';
+import { PreviewLabel } from '../PreviewLabel';
 
 interface PreviewFieldProps {
   field: Field;
@@ -97,11 +98,7 @@ export const PreviewFullNameField: React.FC<PreviewFieldProps> = ({ field, regis
   return (
     <div className={`mb-4 w-full ${isRowLayout ? 'flex items-start gap-4' : ''}`}>
       <div className={`${isRowLayout ? 'w-40 flex-shrink-0 pt-2' : 'mb-3'} ${labelAlignment === 'RIGHT' ? 'text-right' : ''}`}>
-        <label className={`block font-semibold text-gray-800 ${isPublic ? 'text-base' : 'text-sm'}`}>
-          {questionNumber && <span className="text-gray-500 mr-2">{questionNumber} <span className="text-gray-300">|</span></span>}
-          {field.label || 'Full Name'}
-          {field.required && <span className="text-red-500 ml-1">*</span>}
-        </label>
+        <PreviewLabel field={field} questionNumber={questionNumber} isPublic={isPublic} htmlFor={fieldName} />
       </div>
 
       <div className="flex-1 min-w-0">

@@ -1,7 +1,10 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Field } from '@/types';
 import { Copy } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup, SelectLabel } from '@/components/ui/custom-select';
+import { stripHtml } from '@/lib/ui/utils';
+import { PropertiesTabs } from '../common/PropertiesTabs';
 
 interface DropdownPropertiesProps {
   field: Field;
@@ -10,77 +13,19 @@ interface DropdownPropertiesProps {
 }
 
 export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field, updateField, duplicatesField }) => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'general' | 'options' | 'advanced'>('general');
 
-  // Handle field.options (which might be the actual list of choices) vs field.options (settings)
-  // Actually in my Type definition `options` property on Field is for settings?
-  // Let's check `types/index.ts` again.
-  // `options?: any` is distinct from `validation?: any`.
-  // But wait, where are the *choices* stored?
-  // In `PropertiesPanel.tsx` (line 498), it uses `selectedField.options` as the array of choices.
-  // And `field.options` usually stores settings in other fields (like `width`, `shrink`).
-  // This is a collision in my previous understanding or the codebase.
-  // Let's look at `SelectField.tsx`: `field.options` is used as the list of choices.
-  // So I might need to store settings in `field.validation` or a new property if `field.options` is taken.
-  // OR `field.options` is an object containing `choices` and settings?
-  // Re-reading `SelectField.tsx`: 
-  // `if (Array.isArray(field.options)) { ... }`
-  // So `field.options` IS the list of choices.
-  // This means I cannot store `shrink`, `width` etc in `field.options` directly if it's an array.
-  // I should check `TextField` uses `field.options` as an object.
-  // For `SelectField`, I probably need to migrate `field.options` to be an object containing `choices: []` AND settings.
-  // OR store settings in `field.validation` (which is `any`).
-  // Let's check `TextField.tsx` again. usage: `const { options = {} } = field; const { width, ... } = options;`
-  // `SelectField.tsx`: `if (Array.isArray(field.options))`
-  
-  // DECISION: To avoid breaking existing structure too much, I will use `field.validation` for settings for now, 
-  // OR I should refactor `field.options` for Dropdown to be `{ choices: [], ...settings }`.
-  // Refactoring might break existing previews if they expect an array.
-  // Let's look at `PropertiesPanel.tsx` existing code for Dropdown options editing (lines 488-524).
-  // It writes purely to `options` as an array of objects.
-  
-  // The safest bet for "Layout/Behavior" properties (shrink, hidden, width) is `field.validation` 
-  // if `field.options` is occupied by data.
-  // HOWEVER, consistency is better.
-  // If I look at `TextAreaField`, `options` has `rows`, `cols`.
-  // If I look at `TextField`, `options` has `width`.
-  
-  // I will proceed by assuming I can store settings in `field.validation` for Dropdown specific settings 
-  // to avoid conflicting with the `options` array, 
-  // OR I should change `options` to contain `items` array.
-  // Let's stick to `field.validation` for "settings" for Dropdown to start with, 
-  // regarding `shrink`, `hidden`, `width`, `multiple`, `shuffle`.
-  // Wait, `ParagraphProperties` used `options` for `shrink`, `hidden`.
-  // `TextField` used `options`.
-  
-  // Use `field.extra`? No `extra` in type.
-  // `field.items`? No.
-  
-  // Okay, I will try to support `field.options` being HYBRID or use `field.validation` for now.
-  // Actually, standardizing `field.options` to ALWAYS be an object `{ items: [], ...settings }` is best long term.
-  // But strictly for this task without refactoring everything:
-  // I'll use `field.validation` for property settings (Width, Shrink, etc) for Dropdown, 
-  // and keep `field.options` as the Array of items.
-  
-  // ... Wait, `PropertiesPanel.tsx` logic for "Options (one per line)" writes to `field.options`.
-  
   // We will now prioritize `options` for all settings to be consistent with other fields.
   // `PreviewSelectField` has been updated to support this.
   const options = Array.isArray(field.options) ? { items: field.options } : (field.options || {});
-  const validation = field.validation || {};
+
   
   const handleUpdate = (updates: any) => {
     updateField(field.id, updates);
   };
 
-  const handleValidationUpdate = (key: string, value: any) => {
-    handleUpdate({
-      validation: {
-        ...validation,
-        [key]: value,
-      },
-    });
-  };
+
 
   const handleOptionUpdate = (key: string, value: any) => {
     const currentOptions = Array.isArray(field.options) 
@@ -120,32 +65,18 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field, u
   return (
     <div className="space-y-4">
       {/* Tabs */}
-      <div className="flex items-center gap-1 mb-4 bg-gray-100 p-1 rounded-md">
-        {['general', 'options', 'advanced'].map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab as any)}
-            className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-colors uppercase ${
-              activeTab === tab
-                ? 'bg-white text-black shadow-sm'
-                : 'text-gray-600 hover:text-black'
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
-      </div>
+      <PropertiesTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {activeTab === 'general' && (
         <div className="space-y-4">
            {/* Field Label */}
            <div>
               <label className="block text-sm font-medium text-black mb-1">
-                Field Label
+                {t('builder.properties.field_label')}
               </label>
               <input
                 type="text"
-                value={field.label}
+                value={stripHtml(field.label)}
                 onChange={(e) => handleUpdate({ label: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
               />
@@ -154,10 +85,10 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field, u
             {/* Label Alignment */}
             <div>
               <label className="block text-sm font-medium text-black mb-2">
-                Label Alignment
+                {t('builder.properties.label_alignment')}
               </label>
               <div className="flex gap-2">
-                {(['LEFT', 'RIGHT', 'TOP'] as const).map((align) => (
+                {(['LEFT', 'CENTER', 'TOP'] as const).map((align) => (
                   <button
                     key={align}
                     onClick={() => handleOptionUpdate('labelAlignment', align)}
@@ -167,7 +98,7 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field, u
                         : 'bg-white text-black border-gray-400 hover:bg-gray-50'
                     }`}
                   >
-                    {align}
+                    {align === 'LEFT' ? t('builder.properties.left') : align === 'CENTER' ? t('builder.properties.center') : t('builder.properties.top')}
                   </button>
                 ))}
               </div>
@@ -176,7 +107,7 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field, u
             {/* Required */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                  Required
+                  {t('builder.properties.required')}
               </label>
                <label className="relative inline-flex items-center cursor-pointer">
                 <input
@@ -188,14 +119,14 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field, u
                 <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
               </label>
                <p className="mt-1 text-xs text-gray-500">
-                Prevent submission if this field is empty
+                {t('builder.properties.required_desc')}
               </p>
             </div>
 
             {/* Sublabel */}
             <div>
               <label className="block text-sm font-medium text-black mb-1">
-                Sublabel
+                {t('builder.properties.sublabel')}
               </label>
               <input
                 type="text"
@@ -204,7 +135,7 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field, u
                 className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
               />
               <p className="mt-1 text-xs text-gray-500">
-                Add a short description below the field
+                {t('builder.properties.sublabel_desc')}
               </p>
             </div>
 
@@ -224,7 +155,7 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field, u
                className="w-full mt-4 px-3 py-2 text-sm font-medium text-black bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
              >
                <Copy className="h-4 w-4" />
-               DUPLICATE
+               {t('builder.properties.duplicate')}
              </button>
         </div>
       )}
@@ -234,7 +165,7 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field, u
             {/* Width */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Width
+                {t('builder.properties.width')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -253,19 +184,19 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field, u
                         value={options.customWidth || 300}
                         onChange={(e) => handleOptionUpdate('customWidth', parseInt(e.target.value))}
                         className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
-                        placeholder="Width in px"
+                        placeholder={t('builder.properties.width') + " (px)"}
                     />
                  </div>
               )}
                <p className="mt-1 text-xs text-gray-500">
-                The width of this field will change according to your form's width.
+                {t('builder.properties.width_desc')}
               </p>
             </div>
 
             {/* Options List */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                 Options
+                 {t('builder.properties.options')}
                </label>
                <div className="border border-gray-400 rounded-md overflow-hidden bg-white">
                   <textarea
@@ -277,14 +208,14 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field, u
                   />
                </div>
                <p className="mt-1 text-xs text-gray-500">
-                 Give options for users to select from. Enter each option on a new line.
+                 {t('builder.properties.options_desc')}
                </p>
             </div>
             
              {/* Predefined Options */}
              <div>
                 <label className="block text-sm font-medium text-black mb-1">
-                  Predefined Options
+                  {t('builder.properties.predefined_options')}
                 </label>
                 <Select 
                     onValueChange={(value) => {
@@ -325,7 +256,7 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field, u
                     }}
                 >
                     <SelectTrigger className="w-full bg-white border-gray-400">
-                        <SelectValue placeholder="Select predefined list..." />
+                        <SelectValue placeholder={t('builder.properties.select_predefined')} />
                     </SelectTrigger>
                     <SelectContent>
                         <SelectGroup>
@@ -356,24 +287,24 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field, u
                     </SelectContent>
                 </Select>
                 <p className="mt-1 text-xs text-gray-500">
-                  Select to replace current options with a predefined list
+                  {t('builder.properties.predefined_desc')}
                 </p>
             </div>
 
             {/* Default Value */}
             <div>
                 <label className="block text-sm font-medium text-black mb-1">
-                  Default Value
+                  {t('builder.properties.default_value')}
                 </label>
                 <Select 
                     value={options.defaultValue || ''} 
                     onValueChange={(val) => handleOptionUpdate('defaultValue', val)}
                 >
                     <SelectTrigger className="w-full bg-white border-gray-400">
-                        <SelectValue placeholder="Select a default..." />
+                        <SelectValue placeholder={t('builder.properties.select_default')} />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="_no_default_">No Default</SelectItem>
+                        <SelectItem value="_no_default_">{t('builder.properties.no_default')}</SelectItem>
                         {optionsList.map((opt: any, idx: number) => (
                             <SelectItem key={idx} value={opt.value}>
                                 {opt.label || opt.value}
@@ -382,7 +313,7 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field, u
                     </SelectContent>
                 </Select>
                  <p className="mt-1 text-xs text-gray-500">
-                 Choose an option to be selected by default
+                 {t('builder.properties.default_value_select_desc')}
                 </p>
             </div>
         </div>
@@ -393,7 +324,7 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field, u
             {/* Multiple Selections */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Multiple Selections
+                {t('builder.properties.multiple_selections')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -404,36 +335,15 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field, u
                   />
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
                 </label>
-                <p className="mt-1 text-xs text-gray-500">
-                 Let users select multiple options
-               </p>
+               <p className="mt-1 text-xs text-gray-500">
+                {t('builder.properties.multiple_selections_desc')}
+              </p>
             </div>
-
-            {/* Visible Options (Rows) - Only relevant if multiple is true usually, or if converting to listbox */}
-             {options.multiple && (
-                <div>
-                    <label className="block text-sm font-medium text-black mb-1">
-                        Visible Options
-                    </label>
-                    <div className="flex items-center gap-2">
-                         <input
-                            type="number"
-                            value={options.rows || 4}
-                            onChange={(e) => handleOptionUpdate('rows', parseInt(e.target.value))}
-                            className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
-                        />
-                         <span className="text-xs font-bold px-2 py-1 bg-gray-200 rounded text-gray-600">ROWS</span>
-                    </div>
-                    <p className="mt-1 text-xs text-gray-500">
-                        Show multiple options directly instead of in a dropdown
-                    </p>
-                </div>
-             )}
 
             {/* Shuffle Options */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Shuffle Options
+                {t('builder.properties.shuffle_options')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -445,30 +355,33 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field, u
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
                 </label>
                 <p className="mt-1 text-xs text-gray-500">
-                 Display options in random order.
+                 {t('builder.properties.shuffle_options_desc')}
                </p>
             </div>
 
-            {/* Hover Text */}
-             <div>
-              <label className="block text-sm font-medium text-black mb-1">
-                Hover Text
-              </label>
-              <textarea
-                value={options.hoverText || ''}
-                onChange={(e) => handleOptionUpdate('hoverText', e.target.value)}
-                rows={2}
-                className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
-              />
-              <p className="mt-1 text-xs text-gray-500">
-                Show a description when a user hovers over this field
+             {/* Read Only */}
+            <div>
+               <label className="block text-sm font-medium text-black mb-1">
+                {t('builder.properties.read_only')}
+               </label>
+               <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={options.readOnly || false}
+                    onChange={(e) => handleOptionUpdate('readOnly', e.target.checked)}
+                    className="sr-only peer"
+                  />
+                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
+                </label>
+               <p className="mt-1 text-xs text-gray-500">
+                {t('builder.properties.read_only_desc')}
               </p>
             </div>
 
-             {/* Shrink */}
+            {/* Shrink */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Shrink
+                {t('builder.properties.shrink')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -480,14 +393,14 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field, u
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
                 </label>
                <p className="mt-1 text-xs text-gray-500">
-                Make field smaller
+                {t('builder.properties.shrink_desc')}
               </p>
             </div>
             
-            {/* Hide field */}
+             {/* Hide Field */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Hide field
+                {t('builder.properties.hide_field')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -498,10 +411,8 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field, u
                   />
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
                 </label>
-                <p className="mt-1 text-xs text-gray-500">
-                  Hide this field from the form
-                </p>
             </div>
+
         </div>
       )}
     </div>

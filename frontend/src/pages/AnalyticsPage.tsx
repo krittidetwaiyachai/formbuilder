@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -19,7 +20,6 @@ import {
   Eye,
   FileText,
   TrendingUp,
-  Users,
   ArrowLeft,
   Download,
   CheckCircle2,
@@ -39,7 +39,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/custom-select';
-import DashboardContextMenu from '@/components/dashboard/DashboardContextMenu';
 import Loader from '@/components/common/Loader';
 import api from '@/lib/api';
 import { Form, FormResponse } from '@/types';
@@ -66,7 +65,10 @@ interface QuizStats {
   questionStats: { fieldId: string; label: string; correctCount: number; incorrectCount: number; correctRate: number }[];
 }
 
+  import { useToast } from '@/components/ui/toaster';
+
 export default function AnalyticsPage() {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const [form, setForm] = useState<Form | null>(null);
   const [responses, setResponses] = useState<FormResponse[]>([]);
@@ -78,6 +80,7 @@ export default function AnalyticsPage() {
   const [showResponseViewer, setShowResponseViewer] = useState(false);
   const [selectedResponse, setSelectedResponse] = useState<FormResponse | null>(null);
   const [copySuccess, setCopySuccess] = useState<string | null>(null);
+  const { toast } = useToast();
 
   const copyChartToClipboard = async (chartId: string) => {
     try {
@@ -95,6 +98,12 @@ export default function AnalyticsPage() {
             ]);
             setCopySuccess(chartId);
             setTimeout(() => setCopySuccess(null), 2000);
+            toast({
+              title: t('analytics.chart_copied'),
+              description: t('analytics.chart_copied'), 
+              variant: "success",
+              duration: 2000
+            });
           } catch {
             const link = document.createElement('a');
             link.download = `${chartId}.png`;
@@ -102,11 +111,22 @@ export default function AnalyticsPage() {
             link.click();
             setCopySuccess(chartId);
             setTimeout(() => setCopySuccess(null), 2000);
+            toast({
+              title: t('analytics.chart_downloaded'),
+              description: t('analytics.chart_downloaded'),
+              variant: "success",
+              duration: 2000
+            });
           }
         }
       }, 'image/png');
     } catch (error) {
       console.error('Failed to copy chart:', error);
+      toast({
+        title: t('auth.error'),
+        description: t('analytics.export_failed'),
+        variant: "error"
+      });
     }
   };
 
@@ -505,7 +525,11 @@ export default function AnalyticsPage() {
       link.remove();
     } catch (error) {
       console.error('Failed to export CSV:', error);
-      alert('Failed to export data');
+      toast({
+        title: t('analytics.export_failed'),
+        description: "Failed to export data",
+        variant: "error"
+      });
     }
   };
 
@@ -514,7 +538,7 @@ export default function AnalyticsPage() {
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center">
           <Loader className="mx-auto mb-4" />
-          <p className="text-gray-500 font-medium">Loading Analytics...</p>
+          <p className="text-gray-500 font-medium">{t('analytics.loading')}</p>
         </motion.div>
       </div>
     );
@@ -535,14 +559,14 @@ export default function AnalyticsPage() {
               </Link>
               <div>
                 <div className="flex items-center gap-3 mb-2">
-                  <h1 className="text-3xl font-bold text-gray-900">{form?.title || 'Form Analytics'}</h1>
+                  <h1 className="text-3xl font-bold text-gray-900">{form?.title || t('analytics.title')}</h1>
                   <span className="px-3 py-1 bg-gray-100 rounded-full text-xs font-semibold uppercase tracking-wide text-gray-700 border border-gray-200">
-                    {form?.status || 'Draft'}
+                    {form?.status === 'PUBLISHED' ? t('analytics.status.published') : t('analytics.status.draft')}
                   </span>
                 </div>
                 <p className="text-gray-600 text-sm flex items-center gap-2">
                   <BarChart3 className="w-4 h-4" />
-                  Comprehensive insights and statistics for your form
+                  {t('analytics.subtitle')}
                 </p>
               </div>
             </div>
@@ -552,14 +576,14 @@ export default function AnalyticsPage() {
                 className="group inline-flex items-center px-5 py-2.5 bg-white border-2 border-gray-200 text-gray-700 rounded-xl hover:border-gray-300 hover:bg-gray-50 transition-all duration-300"
               >
                 <List className="w-4 h-4 mr-2 group-hover:rotate-12 transition-transform" />
-                <span className="font-medium">Responses</span>
+                <span className="font-medium">{t('analytics.view_responses')}</span>
               </button>
               <button
                 onClick={handleExport}
                 className="group inline-flex items-center px-5 py-2.5 bg-black text-white rounded-xl hover:bg-gray-800 transition-all duration-300 shadow-lg font-medium"
               >
                 <Download className="w-4 h-4 mr-2 group-hover:translate-y-0.5 transition-transform" />
-                Export Data
+                {t('analytics.export')}
               </button>
             </div>
           </div>
@@ -582,13 +606,13 @@ export default function AnalyticsPage() {
                 </div>
               </div>
               <div className="space-y-1">
-                <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Total Views</h3>
+                <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('analytics.total_views')}</h3>
                 <p className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                   {form?.viewCount || 0}
                 </p>
                 <p className="text-xs text-gray-500 flex items-center gap-1">
                   <TrendingUp className="w-3 h-3" />
-                  Unique visitors
+                  {t('analytics.unique_visitors')}
                 </p>
               </div>
             </div>
@@ -608,13 +632,13 @@ export default function AnalyticsPage() {
                 </div>
               </div>
               <div className="space-y-1">
-                <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Total Responses</h3>
+                <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('analytics.total_responses')}</h3>
                 <p className="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">
                   {responses.length}
                 </p>
                 <p className="text-xs text-gray-500 flex items-center gap-1">
                   <TrendingUp className="w-3 h-3" />
-                  Form submissions
+                  {t('analytics.form_submissions')}
                 </p>
               </div>
             </div>
@@ -634,13 +658,13 @@ export default function AnalyticsPage() {
                 </div>
               </div>
               <div className="space-y-1">
-                <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Conversion Rate</h3>
+                <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('analytics.conversion_rate')}</h3>
                 <p className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                   {conversionRate}%
                 </p>
                 <p className="text-xs text-gray-500 flex items-center gap-1">
                   <TrendingUp className="w-3 h-3" />
-                  Responses / Views
+                  {t('analytics.responses_views')}
                 </p>
               </div>
             </div>
@@ -655,8 +679,8 @@ export default function AnalyticsPage() {
             className="bg-white rounded-2xl p-12 border border-gray-200 text-center"
           >
             <BarChart3 className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">No responses yet</h3>
-            <p className="text-gray-500">Share your form to start collecting responses and see analytics here.</p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('analytics.no_responses')}</h3>
+            <p className="text-gray-500">{t('analytics.no_responses_desc')}</p>
           </motion.div>
         ) : (
           <>
@@ -668,11 +692,11 @@ export default function AnalyticsPage() {
                 className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm"
               >
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900">Response Trend</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">{t('analytics.response_trend')}</h3>
                   <button
                     onClick={() => copyChartToClipboard('response-trend-chart')}
                     className="p-2 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
-                    title="Copy chart to clipboard"
+                    title={t('analytics.copy_chart')}
                   >
                     {copySuccess === 'response-trend-chart' ? (
                       <CheckCircle2 className="w-4 h-4 text-green-600" />
@@ -723,7 +747,7 @@ export default function AnalyticsPage() {
                         strokeWidth={3}
                         fillOpacity={1} 
                         fill="url(#colorResponses)" 
-                        name="Responses"
+                        name={t('analytics.view_responses')}
                         activeDot={{ r: 6, stroke: '#fff', strokeWidth: 3, fill: '#8b5cf6' }}
                       />
                     </AreaChart>
@@ -739,11 +763,11 @@ export default function AnalyticsPage() {
                   className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm"
                 >
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold text-gray-900">Score Distribution</h3>
+                    <h3 className="text-lg font-semibold text-gray-900">{t('analytics.score_distribution')}</h3>
                     <button
                       onClick={() => copyChartToClipboard('score-dist-chart')}
                       className="p-2 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
-                      title="Copy chart to clipboard"
+                      title={t('analytics.copy_chart')}
                     >
                       {copySuccess === 'score-dist-chart' ? (
                         <CheckCircle2 className="w-4 h-4 text-green-600" />
@@ -765,7 +789,7 @@ export default function AnalyticsPage() {
                             borderRadius: '8px',
                           }}
                         />
-                        <Bar dataKey="count" fill="#10b981" name="Count" radius={[4, 4, 0, 0]} />
+                        <Bar dataKey="count" fill="#10b981" name={t('analytics.count')} radius={[4, 4, 0, 0]} />
                       </BarChart>
                     </ResponsiveContainer>
                   </div>
@@ -779,15 +803,15 @@ export default function AnalyticsPage() {
                   transition={{ delay: 0.5 }}
                   className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm"
                 >
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Field Selection</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('analytics.field_selection')}</h3>
                   <Select value={selectedField} onValueChange={setSelectedField}>
                     <SelectTrigger className="w-full mb-4 h-12">
-                      <SelectValue placeholder="Select a field" />
+                      <SelectValue placeholder={t('analytics.select_field')} />
                     </SelectTrigger>
                     <SelectContent>
                       {fieldStats.map((field) => (
                         <SelectItem key={field.fieldId} value={field.fieldId}>
-                          {field.fieldLabel} ({field.totalResponses} responses)
+                          {field.fieldLabel} ({field.totalResponses} {t('analytics.view_responses').toLowerCase()})
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -799,7 +823,7 @@ export default function AnalyticsPage() {
                         <button
                           onClick={() => copyChartToClipboard('field-analytics-pie')}
                           className="p-2 text-gray-500 hover:text-gray-900 hover:bg-white/80 rounded-lg transition-colors backdrop-blur-sm"
-                          title="Copy chart to clipboard"
+                          title={t('analytics.copy_chart')}
                         >
                           {copySuccess === 'field-analytics-pie' ? (
                             <CheckCircle2 className="w-4 h-4 text-green-600" />
@@ -843,14 +867,14 @@ export default function AnalyticsPage() {
                 transition={{ delay: 0.6 }}
                 className="bg-white rounded-2xl p-6 border border-gray-200 shadow-lg mb-8"
               >
-                <h3 className="text-lg font-bold text-gray-900 mb-6">Quiz Summary</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-6">{t('analytics.quiz_summary')}</h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                   <div className="relative overflow-hidden bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 rounded-xl p-4 text-center shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                     <div className="absolute top-0 right-0 w-16 h-16 bg-white/10 rounded-full -mr-8 -mt-8"></div>
                     <div className="absolute bottom-0 left-0 w-12 h-12 bg-white/5 rounded-full -ml-6 -mb-6"></div>
                     <div className="relative">
                       <div className="text-3xl font-bold text-white mb-1">{quizStats.averageScore.toFixed(1)}</div>
-                      <div className="text-xs font-semibold text-blue-100 uppercase tracking-wide">Average Score</div>
+                      <div className="text-xs font-semibold text-blue-100 uppercase tracking-wide">{t('analytics.average_score')}</div>
                     </div>
                   </div>
                   <div className="relative overflow-hidden bg-gradient-to-br from-emerald-500 via-green-600 to-teal-600 rounded-xl p-4 text-center shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
@@ -858,7 +882,7 @@ export default function AnalyticsPage() {
                     <div className="absolute bottom-0 left-0 w-12 h-12 bg-white/5 rounded-full -ml-6 -mb-6"></div>
                     <div className="relative">
                       <div className="text-3xl font-bold text-white mb-1">{quizStats.averagePercentage.toFixed(1)}%</div>
-                      <div className="text-xs font-semibold text-green-100 uppercase tracking-wide">Average %</div>
+                      <div className="text-xs font-semibold text-green-100 uppercase tracking-wide">{t('analytics.average_percentage')}</div>
                     </div>
                   </div>
                   <div className="relative overflow-hidden bg-gradient-to-br from-purple-500 via-violet-600 to-purple-700 rounded-xl p-4 text-center shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
@@ -866,7 +890,7 @@ export default function AnalyticsPage() {
                     <div className="absolute bottom-0 left-0 w-12 h-12 bg-white/5 rounded-full -ml-6 -mb-6"></div>
                     <div className="relative">
                       <div className="text-3xl font-bold text-white mb-1">{quizStats.passRate.toFixed(1)}%</div>
-                      <div className="text-xs font-semibold text-purple-100 uppercase tracking-wide">Pass Rate</div>
+                      <div className="text-xs font-semibold text-purple-100 uppercase tracking-wide">{t('analytics.pass_rate')}</div>
                     </div>
                   </div>
                   <div className="relative overflow-hidden bg-gradient-to-br from-amber-500 via-orange-600 to-red-600 rounded-xl p-4 text-center shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
@@ -874,12 +898,12 @@ export default function AnalyticsPage() {
                     <div className="absolute bottom-0 left-0 w-12 h-12 bg-white/5 rounded-full -ml-6 -mb-6"></div>
                     <div className="relative">
                       <div className="text-3xl font-bold text-white mb-1">{quizStats.highestScore}</div>
-                      <div className="text-xs font-semibold text-amber-100 uppercase tracking-wide">Highest Score</div>
+                      <div className="text-xs font-semibold text-amber-100 uppercase tracking-wide">{t('analytics.highest_score')}</div>
                     </div>
                   </div>
                 </div>
 
-                <h4 className="text-base font-bold text-gray-900 mb-4">Question Analysis (by difficulty)</h4>
+                <h4 className="text-base font-bold text-gray-900 mb-4">{t('analytics.question_analysis')}</h4>
                 <div className="space-y-3">
                   {quizStats.questionStats.slice(0, 5).map((q, i) => (
                     <div key={q.fieldId} className="group bg-gradient-to-r from-gray-50 to-white hover:from-gray-100 hover:to-gray-50 rounded-lg p-4 border border-gray-200 hover:border-gray-300 transition-all duration-300 hover:shadow-md">
@@ -929,19 +953,19 @@ export default function AnalyticsPage() {
               className="bg-white rounded-2xl p-8 border border-gray-200 shadow-sm"
             >
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-2xl font-bold text-gray-900">Field Analytics</h3>
+                <h3 className="text-2xl font-bold text-gray-900">{t('analytics.field_analytics')}</h3>
               </div>
 
               <Select value={selectedField} onValueChange={setSelectedField}>
                 <SelectTrigger className="w-full mb-8 h-14 text-base font-medium border-2 hover:border-gray-300 transition-colors">
-                  <SelectValue placeholder="Select a field to analyze" />
+                  <SelectValue placeholder={t('analytics.select_field_analyze')} />
                 </SelectTrigger>
                 <SelectContent>
                   {fieldStats.map((field) => (
                     <SelectItem key={field.fieldId} value={field.fieldId} className="text-base">
                       <div className="flex items-center justify-between w-full">
                         <span className="font-medium">{field.fieldLabel}</span>
-                        <span className="text-sm text-gray-500 ml-3">({field.totalResponses} responses)</span>
+                        <span className="text-sm text-gray-500 ml-3">({field.totalResponses} {t('analytics.view_responses').toLowerCase()})</span>
                       </div>
                     </SelectItem>
                   ))}
@@ -953,11 +977,11 @@ export default function AnalyticsPage() {
                   {/* Response Ranking */}
                   <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
                     <div className="flex items-center justify-between mb-5">
-                      <h4 className="text-lg font-bold text-gray-900">Response Ranking</h4>
+                      <h4 className="text-lg font-bold text-gray-900">{t('analytics.response_ranking')}</h4>
                       <button
                         onClick={() => copyChartToClipboard('response-ranking-list')}
                         className="p-2 text-gray-500 hover:text-gray-900 hover:bg-white rounded-lg transition-colors"
-                        title="Copy list to clipboard"
+                        title={t('analytics.copy_list')}
                       >
                         {copySuccess === 'response-ranking-list' ? (
                           <CheckCircle2 className="w-4 h-4 text-green-600" />
@@ -986,14 +1010,13 @@ export default function AnalyticsPage() {
                     </div>
                   </div>
 
-                  {/* Distribution Chart */}
-                  <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
+                    <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
                     <div className="flex items-center justify-between mb-5">
-                      <h4 className="text-lg font-bold text-gray-900">Distribution Chart</h4>
+                      <h4 className="text-lg font-bold text-gray-900">{t('analytics.distribution_chart')}</h4>
                       <button
                         onClick={() => copyChartToClipboard('distribution-chart')}
                         className="p-2 text-gray-500 hover:text-gray-900 hover:bg-white rounded-lg transition-colors"
-                        title="Copy chart to clipboard"
+                        title={t('analytics.copy_chart')}
                       >
                         {copySuccess === 'distribution-chart' ? (
                           <CheckCircle2 className="w-4 h-4 text-green-600" />
@@ -1021,7 +1044,7 @@ export default function AnalyticsPage() {
                               borderRadius: '8px',
                             }}
                           />
-                          <Bar dataKey="count" fill="#000000" name="Count" radius={[0, 8, 8, 0]} />
+                          <Bar dataKey="count" fill="#000000" name={t('analytics.count')} radius={[0, 8, 8, 0]} />
                         </BarChart>
                       </ResponsiveContainer>
                     </div>
@@ -1051,9 +1074,9 @@ export default function AnalyticsPage() {
             >
               <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-white sticky top-0 bg-opacity-90 backdrop-blur-sm">
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900">Individual Responses</h2>
+                  <h2 className="text-xl font-bold text-gray-900">{t('analytics.individual_responses')}</h2>
                   <p className="text-sm text-gray-500 mt-1">
-                    Viewing {responses.length} responses
+                    {t('analytics.viewing_responses', { count: responses.length })}
                   </p>
                 </div>
                 <button
@@ -1102,7 +1125,7 @@ export default function AnalyticsPage() {
                                     ? 'bg-green-100 text-green-700'
                                     : 'bg-red-100 text-red-700'
                                 }`}>
-                                  Score: {response.score}/{response.totalScore}
+                                  {t('analytics.score')}: {response.score}/{response.totalScore}
                                 </span>
                               )}
                               <span className="text-sm text-gray-500">
@@ -1144,7 +1167,7 @@ export default function AnalyticsPage() {
                                       }`}>
                                         <div className="flex items-start justify-between gap-2">
                                           <p className="text-gray-900 text-sm whitespace-pre-wrap">
-                                            {answer?.value || <span className="text-gray-400 italic">No answer</span>}
+                                            {answer?.value || <span className="text-gray-400 italic">{t('analytics.no_answer')}</span>}
                                           </p>
                                           {isCorrect !== undefined && (
                                             isCorrect ? (

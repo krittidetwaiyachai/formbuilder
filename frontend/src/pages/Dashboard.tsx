@@ -5,6 +5,7 @@ import api from '@/lib/api';
 import { Form } from '@/types';
 import { useAuthStore } from '@/store/authStore';
 import LoginModal from '@/components/auth/LoginModal';
+import { useTranslation } from 'react-i18next';
 import FormDetailsModal from '@/components/dashboard/FormDetailsModal';
 import CollaboratorListModal from '@/components/dashboard/CollaboratorListModal';
 import { DashboardContextMenu } from '@/components/dashboard/DashboardContextMenu';
@@ -19,7 +20,8 @@ import EmptyState from '@/components/dashboard/EmptyState';
 import DashboardFormCard from '@/components/dashboard/DashboardFormCard';
 import FoldersSection from '@/components/dashboard/FoldersSection';
 import CreateFolderModal from '@/components/dashboard/CreateFolderModal';
-import DraggableFormCard from '@/components/dashboard/DraggableFormCard';
+import { useToast } from '@/components/ui/toaster';
+
 import UngroupedFormsSection from '@/components/dashboard/UngroupedFormsSection';
 
 interface FormWithStats extends Form {
@@ -29,6 +31,7 @@ interface FormWithStats extends Form {
 }
 
 export default function DashboardPage() {
+  const { t, i18n } = useTranslation();
   const [forms, setForms] = useState<FormWithStats[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -44,6 +47,7 @@ export default function DashboardPage() {
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [folderToDelete, setFolderToDelete] = useState<string | null>(null);
   const [folderDeleteConfirmOpen, setFolderDeleteConfirmOpen] = useState(false);
+  const { toast } = useToast();
   
   const { folders, createFolder, updateFolder, deleteFolder, moveFormToFolder, refreshFolders } = useFolders();
   const [isCreateFolderModalOpen, setIsCreateFolderModalOpen] = useState(false);
@@ -150,7 +154,11 @@ export default function DashboardPage() {
       navigate(`/forms/${res.data.form.id}/builder`);
     } catch (error) {
       console.error('Failed to create form:', error);
-      alert('Cannot create form at this moment.');
+      toast({
+        variant: "error",
+        title: t('dashboard.toast.error'),
+        description: t('dashboard.toast.error_create')
+      });
     } finally {
       setIsCreating(false);
     }
@@ -168,9 +176,18 @@ export default function DashboardPage() {
     try {
       await api.delete(`/forms/${formToDelete}`);
       loadForms(); 
+      toast({
+        variant: "success",
+        title: t('dashboard.toast.deleted'),
+        description: t('dashboard.toast.deleted')
+      });
     } catch (error) {
       console.error('Failed to delete form:', error);
-      alert('Failed to delete form. Please try again.');
+      toast({
+        variant: "error",
+        title: "Error",
+        description: "Failed to delete form. Please try again."
+      });
     } finally {
       setFormToDelete(null);
     }
@@ -180,17 +197,29 @@ export default function DashboardPage() {
     try {
       await api.post(`/forms/${formId}/clone`);
       loadForms();
+      toast({
+        variant: "success",
+        title: t('dashboard.toast.duplicated'),
+        description: t('dashboard.toast.duplicated')
+      });
     } catch (error) {
       console.error('Failed to clone form:', error);
-      alert('Failed to duplicate form.');
+      toast({
+        variant: "error",
+        title: t('dashboard.toast.error'),
+        description: t('dashboard.toast.error_duplicate')
+      });
     }
   };
 
   const handleCopyLink = (formId: string) => {
     const url = `${window.location.origin}/forms/${formId}/view`;
     navigator.clipboard.writeText(url);
-    // You could add a toast here if you had one
-    alert('Link copied to clipboard!');
+    toast({
+      variant: "success",
+      title: t('dashboard.toast.link_copied'),
+      description: t('dashboard.toast.link_copied')
+    });
   };
 
   const handleDeleteFolderClick = (folderId: string) => {
@@ -207,7 +236,11 @@ export default function DashboardPage() {
       await loadForms();
     } catch (error) {
       console.error('Failed to delete folder:', error);
-      alert('Failed to delete folder. Please try again.');
+      toast({
+        variant: "error",
+        title: t('dashboard.toast.error'),
+        description: t('dashboard.toast.error_folder_delete')
+      });
     } finally {
       setFolderToDelete(null);
     }
@@ -220,7 +253,7 @@ export default function DashboardPage() {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleString('en-US', {
+    return date.toLocaleString(i18n.language === 'th' ? 'th-TH' : 'en-US', {
       month: 'short',
       day: 'numeric',
       year: 'numeric',
@@ -234,9 +267,9 @@ export default function DashboardPage() {
   const filteredForms = forms.filter(form => {
     const matchesSearch = form.title.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = filterStatus === 'All' || 
-                         (filterStatus === 'Published' && form.status === 'PUBLISHED') ||
-                         (filterStatus === 'Draft' && form.status === 'DRAFT') ||
-                         (filterStatus === 'Archived' && form.status === 'ARCHIVED');
+                         (filterStatus === 'PUBLISHED' && form.status === 'PUBLISHED') ||
+                         (filterStatus === 'DRAFT' && form.status === 'DRAFT') ||
+                         (filterStatus === 'ARCHIVED' && form.status === 'ARCHIVED');
     return matchesSearch && matchesStatus;
   });
 
@@ -249,7 +282,7 @@ export default function DashboardPage() {
           className="flex flex-col items-center"
         >
           <Loader className="mb-4" />
-          <p className="text-gray-500 font-medium">Loading your dashboard...</p>
+          <p className="text-gray-500 font-medium">{t('dashboard.loading')}</p>
         </motion.div>
       </div>
     );
@@ -321,9 +354,7 @@ export default function DashboardPage() {
   };
 
   const ungroupedForms = filteredForms.filter(f => !f.folderId);
-  const getFormsInFolder = (folderId: string) => {
-    return forms.filter(f => f.folderId === folderId);
-  };
+
 
   return (
     <div className="h-full bg-gray-50/50 overflow-hidden select-none flex flex-col relative" onKeyDown={(e) => {
@@ -565,10 +596,10 @@ export default function DashboardPage() {
       <ConfirmDialog
         open={deleteConfirmOpen}
         onOpenChange={setDeleteConfirmOpen}
-        title="Delete Form?"
-        description="Are you sure you want to delete this form? This action cannot be undone."
-        confirmText="Delete"
-        cancelText="Cancel"
+        title={t('dashboard.confirm.delete_form.title')}
+        description={t('dashboard.confirm.delete_form.description')}
+        confirmText={t('dashboard.confirm.delete')}
+        cancelText={t('dashboard.confirm.cancel')}
         onConfirm={confirmDelete}
         variant="destructive"
       />
@@ -576,10 +607,10 @@ export default function DashboardPage() {
       <ConfirmDialog
         open={folderDeleteConfirmOpen}
         onOpenChange={setFolderDeleteConfirmOpen}
-        title="Delete Folder?"
-        description="Are you sure you want to delete this folder? Forms inside will be moved to All Forms."
-        confirmText="Delete Folder"
-        cancelText="Cancel"
+        title={t('dashboard.confirm.delete_folder.title')}
+        description={t('dashboard.confirm.delete_folder.description')}
+        confirmText={t('dashboard.confirm.delete_folder')}
+        cancelText={t('dashboard.confirm.cancel')}
         onConfirm={confirmDeleteFolder}
         variant="destructive"
       />

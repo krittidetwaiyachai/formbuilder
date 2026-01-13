@@ -10,7 +10,6 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
   PieChart,
   Pie,
@@ -18,8 +17,13 @@ import {
   LineChart,
   Line,
 } from "recharts";
-import { Download, TrendingUp, Award, Hash, Percent, Calendar, List } from "lucide-react";
-import { FormSubmission } from "@/types/form";
+import { Download } from "lucide-react";
+import { useTranslation } from "react-i18next";
+
+interface FormSubmission {
+  data: Record<string, any>;
+  submittedAt: string;
+}
 
 interface AnalysisRendererProps {
   fieldName: string;
@@ -46,6 +50,8 @@ export default function AnalysisRenderer({
   submissions,
   analysisType,
 }: AnalysisRendererProps) {
+  const { t } = useTranslation();
+
   // Calculate field responses
   const fieldResponses: { value: any; count: number }[] = [];
   const valueCounts: Record<string, number> = {};
@@ -114,8 +120,8 @@ export default function AnalysisRenderer({
         return (
           <div className="space-y-3">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold">Ranking</h3>
-              <Badge variant="secondary">{totalResponses} total responses</Badge>
+              <h3 className="text-lg font-semibold">{t('analytics.analysis.ranking')}</h3>
+              <Badge variant="secondary">{totalResponses} {t('analytics.total_responses_count')}</Badge>
             </div>
             {fieldResponses.map((response, index) => (
               <div
@@ -129,7 +135,7 @@ export default function AnalysisRenderer({
                   <div>
                     <div className="font-medium">{response.value}</div>
                     <div className="text-sm text-muted-foreground">
-                      {response.count} responses ({(response.count / totalResponses * 100).toFixed(1)}%)
+                      {response.count} {t('analytics.times')} ({(response.count / totalResponses * 100).toFixed(1)}%)
                     </div>
                   </div>
                 </div>
@@ -144,7 +150,7 @@ export default function AnalysisRenderer({
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">Total Responses</CardTitle>
+                <CardTitle className="text-sm font-medium">{t('analytics.total_responses_count')}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{totalResponses}</div>
@@ -152,7 +158,7 @@ export default function AnalysisRenderer({
             </Card>
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">Unique Values</CardTitle>
+                <CardTitle className="text-sm font-medium">{t('analytics.unique_values')}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{uniqueValues}</div>
@@ -160,20 +166,20 @@ export default function AnalysisRenderer({
             </Card>
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">Most Common</CardTitle>
+                <CardTitle className="text-sm font-medium">{t('analytics.most_common')}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-lg font-bold">
                   {fieldResponses[0]?.value || "N/A"}
                 </div>
                 <div className="text-xs text-muted-foreground">
-                  {fieldResponses[0]?.count || 0} times
+                  {fieldResponses[0]?.count || 0} {t('analytics.times')}
                 </div>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">Average Count</CardTitle>
+                <CardTitle className="text-sm font-medium">{t('analytics.average_count')}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
@@ -201,7 +207,7 @@ export default function AnalysisRenderer({
               />
               <YAxis />
               <Tooltip />
-              <Bar dataKey="count" fill="#8884d8" />
+              <Bar dataKey="count" fill="#8884d8" name={t('analytics.count')} />
             </BarChart>
           </ResponsiveContainer>
         );
@@ -238,7 +244,7 @@ export default function AnalysisRenderer({
         return (
           <div className="space-y-3">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold">Top 10 Values</h3>
+              <h3 className="text-lg font-semibold">{t('analytics.analysis.topvalues')} (Top 10)</h3>
             </div>
             {fieldResponses.slice(0, 10).map((response, index) => (
               <div
@@ -288,11 +294,11 @@ export default function AnalysisRenderer({
             {fieldResponses.map((response, index) => (
               <Card key={index}>
                 <CardContent className="p-4">
-                  <div className="text-sm text-muted-foreground mb-1">Value</div>
+                  <div className="text-sm text-muted-foreground mb-1">{t('analytics.value')}</div>
                   <div className="font-medium mb-2">{response.value}</div>
                   <div className="text-2xl font-bold">{response.count}</div>
                   <div className="text-xs text-muted-foreground">
-                    {(response.count / totalResponses * 100).toFixed(1)}% of total
+                    {(response.count / totalResponses * 100).toFixed(1)}% {t('analytics.of_total')}
                   </div>
                 </CardContent>
               </Card>
@@ -304,8 +310,8 @@ export default function AnalysisRenderer({
         return (
           <div className="space-y-2">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold">All Responses</h3>
-              <Badge variant="secondary">{totalResponses} responses</Badge>
+              <h3 className="text-lg font-semibold">{t('analytics.analysis.allresponses')}</h3>
+              <Badge variant="secondary">{totalResponses} {t('analytics.total_responses_count')}</Badge>
             </div>
             <div className="flex flex-wrap gap-2">
               {submissions.map((submission, idx) => {
@@ -328,7 +334,7 @@ export default function AnalysisRenderer({
               <XAxis dataKey="date" />
               <YAxis />
               <Tooltip />
-              <Line type="monotone" dataKey="count" stroke="#8884d8" strokeWidth={2} />
+              <Line type="monotone" dataKey="count" stroke="#8884d8" strokeWidth={2} name={t('analytics.count')}/>
             </LineChart>
           </ResponsiveContainer>
         );
@@ -337,13 +343,13 @@ export default function AnalysisRenderer({
         return (
           <div className="text-center py-8">
             <Download className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-            <h3 className="text-lg font-semibold mb-2">Export Data</h3>
+            <h3 className="text-lg font-semibold mb-2">{t('analytics.export')}</h3>
             <p className="text-muted-foreground mb-4">
-              Export {fieldName} analytics as CSV file
+              {t('analytics.export_desc', { field: fieldName })}
             </p>
             <Button onClick={handleExport}>
               <Download className="h-4 w-4 mr-2" />
-              Download CSV
+              {t('analytics.download_csv')}
             </Button>
           </div>
         );
@@ -362,13 +368,13 @@ export default function AnalysisRenderer({
               {fieldName.replace(/([A-Z])/g, " $1").trim()}
             </CardTitle>
             <CardDescription>
-              {analysisType.charAt(0).toUpperCase() + analysisType.slice(1)} Analysis
+              {t(`analytics.analysis.${analysisType}`) || analysisType} {t('analytics.field_analytics')}
             </CardDescription>
           </div>
           {analysisType !== "export" && (
             <Button variant="outline" size="sm" onClick={handleExport}>
               <Download className="h-4 w-4 mr-2" />
-              Export
+              {t('analytics.analysis.export')}
             </Button>
           )}
         </div>

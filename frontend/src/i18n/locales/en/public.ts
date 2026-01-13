@@ -1,0 +1,20 @@
+export default {
+  "public.loading": "Loading...",
+  "public.form_not_found_title": "Form Not Found",
+  "public.form_not_found_desc": "The form you are looking for does not exist or has been deleted.",
+  "public.form_unavailable_title": "Form Not Available", 
+  "public.form_unavailable_desc": "This form is currently not accepting responses.",
+  "public.already_submitted_title": "Already Submitted",
+  "public.already_submitted_desc": "You have already submitted a response to this form.",
+  "public.thank_you": "Thank you for your participation!",
+  "public.quiz_unavailable_title": "Quiz Not Available",
+  "public.email_label": "Email Address",
+  "public.email_required": "Email is required",
+  "public.email_invalid": "Invalid email address",
+  "public.email_collecting_notice": "This form is collecting emails automatically.",
+  "public.submit": "Submit",
+  "public.back": "Back",
+  "public.next": "Next",
+  "public.timer.remaining": "remaining",
+  "public.timer.times_up": "Time's Up!"
+};

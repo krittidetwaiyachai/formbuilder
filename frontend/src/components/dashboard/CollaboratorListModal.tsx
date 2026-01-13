@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import UserAvatar from '@/components/common/UserAvatar';
 import api from '@/lib/api';
 import { useAuthStore } from '@/store/authStore';
+import { useTranslation } from 'react-i18next';
 
 interface Collaborator {
   id?: string;
@@ -31,6 +32,7 @@ export default function CollaboratorListModal({
   formId,
   onUpdate,
 }: CollaboratorListModalProps) {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -47,19 +49,19 @@ export default function CollaboratorListModal({
 
     try {
       await api.post(`/forms/${formId}/collaborators`, { email });
-      setSuccess('Invitation sent successfully');
+      setSuccess(t('dashboard.collaborators.invite_success'));
       setEmail('');
       onUpdate();
     } catch (err: any) {
       console.error('Failed to invite:', err);
-      setError(err.response?.data?.message || 'Failed to invite user');
+      setError(err.response?.data?.message || t('dashboard.collaborators.invite_error'));
     } finally {
       setLoading(false);
     }
   };
 
   const handleRemove = async (userId: string) => {
-    if (!confirm('Are you sure you want to remove this collaborator?')) return;
+    if (!confirm(t('dashboard.collaborators.remove_confirm'))) return;
     
     setLoading(true);
     try {
@@ -67,7 +69,7 @@ export default function CollaboratorListModal({
       onUpdate();
     } catch (err: any) {
       console.error('Failed to remove:', err);
-      setError(err.response?.data?.message || 'Failed to remove user');
+      setError(err.response?.data?.message || t('dashboard.collaborators.remove_error'));
     } finally {
       setLoading(false);
     }
@@ -96,7 +98,7 @@ export default function CollaboratorListModal({
           {/* Header */}
           <div className="px-5 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
             <div>
-              <h3 className="text-lg font-bold text-gray-900">Manage Access</h3>
+              <h3 className="text-lg font-bold text-gray-900">{t('dashboard.collaborators.manage_access')}</h3>
               <p className="text-xs text-gray-500 truncate max-w-[250px]">
                 {formTitle}
               </p>
@@ -113,7 +115,7 @@ export default function CollaboratorListModal({
              {/* Invite Section */}
              <div className="p-5 border-b border-gray-100">
                 <label className="text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2 block">
-                    Add People
+                    {t('dashboard.collaborators.add_people')}
                 </label>
                 <form onSubmit={handleInvite} className="flex gap-2">
                     <div className="relative flex-1">
@@ -122,7 +124,7 @@ export default function CollaboratorListModal({
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            placeholder="Enter email address"
+                            placeholder={t('dashboard.collaborators.email_placeholder')}
                             className="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
                             disabled={loading}
                         />
@@ -132,7 +134,7 @@ export default function CollaboratorListModal({
                         disabled={loading || !email}
                         className="px-4 py-2 bg-black text-white rounded-lg text-xs font-bold hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2"
                     >
-                        {loading ? '...' : 'Invite'}
+                        {loading ? '...' : t('dashboard.collaborators.invite')}
                     </button>
                 </form>
 
@@ -166,12 +168,12 @@ export default function CollaboratorListModal({
              {/* List */}
              <div className="p-2">
                 <label className="px-3 text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1 block mt-2">
-                    Current Access ({collaborators.length})
+                    {t('dashboard.collaborators.current_access')} ({collaborators.length})
                 </label>
                 {collaborators.length === 0 ? (
                   <div className="p-8 text-center text-gray-500">
                     <User className="w-10 h-10 mx-auto mb-2 text-gray-300" />
-                    <p>No collaborators found.</p>
+                    <p>{t('dashboard.collaborators.no_collaborators')}</p>
                   </div>
                 ) : (
                   <div className="space-y-1">
@@ -198,12 +200,12 @@ export default function CollaboratorListModal({
                         <div className="min-w-0 flex-1">
                           <p className="text-sm font-bold text-gray-900 truncate flex items-center gap-2">
                             {user.firstName} {user.lastName}
-                            {isOwner && <span className="text-[9px] bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded-full border border-gray-200">OWNER</span>}
-                            {isMe && <span className="text-[9px] bg-indigo-50 text-indigo-600 px-1.5 py-0.5 rounded-full border border-indigo-100">YOU</span>}
+                            {isOwner && <span className="text-[9px] bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded-full border border-gray-200">{t('dashboard.collaborators.owner')}</span>}
+                            {isMe && <span className="text-[9px] bg-indigo-50 text-indigo-600 px-1.5 py-0.5 rounded-full border border-indigo-100">{t('dashboard.collaborators.you')}</span>}
                           </p>
                           <div className="flex items-center gap-1 text-xs text-gray-500 truncate">
                             <Mail className="w-3 h-3 flex-shrink-0" />
-                            <span className="truncate">{user.email || 'No email provided'}</span>
+                            <span className="truncate">{user.email || t('dashboard.collaborators.no_email')}</span>
                           </div>
                         </div>
 
@@ -211,7 +213,7 @@ export default function CollaboratorListModal({
                         {!isOwner && (
                            <button
                              onClick={() => user.id && handleRemove(user.id)}
-                             title="Remove access"
+                             title={t('dashboard.collaborators.remove_access')}
                              className="p-2 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all opacity-0 group-hover:opacity-100"
                            >
                              <Trash2 className="w-4 h-4" />

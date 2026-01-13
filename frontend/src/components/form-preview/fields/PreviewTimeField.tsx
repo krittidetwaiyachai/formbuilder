@@ -2,16 +2,19 @@ import React from 'react';
 import { Field } from '@/types';
 import { useForm } from 'react-hook-form';
 import { Clock } from 'lucide-react';
+import { PreviewLabel } from '../PreviewLabel';
 
 interface PreviewFieldProps {
   field: Field;
   register: ReturnType<typeof useForm>['register'];
   errors: any;
-  control?: any; // We might need control for more complex handling, but start with register
+  control?: any;
   watch?: any;
+  questionNumber?: number;
+  isPublic?: boolean;
 }
 
-export const PreviewTimeField: React.FC<PreviewFieldProps> = ({ field, register, errors }) => {
+export const PreviewTimeField: React.FC<PreviewFieldProps> = ({ field, register, errors, questionNumber, isPublic }) => {
   const fieldName = `field_${field.id}`;
   const fieldError = errors[fieldName];
   
@@ -77,10 +80,7 @@ export const PreviewTimeField: React.FC<PreviewFieldProps> = ({ field, register,
   return (
     <div className={`mb-4 ${isRowLayout ? 'flex items-start gap-4' : ''}`}>
       <div className={`${isRowLayout ? 'w-40 flex-shrink-0 pt-2' : 'mb-2'} ${labelAlignment === 'RIGHT' ? 'text-right' : ''}`}>
-        <label htmlFor={fieldName} className="block text-sm font-medium text-black">
-          {field.label}
-          {field.required && <span className="text-red-500 ml-1">*</span>}
-        </label>
+        <PreviewLabel field={field} questionNumber={questionNumber} isPublic={isPublic} htmlFor={fieldName} />
         {options.subLabel && options.subLabel !== 'Sublabel' && (
             <p className="mt-1 text-xs text-gray-500">{options.subLabel}</p>
         )}

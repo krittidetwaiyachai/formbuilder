@@ -1,12 +1,19 @@
 import { useState, useEffect } from 'react';
 import api from '@/lib/api';
 import type { Folder } from '@/types/folder';
+import { useAuthStore } from '@/store/authStore';
 
 export function useFolders() {
   const [folders, setFolders] = useState<Folder[]>([]);
   const [loading, setLoading] = useState(true);
+  const { isAuthenticated } = useAuthStore();
 
   const loadFolders = async () => {
+    if (!isAuthenticated) {
+        setLoading(false);
+        return;
+    }
+    
     try {
       const response = await api.get('/folders');
       setFolders(response.data || []);
@@ -19,8 +26,13 @@ export function useFolders() {
   };
 
   useEffect(() => {
-    loadFolders();
-  }, []);
+    if (isAuthenticated) {
+        loadFolders();
+    } else {
+        setLoading(false);
+        setFolders([]);
+    }
+  }, [isAuthenticated]);
 
   const createFolder = async (name: string, color: string) => {
     try {

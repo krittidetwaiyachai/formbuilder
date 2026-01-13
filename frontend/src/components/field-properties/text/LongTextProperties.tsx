@@ -1,8 +1,10 @@
-
 import { useState } from 'react';
 import { Copy } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { stripHtml } from '@/lib/ui/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/custom-select';
 import { Field } from '@/types';
+import { PropertiesTabs } from '../common/PropertiesTabs';
 
 interface LongTextPropertiesProps {
   field: Field;
@@ -11,6 +13,7 @@ interface LongTextPropertiesProps {
 }
 
 export function LongTextProperties({ field, updateField, duplicatesField }: LongTextPropertiesProps) {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'general' | 'options' | 'advanced'>('general');
 
   // Helper to safely access options/validation with default values
@@ -41,21 +44,7 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
 
   return (
     <>
-      <div className="flex items-center gap-1 mb-4 bg-gray-100 p-1 rounded-md">
-        {['general', 'options', 'advanced'].map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab as any)}
-            className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-colors uppercase ${
-              activeTab === tab
-                ? 'bg-white text-black shadow-sm'
-                : 'text-gray-600 hover:text-black'
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
-      </div>
+      <PropertiesTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
       <div className="space-y-4">
         {/* GENERAL TAB */}
@@ -64,11 +53,11 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
             {/* Field Label */}
             <div>
               <label className="block text-sm font-medium text-black mb-1">
-                Field Label
+                {t('builder.properties.field_label')}
               </label>
               <input
                 type="text"
-                value={field.label}
+                value={stripHtml(field.label)}
                 onChange={(e) => handleUpdate({ label: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
               />
@@ -77,10 +66,10 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
             {/* Label Alignment */}
             <div>
               <label className="block text-sm font-medium text-black mb-2">
-                Label Alignment
+                {t('builder.properties.label_alignment')}
               </label>
               <div className="flex gap-2">
-                {(['LEFT', 'RIGHT', 'TOP'] as const).map((align) => (
+                {(['LEFT', 'CENTER', 'TOP'] as const).map((align) => (
                   <button
                     key={align}
                     onClick={() => handleOptionUpdate('labelAlignment', align)}
@@ -90,7 +79,7 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
                         : 'bg-white text-black border-gray-400 hover:bg-gray-50'
                     }`}
                   >
-                    {align}
+                     {align === 'LEFT' ? t('builder.properties.left') : align === 'CENTER' ? t('builder.properties.center') : t('builder.properties.top')}
                   </button>
                 ))}
               </div>
@@ -100,7 +89,7 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
             {/* Required */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                  Required
+                  {t('builder.properties.required')}
               </label>
                <label className="relative inline-flex items-center cursor-pointer">
                 <input
@@ -112,14 +101,14 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
                 <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
               </label>
                <p className="mt-1 text-xs text-gray-500">
-                Prevent submission if this field is empty
+                {t('builder.properties.required_desc')}
               </p>
             </div>
 
             {/* Sublabel */}
             <div>
               <label className="block text-sm font-medium text-black mb-1">
-                Sublabel
+                {t('builder.properties.sublabel')}
               </label>
               <input
                 type="text"
@@ -128,7 +117,7 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
                 className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
               />
               <p className="mt-1 text-xs text-gray-500">
-                Add a short description below the field
+                {t('builder.properties.sublabel_desc')}
               </p>
             </div>
 
@@ -146,7 +135,7 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
               className="w-full mt-4 px-3 py-2 text-sm font-medium text-black bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
             >
               <Copy className="h-4 w-4" />
-              DUPLICATE
+              {t('builder.properties.duplicate')}
             </button>
           </div>
         )}
@@ -157,7 +146,7 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
             {/* Width */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Width
+                {t('builder.properties.width')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -176,19 +165,19 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
                         value={options.customWidth || 300}
                         onChange={(e) => handleOptionUpdate('customWidth', parseInt(e.target.value))}
                         className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
-                        placeholder="Width in px"
+                        placeholder={t('builder.properties.width_px_placeholder')}
                     />
                  </div>
               )}
                <p className="mt-1 text-xs text-gray-500">
-                The width of this field will change according to your form's width.
+                {t('builder.properties.width_desc')}
               </p>
             </div>
 
             {/* Height */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Height
+                {t('builder.properties.height')}
                </label>
                <div className="flex items-center gap-2">
                  <input
@@ -196,19 +185,19 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
                       value={options.rows || 4}
                       onChange={(e) => handleOptionUpdate('rows', parseInt(e.target.value))}
                       className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
-                      placeholder="Rows"
+                      placeholder={t('builder.properties.height')}
                   />
                   {/* <span className="text-sm text-gray-500">Rows</span> */}
                </div>
                <p className="mt-1 text-xs text-gray-500">
-                Height in rows
+                {t('builder.properties.height_desc')}
               </p>
             </div>
 
             {/* Entry Limits */}
              <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Entry Limits
+                {t('builder.properties.entry_limits')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -224,7 +213,7 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
                  <div className="mt-2 space-y-2">
                    <div className="flex gap-2">
                      <div className="flex-1">
-                        <label className="text-xs text-gray-500 mb-1 block">Min</label>
+                        <label className="text-xs text-gray-500 mb-1 block">{t('builder.properties.min')}</label>
                         <input
                             type="number"
                             value={validation.minLength || ''}
@@ -233,7 +222,7 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
                         />
                      </div>
                      <div className="flex-1">
-                        <label className="text-xs text-gray-500 mb-1 block">Max</label>
+                        <label className="text-xs text-gray-500 mb-1 block">{t('builder.properties.max')}</label>
                         <input
                             type="number"
                             value={validation.maxLength || ''}
@@ -246,14 +235,14 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
                  </div>
               )}
                <p className="mt-1 text-xs text-gray-500">
-                Limit the minimum or maximum amount of text allowed in this field
+                {t('builder.properties.entry_limits_text_desc')}
               </p>
             </div>
 
             {/* Editor Mode */}
             <div>
               <label className="block text-sm font-medium text-black mb-2">
-                Editor Mode
+                {t('builder.properties.editor_mode')}
               </label>
               <div className="flex gap-px bg-gray-200 border border-gray-300 rounded overflow-hidden">
                 {['PLAIN_TEXT', 'RICH_TEXT'].map((mode) => (
@@ -266,39 +255,39 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
                         : 'bg-white text-black hover:bg-gray-50'
                     }`}
                   >
-                    {mode === 'PLAIN_TEXT' ? 'PLAIN TEXT' : 'RICH TEXT'}
+                    {mode === 'PLAIN_TEXT' ? t('builder.properties.plain_text') : t('builder.properties.rich_text')}
                   </button>
                 ))}
               </div>
                <p className="mt-1 text-xs text-gray-500">
-                Give users text formatting options with Rich Text
+                {t('builder.properties.editor_mode_desc')}
               </p>
             </div>
 
             {/* Validation */}
              <div>
               <label className="block text-sm font-medium text-black mb-1">
-                Validation
+                {t('builder.properties.validation')}
               </label>
               <Select
                 value={validation.type || 'None'}
                 onValueChange={(val) => handleValidationUpdate('type', val)}
               >
                 <SelectTrigger className="w-full bg-white border-gray-400">
-                    <SelectValue placeholder="Select validation..." />
+                    <SelectValue placeholder={t('builder.properties.select_validation')} />
                 </SelectTrigger>
                 <SelectContent>
-                    <SelectItem value="None">None</SelectItem>
-                    <SelectItem value="Email">Email</SelectItem>
-                    <SelectItem value="URL">URL</SelectItem>
-                    <SelectItem value="Alphabetic">Alphabetic</SelectItem>
-                    <SelectItem value="Alphanumeric">Alphanumeric</SelectItem>
-                    <SelectItem value="Numeric">Numeric</SelectItem>
-                    <SelectItem value="Regex">Regex</SelectItem>
+                    <SelectItem value="None">{t('builder.properties.validation_none')}</SelectItem>
+                    <SelectItem value="Email">{t('builder.properties.validation_email')}</SelectItem>
+                    <SelectItem value="URL">{t('builder.properties.validation_url')}</SelectItem>
+                    <SelectItem value="Alphabetic">{t('builder.properties.validation_alphabetic')}</SelectItem>
+                    <SelectItem value="Alphanumeric">{t('builder.properties.validation_alphanumeric')}</SelectItem>
+                    <SelectItem value="Numeric">{t('builder.properties.validation_numeric')}</SelectItem>
+                    <SelectItem value="Regex">{t('builder.properties.validation_regex')}</SelectItem>
                 </SelectContent>
               </Select>
                <p className="mt-1 text-xs text-gray-500">
-                Require entries to match a certain format
+                {t('builder.properties.validation_desc')}
               </p>
             </div>
           </div>
@@ -310,7 +299,7 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
             {/* Placeholder */}
              <div>
               <label className="block text-sm font-medium text-black mb-1">
-                Placeholder
+                {t('builder.properties.placeholder')}
               </label>
               <input
                 type="text"
@@ -319,14 +308,14 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
                 className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
               />
               <p className="mt-1 text-xs text-gray-500">
-                Add an example inside the field
+                {t('builder.properties.placeholder_desc')}
               </p>
             </div>
 
             {/* Hover Text */}
             <div>
               <label className="block text-sm font-medium text-black mb-1">
-                Hover Text
+                {t('builder.properties.hover_text')}
               </label>
               <textarea
                 value={options.hoverText || ''}
@@ -335,14 +324,14 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
                 className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
               />
               <p className="mt-1 text-xs text-gray-500">
-                Show a description when a user hovers over this field
+                {t('builder.properties.hover_text_desc')}
               </p>
             </div>
 
              {/* Default Value */}
              <div>
               <label className="block text-sm font-medium text-black mb-1">
-                Default Value
+                {t('builder.properties.default_value')}
               </label>
               <textarea
                  value={options.defaultValue || ''}
@@ -351,14 +340,14 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
                  className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
               />
               <p className="mt-1 text-xs text-gray-500">
-                Pre-populate this field with a default value
+                {t('builder.properties.default_value_desc')}
               </p>
             </div>
 
              {/* Read Only */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Read Only
+                {t('builder.properties.read_only')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -370,14 +359,14 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
                 </label>
                <p className="mt-1 text-xs text-gray-500">
-                Prevent entry in this field
+                {t('builder.properties.read_only_desc')}
               </p>
             </div>
 
             {/* Shrink */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Shrink
+                {t('builder.properties.shrink')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -389,14 +378,14 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
                 </label>
                <p className="mt-1 text-xs text-gray-500">
-                Make field smaller
+                {t('builder.properties.shrink_desc')}
               </p>
             </div>
 
              {/* Hide Field */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Hide Field
+                {t('builder.properties.hide_field')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -407,6 +396,9 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
                   />
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
                 </label>
+                <p className="mt-1 text-xs text-gray-500">
+                  {t('builder.properties.hide_field_desc')}
+                </p>
             </div>
 
           </div>

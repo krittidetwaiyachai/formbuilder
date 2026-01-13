@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { Field } from '@/types';
 import { Copy } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { stripHtml } from '@/lib/ui/utils';
+import { PropertiesTabs } from '../common/PropertiesTabs';
 
 interface FullNamePropertiesProps {
   field: Field;
@@ -9,6 +12,7 @@ interface FullNamePropertiesProps {
 }
 
 export const FullNameProperties = ({ field, updateField, duplicatesField }: FullNamePropertiesProps) => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'general' | 'options' | 'advanced'>('general');
 
   const options = field.options || {};
@@ -29,39 +33,29 @@ export const FullNameProperties = ({ field, updateField, duplicatesField }: Full
 
   return (
     <>
-      <div className="flex items-center gap-1 mb-4 bg-gray-100 p-1 rounded-md">
-        {['general', 'options', 'advanced'].map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab as any)}
-            className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-colors uppercase ${
-              activeTab === tab
-                ? 'bg-white text-black shadow-sm'
-                : 'text-gray-600 hover:text-black'
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
-      </div>
+      <PropertiesTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
       <div className="space-y-4">
         {activeTab === 'general' && (
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-black mb-1">Field Label</label>
+              <label className="block text-sm font-medium text-black mb-1">
+                {t('builder.properties.field_label')}
+              </label>
               <input
                 type="text"
-                value={field.label}
+                value={stripHtml(field.label)}
                 onChange={(e) => handleUpdate({ label: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-black mb-2">Label Alignment</label>
+              <label className="block text-sm font-medium text-black mb-2">
+                {t('builder.properties.label_alignment')}
+              </label>
               <div className="flex gap-2">
-                {(['LEFT', 'RIGHT', 'TOP'] as const).map((align) => (
+                {(['LEFT', 'CENTER', 'TOP'] as const).map((align) => (
                   <button
                     key={align}
                     onClick={() => handleOptionUpdate('labelAlignment', align)}
@@ -71,14 +65,16 @@ export const FullNameProperties = ({ field, updateField, duplicatesField }: Full
                         : 'bg-white text-black border-gray-400 hover:bg-gray-50'
                     }`}
                   >
-                    {align}
+                   {align === 'LEFT' ? t('builder.properties.left') : align === 'CENTER' ? t('builder.properties.center') : t('builder.properties.top')}
                   </button>
                 ))}
               </div>
             </div>
 
             <div>
-               <label className="block text-sm font-medium text-black mb-1">Required</label>
+               <label className="block text-sm font-medium text-black mb-1">
+                {t('builder.properties.required')}
+               </label>
                <label className="relative inline-flex items-center cursor-pointer">
                 <input
                   type="checkbox"
@@ -88,13 +84,17 @@ export const FullNameProperties = ({ field, updateField, duplicatesField }: Full
                 />
                 <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
               </label>
-               <p className="mt-1 text-xs text-gray-500">Prevent submission if this field is empty</p>
+               <p className="mt-1 text-xs text-gray-500">
+                {t('builder.properties.required_desc')}
+              </p>
             </div>
             
             <div>
-               <label className="block text-sm font-medium text-black mb-2">Sublabels</label>
+               <label className="block text-sm font-medium text-black mb-2">
+                {t('builder.properties.sublabels')}
+               </label>
                <div className="grid grid-cols-2 gap-px bg-gray-200 border border-gray-300 rounded overflow-hidden">
-                  <div className="bg-slate-700/5 p-2 flex items-center"><span className="text-xs font-semibold">First Name</span></div>
+                  <div className="bg-slate-700/5 p-2 flex items-center"><span className="text-xs font-semibold">{t('builder.properties.first_name')}</span></div>
                   <div className="bg-white p-0">
                     <input 
                       type="text" 
@@ -104,7 +104,7 @@ export const FullNameProperties = ({ field, updateField, duplicatesField }: Full
                     />
                   </div>
                   
-                  <div className="bg-slate-700/5 p-2 flex items-center"><span className="text-xs font-semibold">Last Name</span></div>
+                  <div className="bg-slate-700/5 p-2 flex items-center"><span className="text-xs font-semibold">{t('builder.properties.last_name')}</span></div>
                   <div className="bg-white p-0">
                     <input 
                       type="text" 
@@ -130,7 +130,7 @@ export const FullNameProperties = ({ field, updateField, duplicatesField }: Full
               className="w-full mt-4 px-3 py-2 text-sm font-medium text-black bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
             >
               <Copy className="h-4 w-4" />
-              DUPLICATE
+              {t('builder.properties.duplicate')}
             </button>
           </div>
         )}
@@ -138,7 +138,9 @@ export const FullNameProperties = ({ field, updateField, duplicatesField }: Full
         {activeTab === 'options' && (
           <div className="space-y-6">
             <div>
-               <label className="block text-sm font-medium text-black mb-1">Middle Name</label>
+               <label className="block text-sm font-medium text-black mb-1">
+                {t('builder.properties.middle_name')}
+               </label>
                <label className="relative inline-flex items-center cursor-pointer">
                 <input
                   type="checkbox"
@@ -148,11 +150,15 @@ export const FullNameProperties = ({ field, updateField, duplicatesField }: Full
                 />
                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
               </label>
-               <p className="mt-1 text-xs text-gray-500">Let users enter a middle name</p>
+               <p className="mt-1 text-xs text-gray-500">
+                {t('builder.properties.middle_name_desc')}
+              </p>
             </div>
 
              <div>
-               <label className="block text-sm font-medium text-black mb-1">Prefix</label>
+               <label className="block text-sm font-medium text-black mb-1">
+                {t('builder.properties.prefix')}
+               </label>
                <label className="relative inline-flex items-center cursor-pointer">
                 <input
                   type="checkbox"
@@ -162,11 +168,15 @@ export const FullNameProperties = ({ field, updateField, duplicatesField }: Full
                 />
                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
               </label>
-               <p className="mt-1 text-xs text-gray-500">Let users enter a title before their name (Mr., Mrs., Dr.)</p>
+               <p className="mt-1 text-xs text-gray-500">
+                {t('builder.properties.prefix_desc')}
+              </p>
             </div>
 
              <div>
-               <label className="block text-sm font-medium text-black mb-1">Suffix</label>
+               <label className="block text-sm font-medium text-black mb-1">
+                {t('builder.properties.suffix')}
+               </label>
                <label className="relative inline-flex items-center cursor-pointer">
                 <input
                   type="checkbox"
@@ -176,7 +186,9 @@ export const FullNameProperties = ({ field, updateField, duplicatesField }: Full
                 />
                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
               </label>
-               <p className="mt-1 text-xs text-gray-500">Let users enter a title after their name (Jr., Sr., PhD)</p>
+               <p className="mt-1 text-xs text-gray-500">
+                {t('builder.properties.suffix_desc')}
+              </p>
             </div>
           </div>
         )}
@@ -184,9 +196,11 @@ export const FullNameProperties = ({ field, updateField, duplicatesField }: Full
         {activeTab === 'advanced' && (
           <div className="space-y-6">
             <div>
-               <label className="block text-sm font-medium text-black mb-2">Placeholder</label>
+               <label className="block text-sm font-medium text-black mb-2">
+                {t('builder.properties.placeholder')}
+               </label>
                <div className="grid grid-cols-2 gap-px bg-gray-200 border border-gray-300 rounded overflow-hidden">
-                  <div className="bg-slate-700/5 p-2 flex items-center"><span className="text-xs font-semibold">First Name</span></div>
+                  <div className="bg-slate-700/5 p-2 flex items-center"><span className="text-xs font-semibold">{t('builder.properties.first_name')}</span></div>
                   <div className="bg-white p-0">
                     <input 
                       type="text" 
@@ -196,7 +210,7 @@ export const FullNameProperties = ({ field, updateField, duplicatesField }: Full
                     />
                   </div>
                   
-                   <div className="bg-slate-700/5 p-2 flex items-center"><span className="text-xs font-semibold">Last Name</span></div>
+                   <div className="bg-slate-700/5 p-2 flex items-center"><span className="text-xs font-semibold">{t('builder.properties.last_name')}</span></div>
                   <div className="bg-white p-0">
                     <input 
                       type="text" 
@@ -206,22 +220,30 @@ export const FullNameProperties = ({ field, updateField, duplicatesField }: Full
                     />
                   </div>
                </div>
-               <p className="mt-1 text-xs text-gray-500">Add an example inside each field</p>
+               <p className="mt-1 text-xs text-gray-500">
+                {t('builder.properties.fullname_placeholder_desc')}
+              </p>
             </div>
 
              <div>
-               <label className="block text-sm font-medium text-black mb-1">Hover Text</label>
+               <label className="block text-sm font-medium text-black mb-1">
+                {t('builder.properties.hover_text')}
+               </label>
                 <textarea
                    value={options.hoverText || ''}
                    onChange={(e) => handleOptionUpdate('hoverText', e.target.value)}
                    rows={2}
                    className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
                  />
-                <p className="mt-1 text-xs text-gray-500">Show a description when a user hovers over this field</p>
+                <p className="mt-1 text-xs text-gray-500">
+                  {t('builder.properties.hover_text_desc')}
+                </p>
             </div>
 
             <div>
-               <label className="block text-sm font-medium text-black mb-1">Read Only</label>
+               <label className="block text-sm font-medium text-black mb-1">
+                {t('builder.properties.read_only')}
+               </label>
                <label className="relative inline-flex items-center cursor-pointer">
                 <input
                   type="checkbox"
@@ -231,11 +253,15 @@ export const FullNameProperties = ({ field, updateField, duplicatesField }: Full
                 />
                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
               </label>
-               <p className="mt-1 text-xs text-gray-500">Prevent entry in this field</p>
+               <p className="mt-1 text-xs text-gray-500">
+                {t('builder.properties.read_only_desc')}
+              </p>
             </div>
 
             <div>
-               <label className="block text-sm font-medium text-black mb-1">Shrink</label>
+               <label className="block text-sm font-medium text-black mb-1">
+                {t('builder.properties.shrink')}
+               </label>
                <label className="relative inline-flex items-center cursor-pointer">
                  <input
                    type="checkbox"
@@ -245,11 +271,15 @@ export const FullNameProperties = ({ field, updateField, duplicatesField }: Full
                  />
                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
               </label>
-               <p className="mt-1 text-xs text-gray-500">Make field smaller</p>
+               <p className="mt-1 text-xs text-gray-500">
+                {t('builder.properties.shrink_desc')}
+              </p>
             </div>
             
             <div>
-               <label className="block text-sm font-medium text-black mb-1">Hide field</label>
+               <label className="block text-sm font-medium text-black mb-1">
+                {t('builder.properties.hide_field')}
+               </label>
                <label className="relative inline-flex items-center cursor-pointer">
                 <input
                   type="checkbox"
@@ -259,6 +289,9 @@ export const FullNameProperties = ({ field, updateField, duplicatesField }: Full
                 />
                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
               </label>
+               <p className="mt-1 text-xs text-gray-500">
+                {t('builder.properties.hide_field_desc')}
+              </p>
             </div>
           </div>
         )}

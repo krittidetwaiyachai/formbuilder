@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, LayoutTemplate, FileText, CheckCircle2, X, ChevronLeft, ChevronRight, GripVertical } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Field, FieldType } from '@/types';
 import {
   DndContext,
@@ -11,7 +12,6 @@ import {
   DragEndEvent,
 } from '@dnd-kit/core';
 import {
-  arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
   useSortable,
@@ -166,6 +166,7 @@ export default function PageNavigation({
   hasThankYou = true,
   className = '',
 }: PageNavigationProps & { pageSettings?: { id: string; title: string }[] }) {
+  const { t } = useTranslation();
   const pageBreaks = fields.filter((f) => f.type === FieldType.PAGE_BREAK);
   const totalContentPages = pageBreaks.length + 1;
   const contentPages = Array.from({ length: totalContentPages }, (_, i) => i);
@@ -176,7 +177,7 @@ export default function PageNavigation({
     if (pageSettings && pageSettings[index]) {
         return pageSettings[index].title;
     }
-    return `Page ${index + 1}`;
+    return t('builder.pagination.page', { index: index + 1 });
   };
 
   const orderedPages = [
@@ -280,7 +281,7 @@ export default function PageNavigation({
             <LayoutTemplate
               className={`w-4 h-4 mr-2 ${currentPage === -1 ? 'text-gray-300' : 'text-gray-400'}`}
             />
-            Welcome Screen
+            {t('builder.pagination.welcome_page')}
             <span
               onClick={(e) => {
                 e.stopPropagation();
@@ -342,7 +343,7 @@ export default function PageNavigation({
             <CheckCircle2
               className={`w-4 h-4 mr-2 ${currentPage === -2 ? 'text-gray-300' : 'text-gray-400'}`}
             />
-            End Page
+            {t('builder.pagination.end_page')}
             <span
               onClick={(e) => {
                 e.stopPropagation();
@@ -363,7 +364,7 @@ export default function PageNavigation({
           className="flex items-center px-4 py-2 bg-black text-white text-sm font-medium rounded-lg shadow-sm hover:bg-gray-800 hover:shadow-md transition-all duration-200 border border-transparent"
         >
           <Plus className="h-4 w-4 mr-1.5" />
-          Add Page
+          {t('builder.pagination.add_page')}
         </button>
 
         {/* Dropdown Menu */}
@@ -374,7 +375,7 @@ export default function PageNavigation({
             className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-black flex items-center transition-colors first:rounded-t-xl"
           >
             <FileText className="w-4 h-4 mr-2.5 text-gray-400" />
-            Page
+            {t('builder.pagination.page_generic')}
           </button>
 
           {/* Welcome Page Option */}
@@ -390,7 +391,7 @@ export default function PageNavigation({
             <LayoutTemplate
               className={`w-4 h-4 mr-2.5 ${hasWelcome ? 'text-gray-300' : 'text-gray-400'}`}
             />
-            {hasWelcome ? 'Welcome Page (Added)' : 'Welcome Page'}
+            {hasWelcome ? `${t('builder.pagination.welcome_page')} ${t('builder.pagination.added')}` : t('builder.pagination.welcome_page')}
           </button>
 
           {/* End Page Option */}
@@ -406,7 +407,7 @@ export default function PageNavigation({
             <CheckCircle2
               className={`w-4 h-4 mr-2.5 ${hasThankYou ? 'text-gray-300' : 'text-gray-400'}`}
             />
-            {hasThankYou ? 'End Page (Added)' : 'End Page'}
+            {hasThankYou ? `${t('builder.pagination.end_page')} ${t('builder.pagination.added')}` : t('builder.pagination.end_page')}
           </button>
         </div>
       </div>

@@ -1,0 +1,20 @@
+export default {
+  "public.loading": "กำลังโหลด...",
+  "public.form_not_found_title": "ไม่พบฟอร์ม",
+  "public.form_not_found_desc": "ฟอร์มที่คุณค้นหาไม่มีอยู่หรือไม่ถูกลบไปแล้ว",
+  "public.form_unavailable_title": "ฟอร์มไม่พร้อมใช้งาน",
+  "public.form_unavailable_desc": "ฟอร์มนี้ยังไม่เปิดรับคำตอบในขณะนี้",
+  "public.already_submitted_title": "ส่งฟอร์มแล้ว",
+  "public.already_submitted_desc": "คุณได้ส่งคำตอบสำหรับฟอร์มนี้ไปแล้ว",
+  "public.thank_you": "ขอบคุณที่ร่วมตอบแบบสอบถาม!",
+  "public.quiz_unavailable_title": "แบบทดสอบไม่พร้อมใช้งาน",
+  "public.email_label": "อีเมล",
+  "public.email_required": "กรุณาระบุอีเมล",
+  "public.email_invalid": "อีเมลไม่ถูกต้อง",
+  "public.email_collecting_notice": "ฟอร์มนี้มีการเก็บรวบรวมอีเมลอัตโนมัติ",
+  "public.submit": "ส่งคำตอบ",
+  "public.back": "ย้อนกลับ",
+  "public.next": "ถัดไป",
+  "public.timer.remaining": "เหลือเวลา",
+  "public.timer.times_up": "หมดเวลา!"
+};

@@ -4,6 +4,7 @@ import { FolderPlus } from 'lucide-react';
 import FolderCard from './FolderCard';
 import type { Folder } from '@/types/folder';
 import type { Form } from '@/types';
+import { useTranslation } from 'react-i18next';
 
 interface FoldersSectionProps {
   folders: Folder[];
@@ -34,6 +35,7 @@ export default function FoldersSection({
   onDeleteForm,
   onCollaboratorsClick,
 }: FoldersSectionProps) {
+  const { t } = useTranslation();
   const getFormsInFolder = (folderId: string) => {
     return forms.filter(f => (f as any).folderId === folderId);
   };
@@ -49,13 +51,13 @@ export default function FoldersSection({
   return (
     <div className="mb-8">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold text-gray-900">Folders</h2>
+        <h2 className="text-xl font-bold text-gray-900">{t('dashboard.folders')}</h2>
         <button
           onClick={onCreateFolder}
           className="flex items-center gap-2 px-4 py-2 bg-white border-2 border-gray-200 text-gray-700 rounded-xl hover:border-gray-300 hover:bg-gray-50 transition-all font-medium"
         >
           <FolderPlus className="w-4 h-4" />
-          New Folder
+          {t('dashboard.new_folder')}
         </button>
       </div>
 

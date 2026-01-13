@@ -2,47 +2,44 @@ import React, { useRef, useState } from 'react';
 import { Field, FieldType } from '@/types';
 import { useFormStore } from '@/store/formStore';
 import { ChevronRight, FileX } from 'lucide-react';
+import { RichTextEditor } from '@/components/ui/RichTextEditor';
+import { RichTextToolbar } from '@/components/ui/RichTextToolbar';
 
 interface HeaderFieldProps {
   field: Field;
   fieldStyle: {
     cardBorder: string;
-    inputBorder: string;
-    bgGradient: string;
     iconColor: string;
+    bgGradient: string;
+    inputBorder: string;
+    overlayBorder: string;
   };
-  isSelected: boolean;
-  onSelect: (id: string, autoFocus?: boolean) => void;
-  disabledClass?: string;
+  isSelected?: boolean;
+  onSelect?: (id: string, autoFocus?: boolean) => void;
 }
 
 export const HeaderField: React.FC<HeaderFieldProps> = ({ 
   field, 
-  fieldStyle: _fieldStyle, 
-  isSelected, 
-  onSelect,
-  disabledClass: _disabledClass = "opacity-60 cursor-pointer" 
+  fieldStyle, 
+  isSelected = false,
+  onSelect 
 }) => {
   const updateField = useFormStore((state) => state.updateField);
-  const headerInputRef = useRef<HTMLHeadingElement>(null);
-  const subheadingInputRef = useRef<HTMLParagraphElement>(null);
-  const headerContainerRef = useRef<HTMLDivElement>(null);
-  const isFocusingRef = useRef(false);
+  const [activeInput, setActiveInput] = useState<'heading' | 'subheading'>('heading');
 
-  // Initial Sync logic is handled in parent FieldItem currently, but standard fields don't need it as much
-  // Header needs contentEditable support.
-  // Actually, extracting Header logic fully including refs might be tricky with the current logic in FieldItem using refs to focus.
-  // For now, I will keep the contentEditable logic HERE inside HeaderField, but FieldItem's "shouldFocusField" effect might need adjustment.
-  // Wait, FieldItem's focus effect tries to focus `headerInputRef` which is inside FieldItem.
-  // If I move this to HeaderField, FieldItem loses access to the ref unless I use forwardRef or useImperativeHandle.
-  // OR, I can move the focus logic into this component.
-  
-  // Implementation note: The `FieldItem` component has specific `useEffect` hooks for focusing.
-  // To make this refactor work without breaking focus, I might need to move that focus logic here too.
-  // Or expose a ref.
-  
-  // Let's implement rendering first.
-  
+  const headingModules = React.useMemo(() => ({
+    toolbar: {
+      container: `#toolbar-heading-${field.id}`,
+    }
+  }), [field.id]);
+
+  const subheadingModules = React.useMemo(() => ({
+    toolbar: {
+      container: `#toolbar-subheading-${field.id}`,
+    }
+  }), [field.id]);
+  const headerContainerRef = useRef<HTMLDivElement>(null);
+
   if (field.type === FieldType.PARAGRAPH) {
      return (
         <div className="max-w-2xl pointer-events-none">
@@ -98,168 +95,117 @@ export const HeaderField: React.FC<HeaderFieldProps> = ({
     );
   }
 
-  // HEADER TYPE
-  const headerValidation = (field.validation as any) || {};
-  const headerSize = headerValidation?.size || 'DEFAULT';
-  const headerAlignment = headerValidation?.alignment || 'LEFT';
-  const headerSubheading = field.placeholder || '';
-  const headingImage = headerValidation?.headingImage || '';
-  const imagePosition = headerValidation?.imagePosition || 'CENTER';
-  const overlayOpacity = headerValidation?.overlayOpacity ?? 50;
+  // Parse header properties
+  const headerProps = field.properties as any || {};
+  const headerAlignment = headerProps.alignment || 'LEFT';
+  const headerSize = headerProps.size || 'MEDIUM';
+  const headerSubheading = field.placeholder && field.placeholder.length > 0;
   
+  // New Header Image properties
+  const headingImage = headerProps.headingImage || null;
+  const imagePosition = headerProps.imagePosition || 'TOP';
+  const hasBackgroundImage = headingImage && imagePosition === 'BACKGROUND';
+  const overlayOpacity = headerProps.overlayOpacity ?? 50;
+
   const getHeaderSizeClass = () => {
-    switch (headerSize) {
-      case 'LARGE': return 'text-4xl';
+    switch(headerSize) {
       case 'SMALL': return 'text-xl';
-      default: return 'text-2xl';
+      case 'LARGE': return 'text-4xl';
+      default: return 'text-2xl'; // MEDIUM
     }
   };
-  
+
   const getHeaderAlignmentClass = () => {
-    switch (headerAlignment) {
+    switch(headerAlignment) {
       case 'CENTER': return 'text-center';
       case 'RIGHT': return 'text-right';
       default: return 'text-left';
     }
   };
 
-  const hasBackgroundImage = headingImage && headingImage.startsWith('http') && imagePosition === 'BACKGROUND';
-
-  // State for Header
-  const [headerHtml, setHeaderHtml] = useState({ __html: field.label || 'Heading' });
-  const [subHeadingHtml, setSubHeadingHtml] = useState({ __html: field.placeholder || (isSelected ? 'Add a subheading...' : '') });
-
-  // Sync Header Label
-  React.useEffect(() => {
-     const currentText = headerInputRef.current?.textContent;
-     const newLabel = field.label || 'Heading';
-     if (currentText !== newLabel) {
-         setHeaderHtml({ __html: newLabel });
-     }
-  }, [field.label]);
-
-  // Sync Subheading
-  React.useEffect(() => {
-     const currentText = subheadingInputRef.current?.textContent;
-     const newSub = field.placeholder || (isSelected ? 'Add a subheading...' : '');
-     if (currentText !== newSub) {
-         setSubHeadingHtml({ __html: newSub });
-     }
-  }, [field.placeholder, isSelected]);
-
   return (
     <div 
-        ref={headerContainerRef}
-        className={`cursor-text relative ${hasBackgroundImage ? 'rounded-xl overflow-hidden min-h-80' : ''}`}
+      ref={headerContainerRef}
+      className={`relative w-full transition-all duration-200 group
+        ${isSelected ? '' : 'border-transparent hover:border-gray-200'}
+        ${isSelected ? 'cursor-default' : 'cursor-pointer'}
+        ${hasBackgroundImage ? 'overflow-hidden rounded-lg min-h-[200px]' : 'rounded-lg'}
+      `}
+      onClick={(e) => {
+         e.stopPropagation();
+         if (onSelect) {
+             // If clicking generic area, default to heading focus if strictly needed, 
+             // but usually letting user click text is better.
+             onSelect(field.id);
+         }
+      }}
     >
-        {hasBackgroundImage && (
-          <>
-            <img 
-              src={headingImage} 
-              alt="" 
-              className="absolute inset-0 w-full h-full object-cover"
-              onError={(e) => {
-                (e.target as HTMLImageElement).style.display = 'none';
-              }}
-            />
-            <div 
-              className="absolute inset-0" 
-              style={{ backgroundColor: `rgba(0, 0, 0, ${overlayOpacity / 100})` }}
-            />
-          </>
-        )}
+       {/* Background Image Rendering */}
+       {hasBackgroundImage && (
+         <div 
+           className="absolute inset-0 z-0 bg-cover bg-center"
+           style={{ backgroundImage: `url(${headingImage})` }}
+         >
+           <div className="absolute inset-0" style={{ backgroundColor: `rgba(0, 0, 0, ${overlayOpacity / 100})` }}></div>
+         </div>
+       )}
+
         <div className={hasBackgroundImage ? `relative z-10 p-8 flex flex-col justify-center h-full min-h-80 ${
           headerAlignment === 'CENTER' ? 'items-center' : 
           headerAlignment === 'RIGHT' ? 'items-end' : 'items-start'
         }` : ''}>
-        <h2
-          ref={headerInputRef}
-          contentEditable={isSelected}
-          suppressContentEditableWarning
-          spellCheck={false}
-          className={`${getHeaderSizeClass()} font-bold bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent caretaker-gray-900 ${getHeaderAlignmentClass()} outline-none cursor-text leading-tight tracking-tight`}
-          style={{ 
-            pointerEvents: 'auto', 
-            userSelect: 'text', 
-            WebkitUserSelect: 'text',
-            minHeight: '1.5em',
-            caretColor: '#111827' // Force caret color
-          }}
-           dangerouslySetInnerHTML={headerHtml}
-          onMouseDown={(e) => {
-            e.stopPropagation();
-            isFocusingRef.current = true;
-            if (headerInputRef.current) headerInputRef.current.focus();
-          }}
-          onPointerDown={(e) => e.stopPropagation()}
-          onMouseUp={(e) => e.stopPropagation()}
-          onClick={(e) => {
-            e.stopPropagation();
-            if (!isSelected) {
-              onSelect(field.id, true);
-            }
-          }}
-          onInput={(e) => {
-             const newText = e.currentTarget.textContent || '';
-             updateField(field.id, { label: newText });
-          }}
-          onBlur={(e) => {
-             const newText = e.currentTarget.textContent || '';
-             if (newText !== (field.label || 'Header')) {
-               updateField(field.id, { label: newText });
-             }
-          }}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-              e.preventDefault();
-              e.currentTarget.blur();
-            }
-          }}
-        />
-        {(headerSubheading || isSelected) && (
-          <p
-            ref={subheadingInputRef}
-            contentEditable={isSelected}
-            suppressContentEditableWarning
-            spellCheck={false}
-            className={`text-base text-gray-500 mt-3 ${getHeaderAlignmentClass()} outline-none cursor-text font-light`}
-            style={{ 
-               pointerEvents: 'auto',
-               userSelect: 'text', 
-               WebkitUserSelect: 'text',
-               minHeight: '1.5em'
-            }}
-             dangerouslySetInnerHTML={subHeadingHtml}
-            onMouseDown={(e) => {
-              e.stopPropagation();
-              isFocusingRef.current = true;
-              if (subheadingInputRef.current) subheadingInputRef.current.focus();
-            }}
-            onPointerDown={(e) => e.stopPropagation()}
-            onMouseUp={(e) => e.stopPropagation()}
-            onClick={(e) => {
-              e.stopPropagation();
-              if (!isSelected) {
-                onSelect(field.id, true);
-              }
-            }}
-            onInput={(e) => {
-               const newText = e.currentTarget.textContent || '';
-               updateField(field.id, { placeholder: newText });
-            }}
-            onBlur={(e) => {
-               const newText = e.currentTarget.textContent || '';
-               if (newText !== field.placeholder) {
-                 updateField(field.id, { placeholder: newText });
-               }
-            }}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                e.currentTarget.blur();
-              }
-            }}
+        
+        {isSelected && (
+          <div className="absolute -top-12 left-0 right-0 z-[60] flex justify-center">
+            <div style={{ display: activeInput === 'heading' ? 'block' : 'none' }}>
+              <RichTextToolbar id={`toolbar-heading-${field.id}`} />
+            </div>
+            <div style={{ display: activeInput === 'subheading' ? 'block' : 'none' }}>
+              <RichTextToolbar id={`toolbar-subheading-${field.id}`} />
+            </div>
+          </div>
+        )}
+
+        {isSelected ? (
+          <div className="relative group/editor">
+             <RichTextEditor
+                theme="snow"
+                value={field.label || 'Heading'}
+                onChange={(value) => updateField(field.id, { label: value })}
+                onFocus={() => setActiveInput('heading')}
+                placeholder="Heading"
+                modules={headingModules}
+                className={`${getHeaderSizeClass()} ${getHeaderAlignmentClass()} text-gray-900 leading-tight tracking-tight borderless`}
+             />
+          </div>
+        ) : (
+          <h2
+            className={`${getHeaderSizeClass()} ${getHeaderAlignmentClass()} text-gray-900 leading-tight tracking-tight ql-editor !p-0 !overflow-visible`}
+            dangerouslySetInnerHTML={{ __html: field.label || 'Heading' }}
           />
+        )}
+        
+        {(headerSubheading || isSelected) && (
+           <div className="mt-3">
+             {isSelected ? (
+               <div className="relative group/editor">
+                 <RichTextEditor
+                   theme="snow"
+                   value={field.placeholder || ''}
+                   onChange={(value) => updateField(field.id, { placeholder: value })}
+                   onFocus={() => setActiveInput('subheading')}
+                   placeholder="Add a subheading..."
+                   modules={subheadingModules}
+                   className={`text-base text-gray-500 ${getHeaderAlignmentClass()} font-light borderless`}
+                 />
+               </div>
+             ) : (
+               <div
+                 className={`text-base text-gray-500 ${getHeaderAlignmentClass()} font-light ql-editor !p-0 !overflow-visible`}
+                 dangerouslySetInnerHTML={{ __html: field.placeholder || (isSelected ? 'Add a subheading...' : '') }}
+               />
+             )}
+           </div>
         )}
          {headingImage && headingImage.startsWith('http') && imagePosition !== 'BACKGROUND' && (
           <div className={`mt-6 ${

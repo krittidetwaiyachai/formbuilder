@@ -105,6 +105,7 @@ export interface LogicRule {
 
 export interface Form {
   id: string;
+  folderId?: string;
   title: string;
   description?: string;
   status: FormStatus;
@@ -119,6 +120,9 @@ export interface Form {
     showExplanation?: boolean;
     shuffleQuestions?: boolean;
     requireSignIn?: boolean;
+    timeLimit?: number; // Time limit in minutes
+    startTime?: string; // ISO date string for when quiz opens
+    endTime?: string; // ISO date string for when quiz closes
   };
   createdById: string;
   createdAt: string;
@@ -200,7 +204,7 @@ export interface ThankYouScreenSettings {
   showConfetti?: boolean;
 }
 
-export interface Preset {
+export interface Bundle {
   id: string;
   name: string;
   description?: string;
@@ -208,12 +212,12 @@ export interface Preset {
   sensitivityLevel: SensitivityLevel;
   version: number;
   isActive: boolean;
-  fields?: PresetField[];
+  fields?: BundleField[];
 }
 
-export interface PresetField {
+export interface BundleField {
   id: string;
-  presetId: string;
+  bundleId: string;
   formId?: string;
   type: FieldType;
   label: string;

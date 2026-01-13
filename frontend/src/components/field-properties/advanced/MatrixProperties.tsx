@@ -1,21 +1,23 @@
-
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Field } from '@/types';
 import { Plus, X, GripVertical, Copy } from 'lucide-react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import { stripHtml } from '@/lib/ui/utils';
+import { PropertiesTabs } from '../common/PropertiesTabs';
+import { useTranslation } from 'react-i18next';
 
 interface MatrixPropertiesProps {
   field: Field;
-  currentForm: any;
   updateField: (id: string, updates: Partial<Field>) => void;
   duplicatesField: (field: Field) => void;
 }
 
-export function MatrixProperties({ field, currentForm, updateField, duplicatesField }: MatrixPropertiesProps) {
+export function MatrixProperties({ field, updateField, duplicatesField }: MatrixPropertiesProps) {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'general' | 'fields' | 'advanced'>('general');
 
-  const rows = field.options?.rows || [{ id: 'r1', label: 'Question 1' }];
-  const columns = field.options?.columns || [{ id: 'c1', label: 'Column 1' }];
+  const rows = field.options?.rows || [{ id: 'r1', label: t('builder.properties.question') + ' 1' }];
+  const columns = field.options?.columns || [{ id: 'c1', label: t('builder.properties.column') + ' 1' }];
   const inputType = field.options?.inputType || 'radio';
   const options = field.options || {};
 
@@ -43,7 +45,7 @@ export function MatrixProperties({ field, currentForm, updateField, duplicatesFi
   // --- Row/Col Helpers ---
   const addRow = () => {
     const newId = `r${Date.now()}`;
-    updateRows([...rows, { id: newId, label: `Question ${rows.length + 1}` }]);
+    updateRows([...rows, { id: newId, label: `${t('builder.properties.question')} ${rows.length + 1}` }]);
   };
 
   const removeRow = (index: number) => {
@@ -60,7 +62,7 @@ export function MatrixProperties({ field, currentForm, updateField, duplicatesFi
 
   const addColumn = () => {
     const newId = `c${Date.now()}`;
-    updateColumns([...columns, { id: newId, label: `Column ${columns.length + 1}` }]);
+    updateColumns([...columns, { id: newId, label: `${t('builder.properties.column')} ${columns.length + 1}` }]);
   };
 
   const removeColumn = (index: number) => {
@@ -94,21 +96,12 @@ export function MatrixProperties({ field, currentForm, updateField, duplicatesFi
   return (
     <div className="space-y-4">
       {/* Tabs */}
-      <div className="flex items-center gap-0.5 mb-4 bg-gray-100 p-1 rounded-md">
-        {['general', 'fields', 'advanced'].map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab as any)}
-            className={`flex-1 px-2 py-1.5 text-[10px] font-medium rounded-md transition-colors uppercase whitespace-nowrap ${
-              activeTab === tab
-                ? 'bg-white text-black shadow-sm'
-                : 'text-gray-600 hover:text-black'
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
-      </div>
+      {/* Tabs */}
+      <PropertiesTabs 
+        activeTab={activeTab} 
+        setActiveTab={setActiveTab} 
+        tabs={['general', 'fields', 'advanced']} 
+      />
 
       {/* GENERAL TAB */}
       {activeTab === 'general' && (
@@ -116,11 +109,11 @@ export function MatrixProperties({ field, currentForm, updateField, duplicatesFi
           {/* Field Label */}
           <div>
             <label className="block text-sm font-medium text-black mb-1">
-              Field Label
+              {t('builder.properties.field_label')}
             </label>
             <input
               type="text"
-              value={field.label}
+              value={stripHtml(field.label)}
               onChange={(e) => handleUpdate({ label: e.target.value })}
               className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
             />
@@ -129,7 +122,7 @@ export function MatrixProperties({ field, currentForm, updateField, duplicatesFi
           {/* Required */}
           <div>
              <label className="block text-sm font-medium text-black mb-1">
-                Required
+                {t('builder.properties.required')}
             </label>
              <label className="relative inline-flex items-center cursor-pointer">
               <input
@@ -140,20 +133,25 @@ export function MatrixProperties({ field, currentForm, updateField, duplicatesFi
               />
               <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
             </label>
+             <p className="mt-1 text-xs text-gray-500">
+                {t('builder.properties.required_desc')}
+              </p>
           </div>
 
           {/* Sublabel */}
           <div>
             <label className="block text-sm font-medium text-black mb-1">
-              Sublabel
+              {t('builder.properties.sublabel')}
             </label>
             <input
               type="text"
               value={options.subLabel || ''}
               onChange={(e) => handleOptionUpdate('subLabel', e.target.value)}
               className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
-              placeholder="Additional description..."
             />
+            <p className="mt-1 text-xs text-gray-500">
+                {t('builder.properties.sublabel_desc')}
+            </p>
           </div>
 
           {/* Duplicate Field */}
@@ -166,7 +164,7 @@ export function MatrixProperties({ field, currentForm, updateField, duplicatesFi
             className="w-full mt-4 px-3 py-2 text-sm font-medium text-black bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
           >
             <Copy className="h-4 w-4" />
-            DUPLICATE
+            {t('builder.properties.duplicate')}
           </button>
         </div>
       )}
@@ -177,7 +175,7 @@ export function MatrixProperties({ field, currentForm, updateField, duplicatesFi
           
           {/* Input Type */}
           <div>
-            <label className="block text-sm font-medium text-black mb-2">Input Type</label>
+            <label className="block text-sm font-medium text-black mb-2">{t('builder.properties.input_type')}</label>
             <div className="flex bg-gray-100 p-1 rounded-lg">
                 <button
                     onClick={() => handleOptionUpdate('inputType', 'radio')}
@@ -185,7 +183,7 @@ export function MatrixProperties({ field, currentForm, updateField, duplicatesFi
                         inputType === 'radio' ? 'bg-white shadow-sm text-black' : 'text-gray-500 hover:text-gray-700'
                     }`}
                 >
-                    Single Choice (Radio)
+                    {t('builder.fields.single_choice')}
                 </button>
                 <button
                     onClick={() => handleOptionUpdate('inputType', 'checkbox')}
@@ -193,7 +191,7 @@ export function MatrixProperties({ field, currentForm, updateField, duplicatesFi
                         inputType === 'checkbox' ? 'bg-white shadow-sm text-black' : 'text-gray-500 hover:text-gray-700'
                     }`}
                 >
-                    Multiple Choice (Checkbox)
+                    {t('builder.fields.multiple_choice')}
                 </button>
             </div>
           </div>
@@ -201,7 +199,7 @@ export function MatrixProperties({ field, currentForm, updateField, duplicatesFi
           {/* Rows Editor */}
           <div>
               <div className="flex items-center justify-between mb-2">
-                  <label className="text-sm font-medium text-black">Rows (Questions)</label>
+                  <label className="text-sm font-medium text-black">{t('builder.properties.rows')}</label>
                   <button 
                       onClick={addRow}
                       className="p-1 hover:bg-gray-100 rounded-full text-indigo-600 transition-colors"
@@ -230,7 +228,7 @@ export function MatrixProperties({ field, currentForm, updateField, duplicatesFi
                                                   value={row.label}
                                                   onChange={(e) => updateRowLabel(index, e.target.value)}
                                                   className="flex-1 px-3 py-2 text-sm border border-gray-400 rounded-md focus:border-black focus:ring-1 focus:ring-black outline-none transition-all"
-                                                  placeholder={`Row ${index + 1}`}
+                                                  placeholder={`${t('builder.properties.question')} ${index + 1}`}
                                               />
                                               {rows.length > 1 && (
                                                   <button 
@@ -254,7 +252,7 @@ export function MatrixProperties({ field, currentForm, updateField, duplicatesFi
           {/* Columns Editor */}
           <div>
               <div className="flex items-center justify-between mb-2">
-                  <label className="text-sm font-medium text-black">Columns (Options)</label>
+                  <label className="text-sm font-medium text-black">{t('builder.properties.columns')}</label>
                   <button 
                       onClick={addColumn}
                       className="p-1 hover:bg-gray-100 rounded-full text-indigo-600 transition-colors"
@@ -283,7 +281,7 @@ export function MatrixProperties({ field, currentForm, updateField, duplicatesFi
                                                   value={col.label}
                                                   onChange={(e) => updateColumnLabel(index, e.target.value)}
                                                   className="flex-1 px-3 py-2 text-sm border border-gray-400 rounded-md focus:border-black focus:ring-1 focus:ring-black outline-none transition-all"
-                                                  placeholder={`Column ${index + 1}`}
+                                                  placeholder={`${t('builder.properties.column')} ${index + 1}`}
                                               />
                                               {columns.length > 1 && (
                                                   <button 
@@ -312,7 +310,7 @@ export function MatrixProperties({ field, currentForm, updateField, duplicatesFi
             {/* Hover Text */}
             <div>
               <label className="block text-sm font-medium text-black mb-1">
-                Hover Text
+                {t('builder.properties.hover_text')}
               </label>
               <textarea
                 value={options.hoverText || ''}
@@ -320,12 +318,15 @@ export function MatrixProperties({ field, currentForm, updateField, duplicatesFi
                 rows={2}
                 className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
               />
+               <p className="mt-1 text-xs text-gray-500">
+                {t('builder.properties.hover_text_desc')}
+              </p>
             </div>
 
              {/* Shrink */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Shrink
+                {t('builder.properties.shrink')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -336,12 +337,15 @@ export function MatrixProperties({ field, currentForm, updateField, duplicatesFi
                   />
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
                 </label>
+                <p className="mt-1 text-xs text-gray-500">
+                {t('builder.properties.shrink_desc')}
+              </p>
             </div>
             
             {/* Hide field */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Hide field
+                {t('builder.properties.hide_field')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -352,6 +356,9 @@ export function MatrixProperties({ field, currentForm, updateField, duplicatesFi
                   />
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
                 </label>
+                 <p className="mt-1 text-xs text-gray-500">
+                  {t('builder.properties.hide_field_desc')}
+                </p>
             </div>
         </div>
       )}

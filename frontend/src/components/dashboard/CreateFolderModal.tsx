@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface CreateFolderModalProps {
   isOpen: boolean;
@@ -19,6 +20,7 @@ const COLORS = [
 ];
 
 export default function CreateFolderModal({ isOpen, onClose, onCreate }: CreateFolderModalProps) {
+  const { t } = useTranslation();
   const [name, setName] = useState('');
   const [selectedColor, setSelectedColor] = useState(COLORS[0]);
 
@@ -45,17 +47,17 @@ export default function CreateFolderModal({ isOpen, onClose, onCreate }: CreateF
         </button>
 
         <div className="p-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Create New Folder</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('dashboard.new_folder')}</h2>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Folder Name</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('dashboard.modal.folder_name')}</label>
               <input 
                 type="text" 
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black transition-colors outline-none"
-                placeholder="e.g. Client Projects"
+                placeholder={t('dashboard.modal.folder_placeholder')}
                 required
                 autoFocus
                 maxLength={100}
@@ -63,7 +65,7 @@ export default function CreateFolderModal({ isOpen, onClose, onCreate }: CreateF
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">Color</label>
+              <label className="block text-sm font-medium text-gray-700 mb-3">{t('dashboard.modal.folder_color')}</label>
               <div className="grid grid-cols-8 gap-2">
                 {COLORS.map((color) => (
                   <button
@@ -87,14 +89,14 @@ export default function CreateFolderModal({ isOpen, onClose, onCreate }: CreateF
                 onClick={onClose}
                 className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
               >
-                Cancel
+                {t('dashboard.modal.cancel')}
               </button>
               <button
                 type="submit"
                 disabled={!name.trim()}
                 className="flex-1 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Create Folder
+                {t('dashboard.modal.create')}
               </button>
             </div>
           </form>

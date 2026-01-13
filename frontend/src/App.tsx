@@ -7,6 +7,7 @@ import Layout from './components/Layout';
 import ActivityPage from './pages/ActivityPage';
 import AnalyticsPage from './pages/AnalyticsPage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
+import ErrorPage from './pages/ErrorPage';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           </Route>
         </Route>
         <Route path="forms/:id/preview" element={<FormPreview />} />
+        <Route path="*" element={<ErrorPage code={404} />} />
       </Routes>
     </BrowserRouter>
   );

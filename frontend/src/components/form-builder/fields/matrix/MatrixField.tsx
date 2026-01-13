@@ -1,5 +1,4 @@
-
-import React, { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Field } from '@/types';
 import { Plus, X, GripVertical } from 'lucide-react';
 
@@ -11,8 +10,9 @@ interface MatrixFieldProps {
 }
 
 export function MatrixField({ field, fieldStyle, isSelected, updateField }: MatrixFieldProps) {
-  const rows = field.options?.rows || [{ id: 'r1', label: 'Question 1' }];
-  const columns = field.options?.columns || [{ id: 'c1', label: 'Column 1' }];
+  const { t } = useTranslation();
+  const rows = field.options?.rows || [{ id: 'r1', label: `${t('builder.field.question')} 1` }];
+  const columns = field.options?.columns || [{ id: 'c1', label: `${t('builder.field.column')} 1` }];
   const inputType = field.options?.inputType || 'radio';
 
   const updateRows = (newRows: any[]) => {
@@ -29,12 +29,12 @@ export function MatrixField({ field, fieldStyle, isSelected, updateField }: Matr
 
   const handleAddRow = () => {
     const newId = `r${Date.now()}`;
-    updateRows([...rows, { id: newId, label: `Question ${rows.length + 1}` }]);
+    updateRows([...rows, { id: newId, label: `${t('builder.field.question')} ${rows.length + 1}` }]);
   };
 
   const handleAddColumn = () => {
     const newId = `c${Date.now()}`;
-    updateColumns([...columns, { id: newId, label: `Column ${columns.length + 1}` }]);
+    updateColumns([...columns, { id: newId, label: `${t('builder.field.column')} ${columns.length + 1}` }]);
   };
 
   const handleRemoveRow = (index: number) => {
@@ -85,7 +85,7 @@ export function MatrixField({ field, fieldStyle, isSelected, updateField }: Matr
                         <button
                             onClick={() => handleRemoveColumn(colIndex)}
                             className="absolute -top-1 -right-1 p-0.5 bg-white rounded-full shadow border border-gray-200 text-gray-400 hover:text-red-500 opacity-0 group-hover/col:opacity-100 transition-opacity"
-                            title="Remove Column"
+                            title={t('builder.field.remove_column')}
                         >
                             <X className="w-3 h-3" />
                         </button>
@@ -98,7 +98,7 @@ export function MatrixField({ field, fieldStyle, isSelected, updateField }: Matr
                     <button 
                         onClick={handleAddColumn}
                         className="p-1 hover:bg-gray-200 rounded-full text-gray-400 hover:text-gray-600 transition-colors"
-                        title="Add Column"
+                        title={t('builder.field.add_column')}
                     >
                         <Plus className="w-4 h-4" />
                     </button>
@@ -160,7 +160,7 @@ export function MatrixField({ field, fieldStyle, isSelected, updateField }: Matr
                         className="flex items-center gap-1 text-xs text-gray-400 hover:text-pink-600 font-medium px-2 py-1 rounded hover:bg-pink-50 transition-colors ml-4"
                      >
                          <Plus className="w-3 h-3" />
-                         Add Row
+                         {t('builder.field.add_row')}
                      </button>
                 </td>
                 <td colSpan={columns.length + 1} className="p-2 border-b border-gray-100"></td>

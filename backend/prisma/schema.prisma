@@ -24,6 +24,7 @@ model User {
   formsCollaborated Form[]    @relation("FormCollaborators")
   activityLogs ActivityLog[]
   folders      Folder[]
+  bundlesCreated Bundle[]     @relation("BundleCreator")
   role         Role           @relation(fields: [roleId], references: [id])
 
   @@map("users")
@@ -78,7 +79,7 @@ model Form {
   createdBy    User             @relation("FormCreator", fields: [createdById], references: [id])
   folder       Folder?          @relation(fields: [folderId], references: [id], onDelete: SetNull)
   collaborators User[]          @relation("FormCollaborators")
-  presetFields PresetField[]
+  bundleFields BundleField[]
   logicRules   LogicRule[]
   activityLogs ActivityLog[]
   views        FormView[]
@@ -181,7 +182,7 @@ model LogicAction {
   @@map("logic_actions")
 }
 
-model Preset {
+model Bundle {
   id               String           @id @default(uuid())
   name             String
   description      String?
@@ -192,15 +193,16 @@ model Preset {
   createdById      String
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
-  fields           PresetField[]
+  fields           BundleField[]
+  createdBy        User             @relation("BundleCreator", fields: [createdById], references: [id])
 
   @@unique([name, version])
-  @@map("presets")
+  @@map("bundles")
 }
 
-model PresetField {
+model BundleField {
   id          String    @id @default(uuid())
-  presetId    String
+  bundleId    String
   formId      String?
   type        FieldType
   label       String
@@ -212,9 +214,9 @@ model PresetField {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   form        Form?     @relation(fields: [formId], references: [id], onDelete: Cascade)
-  preset      Preset    @relation(fields: [presetId], references: [id], onDelete: Cascade)
+  bundle      Bundle    @relation(fields: [bundleId], references: [id], onDelete: Cascade)
 
-  @@map("preset_fields")
+  @@map("bundle_fields")
 }
 
 model FormResponse {

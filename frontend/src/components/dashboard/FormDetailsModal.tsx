@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
 import { Form } from '@/types';
 import UserAvatar from '@/components/common/UserAvatar';
+import { useTranslation } from 'react-i18next';
 
 interface FormDetailsModalProps {
   form: (Form & { collaborators?: any[]; createdBy?: any }) | null;
@@ -15,11 +16,12 @@ interface FormDetailsModalProps {
 export default function FormDetailsModal({ form, onClose, onRequestLogin, onOpenCollaborators }: FormDetailsModalProps) {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuthStore();
+  const { t, i18n } = useTranslation();
 
   if (!form) return null;
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString('en-US', {
+    return new Date(dateString).toLocaleString(i18n.language === 'th' ? 'th-TH' : 'en-US', {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
@@ -56,11 +58,13 @@ export default function FormDetailsModal({ form, onClose, onRequestLogin, onOpen
                         ? 'bg-green-100 text-green-700 border border-green-200' 
                         : 'bg-yellow-100 text-yellow-700 border border-yellow-200'
                     }`}>
-                        {form.status}
+                        {form.status === 'PUBLISHED' ? t('dashboard.filters.published') : 
+                         form.status === 'DRAFT' ? t('dashboard.filters.draft') : 
+                         form.status === 'ARCHIVED' ? t('dashboard.filters.archived') : form.status}
                     </span>
                     {form.isQuiz && (
                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-purple-100 text-purple-700 border border-purple-200">
-                             Quiz Mode
+                             {t('dashboard.form.quiz_mode')}
                          </span>
                     )}
                   </div>
@@ -79,24 +83,24 @@ export default function FormDetailsModal({ form, onClose, onRequestLogin, onOpen
               {/* Scrollable Content */}
               <div className="p-6 overflow-y-auto custom-scrollbar">
                 <div className="prose prose-sm max-w-none text-gray-600 mb-8 break-words whitespace-pre-wrap">
-                  {form.description || <span className="italic text-gray-400">No description provided.</span>}
+                  {form.description || <span className="italic text-gray-400">{t('dashboard.form.no_description')}</span>}
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
-                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Statistics</h3>
+                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">{t('dashboard.form.statistics')}</h3>
                     <div className="space-y-3">
                         <div className="flex items-center justify-between text-sm">
                             <div className="flex items-center gap-2 text-gray-600">
                                 <MessageSquare className="w-4 h-4" />
-                                <span>Responses</span>
+                                <span>{t('dashboard.form.responses')}</span>
                             </div>
                             <span className="font-bold text-gray-900">{(form as any).responseCount || (form as any)._count?.responses || 0}</span>
                         </div>
                         <div className="flex items-center justify-between text-sm">
                             <div className="flex items-center gap-2 text-gray-600">
                                 <Eye className="w-4 h-4" />
-                                <span>Views</span>
+                                <span>{t('dashboard.form.views_plural')}</span>
                             </div>
                             <span className="font-bold text-gray-900">{(form as any).viewCount || 0}</span>
                         </div>
@@ -104,19 +108,19 @@ export default function FormDetailsModal({ form, onClose, onRequestLogin, onOpen
                   </div>
 
                   <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
-                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Timeline</h3>
+                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">{t('dashboard.form.timeline')}</h3>
                     <div className="space-y-3">
                         <div className="flex items-start gap-2 text-sm text-gray-600">
                             <Clock className="w-4 h-4 mt-0.5 flex-shrink-0" />
                             <div>
-                                <span className="block text-xs text-gray-400">Created</span>
+                                <span className="block text-xs text-gray-400">{t('dashboard.form.created')}</span>
                                 <span className="font-medium text-gray-900">{formatDate((form as any).createdAt)}</span>
                             </div>
                         </div>
                         <div className="flex items-start gap-2 text-sm text-gray-600">
                             <FileText className="w-4 h-4 mt-0.5 flex-shrink-0" />
                             <div>
-                                <span className="block text-xs text-gray-400">Last Updated</span>
+                                <span className="block text-xs text-gray-400">{t('dashboard.form.last_updated')}</span>
                                 <span className="font-medium text-gray-900">{formatDate((form as any).updatedAt)}</span>
                             </div>
                         </div>
@@ -145,7 +149,7 @@ export default function FormDetailsModal({ form, onClose, onRequestLogin, onOpen
                     </div>
                     {([form.createdBy, ...(form.collaborators || [])].filter(Boolean)).length > 0 && (
                         <span className="text-xs text-gray-400 font-medium ml-2">
-                            Editors
+                            {t('dashboard.form.editors_plural')}
                         </span>
                     )}
                 </div>
@@ -163,14 +167,14 @@ export default function FormDetailsModal({ form, onClose, onRequestLogin, onOpen
                         className="flex-1 sm:flex-none flex items-center justify-center px-3 py-2 rounded-lg bg-white border border-gray-200 text-xs font-bold text-gray-900 hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm"
                     >
                         <FileText className="w-4 h-4 mr-2 text-gray-900" />
-                        Edit
+                        {t('dashboard.context.edit')}
                     </button>
                     <button
                         onClick={() => window.open(`/forms/${form.id}/preview`, '_blank')}
                         className="flex-1 sm:flex-none flex items-center justify-center px-3 py-2 rounded-lg bg-black text-white text-xs font-bold hover:bg-gray-800 transition-all shadow-md hover:shadow-lg"
                     >
                         <Eye className="w-4 h-4 mr-2" />
-                        Preview
+                        {t('dashboard.context.preview')}
                     </button>
                     <button
                         onClick={() => {
@@ -183,7 +187,7 @@ export default function FormDetailsModal({ form, onClose, onRequestLogin, onOpen
                         className="flex-1 sm:flex-none flex items-center justify-center px-3 py-2 rounded-lg bg-white border border-gray-200 text-xs font-bold text-gray-900 hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm"
                     >
                         <BarChart3 className="w-4 h-4 mr-2 text-gray-900" />
-                        Analytics
+                        {t('dashboard.context.analytics')}
                     </button>
                     <button
                         onClick={() => {
@@ -196,7 +200,7 @@ export default function FormDetailsModal({ form, onClose, onRequestLogin, onOpen
                         className="flex-1 sm:flex-none flex items-center justify-center px-3 py-2 rounded-lg bg-white border border-gray-200 text-xs font-bold text-gray-900 hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm"
                     >
                         <Clock className="w-4 h-4 mr-2 text-gray-900" />
-                        Activity
+                        {t('dashboard.context.activity')}
                     </button>
                 </div>
               </div>

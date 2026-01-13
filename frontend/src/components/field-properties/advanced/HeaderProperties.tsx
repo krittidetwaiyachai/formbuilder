@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { Field } from '@/types';
 import { AlignLeft, AlignCenter, AlignRight, Copy } from 'lucide-react';
+import { RichTextEditor } from '@/components/ui/RichTextEditor';
+import { PropertiesTabs } from '../common/PropertiesTabs';
+import { useTranslation } from 'react-i18next';
 
 interface HeaderPropertiesProps {
   field: Field;
@@ -9,64 +12,42 @@ interface HeaderPropertiesProps {
 }
 
 export function HeaderProperties({ field, updateField, duplicatesField }: HeaderPropertiesProps) {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'general' | 'options' | 'advanced'>('general');
 
   return (
     <>
       {/* Tabs */}
-      <div className="flex items-center gap-1 mb-4 bg-gray-100 p-1 rounded-md overflow-x-auto">
-        {['general', 'options', 'advanced'].map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab as any)}
-            className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-colors uppercase whitespace-nowrap ${
-              activeTab === tab
-                ? 'bg-white text-black shadow-sm'
-                : 'text-gray-600 hover:text-black'
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
-      </div>
+      {/* Tabs */}
+      <PropertiesTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {activeTab === 'general' && (
         <div className="space-y-4">
           {/* Heading Text */}
           <div>
             <label className="block text-sm font-medium text-black mb-1">
-              Heading Text
+              {t('builder.properties.heading_text')}
             </label>
-            <input
-              type="text"
+            <RichTextEditor
               value={field.label}
-              onChange={(e) => updateField(field.id, { label: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
-              onKeyDown={(e) => {
-                if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
-                  e.stopPropagation();
-                }
-              }}
+              onChange={(value) => updateField(field.id, { label: value })}
+              className="text-sm [&_.ql-container]:min-h-[40px] [&_.ql-editor]:min-h-[40px]"
+              placeholder={t('builder.properties.heading_placeholder')}
             />
           </div>
 
           {/* Subheading Text */}
           <div>
             <label className="block text-sm font-medium text-black mb-1">
-              Subheading Text
+              {t('builder.properties.subheading_text')}
             </label>
-            <input
-              type="text"
+            <RichTextEditor
               value={field.placeholder || ''}
-              onChange={(e) => updateField(field.id, { placeholder: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
-              onKeyDown={(e) => {
-                if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
-                  e.stopPropagation();
-                }
-              }}
+              onChange={(value) => updateField(field.id, { placeholder: value })}
+              className="text-sm [&_.ql-container]:min-h-[40px] [&_.ql-editor]:min-h-[40px]"
+              placeholder={t('builder.properties.subheading_placeholder')}
             />
-            <p className="mt-1 text-xs text-gray-500">Add smaller text below the heading</p>
+            <p className="mt-1 text-xs text-gray-500">{t('builder.properties.subheading_desc')}</p>
           </div>
 
           {/* Duplicate Field */}
@@ -85,7 +66,7 @@ export function HeaderProperties({ field, updateField, duplicatesField }: Header
             className="w-full mt-4 px-3 py-2 text-sm font-medium text-black bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
           >
             <Copy className="h-4 w-4" />
-            DUPLICATE
+            {t('builder.properties.duplicate')}
           </button>
         </div>
       )}
@@ -95,7 +76,7 @@ export function HeaderProperties({ field, updateField, duplicatesField }: Header
           {/* Heading Size */}
           <div>
             <label className="block text-sm font-medium text-black mb-2">
-              Heading Size
+              {t('builder.properties.heading_size')}
             </label>
             <div className="flex gap-2">
               {['DEFAULT', 'LARGE', 'SMALL'].map((size) => (
@@ -111,7 +92,7 @@ export function HeaderProperties({ field, updateField, duplicatesField }: Header
                       : 'bg-white text-black border-gray-400 hover:bg-gray-50'
                   }`}
                 >
-                  {size}
+                  {size === 'DEFAULT' ? t('builder.properties.default') : size === 'LARGE' ? t('builder.properties.large') : t('builder.properties.small')}
                 </button>
               ))}
             </div>
@@ -120,7 +101,7 @@ export function HeaderProperties({ field, updateField, duplicatesField }: Header
           {/* Text Alignment */}
           <div>
             <label className="block text-sm font-medium text-black mb-2">
-              Text Alignment
+              {t('builder.properties.text_alignment')}
             </label>
             <div className="flex gap-2">
               {[
@@ -141,17 +122,17 @@ export function HeaderProperties({ field, updateField, duplicatesField }: Header
                   }`}
                 >
                   <Icon className="h-4 w-4" />
-                  {value}
+                  {value === 'LEFT' ? t('builder.properties.left') : value === 'CENTER' ? t('builder.properties.center') : t('builder.properties.right')}
                 </button>
               ))}
             </div>
-            <p className="mt-1 text-xs text-gray-500">Select how the heading is aligned horizontally</p>
+            <p className="mt-1 text-xs text-gray-500">{t('builder.properties.alignment_desc')}</p>
           </div>
 
           {/* Heading Image URL */}
           <div>
             <label className="block text-sm font-medium text-black mb-1">
-              Heading Image URL
+              {t('builder.properties.heading_image')}
             </label>
             <input
               type="text"
@@ -168,7 +149,7 @@ export function HeaderProperties({ field, updateField, duplicatesField }: Header
               }}
             />
             <p className="text-xs text-gray-500 mb-2">
-              Paste an image URL to display with the heading.
+              {t('builder.properties.heading_image_desc')}
             </p>
 
             {(field.validation as any)?.headingImage && (
@@ -188,14 +169,14 @@ export function HeaderProperties({ field, updateField, duplicatesField }: Header
           {/* Image Position */}
           <div>
             <label className="block text-sm font-medium text-black mb-2">
-              Image Position
+              {t('builder.properties.image_position')}
             </label>
             <div className="grid grid-cols-2 gap-2">
               {[
-                { value: 'LEFT', label: 'Left' },
-                { value: 'CENTER', label: 'Center' },
-                { value: 'RIGHT', label: 'Right' },
-                { value: 'BACKGROUND', label: 'Background' },
+                { value: 'LEFT', label: t('builder.properties.left') },
+                { value: 'CENTER', label: t('builder.properties.center') },
+                { value: 'RIGHT', label: t('builder.properties.right') },
+                { value: 'BACKGROUND', label: t('builder.properties.background') },
               ].map(({ value, label }) => (
                 <button
                   key={value}
@@ -214,14 +195,14 @@ export function HeaderProperties({ field, updateField, duplicatesField }: Header
               ))}
             </div>
             <p className="mt-1 text-xs text-gray-500">
-              Background: image behind text with overlay
+              {t('builder.properties.background_desc')}
             </p>
           </div>
 
           {(field.validation as any)?.imagePosition === 'BACKGROUND' && (
             <div>
               <label className="block text-sm font-medium text-black mb-2">
-                Overlay Opacity
+                {t('builder.properties.overlay_opacity')}
               </label>
               <div className="flex items-center gap-3">
                 <input
@@ -239,7 +220,7 @@ export function HeaderProperties({ field, updateField, duplicatesField }: Header
                 </span>
               </div>
               <p className="mt-1 text-xs text-gray-500">
-                Adjust the darkness of the overlay behind text
+                {t('builder.properties.overlay_opacity_desc')}
               </p>
             </div>
           )}
@@ -251,7 +232,7 @@ export function HeaderProperties({ field, updateField, duplicatesField }: Header
            {/* Shrink Field */}
           <div>
              <label className="block text-sm font-medium text-black mb-1">
-              Shrink
+              {t('builder.properties.shrink')}
              </label>
              <label className="relative inline-flex items-center cursor-pointer">
                 <input
@@ -263,14 +244,14 @@ export function HeaderProperties({ field, updateField, duplicatesField }: Header
                 <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
               </label>
              <p className="mt-1 text-xs text-gray-500">
-              Shrink field to allow multiple fields on the same line
+              {t('builder.properties.shrink_desc')}
             </p>
           </div>
 
           {/* Hide field */}
           <div>
             <label className="block text-sm font-medium text-black mb-1">
-              Hide field
+              {t('builder.properties.hide_field')}
             </label>
             <label className="relative inline-flex items-center cursor-pointer">
                 <input
@@ -287,7 +268,7 @@ export function HeaderProperties({ field, updateField, duplicatesField }: Header
                 <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
               </label>
               <p className="mt-1 text-xs text-gray-500">
-              Hide this field from the form
+              {t('builder.properties.hide_field_desc')}
             </p>
           </div>
          </div>

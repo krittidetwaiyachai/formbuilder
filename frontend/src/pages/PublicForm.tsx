@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import api from '@/lib/api';
 import { Form } from '@/types';
 import { FileQuestion } from 'lucide-react';
@@ -9,6 +10,7 @@ import Loader from '@/components/common/Loader';
 
 export default function PublicForm() {
   const { id } = useParams<{ id: string }>();
+  const { t } = useTranslation();
   
   const [form, setForm] = useState<Form | null>(null);
   const [loading, setLoading] = useState(true);
@@ -70,7 +72,7 @@ export default function PublicForm() {
           className="text-center"
         >
           <Loader className="mx-auto mb-4" />
-          <p className="text-gray-500 font-medium">Loading...</p>
+          <p className="text-gray-500 font-medium">{t('public.loading')}</p>
         </motion.div>
       </div>
     );
@@ -87,8 +89,8 @@ export default function PublicForm() {
           <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-6">
             <FileQuestion className="h-8 w-8 text-gray-500" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Form Not Found</h2>
-          <p className="text-gray-600">The form you are looking for does not exist or has been deleted.</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('public.form_not_found_title')}</h2>
+          <p className="text-gray-600">{t('public.form_not_found_desc')}</p>
         </motion.div>
       </div>
     );

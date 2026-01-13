@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { Field } from '@/types';
 import { Copy } from 'lucide-react';
+import { stripHtml } from '@/lib/ui/utils';
+import { PropertiesTabs } from '../common/PropertiesTabs';
+import { useTranslation } from 'react-i18next';
 
 interface DatePropertiesProps {
   field: Field;
@@ -9,6 +12,7 @@ interface DatePropertiesProps {
 }
 
 export const DateProperties = ({ field, updateField, duplicatesField }: DatePropertiesProps) => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'general' | 'options' | 'advanced'>('general');
 
   const options = field.options || {};
@@ -25,41 +29,27 @@ export const DateProperties = ({ field, updateField, duplicatesField }: DateProp
 
   return (
     <>
-      <div className="flex items-center gap-0.5 mb-4 bg-gray-100 p-1 rounded-md overflow-x-auto">
-        {['general', 'options', 'advanced'].map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab as any)}
-            className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-colors uppercase whitespace-nowrap ${
-              activeTab === tab
-                ? 'bg-white text-black shadow-sm'
-                : 'text-gray-600 hover:text-black'
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
-      </div>
+      <PropertiesTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {activeTab === 'general' && (
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-black mb-1">Field Label</label>
+            <label className="block text-sm font-medium text-black mb-1">{t('builder.properties.field_label')}</label>
             <input
               type="text"
-              value={field.label}
+              value={stripHtml(field.label)}
               onChange={(e) => updateField(field.id, { label: e.target.value })}
               className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-black mb-2">Label Alignment</label>
+            <label className="block text-sm font-medium text-black mb-2">{t('builder.properties.label_alignment')}</label>
             <div className="flex gap-2">
               {[
-                { value: 'LEFT', label: 'LEFT' },
-                { value: 'RIGHT', label: 'RIGHT' },
-                { value: 'TOP', label: 'TOP' },
+                { value: 'LEFT', label: t('builder.properties.left') },
+                { value: 'CENTER', label: t('builder.properties.center') },
+                { value: 'TOP', label: t('builder.properties.top') },
               ].map(({ value, label }) => (
                 <button
                   key={value}
@@ -78,7 +68,7 @@ export const DateProperties = ({ field, updateField, duplicatesField }: DateProp
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-black mb-1">Required</label>
+            <label className="block text-sm font-medium text-black mb-1">{t('builder.properties.required')}</label>
             <label className="relative inline-flex items-center cursor-pointer">
               <input
                 type="checkbox"
@@ -88,20 +78,20 @@ export const DateProperties = ({ field, updateField, duplicatesField }: DateProp
               />
               <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
             </label>
-            <p className="mt-1 text-xs text-gray-500">Prevent submission if this field is empty</p>
+            <p className="mt-1 text-xs text-gray-500">{t('builder.properties.required_desc')}</p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-black mb-2">Sublabel</label>
+            <label className="block text-sm font-medium text-black mb-2">{t('builder.properties.sublabel')}</label>
             <div className="grid grid-cols-3 gap-px bg-gray-200 border border-gray-300 rounded overflow-hidden">
-              <div className="bg-slate-700/5 p-2 flex items-center col-span-1"><span className="text-xs font-semibold">Date</span></div>
+              <div className="bg-slate-700/5 p-2 flex items-center col-span-1"><span className="text-xs font-semibold">{t('builder.fields.date')}</span></div>
               <div className="bg-white p-0 col-span-2">
                 <input
                   type="text"
                   className="w-full px-2 py-2 text-sm border-0 focus:ring-0 bg-transparent"
                   value={options.subLabel || ''}
                   onChange={(e) => handleOptionUpdate('subLabel', e.target.value)}
-                  placeholder="Sublabel"
+                  placeholder={t('builder.properties.sublabel')}
                 />
               </div>
             </div>
@@ -122,7 +112,7 @@ export const DateProperties = ({ field, updateField, duplicatesField }: DateProp
             className="w-full mt-4 px-3 py-2 text-sm font-medium text-black bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
           >
             <Copy className="h-4 w-4" />
-            DUPLICATE
+            {t('builder.properties.duplicate')}
           </button>
         </div>
       )}
@@ -130,7 +120,7 @@ export const DateProperties = ({ field, updateField, duplicatesField }: DateProp
       {activeTab === 'options' && (
         <div className="space-y-6">
            <div>
-            <label className="block text-sm font-medium text-black mb-2">Separator</label>
+            <label className="block text-sm font-medium text-black mb-2">{t('builder.properties.separator')}</label>
             <div className="flex gap-2">
               {['-', '/', '.'].map((sep) => (
                 <button
@@ -148,11 +138,11 @@ export const DateProperties = ({ field, updateField, duplicatesField }: DateProp
                 </button>
               ))}
             </div>
-            <p className="mt-1 text-xs text-gray-500">Select a character to use between date fields</p>
+            <p className="mt-1 text-xs text-gray-500">{t('builder.properties.separator_desc')}</p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-black mb-2">Date Format</label>
+            <label className="block text-sm font-medium text-black mb-2">{t('builder.properties.date_format')}</label>
             <div className="grid grid-cols-3 gap-1">
               {[
                 { value: 'MM-DD-YYYY', label: 'MM-DD-YY' },
@@ -174,11 +164,11 @@ export const DateProperties = ({ field, updateField, duplicatesField }: DateProp
                 </button>
               ))}
             </div>
-            <p className="mt-1 text-xs text-gray-500">D = Day, M = Month, Y = Year</p>
+            <p className="mt-1 text-xs text-gray-500">D = {t('builder.properties.day')}, M = {t('builder.properties.month')}, Y = {t('builder.properties.year')}</p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-black mb-2">Default Date</label>
+            <label className="block text-sm font-medium text-black mb-2">{t('builder.properties.default_date')}</label>
             <div className="flex gap-1">
               {['NONE', 'CURRENT', 'CUSTOM'].map((opt) => (
                 <button
@@ -192,15 +182,15 @@ export const DateProperties = ({ field, updateField, duplicatesField }: DateProp
                       : 'bg-white text-black border-gray-400 hover:bg-gray-50'
                   }`}
                 >
-                  {opt}
+                  {opt === 'NONE' ? t('builder.properties.none') : opt === 'CURRENT' ? t('builder.properties.current') : t('builder.properties.custom')}
                 </button>
               ))}
             </div>
-            <p className="mt-1 text-xs text-gray-500">Pre-populate with a current or custom date</p>
+            <p className="mt-1 text-xs text-gray-500">{t('builder.properties.default_date_desc')}</p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-black mb-1">Calendar Popup</label>
+            <label className="block text-sm font-medium text-black mb-1">{t('builder.properties.calendar_popup')}</label>
             <label className="relative inline-flex items-center cursor-pointer">
               <input
                 type="checkbox"
@@ -212,32 +202,32 @@ export const DateProperties = ({ field, updateField, duplicatesField }: DateProp
               />
               <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
             </label>
-            <p className="mt-1 text-xs text-gray-500">Show calendar when users interact with field</p>
+            <p className="mt-1 text-xs text-gray-500">{t('builder.properties.calendar_popup_desc')}</p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-black mb-1">Lite Mode</label>
+            <label className="block text-sm font-medium text-black mb-1">{t('builder.properties.lite_mode')}</label>
             <label className="relative inline-flex items-center cursor-pointer">
               <input type="checkbox" checked={(field.validation as any)?.liteMode || false} onChange={(e) => updateField(field.id, { validation: { ...field.validation, liteMode: e.target.checked } })} className="sr-only peer" />
               <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
             </label>
-            <p className="mt-1 text-xs text-gray-500">Show a single field instead of three fields</p>
+            <p className="mt-1 text-xs text-gray-500">{t('builder.properties.lite_mode_desc')}</p>
           </div>
 
            <div className="border-t pt-4">
-            <h4 className="text-sm font-bold mb-3">Time Settings</h4>
+            <h4 className="text-sm font-bold mb-3">{t('builder.properties.time_settings')}</h4>
              <div>
-            <label className="block text-sm font-medium text-black mb-1">Time Field</label>
+            <label className="block text-sm font-medium text-black mb-1">{t('builder.properties.time_field')}</label>
             <label className="relative inline-flex items-center cursor-pointer">
               <input type="checkbox" checked={(field.validation as any)?.showTime || false} onChange={(e) => updateField(field.id, { validation: { ...field.validation, showTime: e.target.checked } })} className="sr-only peer" />
               <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
             </label>
-            <p className="mt-1 text-xs text-gray-500">Allow users to specify a time with date.</p>
+            <p className="mt-1 text-xs text-gray-500">{t('builder.properties.time_field_desc')}</p>
           </div>
           {(field.validation as any)?.showTime && (
             <div className="mt-4 space-y-4 pl-4 border-l-2 border-gray-200">
               <div>
-                <label className="block text-sm font-medium text-black mb-2">Time Format</label>
+                <label className="block text-sm font-medium text-black mb-2">{t('builder.properties.time_format')}</label>
                 <div className="flex gap-0">
                   {['24 HOUR', 'AM/PM'].map((fmt) => (
                     <button
@@ -258,11 +248,11 @@ export const DateProperties = ({ field, updateField, duplicatesField }: DateProp
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-black mb-2">Limit time</label>
+                <label className="block text-sm font-medium text-black mb-2">{t('builder.properties.limit_time')}</label>
                 <div className="flex gap-0">
                   {['BOTH', 'AM', 'PM'].map((opt, index) => {
                      const value = opt === 'BOTH' ? 'BOTH' : opt;
-                     const label = opt === 'BOTH' ? 'BOTH AM & PM' : `${opt} ONLY`;
+                     const label = opt === 'BOTH' ? t('builder.properties.both_am_pm') : opt === 'AM' ? t('builder.properties.am_only') : t('builder.properties.pm_only');
                      const isSelected = ((field.validation as any)?.limitTime || 'BOTH') === value;
                      
                      return (
@@ -288,17 +278,17 @@ export const DateProperties = ({ field, updateField, duplicatesField }: DateProp
           </div>
 
            <div className="border-t pt-4">
-             <h4 className="text-sm font-bold mb-3">Limits</h4>
+             <h4 className="text-sm font-bold mb-3">{t('builder.properties.limits')}</h4>
              <div>
-            <label className="block text-sm font-medium text-black mb-1">Age Verification</label>
+            <label className="block text-sm font-medium text-black mb-1">{t('builder.properties.age_verification')}</label>
             <label className="relative inline-flex items-center cursor-pointer">
               <input type="checkbox" checked={(field.validation as any)?.ageVerification || false} onChange={(e) => updateField(field.id, { validation: { ...field.validation, ageVerification: e.target.checked } })} className="sr-only peer" />
               <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
             </label>
-            <p className="mt-1 text-xs text-gray-500">Prevent users under a certain age from submitting</p>
+            <p className="mt-1 text-xs text-gray-500">{t('builder.properties.age_verification_desc')}</p>
             {(field.validation as any)?.ageVerification && (
               <div className="mt-2">
-                <label className="block text-xs font-medium text-gray-700 mb-1">Minimum Age</label>
+                <label className="block text-xs font-medium text-gray-700 mb-1">{t('builder.properties.minimum_age')}</label>
                 <div className="flex items-center gap-2">
                   <input
                     type="number"
@@ -310,14 +300,14 @@ export const DateProperties = ({ field, updateField, duplicatesField }: DateProp
                     min={0}
                     max={100}
                   />
-                  <span className="text-sm text-gray-500">years old</span>
+                  <span className="text-sm text-gray-500">{t('builder.properties.years_old')}</span>
                 </div>
               </div>
             )}
           </div>
 
           <div className="mt-4">
-            <label className="block text-sm font-medium text-black mb-3">Past & Future</label>
+            <label className="block text-sm font-medium text-black mb-3">{t('builder.properties.past_future')}</label>
             <div className="flex gap-6">
               <label className="flex items-center gap-2 cursor-pointer group select-none">
                 <div className="relative flex items-center justify-center w-5 h-5">
@@ -339,7 +329,7 @@ export const DateProperties = ({ field, updateField, duplicatesField }: DateProp
                        <polyline points="20 6 9 17 4 12"></polyline>
                    </svg>
                 </div>
-                <span className="text-sm text-gray-700 group-hover:text-black transition-colors">Past</span>
+                <span className="text-sm text-gray-700 group-hover:text-black transition-colors">{t('builder.properties.past')}</span>
               </label>
 
               <label className="flex items-center gap-2 cursor-pointer group select-none">
@@ -362,10 +352,10 @@ export const DateProperties = ({ field, updateField, duplicatesField }: DateProp
                        <polyline points="20 6 9 17 4 12"></polyline>
                    </svg>
                 </div>
-                <span className="text-sm text-gray-700 group-hover:text-black transition-colors">Future</span>
+                <span className="text-sm text-gray-700 group-hover:text-black transition-colors">{t('builder.properties.future')}</span>
               </label>
             </div>
-            <p className="mt-2 text-xs text-gray-500">Let users select dates in the past or future</p>
+            <p className="mt-2 text-xs text-gray-500">{t('builder.properties.past_future_desc')}</p>
           </div>
            </div>
         </div>
@@ -374,37 +364,38 @@ export const DateProperties = ({ field, updateField, duplicatesField }: DateProp
       {activeTab === 'advanced' && (
         <div className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-black mb-1">Hover Text</label>
+            <label className="block text-sm font-medium text-black mb-1">{t('builder.properties.hover_text')}</label>
             <textarea
               value={options.hoverText || ''}
               onChange={(e) => handleOptionUpdate('hoverText', e.target.value)}
               rows={2}
               className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
             />
-            <p className="mt-1 text-xs text-gray-500">Show a description when a user hovers over this field</p>
+            <p className="mt-1 text-xs text-gray-500">{t('builder.properties.hover_text_desc')}</p>
           </div>
           <div>
-            <label className="block text-sm font-medium text-black mb-1">Read Only</label>
+            <label className="block text-sm font-medium text-black mb-1">{t('builder.properties.read_only')}</label>
             <label className="relative inline-flex items-center cursor-pointer">
               <input type="checkbox" checked={options.readOnly || false} onChange={(e) => handleOptionUpdate('readOnly', e.target.checked)} className="sr-only peer" />
               <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
             </label>
-            <p className="mt-1 text-xs text-gray-500">Prevent entry in this field</p>
+            <p className="mt-1 text-xs text-gray-500">{t('builder.properties.read_only_desc')}</p>
           </div>
           <div>
-            <label className="block text-sm font-medium text-black mb-1">Shrink</label>
+            <label className="block text-sm font-medium text-black mb-1">{t('builder.properties.shrink')}</label>
             <label className="relative inline-flex items-center cursor-pointer">
               <input type="checkbox" checked={options.shrink || false} onChange={(e) => handleOptionUpdate('shrink', e.target.checked)} className="sr-only peer" />
               <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
             </label>
-            <p className="mt-1 text-xs text-gray-500">Make field smaller</p>
+            <p className="mt-1 text-xs text-gray-500">{t('builder.properties.shrink_desc')}</p>
           </div>
           <div>
-            <label className="block text-sm font-medium text-black mb-1">Hide field</label>
+            <label className="block text-sm font-medium text-black mb-1">{t('builder.properties.hide_field')}</label>
             <label className="relative inline-flex items-center cursor-pointer">
               <input type="checkbox" checked={options.hidden || false} onChange={(e) => handleOptionUpdate('hidden', e.target.checked)} className="sr-only peer" />
               <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
             </label>
+             <p className="mt-1 text-xs text-gray-500">{t('builder.properties.hide_field_desc')}</p>
           </div>
         </div>
       )}

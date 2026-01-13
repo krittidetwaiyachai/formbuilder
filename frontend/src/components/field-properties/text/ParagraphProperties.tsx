@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Field } from '@/types';
 import { Copy, Edit2 } from 'lucide-react';
+import { RichTextEditor } from '@/components/ui/RichTextEditor';
+import { useTranslation } from 'react-i18next';
+import { PropertiesTabs } from '../common/PropertiesTabs';
 
 interface ParagraphPropertiesProps {
   field: Field;
@@ -9,6 +12,7 @@ interface ParagraphPropertiesProps {
 }
 
 export const ParagraphProperties: React.FC<ParagraphPropertiesProps> = ({ field, updateField, duplicatesField }) => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'general' | 'options' | 'advanced'>('general');
   const [isEditing, setIsEditing] = useState(false);
 
@@ -43,50 +47,29 @@ export const ParagraphProperties: React.FC<ParagraphPropertiesProps> = ({ field,
   return (
     <div className="space-y-4">
       {/* Tabs */}
-      <div className="flex items-center gap-1 mb-4 bg-gray-100 p-1 rounded-md overflow-x-auto">
-        {['general', 'options', 'advanced'].map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab as any)}
-            className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-colors uppercase whitespace-nowrap ${
-              activeTab === tab
-                ? 'bg-white text-black shadow-sm'
-                : 'text-gray-600 hover:text-black'
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
-      </div>
+      <PropertiesTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {activeTab === 'general' && (
         <div className="space-y-4">
           {/* Paragraph Text */}
           <div>
             <label className="block text-sm font-medium text-black mb-2">
-              Paragraph Text
+              {t('builder.properties.paragraph_text')}
             </label>
             
             {isEditing ? (
                <div className="space-y-2">
-                 <textarea
+                 <RichTextEditor
                   value={field.label}
-                  onChange={(e) => updateField(field.id, { label: e.target.value })}
-                  rows={6}
-                  className="w-full px-3 py-2 border border-blue-500 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text text-sm"
+                  onChange={(value) => updateField(field.id, { label: value })}
                   placeholder="Enter your text here..."
-                  onKeyDown={(e) => {
-                    if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
-                      e.stopPropagation();
-                    }
-                  }}
-                  autoFocus
+                  className="min-h-[200px] text-sm [&_.ql-container]:min-h-[150px] [&_.ql-editor]:min-h-[150px]"
                  />
                  <button
                   onClick={() => setIsEditing(false)}
                   className="text-sm text-black hover:text-blue-800 font-medium"
                  >
-                   Done Editing
+                   {t('builder.properties.done_editing')}
                  </button>
                </div>
             ) : (
@@ -97,11 +80,12 @@ export const ParagraphProperties: React.FC<ParagraphPropertiesProps> = ({ field,
                   className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-md border border-gray-300 transition-colors"
                 >
                   <Edit2 className="h-4 w-4" />
-                  EDIT
+                  {t('builder.properties.edit')}
                 </button>
-                <p className="mt-2 text-xs text-gray-500">
-                  Click to edit paragraph text.
-                </p>
+                <div 
+                  className="mt-2 text-xs text-gray-500 line-clamp-3 p-2 border border-gray-100 rounded bg-gray-50"
+                  dangerouslySetInnerHTML={{ __html: field.label || t('builder.properties.empty_paragraph') }}
+                />
               </div>
             )}
           </div>
@@ -113,7 +97,7 @@ export const ParagraphProperties: React.FC<ParagraphPropertiesProps> = ({ field,
              className="w-full mt-4 px-3 py-2 text-sm font-medium text-black bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
            >
              <Copy className="h-4 w-4" />
-             DUPLICATE
+             {t('builder.properties.duplicate')}
            </button>
         </div>
       )}
@@ -124,7 +108,7 @@ export const ParagraphProperties: React.FC<ParagraphPropertiesProps> = ({ field,
            <div>
              <div className="flex items-center justify-between mb-1">
                  <label className="block text-sm font-medium text-black">
-                     Move to a new line
+                     {t('builder.properties.move_to_new_line')}
                  </label>
              </div>
              <label className="relative inline-flex items-center cursor-pointer">
@@ -137,7 +121,7 @@ export const ParagraphProperties: React.FC<ParagraphPropertiesProps> = ({ field,
                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
              </label>
               <p className="mt-1 text-xs text-gray-500">
-                  Move field to a new line
+                  {t('builder.properties.move_to_new_line_desc')}
               </p>
            </div>
          </div>
@@ -149,7 +133,7 @@ export const ParagraphProperties: React.FC<ParagraphPropertiesProps> = ({ field,
            <div>
             <div className="flex items-center justify-between mb-1">
                 <label className="block text-sm font-medium text-black">
-                    Shrink
+                    {t('builder.properties.shrink')}
                 </label>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
@@ -162,7 +146,7 @@ export const ParagraphProperties: React.FC<ParagraphPropertiesProps> = ({ field,
                 <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
             </label>
              <p className="mt-1 text-xs text-gray-500">
-                 Make field smaller
+                 {t('builder.properties.shrink_desc')}
              </p>
           </div>
 
@@ -172,7 +156,7 @@ export const ParagraphProperties: React.FC<ParagraphPropertiesProps> = ({ field,
           <div>
             <div className="flex items-center justify-between mb-1">
                 <label className="block text-sm font-medium text-black">
-                    Hide field
+                    {t('builder.properties.hide_field')}
                 </label>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
@@ -185,7 +169,7 @@ export const ParagraphProperties: React.FC<ParagraphPropertiesProps> = ({ field,
               <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
             </label>
             <p className="mt-1 text-xs text-gray-500">
-                Hide this field from the form
+                {t('builder.properties.hide_field_desc')}
             </p>
           </div>
         </div>

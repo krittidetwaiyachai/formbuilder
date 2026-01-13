@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { GoogleLogin } from '@react-oauth/google';
 import { X } from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
 import { useToast } from '../ui/toaster';
+import { useTranslation } from 'react-i18next';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -13,6 +14,7 @@ interface LoginModalProps {
 export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalProps) {
   const { login } = useAuthStore();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -40,16 +42,16 @@ export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalPro
         onClose();
       } else {
         toast({
-          title: "Login failed",
-          description: "Invalid email or password",
+          title: t('auth.login_failed'),
+          description: t('auth.invalid_credentials'),
           variant: "error",
         });
       }
     } catch (error) {
       console.error('Login failed', error);
       toast({
-        title: "Error",
-        description: "Something went wrong. Please try again.",
+        title: t('auth.error'),
+        description: t('auth.error_message'),
         variant: "error",
       });
     } finally {
@@ -81,8 +83,8 @@ export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalPro
     } catch (error) {
       console.error('Login failed', error);
       toast({
-        title: "Google Login Failed",
-        description: "Could not sign in with Google.",
+        title: t('auth.google_failed'),
+        description: t('auth.google_error'),
         variant: "error",
       });
     }
@@ -121,15 +123,15 @@ export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalPro
                 {/* Bold Typography */}
                 <div>
                   <h1 className="text-6xl font-black text-white leading-none mb-3">
-                    WELCOME
-                    <br />
-                    BACK
+                    {t('auth.welcome_back').split(' ').map((word, i) => (
+                      <React.Fragment key={i}>{word}{i === 0 && <br />}</React.Fragment>
+                    ))}
                   </h1>
                   <div className="w-20 h-1 bg-white"></div>
                 </div>
 
                 <p className="text-gray-400 text-lg font-medium">
-                  Sign in to manage your forms
+                  {t('auth.sign_in_subtitle')}
                 </p>
               </div>
             </div>
@@ -138,17 +140,17 @@ export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalPro
           {/* RIGHT SIDE - White Form Section */}
           <div className="relative w-1/2 bg-white p-16 flex items-center">
             <div className="w-full max-w-sm mx-auto">
-              <h2 className="text-3xl font-bold text-black mb-8">Sign In</h2>
+              <h2 className="text-3xl font-bold text-black mb-8">{t('auth.sign_in')}</h2>
 
               {/* Google Sign In */}
-              <div className="mb-8">
+              <div className="mb-8 p-4">
                 <GoogleLogin
                   onSuccess={handleGoogleSuccess}
                   onError={() => {
                     console.log('Login Failed');
                     toast({
-                      title: "Google Login Failed",
-                      description: "Please check your configuration or try again.",
+                      title: t('auth.google_failed'),
+                      description: t('auth.google_error'),
                       variant: "error",
                     });
                   }}
@@ -167,31 +169,31 @@ export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalPro
                   <div className="w-full border-t-2 border-black/10"></div>
                 </div>
                 <div className="relative flex justify-center">
-                  <span className="px-4 bg-white text-sm font-bold text-black/40 uppercase tracking-wider">Or continue with</span>
+                  <span className="px-4 bg-white text-sm font-bold text-black/40 uppercase tracking-wider">{t('auth.or_continue')}</span>
                 </div>
               </div>
 
               {/* Email Login Form */}
               <form onSubmit={handleEmailLogin} className="space-y-6">
                 <div>
-                  <label className="block text-xs font-bold text-black/60 mb-3 uppercase tracking-wider">Email Address</label>
+                  <label className="block text-xs font-bold text-black/60 mb-3 uppercase tracking-wider">{t('auth.email')}</label>
                   <input 
                     type="email" 
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-full px-0 py-3 border-0 border-b-2 border-black/20 focus:border-black transition-all outline-none bg-transparent text-black placeholder-black/30 text-lg"
-                    placeholder="your@email.com"
+                    placeholder={t('auth.email_placeholder')}
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-black/60 mb-3 uppercase tracking-wider">Password</label>
+                  <label className="block text-xs font-bold text-black/60 mb-3 uppercase tracking-wider">{t('auth.password')}</label>
                   <input 
                     type="password" 
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="w-full px-0 py-3 border-0 border-b-2 border-black/20 focus:border-black transition-all outline-none bg-transparent text-black placeholder-black/30 text-lg"
-                    placeholder="Enter password"
+                    placeholder={t('auth.password_placeholder')}
                     required
                   />
                 </div>
@@ -200,7 +202,7 @@ export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalPro
                   disabled={isLoading}
                   className="w-full bg-black text-white py-4 rounded-2xl hover:bg-black/80 transition-all font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed shadow-xl hover:shadow-2xl transform hover:-translate-y-0.5 uppercase tracking-wider"
                 >
-                  {isLoading ? 'Signing in...' : 'Sign In →'}
+                  {isLoading ? t('auth.signing_in') : t('auth.sign_in_button')}
                 </button>
               </form>
 

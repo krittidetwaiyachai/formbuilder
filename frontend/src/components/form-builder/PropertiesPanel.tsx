@@ -4,6 +4,7 @@ import { FieldType } from '@/types';
 import { Settings, GitBranch } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import LogicSidebarList from './LogicSidebarList';
+import { useTranslation } from 'react-i18next';
 
 // Property Components
 import { DateProperties } from '@/components/field-properties/advanced/DateProperties';
@@ -35,6 +36,7 @@ interface PropertiesPanelProps {
 }
 
 export default function PropertiesPanel({ currentPage = 0 }: PropertiesPanelProps) {
+  const { t } = useTranslation();
   const panelRef = useRef<HTMLDivElement>(null);
   const { currentForm, selectedFieldId, updateField, updateForm, addField, activeSidebarTab, setActiveSidebarTab } = useFormStore();
   const selectedField = currentForm?.fields?.find((f) => f.id === selectedFieldId);
@@ -116,7 +118,7 @@ export default function PropertiesPanel({ currentPage = 0 }: PropertiesPanelProp
                 }`}
               >
                 <Settings className="h-4 w-4" />
-                <span className="truncate">Properties</span>
+                <span className="truncate">{t('builder.tabs.properties')}</span>
               </motion.button>
             )}
           </AnimatePresence>
@@ -130,7 +132,7 @@ export default function PropertiesPanel({ currentPage = 0 }: PropertiesPanelProp
             }`}
           >
             <GitBranch className="h-4 w-4" />
-            <span className="truncate">Logic</span>
+            <span className="truncate">{t('builder.tabs.logic')}</span>
           </button>
           <button
             onClick={() => setActiveTab('settings')}
@@ -141,7 +143,7 @@ export default function PropertiesPanel({ currentPage = 0 }: PropertiesPanelProp
             }`}
           >
             <Settings className="h-4 w-4" />
-            <span className="truncate">Settings</span>
+            <span className="truncate">{t('builder.tabs.settings')}</span>
           </button>
         </div>
       </div>
@@ -162,7 +164,7 @@ export default function PropertiesPanel({ currentPage = 0 }: PropertiesPanelProp
             ) : selectedField ? (
               <div className="space-y-4">
                 <div className="mb-4">
-                  <h3 className="text-sm font-semibold text-black mb-2">Element Properties</h3>
+                  <h3 className="text-sm font-semibold text-black mb-2">{t('builder.properties.element_properties')}</h3>
                 </div>
                 
                 {selectedField.type === FieldType.FULLNAME ? (
@@ -297,7 +299,7 @@ export default function PropertiesPanel({ currentPage = 0 }: PropertiesPanelProp
 
         {activeTab === 'theme' && (
           <div className="space-y-4">
-            <h3 className="text-sm font-semibold text-black mb-4">Theme Settings</h3>
+            <h3 className="text-sm font-semibold text-black mb-4">{t('builder.properties.theme_settings')}</h3>
             <p className="text-sm text-gray-600">Theme customization coming soon...</p>
           </div>
         )}

@@ -11,12 +11,7 @@ export class ResponsesService {
     try {
         const { formId, answers, userId, respondentEmail, fingerprint } = createResponseDto;
 
-        console.log('Creating Response:', { formId, userId, respondentEmail, fingerprint, answersCount: answers?.length });
-        if (answers?.length > 0) {
-            console.log('First Answer:', answers[0]);
-        } else {
-            console.log('WARNING: Creating response with NO answers');
-        }
+
 
         // Check if form exists and is published
         const form = await this.prisma.form.findUnique({
@@ -37,6 +32,26 @@ export class ResponsesService {
 
         if (form.status !== FormStatus.PUBLISHED) {
           throw new ForbiddenException('Form is not published');
+        }
+
+        // Check quiz availability times
+        if (form.isQuiz && form.quizSettings) {
+          const quizSettings = form.quizSettings as any;
+          const now = new Date();
+          
+          if (quizSettings.startTime) {
+            const startTime = new Date(quizSettings.startTime);
+            if (now < startTime) {
+              throw new ForbiddenException(`This quiz will be available starting ${startTime.toLocaleString()}`);
+            }
+          }
+          
+          if (quizSettings.endTime) {
+            const endTime = new Date(quizSettings.endTime);
+            if (now > endTime) {
+              throw new ForbiddenException(`This quiz closed on ${endTime.toLocaleString()}`);
+            }
+          }
         }
 
         // Check if multiple submissions are allowed
@@ -369,9 +384,7 @@ export class ResponsesService {
           if (!['HEADER', 'PARAGRAPH', 'DIVIDER', 'PAGE_BREAK', 'SUBMIT'].includes(field.type)) {
               const answer = response.answers.find((a) => a.fieldId === field.id);
               if (!answer && responses.indexOf(response) === 0) {
-                 console.log('DEBUG CSV: Field mismatch or empty answer');
-                 console.log('Target Field ID:', field.id, 'Label:', field.label);
-                 console.log('Available Answer Field IDs:', response.answers.map(a => a.fieldId));
+
               }
               row.push(escapeCsv(answer?.value || ''));
           }

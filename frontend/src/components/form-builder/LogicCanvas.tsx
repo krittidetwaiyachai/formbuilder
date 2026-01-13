@@ -4,8 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/custom-select';
 import { Plus, Trash2, ArrowLeft, Check, Edit2, X, AlertTriangle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { useTranslation } from 'react-i18next';
 
 export default function LogicCanvas() {
+  const { t } = useTranslation();
   const { 
     currentForm, 
     setActiveSidebarTab,
@@ -100,12 +102,12 @@ export default function LogicCanvas() {
           <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 ring-4 ring-amber-50 shadow-sm">
             <AlertTriangle className="w-8 h-8 text-amber-500" />
           </div>
-          <h3 className="text-lg font-bold text-gray-900 mb-2">Not Enough Fields</h3>
+          <h3 className="text-lg font-bold text-gray-900 mb-2">{t('builder.logic.not_enough_fields')}</h3>
           <p className="text-gray-500 mb-6">
-            Conditional logic requires at least <span className="font-bold text-gray-800">2 fields</span> to work (one to trigger, one to show/hide).
+            {t('builder.logic.not_enough_desc')}
           </p>
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-amber-200 rounded-lg shadow-sm text-amber-700 text-sm font-medium">
-             <span>Please add <span className="font-bold">{missingCount}</span> more field{missingCount > 1 ? 's' : ''}</span>
+             <span>{t('builder.logic.please_add', { count: missingCount })}</span>
           </div>
         </div>
       </div>
@@ -170,13 +172,13 @@ export default function LogicCanvas() {
               </svg>
             </div>
             <div>
-              <h2 className="text-xl font-bold text-gray-900">Conditional Logic</h2>
-              <p className="text-sm text-gray-500">Create rules to show or hide fields based on user input</p>
+              <h2 className="text-xl font-bold text-gray-900">{t('builder.logic.title')}</h2>
+              <p className="text-sm text-gray-500">{t('builder.logic.subtitle')}</p>
             </div>
           </div>
           <Button onClick={() => addLogicRule()} className="gap-2">
             <Plus className="w-4 h-4" />
-            Add Rule
+            {t('builder.logic.add_rule')}
           </Button>
         </div>
 
@@ -184,20 +186,20 @@ export default function LogicCanvas() {
           <>
             <div className="text-center py-16 bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl mb-6">
               <Plus className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-500 mb-4">No logic rules yet</p>
+              <p className="text-gray-500 mb-4">{t('builder.logic.no_rules_title')}</p>
               <Button onClick={() => addLogicRule()} variant="outline" className="gap-2">
                 <Plus className="w-4 h-4" />
-                Create Your First Rule
+                {t('builder.logic.create_first')}
               </Button>
             </div>
 
             <div className="bg-blue-50 border border-blue-100 p-5 rounded-xl text-sm text-blue-700 space-y-2">
-              <p className="font-semibold">How it works:</p>
+              <p className="font-semibold">{t('builder.logic.how_it_works')}</p>
               <ul className="list-disc pl-5 space-y-1">
-                <li><strong>Show:</strong> The target field is hidden by default and appears when the condition is met.</li>
-                <li><strong>Hide:</strong> The target field is visible by default and disappears when the condition is met.</li>
-                <li><strong>AND:</strong> All conditions must be true for the action to trigger.</li>
-                <li><strong>OR:</strong> Any one condition being true will trigger the action.</li>
+                <li><strong>{t('builder.logic.how_show').split(':')[0]}:</strong>{t('builder.logic.how_show').split(':')[1]}</li>
+                <li><strong>{t('builder.logic.how_hide').split(':')[0]}:</strong>{t('builder.logic.how_hide').split(':')[1]}</li>
+                <li><strong>{t('builder.logic.how_and').split(':')[0]}:</strong>{t('builder.logic.how_and').split(':')[1]}</li>
+                <li><strong>{t('builder.logic.how_or').split(':')[0]}:</strong>{t('builder.logic.how_or').split(':')[1]}</li>
               </ul>
             </div>
           </>
@@ -277,7 +279,7 @@ export default function LogicCanvas() {
                         rule.logicType === 'and' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500'
                       }`}
                     >
-                      and
+                      {t('builder.logic.and')}
                     </button>
                     <button
                       onClick={() => updateLogicRule(rule.id, { logicType: 'or' })}
@@ -285,7 +287,7 @@ export default function LogicCanvas() {
                         rule.logicType === 'or' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500'
                       }`}
                     >
-                      or
+                      {t('builder.logic.or')}
                     </button>
                   </div>
                   {/* Delete button */}
@@ -307,7 +309,7 @@ export default function LogicCanvas() {
                     
                     <div className="flex items-start gap-4 mb-4">
                       <div className="flex flex-col items-center relative -mt-1.5">
-                        <span className="text-purple-600 text-sm font-medium mb-1">if</span>
+                        <span className="text-purple-600 text-sm font-medium mb-1">{t('builder.logic.if')}</span>
                         <div className="absolute top-[28px] left-1/2 ml-[-2px] w-6 h-10 border-l-[4px] border-b-[4px] border-purple-400 rounded-bl-2xl" />
                         <div className="w-2.5 h-2.5 rounded-full bg-purple-500 ring-4 ring-purple-100" />
                       </div>
@@ -319,7 +321,7 @@ export default function LogicCanvas() {
                             onValueChange={(value) => updateRuleCondition(rule.id, condition.id, { fieldId: value })}
                           >
                             <SelectTrigger className="flex-1 bg-white border-gray-200">
-                              <SelectValue placeholder="Select field" />
+                              <SelectValue placeholder={t('builder.logic.select_field')} />
                             </SelectTrigger>
                             <SelectContent>
                               {availableFields.map((f) => (
@@ -346,17 +348,17 @@ export default function LogicCanvas() {
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="EQUALS">Equals</SelectItem>
-                              <SelectItem value="NOT_EQUALS">Not Equals</SelectItem>
-                              <SelectItem value="CONTAINS">Contains</SelectItem>
-                              <SelectItem value="IS_EMPTY">Is Empty</SelectItem>
-                              <SelectItem value="IS_NOT_EMPTY">Is Not Empty</SelectItem>
+                              <SelectItem value="EQUALS">{t('builder.logic.op.equals')}</SelectItem>
+                              <SelectItem value="NOT_EQUALS">{t('builder.logic.op.not_equals')}</SelectItem>
+                              <SelectItem value="CONTAINS">{t('builder.logic.op.contains')}</SelectItem>
+                              <SelectItem value="IS_EMPTY">{t('builder.logic.op.is_empty')}</SelectItem>
+                              <SelectItem value="IS_NOT_EMPTY">{t('builder.logic.op.is_not_empty')}</SelectItem>
                             </SelectContent>
                           </Select>
                           <Input
                             value={condition.value}
                             onChange={(e) => updateRuleCondition(rule.id, condition.id, { value: e.target.value })}
-                            placeholder="Value"
+                            placeholder={t('builder.logic.value_placeholder')}
                             className="flex-1 bg-white"
                             disabled={['IS_EMPTY', 'IS_NOT_EMPTY'].includes(condition.operator)}
                           />
@@ -386,8 +388,8 @@ export default function LogicCanvas() {
 
               {/* THEN Section */}
               <div className="pt-4">
-                <div className="text-gray-500 text-sm italic mb-4">then</div>
-                <div className="text-sm font-semibold text-gray-900 mb-3">Show / Hide</div>
+                <div className="text-gray-500 text-sm italic mb-4">{t('builder.logic.then')}</div>
+                <div className="text-sm font-semibold text-gray-900 mb-3">{t('builder.logic.show_hide')}</div>
                 
                 <div className="space-y-3">
                   {rule.actions.map((action) => (
@@ -400,8 +402,8 @@ export default function LogicCanvas() {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="show">Show</SelectItem>
-                          <SelectItem value="hide">Hide</SelectItem>
+                          <SelectItem value="show">{t('builder.logic.action.show')}</SelectItem>
+                          <SelectItem value="hide">{t('builder.logic.action.hide')}</SelectItem>
                         </SelectContent>
                       </Select>
                       <Select
@@ -409,7 +411,7 @@ export default function LogicCanvas() {
                         onValueChange={(value) => updateRuleAction(rule.id, action.id, { fieldId: value })}
                       >
                         <SelectTrigger className="flex-1 bg-white border-gray-200">
-                          <SelectValue placeholder="Select field" />
+                          <SelectValue placeholder={t('builder.logic.select_field')} />
                         </SelectTrigger>
                         <SelectContent>
                           {availableFields
@@ -445,7 +447,7 @@ export default function LogicCanvas() {
                   className="mt-3 text-purple-600 hover:text-purple-700 text-sm flex items-center gap-1 font-medium"
                 >
                   <Plus className="w-4 h-4" />
-                  Add action
+                  {t('builder.logic.add_action')}
                 </button>
               </div>
             </div>
@@ -455,12 +457,12 @@ export default function LogicCanvas() {
         {/* Guide */}
         {logicRules.length > 0 && (
           <div className="bg-blue-50 border border-blue-100 p-5 rounded-xl text-sm text-blue-700 space-y-2">
-            <p className="font-semibold">How it works:</p>
+            <p className="font-semibold">{t('builder.logic.how_it_works')}</p>
             <ul className="list-disc pl-5 space-y-1">
-              <li><strong>Show:</strong> The target field is hidden by default and appears when the condition is met.</li>
-              <li><strong>Hide:</strong> The target field is visible by default and disappears when the condition is met.</li>
-              <li><strong>AND:</strong> All conditions must be true for the action to trigger.</li>
-              <li><strong>OR:</strong> Any one condition being true will trigger the action.</li>
+                <li><strong>{t('builder.logic.how_show').split(':')[0]}:</strong>{t('builder.logic.how_show').split(':')[1]}</li>
+                <li><strong>{t('builder.logic.how_hide').split(':')[0]}:</strong>{t('builder.logic.how_hide').split(':')[1]}</li>
+                <li><strong>{t('builder.logic.how_and').split(':')[0]}:</strong>{t('builder.logic.how_and').split(':')[1]}</li>
+                <li><strong>{t('builder.logic.how_or').split(':')[0]}:</strong>{t('builder.logic.how_or').split(':')[1]}</li>
             </ul>
           </div>
         )}

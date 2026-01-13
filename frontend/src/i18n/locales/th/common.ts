@@ -1,0 +1,23 @@
+export default {
+  "common.dashboard": "แดชบอร์ด",
+  "common.demo": "เดโม",
+  "common.admin": "ผู้ดูแลระบบ",
+  "common.language": "ภาษา",
+  "common.switch_language": "เปลี่ยนภาษา",
+  "common.english": "อังกฤษ",
+  "common.thai": "ไทย",
+  "common.sign_in": "เข้าสู่ระบบ",
+  "common.sign_out": "ออกจากระบบ",
+  "common.heading": "หัวข้อ",
+  "common.sublabel": "คำอธิบายเพิ่มเติม",
+  "common.collapsible_section": "หัวข้อย่อยได้",
+  "common.page_break": "แบ่งหน้า",
+  "common.content_next_page": "เนื้อหาด้านล่างบรรทัดนี้จะปรากฏในหน้าถัดไป",
+  "common.untitled_field": "ฟิลด์ไม่มีชื่อ",
+  "common.field_hidden": "ฟิลด์นี้ถูกซ่อนไว้",
+  "common.question": "คำถาม",
+  "common.long_text": "ข้อความยาว",
+  "common.address": "ที่อยู่",
+  "common.field": "ฟิลด์",
+  "common.delete_field": "ลบฟิลด์"
+};

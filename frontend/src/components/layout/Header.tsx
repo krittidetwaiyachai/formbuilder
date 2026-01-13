@@ -3,11 +3,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FileText, LogOut, } from 'lucide-react';
 import { useAuthStore } from '@/store/authStore';
 import LoginModal from '@/components/auth/LoginModal';
-import UserAvatar from '@/components/common/UserAvatar'; // Import
+import UserAvatar from '@/components/common/UserAvatar';
+import LanguageSwitcher from '@/components/common/LanguageSwitcher';
+import { useTranslation } from 'react-i18next';
 
 export default function Header() {
   const { user, logout, isAuthenticated } = useAuthStore();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 
@@ -38,6 +41,8 @@ export default function Header() {
           <div className="flex items-center">
             {isAuthenticated ? (
               <div className="flex items-center gap-3 pl-4 border-l border-gray-200 relative">
+                <LanguageSwitcher />
+                
                 <div 
                   onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
                   className="flex items-center gap-3 bg-gray-50 hover:bg-gray-100 pr-2 pl-1 py-1 rounded-full transition-all duration-300 border border-gray-200 group cursor-pointer relative z-40"
@@ -87,7 +92,7 @@ export default function Header() {
                                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors font-medium"
                              >
                                 <LogOut className="h-4 w-4" />
-                                Sign Out
+                                {t('sign_out')}
                              </button>
                         </div>
                     </div>
@@ -231,7 +236,7 @@ export default function Header() {
                   />
                   
                   <span className="relative flex items-center gap-2 z-10">
-                    Sign in
+                    {t('sign_in')}
                     <svg 
                       className="w-4 h-4 transition-transform duration-300 group-hover/btn:translate-x-1" 
                       fill="none" 

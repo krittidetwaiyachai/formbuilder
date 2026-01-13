@@ -1,8 +1,9 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Form, FormStatus, FieldType } from '@/types';
 import { Lock, FileQuestion, CheckCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import api from '@/lib/api';
 import { getBrowserFingerprint } from '@/utils/fingerprint';
 import Loader from '@/components/common/Loader';
@@ -14,6 +15,7 @@ import { ClassicLayout } from './ClassicLayout';
 import { CardLayout } from './CardLayout';
 import { FormProgressBar } from './FormProgressBar';
 import { FormNavigation } from './FormNavigation';
+import QuizTimer from './QuizTimer';
 
 interface PublicFormRendererProps {
   form: Form | null;
@@ -22,11 +24,14 @@ interface PublicFormRendererProps {
 }
 
 export default function PublicFormRenderer({ form, loading = false, isPreview = false }: PublicFormRendererProps) {
+  const { t } = useTranslation();
   const [showWelcome, setShowWelcome] = useState(true);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [currentPageIndex, setCurrentPageIndex] = useState(0);
   const [hasAlreadySubmitted, setHasAlreadySubmitted] = useState(false);
   const [checkingSubmission, setCheckingSubmission] = useState(true);
+  const [quizStartTime, setQuizStartTime] = useState<Date | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const {
     submitting,
@@ -144,6 +149,74 @@ export default function PublicFormRenderer({ form, loading = false, isPreview = 
       document.removeEventListener('keydown', handleKeyDown, true);
     };
   }, []);
+
+  // Initialize quiz start time when form is displayed (after welcome screen or if no welcome screen)
+  useEffect(() => {
+    const isWelcomeActive = form?.welcomeSettings && form.welcomeSettings.isActive !== false;
+    const isShowingWelcome = showWelcome && isWelcomeActive;
+
+    if (form?.isQuiz && !isShowingWelcome && !quizStartTime && !isPreview && !submitted) {
+      const savedStartTime = localStorage.getItem(`quiz_start_time_${form.id}`);
+      if (savedStartTime) {
+        setQuizStartTime(new Date(savedStartTime));
+      } else {
+        const startTime = new Date();
+        setQuizStartTime(startTime);
+        localStorage.setItem(`quiz_start_time_${form.id}`, startTime.toISOString());
+      }
+    }
+  }, [form?.id, form?.isQuiz, showWelcome, form?.welcomeSettings, quizStartTime, isPreview, submitted]);
+
+  // Clear quiz start time on submission
+  useEffect(() => {
+    if (submitted && form?.id) {
+      localStorage.removeItem(`quiz_start_time_${form.id}`);
+    }
+  }, [submitted, form?.id]);
+
+  const handleTimeUp = useCallback(async () => {
+    if (!submitting && !submitted && form) {
+      try {
+        const currentValues = watchedValues || {};
+        await submitForm(currentValues);
+      } catch (error) {
+        console.error('Force submit error:', error);
+      }
+    }
+  }, [submitForm, submitting, submitted, form, watchedValues]);
+
+  const autoSubmitAttempted = useRef(false);
+
+  useEffect(() => {
+    if (!form?.isQuiz || isPreview || submitted || submitting || !form.quizSettings?.endTime) {
+      return;
+    }
+
+    const endTime = new Date(form.quizSettings.endTime);
+    const now = new Date();
+    
+    // If end time has passed, auto-submit immediately
+    if (now >= endTime) {
+      if (!autoSubmitAttempted.current) {
+         autoSubmitAttempted.current = true;
+         handleTimeUp();
+      }
+      return;
+    }
+
+    // Schedule auto-submit when end time is reached
+    const timeUntilEnd = endTime.getTime() - now.getTime();
+    const timeoutId = setTimeout(() => {
+      if (!autoSubmitAttempted.current) {
+        autoSubmitAttempted.current = true;
+        handleTimeUp();
+      }
+    }, timeUntilEnd);
+
+    return () => clearTimeout(timeoutId);
+  }, [form?.isQuiz, form?.quizSettings?.endTime, isPreview, submitted, submitting, handleTimeUp]);
+
+
 
   // Split fields into pages based on PAGE_BREAK
   const splitIntoPages = (fields: any[]) => {
@@ -309,7 +382,7 @@ export default function PublicFormRenderer({ form, loading = false, isPreview = 
           className="text-center"
         >
           <Loader className="mx-auto mb-4" />
-          <p className="text-gray-500 font-medium">Loading...</p>
+          <p className="text-gray-500 font-medium">{t('public.loading')}</p>
         </motion.div>
       </div>
     );
@@ -326,10 +399,10 @@ export default function PublicFormRenderer({ form, loading = false, isPreview = 
           <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-6">
             <CheckCircle className="h-8 w-8 text-green-600" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Already Submitted</h2>
-          <p className="text-gray-600 mb-6">You have already submitted a response to this form. Multiple submissions are not allowed.</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('public.already_submitted_title')}</h2>
+          <p className="text-gray-600 mb-6">{t('public.already_submitted_desc')}</p>
           <div className="text-sm text-gray-500">
-            Thank you for your participation! 🙏
+            {t('public.thank_you')} 🙏
           </div>
         </motion.div>
       </div>
@@ -347,8 +420,8 @@ export default function PublicFormRenderer({ form, loading = false, isPreview = 
           <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-6">
             <FileQuestion className="h-8 w-8 text-gray-500" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Form Not Found</h2>
-          <p className="text-gray-600">The form you are looking for does not exist or has been deleted.</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('public.form_not_found_title')}</h2>
+          <p className="text-gray-600">{t('public.form_not_found_desc')}</p>
         </motion.div>
       </div>
     );
@@ -366,8 +439,53 @@ export default function PublicFormRenderer({ form, loading = false, isPreview = 
           <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-6">
             <Lock className="h-8 w-8 text-gray-500" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Form Not Available</h2>
-          <p className="text-gray-600">This form is currently not accepting responses.</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('public.form_unavailable_title')}</h2>
+          <p className="text-gray-600">{t('public.form_unavailable_desc')}</p>
+        </motion.div>
+      </div>
+    );
+  }
+
+  // Check quiz availability times
+  const checkQuizAvailability = () => {
+    if (!form?.isQuiz || isPreview) return { available: true, message: '' };
+    
+    const now = new Date();
+    const startTime = form.quizSettings?.startTime ? new Date(form.quizSettings.startTime) : null;
+    const endTime = form.quizSettings?.endTime ? new Date(form.quizSettings.endTime) : null;
+
+    if (startTime && now < startTime) {
+      return { 
+        available: false, 
+        message: `This quiz will be available starting ${startTime.toLocaleString()}` 
+      };
+    }
+
+    if (endTime && now > endTime) {
+      return { 
+        available: false, 
+        message: `This quiz closed on ${endTime.toLocaleString()}` 
+      };
+    }
+
+    return { available: true, message: '' };
+  };
+
+  const availability = checkQuizAvailability();
+  
+  if (!availability.available && !isPreview) {
+    return (
+      <div className="h-full bg-gray-50 flex items-center justify-center px-4">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-md w-full bg-white rounded-2xl shadow-xl p-10 text-center"
+        >
+          <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+            <Lock className="h-8 w-8 text-gray-500" />
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('public.quiz_unavailable_title')}</h2>
+          <p className="text-gray-600">{availability.message}</p>
         </motion.div>
       </div>
     );
@@ -431,7 +549,20 @@ export default function PublicFormRenderer({ form, loading = false, isPreview = 
           />
         )}
 
-        <form onSubmit={handleSubmit(submitForm)} className="w-full">
+        {/* Quiz Timer */}
+        {form.isQuiz && form.quizSettings?.timeLimit && quizStartTime && !submitted && (
+          <div className="fixed top-16 right-4 z-40 md:top-24 md:right-8 lg:right-12 flex justify-end pointer-events-none">
+            <div className="pointer-events-auto">
+              <QuizTimer 
+                timeLimitMinutes={form.quizSettings.timeLimit}
+                onTimeUp={handleTimeUp}
+                startTime={quizStartTime}
+              />
+            </div>
+          </div>
+        )}
+
+        <form ref={formRef} onSubmit={handleSubmit(submitForm)} className="w-full">
            <AnimatePresence mode='wait'>
              <motion.div
                key={isCardLayout ? currentCardIndex : currentPageIndex}
@@ -452,15 +583,15 @@ export default function PublicFormRenderer({ form, loading = false, isPreview = 
                     {form.settings?.collectEmail && (
                       <div className="mt-6 p-4 bg-blue-50 border border-blue-100 rounded-lg">
                         <label className="block text-sm font-medium text-blue-900 mb-1">
-                          Email Address <span className="text-red-500">*</span>
+                          {t('public.email_label')} <span className="text-red-500">*</span>
                         </label>
                         <input
                           type="email"
                           {...register('respondentEmail', { 
-                            required: 'Email is required',
+                            required: t('public.email_required'),
                             pattern: {
                               value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                              message: 'Invalid email address'
+                              message: t('public.email_invalid')
                             }
                           })}
                           className={`w-full px-4 py-2 bg-white border rounded-md focus:ring-2 focus:ring-blue-500 outline-none transition-all ${
@@ -475,7 +606,7 @@ export default function PublicFormRenderer({ form, loading = false, isPreview = 
                         )}
                         <p className="mt-2 text-xs text-blue-600 flex items-center gap-1">
                           <Lock className="w-3 h-3" />
-                          This form is collecting emails automatically.
+                          {t('public.email_collecting_notice')}
                         </p>
                       </div>
                     )}

@@ -3,6 +3,7 @@ import { Field, FieldType } from '@/types';
 import { useForm } from 'react-hook-form';
 import { ChevronDown } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/custom-select';
+import { PreviewLabel } from '../PreviewLabel';
 
 interface PreviewFieldProps {
   field: Field;
@@ -94,11 +95,7 @@ export const PreviewSelectField: React.FC<PreviewFieldProps> = ({ field, registe
         return (
             <div className={`mb-4 w-full ${isRowLayout ? 'flex items-start gap-4' : ''}`} title={hoverText}>
                 <div className={`${isRowLayout ? 'w-40 flex-shrink-0 pt-2' : 'mb-3'} ${labelAlignment === 'RIGHT' ? 'text-right' : ''}`}>
-                <label htmlFor={fieldName} className={`block font-semibold text-gray-800 ${isPublic ? 'text-base' : 'text-sm'}`}>
-                    {questionNumber && <span className="text-gray-500 mr-2">{questionNumber} <span className="text-gray-300">|</span></span>}
-                    {field.label}
-                    {field.required && <span className="text-red-500 ml-1">*</span>}
-                </label>
+                <PreviewLabel field={field} questionNumber={questionNumber} isPublic={isPublic} htmlFor={fieldName} />
                 {subLabel && subLabel !== 'Sublabel' && (
                     <p className="mt-1 text-sm text-gray-500 font-normal">{subLabel}</p>
                 )}
@@ -146,11 +143,7 @@ export const PreviewSelectField: React.FC<PreviewFieldProps> = ({ field, registe
     return (
       <div className={`mb-4 w-full ${isRowLayout ? 'flex items-start gap-4' : ''}`} title={hoverText}>
         <div className={`${isRowLayout ? 'w-40 flex-shrink-0 pt-2' : 'mb-3'} ${labelAlignment === 'RIGHT' ? 'text-right' : ''}`}>
-          <label htmlFor={fieldName} className={`block font-semibold text-gray-800 ${isPublic ? 'text-base' : 'text-sm'}`}>
-            {questionNumber && <span className="text-gray-500 mr-2">{questionNumber} <span className="text-gray-300">|</span></span>}
-            {field.label}
-            {field.required && <span className="text-red-500 ml-1">*</span>}
-          </label>
+          <PreviewLabel field={field} questionNumber={questionNumber} isPublic={isPublic} htmlFor={fieldName} />
           {subLabel && subLabel !== 'Sublabel' && (
             <p className="mt-1 text-sm text-gray-500 font-normal">{subLabel}</p>
           )}

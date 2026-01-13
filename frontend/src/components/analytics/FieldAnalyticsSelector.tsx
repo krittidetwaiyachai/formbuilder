@@ -16,14 +16,11 @@ import {
   Calendar,
   Percent,
   Award,
-  FileText,
-  Circle,
   GitCompare,
 } from "lucide-react";
-import { FormSubmission } from "@/types/form";
+import { useTranslation } from "react-i18next";
 
 interface FieldAnalyticsSelectorProps {
-  submissions: FormSubmission[];
   availableFields: string[];
   onAnalysisChange: (field: string, analysisType: string) => void;
 }
@@ -42,93 +39,93 @@ type AnalysisType =
   | "topValues"
   | "allResponses";
 
-const analysisOptions: Array<{
-  id: AnalysisType;
-  label: string;
-  description: string;
-  icon: React.ReactNode;
-}> = [
-  {
-    id: "ranking",
-    label: "Ranking",
-    description: "จัดอันดับคำตอบที่ตอบมากที่สุด",
-    icon: <Award className="h-5 w-5" />,
-  },
-  {
-    id: "statistics",
-    label: "Statistics",
-    description: "สถิติพื้นฐาน (จำนวน, unique values, etc.)",
-    icon: <Hash className="h-5 w-5" />,
-  },
-  {
-    id: "barChart",
-    label: "Bar Chart",
-    description: "กราฟแท่งแสดงจำนวนคำตอบ",
-    icon: <BarChart3 className="h-5 w-5" />,
-  },
-  {
-    id: "pieChart",
-    label: "Pie Chart",
-    description: "กราฟวงกลมแสดงสัดส่วน",
-    icon: <BarChart3 className="h-5 w-5" />,
-  },
-  {
-    id: "topValues",
-    label: "Top Values",
-    description: "แสดงค่า top N ที่ตอบมากที่สุด",
-    icon: <TrendingUp className="h-5 w-5" />,
-  },
-  {
-    id: "percentage",
-    label: "Percentage",
-    description: "แสดงเปอร์เซ็นต์ของแต่ละคำตอบ",
-    icon: <Percent className="h-5 w-5" />,
-  },
-  {
-    id: "count",
-    label: "Count",
-    description: "นับจำนวนคำตอบแต่ละค่า",
-    icon: <Hash className="h-5 w-5" />,
-  },
-  {
-    id: "allResponses",
-    label: "All Responses",
-    description: "แสดงคำตอบทั้งหมดของ field นี้",
-    icon: <List className="h-5 w-5" />,
-  },
-  {
-    id: "timeline",
-    label: "Timeline",
-    description: "แสดงการตอบตามเวลา",
-    icon: <Calendar className="h-5 w-5" />,
-  },
-  {
-    id: "filter",
-    label: "Filter",
-    description: "กรองข้อมูลตามเงื่อนไข",
-    icon: <Filter className="h-5 w-5" />,
-  },
-  {
-    id: "compare",
-    label: "Compare",
-    description: "เปรียบเทียบระหว่าง fields",
-    icon: <GitCompare className="h-5 w-5" />,
-  },
-  {
-    id: "export",
-    label: "Export",
-    description: "ส่งออกข้อมูลเป็น CSV/Excel",
-    icon: <Download className="h-5 w-5" />,
-  },
-];
-
 export default function FieldAnalyticsSelector({
-  submissions,
   availableFields,
   onAnalysisChange,
 }: FieldAnalyticsSelectorProps) {
+  const { t } = useTranslation();
   const [selectedField, setSelectedField] = useState<string>(availableFields[0] || "");
   const [selectedAnalysis, setSelectedAnalysis] = useState<AnalysisType>("ranking");
+
+  const analysisOptions: Array<{
+    id: AnalysisType;
+    label: string;
+    description: string;
+    icon: React.ReactNode;
+  }> = [
+    {
+      id: "ranking",
+      label: t('analytics.analysis.ranking'),
+      description: t('analytics.analysis.ranking_desc'),
+      icon: <Award className="h-5 w-5" />,
+    },
+    {
+      id: "statistics",
+      label: t('analytics.analysis.statistics'),
+      description: t('analytics.analysis.statistics_desc'),
+      icon: <Hash className="h-5 w-5" />,
+    },
+    {
+      id: "barChart",
+      label: t('analytics.analysis.barchart'),
+      description: t('analytics.analysis.barchart_desc'),
+      icon: <BarChart3 className="h-5 w-5" />,
+    },
+    {
+      id: "pieChart",
+      label: t('analytics.analysis.piechart'),
+      description: t('analytics.analysis.piechart_desc'),
+      icon: <BarChart3 className="h-5 w-5" />,
+    },
+    {
+      id: "topValues",
+      label: t('analytics.analysis.topvalues'),
+      description: t('analytics.analysis.topvalues_desc'),
+      icon: <TrendingUp className="h-5 w-5" />,
+    },
+    {
+      id: "percentage",
+      label: t('analytics.analysis.percentage'),
+      description: t('analytics.analysis.percentage_desc'),
+      icon: <Percent className="h-5 w-5" />,
+    },
+    {
+      id: "count",
+      label: t('analytics.analysis.count'),
+      description: t('analytics.analysis.count_desc'),
+      icon: <Hash className="h-5 w-5" />,
+    },
+    {
+      id: "allResponses",
+      label: t('analytics.analysis.allresponses'),
+      description: t('analytics.analysis.allresponses_desc'),
+      icon: <List className="h-5 w-5" />,
+    },
+    {
+      id: "timeline",
+      label: t('analytics.analysis.timeline'),
+      description: t('analytics.analysis.timeline_desc'),
+      icon: <Calendar className="h-5 w-5" />,
+    },
+    {
+      id: "filter",
+      label: t('analytics.analysis.filter'),
+      description: t('analytics.analysis.filter_desc'),
+      icon: <Filter className="h-5 w-5" />,
+    },
+    {
+      id: "compare",
+      label: t('analytics.analysis.compare'),
+      description: t('analytics.analysis.compare_desc'),
+      icon: <GitCompare className="h-5 w-5" />,
+    },
+    {
+      id: "export",
+      label: t('analytics.analysis.export'),
+      description: t('analytics.analysis.export_desc'),
+      icon: <Download className="h-5 w-5" />,
+    },
+  ];
 
   React.useEffect(() => {
     if (availableFields.length > 0 && !selectedField) {
@@ -152,15 +149,15 @@ export default function FieldAnalyticsSelector({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Field Analytics</CardTitle>
+        <CardTitle>{t('analytics.field_analytics')}</CardTitle>
         <CardDescription>
-          เลือก field และประเภทการวิเคราะห์ที่ต้องการ
+          {t('analytics.select_field_analyze')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Field Selection */}
         <div className="space-y-2">
-          <Label>Select Field</Label>
+          <Label>{t('analytics.select_field')}</Label>
           <Select
             value={selectedField}
             onChange={(e) => handleFieldChange(e.target.value)}
@@ -175,7 +172,7 @@ export default function FieldAnalyticsSelector({
 
         {/* Analysis Type Selection */}
         <div className="space-y-2">
-          <Label>Analysis Type</Label>
+          <Label>{t('analytics.analysis_type')}</Label>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
             {analysisOptions.map((option) => (
               <Button

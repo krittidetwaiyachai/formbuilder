@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Field } from '@/types';
 import { Copy } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { stripHtml } from '@/lib/ui/utils';
+import { PropertiesTabs } from '../common/PropertiesTabs';
 
 interface NumberPropertiesProps {
   field: Field;
@@ -9,6 +12,7 @@ interface NumberPropertiesProps {
 }
 
 export const NumberProperties: React.FC<NumberPropertiesProps> = ({ field, updateField, duplicatesField }) => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'general' | 'options' | 'advanced'>('general');
 
   const validation = field.validation || {};
@@ -39,32 +43,18 @@ export const NumberProperties: React.FC<NumberPropertiesProps> = ({ field, updat
   return (
     <div className="space-y-4">
       {/* Tabs */}
-      <div className="flex items-center gap-1 mb-4 bg-gray-100 p-1 rounded-md overflow-x-auto">
-        {['general', 'options', 'advanced'].map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab as any)}
-            className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-colors uppercase whitespace-nowrap ${
-              activeTab === tab
-                ? 'bg-white text-black shadow-sm'
-                : 'text-gray-600 hover:text-black'
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
-      </div>
+      <PropertiesTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {activeTab === 'general' && (
         <div className="space-y-4">
            {/* Field Label */}
            <div>
               <label className="block text-sm font-medium text-black mb-1">
-                Field Label
+                {t('builder.properties.field_label')}
               </label>
               <input
                 type="text"
-                value={field.label}
+                value={stripHtml(field.label)}
                 onChange={(e) => handleUpdate({ label: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
               />
@@ -73,10 +63,10 @@ export const NumberProperties: React.FC<NumberPropertiesProps> = ({ field, updat
             {/* Label Alignment */}
             <div>
               <label className="block text-sm font-medium text-black mb-2">
-                Label Alignment
+                {t('builder.properties.label_alignment')}
               </label>
               <div className="flex gap-2">
-                {(['LEFT', 'RIGHT', 'TOP'] as const).map((align) => (
+                {(['LEFT', 'CENTER', 'TOP'] as const).map((align) => (
                   <button
                     key={align}
                     onClick={() => handleOptionUpdate('labelAlignment', align)}
@@ -86,7 +76,7 @@ export const NumberProperties: React.FC<NumberPropertiesProps> = ({ field, updat
                         : 'bg-white text-black border-gray-400 hover:bg-gray-50'
                     }`}
                   >
-                    {align}
+                    {align === 'LEFT' ? t('builder.properties.left') : align === 'CENTER' ? t('builder.properties.center') : t('builder.properties.top')}
                   </button>
                 ))}
               </div>
@@ -96,7 +86,7 @@ export const NumberProperties: React.FC<NumberPropertiesProps> = ({ field, updat
             {/* Required */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                  Required
+                  {t('builder.properties.required')}
               </label>
                <label className="relative inline-flex items-center cursor-pointer">
                 <input
@@ -108,14 +98,14 @@ export const NumberProperties: React.FC<NumberPropertiesProps> = ({ field, updat
                 <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
               </label>
                <p className="mt-1 text-xs text-gray-500">
-                Prevent submission if this field is empty
+                {t('builder.properties.required_desc')}
               </p>
             </div>
 
             {/* Sub Label */}
              <div>
               <label className="block text-sm font-medium text-black mb-1">
-                Sub Label
+                {t('builder.properties.sublabel')}
               </label>
               <input
                 type="text"
@@ -124,7 +114,7 @@ export const NumberProperties: React.FC<NumberPropertiesProps> = ({ field, updat
                 className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
               />
               <p className="mt-1 text-xs text-gray-500">
-                Add a short description below the field
+                {t('builder.properties.sublabel_desc')}
               </p>
             </div>
 
@@ -144,7 +134,7 @@ export const NumberProperties: React.FC<NumberPropertiesProps> = ({ field, updat
                className="w-full mt-4 px-3 py-2 text-sm font-medium text-black bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
              >
                <Copy className="h-4 w-4" />
-               DUPLICATE
+               {t('builder.properties.duplicate')}
              </button>
         </div>
       )}
@@ -154,7 +144,7 @@ export const NumberProperties: React.FC<NumberPropertiesProps> = ({ field, updat
             {/* Width */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Width
+                {t('builder.properties.width')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -167,15 +157,15 @@ export const NumberProperties: React.FC<NumberPropertiesProps> = ({ field, updat
                 </label>
                 {options.width === 'FIXED' && (
                    <div className="mt-2 text-xs font-bold px-2 py-1 bg-gray-200 rounded text-gray-600 inline-block">
-                        FIXED WIDTH
+                        {t('builder.properties.fixed_width')}
                    </div>
                 )}
                  <p className="mt-1 text-xs text-gray-500">
-                  The width of this field will change according to your form's width.
+                  {t('builder.properties.width_desc')}
                 </p>
                  {options.width === 'FIXED' && (
                      <div className="mt-2">
-                        <label className="block text-xs font-medium text-gray-700 mb-1">Custom Width (px)</label>
+                        <label className="block text-xs font-medium text-gray-700 mb-1">{t('builder.properties.custom_width')}</label>
                         <input
                             type="number"
                             value={options.customWidth || ''}
@@ -190,7 +180,7 @@ export const NumberProperties: React.FC<NumberPropertiesProps> = ({ field, updat
             {/* Entry Limits */}
              <div>
                    <label className="block text-sm font-medium text-black mb-1">
-                    Entry Limits
+                    {t('builder.properties.entry_limits')}
                    </label>
                    <label className="relative inline-flex items-center cursor-pointer">
                       <input
@@ -202,12 +192,12 @@ export const NumberProperties: React.FC<NumberPropertiesProps> = ({ field, updat
                       <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
                     </label>
                    <p className="mt-1 text-xs text-gray-500">
-                    Limit the minimum or maximum value allowed for this field
+                    {t('builder.properties.entry_limits_value_desc')}
                    </p>
                    {validation.entryLimits && (
                        <div className="mt-4 flex gap-4">
                            <div>
-                                <label className="block text-xs font-medium text-gray-700 mb-1">Minimum</label>
+                                <label className="block text-xs font-medium text-gray-700 mb-1">{t('builder.properties.min')}</label>
                                 <input
                                     type="number"
                                     value={validation.min || ''}
@@ -216,7 +206,7 @@ export const NumberProperties: React.FC<NumberPropertiesProps> = ({ field, updat
                                 />
                            </div>
                            <div>
-                                <label className="block text-xs font-medium text-gray-700 mb-1">Maximum</label>
+                                <label className="block text-xs font-medium text-gray-700 mb-1">{t('builder.properties.max')}</label>
                                 <input
                                     type="number"
                                     value={validation.max || ''}
@@ -235,7 +225,7 @@ export const NumberProperties: React.FC<NumberPropertiesProps> = ({ field, updat
             {/* Placeholder */}
             <div>
               <label className="block text-sm font-medium text-black mb-1">
-                Placeholder
+                {t('builder.properties.placeholder')}
               </label>
               <input
                 type="text"
@@ -245,14 +235,14 @@ export const NumberProperties: React.FC<NumberPropertiesProps> = ({ field, updat
                 placeholder="e.g., 23"
               />
                <p className="mt-1 text-xs text-gray-500">
-                Add an example inside the field
+                {t('builder.properties.placeholder_desc')}
               </p>
             </div>
 
              {/* Hover Text */}
              <div>
               <label className="block text-sm font-medium text-black mb-1">
-                Hover Text
+                {t('builder.properties.hover_text')}
               </label>
               <textarea
                 value={options.hoverText || ''}
@@ -261,14 +251,14 @@ export const NumberProperties: React.FC<NumberPropertiesProps> = ({ field, updat
                 className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
               />
               <p className="mt-1 text-xs text-gray-500">
-                Show a description when a user hovers over this field
+                {t('builder.properties.hover_text_desc')}
               </p>
             </div>
 
             {/* Default Value */}
             <div>
               <label className="block text-sm font-medium text-black mb-1">
-                Default Value
+                {t('builder.properties.default_value')}
               </label>
               <input
                 type="number"
@@ -277,14 +267,14 @@ export const NumberProperties: React.FC<NumberPropertiesProps> = ({ field, updat
                 className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
               />
                <p className="mt-1 text-xs text-gray-500">
-                Pre-populate this field with a default value
+                {t('builder.properties.default_value_desc')}
               </p>
             </div>
 
              {/* Read Only */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Read Only
+                {t('builder.properties.read_only')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -296,14 +286,14 @@ export const NumberProperties: React.FC<NumberPropertiesProps> = ({ field, updat
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
                 </label>
                <p className="mt-1 text-xs text-gray-500">
-                Prevent entry in this field
+                {t('builder.properties.read_only_desc')}
               </p>
             </div>
 
              {/* Shrink */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Shrink
+                {t('builder.properties.shrink')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -315,14 +305,14 @@ export const NumberProperties: React.FC<NumberPropertiesProps> = ({ field, updat
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
                 </label>
                <p className="mt-1 text-xs text-gray-500">
-                Make field smaller
+                {t('builder.properties.shrink_desc')}
               </p>
             </div>
             
             {/* Hide field */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Hide field
+                {t('builder.properties.hide_field')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -334,7 +324,7 @@ export const NumberProperties: React.FC<NumberPropertiesProps> = ({ field, updat
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
                 </label>
                  <p className="mt-1 text-xs text-gray-500">
-                  Hide this field from the form
+                  {t('builder.properties.hide_field_desc')}
                 </p>
             </div>
         </div>

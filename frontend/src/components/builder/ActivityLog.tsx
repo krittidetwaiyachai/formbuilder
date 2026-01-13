@@ -44,7 +44,10 @@ const targetIcons = {
   settings: Settings,
 };
 
+import { useTranslation } from "react-i18next";
+
 export default function ActivityLog({ logs, maxItems = 10 }: ActivityLogProps) {
+  const { t } = useTranslation();
   const displayLogs = logs.slice(0, maxItems);
 
   const formatTime = (timestamp: string) => {
@@ -55,10 +58,10 @@ export default function ActivityLog({ logs, maxItems = 10 }: ActivityLogProps) {
     const diffHours = Math.floor(diffMs / 3600000);
     const diffDays = Math.floor(diffMs / 86400000);
 
-    if (diffMins < 1) return "Just now";
-    if (diffMins < 60) return `${diffMins}m ago`;
-    if (diffHours < 24) return `${diffHours}h ago`;
-    if (diffDays < 7) return `${diffDays}d ago`;
+    if (diffMins < 1) return t('activity.just_now');
+    if (diffMins < 60) return t('activity.m_ago', { count: diffMins });
+    if (diffHours < 24) return t('activity.h_ago', { count: diffHours });
+    if (diffDays < 7) return t('activity.d_ago', { count: diffDays });
     return date.toLocaleDateString();
   };
 
@@ -76,10 +79,10 @@ export default function ActivityLog({ logs, maxItems = 10 }: ActivityLogProps) {
       <CardHeader>
         <CardTitle className="text-lg flex items-center gap-2">
           <Clock className="h-5 w-5" />
-          Activity Log
+          {t('activity.title')}
         </CardTitle>
         <CardDescription>
-          Recent changes and activities
+          {t('activity.recent_changes')}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -141,7 +144,7 @@ export default function ActivityLog({ logs, maxItems = 10 }: ActivityLogProps) {
             })
           ) : (
             <div className="text-center py-8 text-sm text-gray-500">
-              No activity yet
+              {t('activity.no_activity')}
             </div>
           )}
         </div>

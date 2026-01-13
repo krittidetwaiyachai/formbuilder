@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import QRCode from 'react-qr-code';
+import { useTranslation } from 'react-i18next';
 
 interface FormBuilderHeaderProps {
   currentForm: Form | null;
@@ -29,6 +30,7 @@ export default function FormBuilderHeader({
 }: FormBuilderHeaderProps) {
   const navigate = useNavigate();
   const { undo, redo, historyIndex, history } = useFormStore();
+  const { t } = useTranslation();
   
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [titleValue, setTitleValue] = useState('');
@@ -160,30 +162,30 @@ export default function FormBuilderHeader({
             {saving ? (
               <span className="text-gray-500 flex items-center gap-2">
                 <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-gray-500"></div>
-                Saving...
+                {t('builder_header.saving')}
               </span>
             ) : !currentForm ? (
               <span className="text-gray-500 flex items-center gap-2">
                  <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-gray-500"></div>
-                 Loading...
+                 {t('builder_header.loading')}
               </span>
             ) : lastSaved ? (
               <span className="text-gray-500 flex items-center">
-                All changes saved at {lastSaved.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: false })}
+                {t('builder_header.all_saved')} {lastSaved.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: false })}
                 <div className="ml-1.5 p-0.5 rounded-full bg-green-100">
                    <Check className="h-3 w-3 text-green-600" />
                 </div>
               </span>
             ) : currentForm?.updatedAt ? (
               <span className="text-gray-500 flex items-center">
-                Last saved at {new Date(currentForm.updatedAt).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: false })}
+                {t('builder_header.last_saved')} {new Date(currentForm.updatedAt).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: false })}
                 <div className="ml-1.5 p-0.5 rounded-full bg-green-100">
                    <Check className="h-3 w-3 text-green-600" />
                 </div>
               </span>
             ) : (
               <span className="text-gray-400 flex items-center">
-                Not saved yet
+                {t('builder_header.not_saved')}
               </span>
             )}
           </div>
@@ -197,13 +199,13 @@ export default function FormBuilderHeader({
                 onValueChange={(value) => updateForm({ status: value as FormStatus })}
             >
                 <SelectTrigger className="h-8 text-xs font-semibold bg-gray-100 border-none hover:bg-gray-200 focus:ring-0 focus:ring-offset-0">
-                    <SelectValue placeholder="Select status" />
+                    <SelectValue placeholder={t('dashboard.filters.all')} />
                 </SelectTrigger>
                 <SelectContent>
                     {[
-                        { label: 'DRAFT', value: FormStatus.DRAFT },
-                        { label: 'PUBLISHED', value: FormStatus.PUBLISHED },
-                        { label: 'ARCHIVED', value: FormStatus.ARCHIVED }
+                        { label: t('dashboard.filters.draft'), value: FormStatus.DRAFT },
+                        { label: t('dashboard.filters.published'), value: FormStatus.PUBLISHED },
+                        { label: t('dashboard.filters.archived'), value: FormStatus.ARCHIVED }
                     ].map((status) => (
                         <SelectItem key={status.value} value={status.value} className="text-xs font-medium">
                             {status.label}
@@ -262,7 +264,7 @@ export default function FormBuilderHeader({
             <button
               onClick={() => setIsCollaboratorModalOpen(true)}
               className="w-8 h-8 rounded-full border-2 border-dashed border-gray-300 hover:border-black flex items-center justify-center text-gray-400 hover:text-black transition-all hover:bg-gray-50"
-              title="Invite collaborators"
+              title={t('builder_header.invite_collaborators')}
             >
               <Plus className="h-4 w-4" />
             </button>
@@ -275,7 +277,7 @@ export default function FormBuilderHeader({
               onClick={undo}
               disabled={historyIndex <= 0}
               className="p-1.5 text-gray-400 hover:text-black rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-              title="Undo"
+              title={t('builder_header.undo')}
             >
               <Undo2 className="h-4 w-4" />
             </button>
@@ -283,7 +285,7 @@ export default function FormBuilderHeader({
               onClick={redo}
               disabled={historyIndex >= history.length - 1}
               className="p-1.5 text-gray-400 hover:text-black rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-              title="Redo"
+              title={t('builder_header.redo')}
             >
               <Redo2 className="h-4 w-4" />
             </button>
@@ -293,7 +295,7 @@ export default function FormBuilderHeader({
             className="inline-flex items-center px-3 py-1.5 border border-gray-400 text-sm font-medium rounded-md text-black bg-white hover:bg-gray-100"
           >
             <Eye className="h-3.5 w-3.5 mr-1.5" />
-            Preview
+            {t('builder_header.preview')}
           </button>
           <button
             onClick={() => {
@@ -303,7 +305,7 @@ export default function FormBuilderHeader({
             className="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800"
           >
             <Share2 className="h-3.5 w-3.5 mr-1.5" />
-            Share
+            {t('builder_header.share')}
           </button>
 
           <Dialog open={isShareOpen} onOpenChange={setIsShareOpen}>
@@ -316,9 +318,9 @@ export default function FormBuilderHeader({
                 <span className="sr-only">Close</span>
               </button>
               <DialogHeader>
-                <DialogTitle>Share Form</DialogTitle>
+                <DialogTitle>{t('builder_header.share_title')}</DialogTitle>
                 <DialogDescription>
-                  Anyone with the link can view and submit this form.
+                  {t('builder_header.share_description')}
                 </DialogDescription>
               </DialogHeader>
               <div className="flex items-center space-x-2">

@@ -3,6 +3,7 @@ import { Folder as FolderIcon, ChevronDown, ChevronRight, MoreVertical, Edit2, T
 import { useDroppable } from '@dnd-kit/core';
 import type { Folder } from '@/types/folder';
 import type { Form } from '@/types';
+import { useTranslation } from 'react-i18next';
 import DashboardFormCard from './DashboardFormCard';
 import DraggableFormCard from './DraggableFormCard';
 
@@ -38,6 +39,7 @@ export default function FolderCard({
   isExpanded,
   onToggleExpand
 }: FolderCardProps) {
+  const { t } = useTranslation();
   const [showMenu, setShowMenu] = useState(false);
   
   const { setNodeRef, isOver } = useDroppable({
@@ -78,7 +80,7 @@ export default function FolderCard({
 
           <div className="flex-1 min-w-0">
             <h3 className="font-semibold text-gray-900 truncate">{folder.name}</h3>
-            <p className="text-sm text-gray-500">{folder._count.forms} forms</p>
+            <p className="text-sm text-gray-500">{folder._count.forms} {t('dashboard.forms_count')}</p>
           </div>
 
           <div className="relative">
@@ -95,7 +97,7 @@ export default function FolderCard({
                 <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-20">
                   <button
                     onClick={() => {
-                      const newName = prompt('New folder name:', folder.name);
+                      const newName = prompt(t('dashboard.prompt.new_folder_name'), folder.name);
                       if (newName && newName.trim()) {
                         onUpdate(folder.id, newName.trim(), folder.color);
                       }
@@ -104,7 +106,7 @@ export default function FolderCard({
                     className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 flex items-center gap-2"
                   >
                     <Edit2 className="w-4 h-4" />
-                    Rename
+                    {t('dashboard.context.rename')}
                   </button>
                   <button
                     onClick={() => {
@@ -114,7 +116,7 @@ export default function FolderCard({
                     className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 text-red-600 flex items-center gap-2"
                   >
                     <Trash2 className="w-4 h-4" />
-                    Delete
+                    {t('dashboard.context.delete')}
                   </button>
                 </div>
               </>

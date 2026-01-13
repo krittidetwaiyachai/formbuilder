@@ -33,7 +33,8 @@ import {
   Plus,
   LayoutGrid
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 // --- CONFIGURATION ---
 interface SidebarFieldConfig {
@@ -106,6 +107,38 @@ const fieldCategories: { name: string; fields: SidebarFieldConfig[] }[] = [
 ];
 
 const allFields = fieldCategories.flatMap(c => c.fields);
+
+// Hook for translations
+const useFieldLabels = () => {
+  const { t } = useTranslation();
+  return {
+    'Text Fields': t('builder.categories.text'),
+    'Choice Fields': t('builder.categories.choice'),
+    'Date & Time': t('builder.categories.datetime'),
+    'Rating': t('builder.categories.rating'),
+    'Layout': t('builder.categories.layout'),
+    'Short Text': t('builder.fields.short_text'),
+    'Long Text': t('builder.fields.long_text'),
+    'Email': t('builder.fields.email'),
+    'Phone': t('builder.fields.phone'),
+    'Number': t('builder.fields.number'),
+    'Full Name': t('builder.fields.full_name'),
+    'Address': t('builder.fields.address'),
+    'Dropdown Menu': t('builder.fields.dropdown'),
+    'Single Choice': t('builder.fields.single_choice'),
+    'Multiple Choice': t('builder.fields.multiple_choice'),
+    'Matrix Logic': t('builder.fields.matrix'),
+    'Input Table': t('builder.fields.table'),
+    'Date': t('builder.fields.date'),
+    'Time': t('builder.fields.time'),
+    'Star Rating': t('builder.fields.rating'),
+    'Heading': t('builder.fields.heading'),
+    'Text Block': t('builder.fields.text_block'),
+    'Separator': t('builder.fields.separator'),
+    'Page Break': t('builder.fields.page_break'),
+    'Field Group': t('builder.fields.group'),
+  };
+};
 
 // --- COMPONENTS ---
 
@@ -257,11 +290,13 @@ function SidebarDragPreview({ fieldType }: { fieldType: typeof allFields[0] }) {
 
 // 2. The Visual Representation of the Button (Shared)
 const FieldTypeButtonVisual = ({ fieldType, isCollapsed }: { fieldType: any, isCollapsed?: boolean }) => {
+    const labels = useFieldLabels();
     const Icon = fieldType.icon;
+    const translatedLabel = labels[fieldType.label as keyof ReturnType<typeof useFieldLabels>] || fieldType.label;
     return (
         <div className={`w-full flex items-center ${isCollapsed ? 'justify-center px-1' : 'px-3'} py-2 text-sm text-black bg-white hover:bg-gray-100 rounded-md border border-gray-400 transition-colors cursor-grab active:cursor-grabbing touch-none select-none`}>
             <Icon className={`h-4 w-4 ${isCollapsed ? '' : 'mr-2'}`} />
-            {!isCollapsed && <span>{fieldType.label}</span>}
+            {!isCollapsed && <span>{translatedLabel}</span>}
         </div>
     );
 }
@@ -538,6 +573,8 @@ const TemplatePopup = ({ onClose }: { onClose: () => void }) => {
 
 function SidebarCategory({ category, isCollapsed }: { category: { name: string; fields: any[] }, isCollapsed: boolean }) {
   const [isOpen, setIsOpen] = useState(true);
+  const labels = useFieldLabels();
+  const translatedCategoryName = labels[category.name as keyof ReturnType<typeof useFieldLabels>] || category.name;
 
   if (isCollapsed) {
     // Collapsed view: No header, just customized icon-only buttons in a stack (or maybe small separator?)
@@ -559,7 +596,7 @@ function SidebarCategory({ category, isCollapsed }: { category: { name: string; 
         onClick={() => setIsOpen(!isOpen)}
         className="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold text-gray-700 uppercase tracking-wide hover:bg-gray-50 transition-colors"
       >
-        <span>{category.name}</span>
+        <span>{translatedCategoryName}</span>
         {isOpen ? (
           <ChevronDown className="h-4 w-4 text-gray-400" />
         ) : (
@@ -581,6 +618,7 @@ function SidebarCategory({ category, isCollapsed }: { category: { name: string; 
 export default function FieldSidebar() {
   const [isTemplateOpen, setIsTemplateOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const { t } = useTranslation();
 
   return (
     <div 
@@ -597,7 +635,7 @@ export default function FieldSidebar() {
       </button>
 
       <div className={`p-4 border-b border-gray-200 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} bg-white relative`}>
-        {!isCollapsed && <h2 className="font-semibold text-gray-800 whitespace-nowrap overflow-hidden">Form Fields</h2>}
+        {!isCollapsed && <h2 className="font-semibold text-gray-800 whitespace-nowrap overflow-hidden">{t('builder.fields')}</h2>}
       </div>
 
        {/* Template Section Button - Moved to Top */}
@@ -663,8 +701,8 @@ export default function FieldSidebar() {
   
                               {/* Text with Slide Effect */}
                               <div className="flex flex-col items-start gap-0.5">
-                                  <span className="text-sm font-bold text-white tracking-wide drop-shadow-sm">Use Field Bundles</span>
-                                  <span className="text-[10px] text-gray-400 font-medium tracking-wider uppercase group-hover:text-white transition-colors">Common Sets</span>
+                                  <span className="text-sm font-bold text-white tracking-wide drop-shadow-sm">{t('builder.field_bundles')}</span>
+                                  <span className="text-[10px] text-gray-400 font-medium tracking-wider uppercase group-hover:text-white transition-colors">{t('builder.bundles_subtitle')}</span>
                               </div>
                           </div>
   
@@ -690,7 +728,7 @@ export default function FieldSidebar() {
          <Droppable 
            droppableId="SIDEBAR" 
            isDropDisabled={true}
-           renderClone={(provided, snapshot, rubric) => {
+           renderClone={(provided, _snapshot, rubric) => {
               const fieldType = allFields[rubric.source.index];
               return (
                   <div

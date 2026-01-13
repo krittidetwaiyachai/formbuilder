@@ -1,0 +1,23 @@
+export default {
+  "common.dashboard": "Dashboard",
+  "common.demo": "Demo",
+  "common.admin": "Admin",
+  "common.language": "Language",
+  "common.switch_language": "Switch Language",
+  "common.english": "English",
+  "common.thai": "Thai",
+  "common.sign_in": "Sign In",
+  "common.sign_out": "Sign Out",
+  "common.heading": "Heading",
+  "common.sublabel": "Sublabel",
+  "common.collapsible_section": "Collapsible Section",
+  "common.page_break": "Page Break",
+  "common.content_next_page": "Content below this line will appear on the next page",
+  "common.untitled_field": "Untitled Field",
+  "common.field_hidden": "This field is hidden",
+  "common.question": "Question",
+  "common.long_text": "Long Text",
+  "common.address": "Address",
+  "common.field": "Field",
+  "common.delete_field": "Delete field"
+};

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Field } from '@/types';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { Plus, Trash2 } from 'lucide-react';
+import { PreviewLabel } from '../PreviewLabel';
 
 interface PreviewFieldProps {
   field: Field;
@@ -49,11 +50,7 @@ export const PreviewTableField: React.FC<PreviewFieldProps> = ({ field, register
   return (
     <div className="mb-6 w-full">
          <div className="mb-2">
-            <label className={`block font-semibold text-gray-800 ${isPublic ? 'text-base' : 'text-sm'}`}>
-                {questionNumber && <span className="text-gray-500 mr-2">{questionNumber} <span className="text-gray-300">|</span></span>}
-                {field.label}
-                {field.required && <span className="text-red-500 ml-1">*</span>}
-            </label>
+            <PreviewLabel field={field} questionNumber={questionNumber} isPublic={isPublic} htmlFor={fieldName} />
             {field.options?.subLabel && (
                 <p className="mt-1 text-sm text-gray-500 font-normal">{field.options.subLabel}</p>
             )}

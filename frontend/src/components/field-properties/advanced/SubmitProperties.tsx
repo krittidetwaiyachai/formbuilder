@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Field } from '@/types';
 import { Copy } from 'lucide-react';
+import { stripHtml } from '@/lib/ui/utils';
+import { PropertiesTabs } from '../common/PropertiesTabs';
+import { useTranslation } from 'react-i18next';
 
 interface SubmitPropertiesProps {
   field: Field;
@@ -9,6 +12,7 @@ interface SubmitPropertiesProps {
 }
 
 export const SubmitProperties: React.FC<SubmitPropertiesProps> = ({ field, updateField, duplicatesField }) => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'general' | 'options' | 'advanced'>('general');
 
   const validation = field.validation || {};
@@ -39,37 +43,23 @@ export const SubmitProperties: React.FC<SubmitPropertiesProps> = ({ field, updat
   return (
     <div className="space-y-4">
       {/* Tabs */}
-      <div className="flex items-center gap-1 mb-4 bg-gray-100 p-1 rounded-md overflow-x-auto">
-        {['general', 'options', 'advanced'].map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab as any)}
-            className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-colors uppercase whitespace-nowrap ${
-              activeTab === tab
-                ? 'bg-white text-black shadow-sm'
-                : 'text-gray-600 hover:text-black'
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
-      </div>
+      <PropertiesTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {activeTab === 'general' && (
         <div className="space-y-6">
            {/* Button Text */}
            <div>
               <label className="block text-sm font-medium text-black mb-1">
-                Button Text
+                {t('builder.properties.button_text')}
               </label>
               <input
                 type="text"
-                value={field.label || 'Submit'}
+                value={stripHtml(field.label || 'Submit')}
                 onChange={(e) => handleUpdate({ label: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
               />
                <p className="mt-1 text-xs text-gray-500">
-                Customize the button text
+                {t('builder.properties.button_text_desc')}
               </p>
             </div>
 
@@ -89,7 +79,7 @@ export const SubmitProperties: React.FC<SubmitPropertiesProps> = ({ field, updat
                className="w-full mt-4 px-3 py-2 text-sm font-medium text-black bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
              >
                <Copy className="h-4 w-4" />
-               DUPLICATE
+               {t('builder.properties.duplicate')}
              </button>
         </div>
       )}
@@ -99,7 +89,7 @@ export const SubmitProperties: React.FC<SubmitPropertiesProps> = ({ field, updat
              {/* Button Alignment */}
             <div>
               <label className="block text-sm font-medium text-black mb-2">
-                Button Alignment
+                {t('builder.properties.button_alignment')}
               </label>
               <div className="flex gap-2">
                 {(['AUTO', 'LEFT', 'CENTER', 'RIGHT'] as const).map((align) => (
@@ -112,19 +102,19 @@ export const SubmitProperties: React.FC<SubmitPropertiesProps> = ({ field, updat
                         : 'bg-white text-black border-gray-400 hover:bg-gray-50'
                     }`}
                   >
-                    {align}
+                    {align === 'AUTO' ? t('builder.properties.auto') : align === 'LEFT' ? t('builder.properties.left') : align === 'CENTER' ? t('builder.properties.center') : t('builder.properties.right')}
                   </button>
                 ))}
               </div>
               <p className="mt-1 text-xs text-gray-500">
-                Select how the button is aligned horizontally
+                {t('builder.properties.alignment_desc')}
               </p>
             </div>
 
              {/* Reset Button */}
              <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Reset Button
+                {t('builder.properties.reset_button')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -136,14 +126,14 @@ export const SubmitProperties: React.FC<SubmitPropertiesProps> = ({ field, updat
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
                 </label>
                  <p className="mt-1 text-xs text-gray-500">
-                  Let users clear all fields with a reset button
+                  {t('builder.properties.reset_button_desc')}
                 </p>
             </div>
 
             {/* Print Button */}
              <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Print Button
+                {t('builder.properties.print_button')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -155,14 +145,14 @@ export const SubmitProperties: React.FC<SubmitPropertiesProps> = ({ field, updat
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
                 </label>
                  <p className="mt-1 text-xs text-gray-500">
-                  Let users print your form
+                  {t('builder.properties.print_button_desc')}
                 </p>
             </div>
             
              {/* Save and Continue Later */}
              <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Save and Continue Later
+                {t('builder.properties.save_continue')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -174,7 +164,7 @@ export const SubmitProperties: React.FC<SubmitPropertiesProps> = ({ field, updat
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
                 </label>
                  <p className="mt-1 text-xs text-gray-500">
-                  Let users save their submission and finish it later
+                  {t('builder.properties.save_continue_desc')}
                 </p>
             </div>
         </div>
@@ -185,7 +175,7 @@ export const SubmitProperties: React.FC<SubmitPropertiesProps> = ({ field, updat
              {/* Shrink */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Shrink
+                {t('builder.properties.shrink')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -197,14 +187,14 @@ export const SubmitProperties: React.FC<SubmitPropertiesProps> = ({ field, updat
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
                 </label>
                <p className="mt-1 text-xs text-gray-500">
-                Make field smaller
+                {t('builder.properties.shrink_desc')}
               </p>
             </div>
 
             {/* Hide field */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Hide field
+                {t('builder.properties.hide_field')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -216,7 +206,7 @@ export const SubmitProperties: React.FC<SubmitPropertiesProps> = ({ field, updat
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
                 </label>
                  <p className="mt-1 text-xs text-gray-500">
-                  Hide this field from the form
+                  {t('builder.properties.hide_field_desc')}
                 </p>
             </div>
         </div>

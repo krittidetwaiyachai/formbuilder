@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Form } from '@/types';
 import { 
   Check, 
@@ -21,6 +22,7 @@ interface SpecialPagePropertiesProps {
 }
 
 export function SpecialPageProperties({ currentPage, currentForm, handleFormUpdate }: SpecialPagePropertiesProps) {
+  const { t } = useTranslation();
   const isWelcome = currentPage === -1;
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     content: true,
@@ -80,13 +82,13 @@ export function SpecialPageProperties({ currentPage, currentForm, handleFormUpda
     <div className="space-y-4">
       {/* STYLE SECTION (Merged with Icon selection) */}
         <div className="border-b border-gray-100 pb-4">
-          <SectionHeader title="Appearance" section="style" icon={Palette} />
+          <SectionHeader title={t('builder.special_page.appearance')} section="style" icon={Palette} />
           {expandedSections.style && (
             <div className="mt-3 space-y-4 animate-in fade-in slide-in-from-top-1 duration-200">
               
               {/* Icon Selection */}
               <div>
-                <label className="block text-xs font-medium text-gray-500 mb-2">Icon</label>
+                <label className="block text-xs font-medium text-gray-500 mb-2">{t('builder.special_page.icon')}</label>
                 <div className="grid grid-cols-6 gap-2">
                   {availableIcons.map(item => (
                     <button
@@ -108,7 +110,7 @@ export function SpecialPageProperties({ currentPage, currentForm, handleFormUpda
 
               {/* Icon Color */}
               <div>
-                <label className="block text-xs font-medium text-gray-500 mb-2">Icon Color</label>
+                <label className="block text-xs font-medium text-gray-500 mb-2">{t('builder.special_page.icon_color')}</label>
                 <div className="flex gap-2">
                   {iconColors.map(color => (
                     <button
@@ -137,13 +139,13 @@ export function SpecialPageProperties({ currentPage, currentForm, handleFormUpda
       {/* ACTIONS SECTION */}
       {!isWelcome && (
         <div className="border-b border-gray-100 pb-4">
-          <SectionHeader title="Actions" section="actions" icon={ExternalLink} />
+          <SectionHeader title={t('builder.special_page.actions')} section="actions" icon={ExternalLink} />
           {expandedSections.actions && (
             <div className="mt-3 space-y-4 animate-in fade-in slide-in-from-top-1 duration-200">
               {/* Auto Redirect */}
               <div className="space-y-3">
                 <label className="flex items-center justify-between cursor-pointer">
-                  <span className="text-sm font-medium text-gray-600">Auto-redirect</span>
+                  <span className="text-sm font-medium text-gray-600">{t('builder.special_page.auto_redirect')}</span>
                   <div className="relative">
                     <input
                       type="checkbox"
@@ -158,7 +160,7 @@ export function SpecialPageProperties({ currentPage, currentForm, handleFormUpda
                 {currentForm.thankYouSettings?.autoRedirect && (
                   <div className="animate-in fade-in slide-in-from-top-1 duration-200 space-y-3">
                     <div>
-                      <label className="block text-xs font-medium text-gray-500 mb-1">Redirect URL</label>
+                      <label className="block text-xs font-medium text-gray-500 mb-1">{t('builder.special_page.redirect_url')}</label>
                       <input
                         type="url"
                         className="w-full px-3 py-2 border border-gray-200 rounded-md text-sm focus:border-black focus:ring-1 focus:ring-black outline-none transition-all"
@@ -169,7 +171,7 @@ export function SpecialPageProperties({ currentPage, currentForm, handleFormUpda
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-gray-500 mb-1">Delay (seconds)</label>
+                      <label className="block text-xs font-medium text-gray-500 mb-1">{t('builder.special_page.delay_seconds')}</label>
                       <input
                         type="number"
                         min={0}
@@ -188,7 +190,7 @@ export function SpecialPageProperties({ currentPage, currentForm, handleFormUpda
               {/* Confetti Toggle */}
               <div className="space-y-3 pt-2 border-t border-gray-100">
                 <label className="flex items-center justify-between cursor-pointer">
-                  <span className="text-sm font-medium text-gray-600">Confetti Effect</span>
+                  <span className="text-sm font-medium text-gray-600">{t('builder.special_page.confetti_effect')}</span>
                   <div className="relative">
                     <input
                       type="checkbox"
@@ -204,7 +206,7 @@ export function SpecialPageProperties({ currentPage, currentForm, handleFormUpda
               {/* Show Button */}
               <div className="space-y-3 pt-2 border-t border-gray-100">
                 <label className="flex items-center justify-between cursor-pointer">
-                  <span className="text-sm font-medium text-gray-600">Show Button</span>
+                  <span className="text-sm font-medium text-gray-600">{t('builder.special_page.show_button')}</span>
                   <div className="relative">
                     <input
                       type="checkbox"
@@ -219,7 +221,7 @@ export function SpecialPageProperties({ currentPage, currentForm, handleFormUpda
                 {currentForm.thankYouSettings?.showButton && (
                   <div className="animate-in fade-in slide-in-from-top-1 duration-200 space-y-3">
                     <div>
-                      <label className="block text-xs font-medium text-gray-500 mb-1">Button Text</label>
+                      <label className="block text-xs font-medium text-gray-500 mb-1">{t('builder.special_page.button_text')}</label>
                       <input
                         type="text"
                         className="w-full px-3 py-2 border border-gray-200 rounded-md text-sm focus:border-black focus:ring-1 focus:ring-black outline-none transition-all"
@@ -230,7 +232,7 @@ export function SpecialPageProperties({ currentPage, currentForm, handleFormUpda
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-gray-500 mb-1">Button Link</label>
+                      <label className="block text-xs font-medium text-gray-500 mb-1">{t('builder.special_page.button_link')}</label>
                       <input
                         type="url"
                         className="w-full px-3 py-2 border border-gray-200 rounded-md text-sm focus:border-black focus:ring-1 focus:ring-black outline-none transition-all"
@@ -252,7 +254,7 @@ export function SpecialPageProperties({ currentPage, currentForm, handleFormUpda
       {isWelcome && (
         <div className="pt-4 border-t border-gray-100 space-y-3">
           <label className="flex items-center justify-between cursor-pointer">
-            <span className="text-sm font-medium text-gray-600">Show Start Button</span>
+            <span className="text-sm font-medium text-gray-600">{t('builder.special_page.show_start_button')}</span>
             <div className="relative">
               <input
                 type="checkbox"

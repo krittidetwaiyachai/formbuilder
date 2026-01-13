@@ -2,14 +2,17 @@ import React from 'react';
 import { Field, FieldType } from '@/types';
 import { useForm } from 'react-hook-form';
 import { Calendar, Clock } from 'lucide-react';
+import { PreviewLabel } from '../PreviewLabel';
 
 interface PreviewFieldProps {
   field: Field;
   register: ReturnType<typeof useForm>['register'];
   errors: any;
+  questionNumber?: number;
+  isPublic?: boolean;
 }
 
-export const PreviewDateField: React.FC<PreviewFieldProps> = ({ field, register, errors }) => {
+export const PreviewDateField: React.FC<PreviewFieldProps> = ({ field, register, errors, questionNumber, isPublic }) => {
   const fieldName = `field_${field.id}`;
   const fieldError = errors[fieldName];
 
@@ -30,13 +33,10 @@ export const PreviewDateField: React.FC<PreviewFieldProps> = ({ field, register,
   
   // Helper to render label
   const renderLabel = () => (
-     <>
-        <label htmlFor={fieldName} className={`block text-sm font-medium text-black ${isRowLayout ? 'min-w-[150px]' : 'mb-2'}`}>
-            {field.label}
-            {field.required && <span className="text-black ml-1">*</span>}
-        </label>
+     <div className={`${isRowLayout ? 'min-w-[150px]' : 'mb-2'}`}>
+        <PreviewLabel field={field} questionNumber={questionNumber} isPublic={isPublic} htmlFor={fieldName} />
         {subLabel && <p className="text-xs text-gray-500 mb-2">{subLabel}</p>}
-     </>
+     </div>
   );
 
   if (field.type === FieldType.DATE) {

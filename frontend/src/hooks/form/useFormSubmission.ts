@@ -2,6 +2,7 @@ import { useState } from 'react';
 import api from '@/lib/api';
 import { Form } from '@/types';
 import { getBrowserFingerprint } from '@/utils/fingerprint';
+import { useToast } from '@/components/ui/toaster';
 
 interface UseFormSubmissionProps {
   form: Form;
@@ -13,6 +14,7 @@ export function useFormSubmission({ form, isPreview = false }: UseFormSubmission
   const [submitted, setSubmitted] = useState(false);
   const [score, setScore] = useState<{ score: number; totalScore: number } | null>(null);
   const [quizReview, setQuizReview] = useState<any>(null);
+  const { toast } = useToast();
 
   const submitForm = async (data: any) => {
     setSubmitting(true);
@@ -69,7 +71,11 @@ export function useFormSubmission({ form, isPreview = false }: UseFormSubmission
 
       setSubmitted(true);
     } catch (error: any) {
-      alert(error.response?.data?.message || 'Failed to submit form');
+      toast({
+        title: "Submission Failed",
+        description: error.response?.data?.message || 'Failed to submit form',
+        variant: "error"
+      });
     } finally {
       setSubmitting(false);
     }

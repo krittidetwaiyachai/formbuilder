@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { GraduationCap, AlertCircle, CheckCircle, Settings } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Form } from '@/types';
 import { useFormStore } from '@/store/formStore';
 
@@ -9,6 +10,7 @@ interface QuizModeBannerProps {
 }
 
 export default function QuizModeBanner({ form, onOpenSettings }: QuizModeBannerProps) {
+  const { t } = useTranslation();
   const { setShouldScrollToQuizSettings } = useFormStore();
   const totalScore = form.quizSettings?.totalScore || 100;
   const usedScore = form.fields?.reduce((sum, f) => sum + (f.score || 0), 0) || 0;
@@ -23,7 +25,7 @@ export default function QuizModeBanner({ form, onOpenSettings }: QuizModeBannerP
       icon: CheckCircle,
       iconColor: 'text-emerald-600',
       messageColor: 'text-emerald-600',
-      message: 'Score Complete',
+      message: t('builder.quiz.score_complete'),
     },
     incomplete: {
       bg: 'bg-indigo-50 border-indigo-200',
@@ -31,7 +33,7 @@ export default function QuizModeBanner({ form, onOpenSettings }: QuizModeBannerP
       icon: AlertCircle,
       iconColor: 'text-orange-600',
       messageColor: 'text-orange-600',
-      message: `Missing ${difference} points`,
+      message: t('builder.quiz.missing_points', { points: difference }),
     },
     exceeded: {
       bg: 'bg-indigo-50 border-indigo-200',
@@ -39,7 +41,7 @@ export default function QuizModeBanner({ form, onOpenSettings }: QuizModeBannerP
       icon: AlertCircle,
       iconColor: 'text-rose-600',
       messageColor: 'text-rose-600',
-      message: `Exceeded by ${Math.abs(difference)} points`,
+      message: t('builder.quiz.exceeded_points', { points: Math.abs(difference) }),
     },
   };
   
@@ -57,20 +59,20 @@ export default function QuizModeBanner({ form, onOpenSettings }: QuizModeBannerP
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <GraduationCap className="w-5 h-5" />
-            <span className="font-bold text-sm">Quiz Mode</span>
+            <span className="font-bold text-sm">{t('builder.quiz.mode')}</span>
           </div>
           
           <div className="h-4 w-px bg-current opacity-30" />
           
           <div className="flex items-center gap-2 text-sm">
-            <span className="font-medium">Total:</span>
+            <span className="font-medium">{t('builder.quiz.total')}</span>
             <span className="font-bold">{totalScore}</span>
           </div>
           
           <div className="h-4 w-px bg-current opacity-30" />
           
           <div className="flex items-center gap-2 text-sm">
-            <span className="font-medium">Used:</span>
+            <span className="font-medium">{t('builder.quiz.used')}</span>
             <span className="font-bold">{usedScore}</span>
           </div>
         </div>
@@ -88,7 +90,9 @@ export default function QuizModeBanner({ form, onOpenSettings }: QuizModeBannerP
               onOpenSettings();
             }}
             className="p-2 hover:bg-black/10 rounded-lg transition-colors"
-            title="เปิด Quiz Settings"
+            title={t('builder.tabs.settings')} // Reusing settings key or hardcoded? Let's use generic settings key or just leave tooltip simple? 
+            // Better to use generic 'Settings' or keep it English if title not critical. 
+            // Actually, I'll use common translation for 'Settings' if available from builder.ts
           >
             <Settings className="w-4 h-4" />
           </button>

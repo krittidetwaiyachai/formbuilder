@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Field } from '@/types';
 import { Clock } from 'lucide-react';
 
@@ -14,10 +15,11 @@ interface TimeFieldProps {
 }
 
 export const TimeField: React.FC<TimeFieldProps> = ({ field, fieldStyle, disabledClass = "opacity-60 cursor-pointer" }) => {
+  const { t } = useTranslation();
   const options = field.options || {};
   const timeFormat = options.timeFormat || 'AMPM'; // '24HOUR' | 'AMPM'
-  const subLabelHour = options.subLabelHour || 'Hour';
-  const subLabelMinutes = options.subLabelMinutes || 'Minutes';
+  const subLabelHour = options.subLabelHour || t('builder.time.hour');
+  const subLabelMinutes = options.subLabelMinutes || t('builder.time.minutes');
   const timeRange = options.timeRange || false;
 
   const TimeInputGroup = () => (
@@ -61,7 +63,7 @@ export const TimeField: React.FC<TimeFieldProps> = ({ field, fieldStyle, disable
              <TimeInputGroup />
              {timeRange && (
                  <>
-                    <div className="text-xs font-bold text-gray-400 uppercase">to</div>
+                    <div className="text-xs font-bold text-gray-400 uppercase">{t('builder.time.to')}</div>
                     <TimeInputGroup />
                  </>
              )}

@@ -1,20 +1,22 @@
-
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Field } from '@/types';
 import { Plus, X, GripVertical, Copy } from 'lucide-react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import { stripHtml } from '@/lib/ui/utils';
+import { PropertiesTabs } from '../common/PropertiesTabs';
+import { useTranslation } from 'react-i18next';
 
 interface TablePropertiesProps {
   field: Field;
-  currentForm: any;
   updateField: (id: string, updates: Partial<Field>) => void;
   duplicatesField: (field: Field) => void;
 }
 
-export function TableProperties({ field, currentForm, updateField, duplicatesField }: TablePropertiesProps) {
+export function TableProperties({ field, updateField, duplicatesField }: TablePropertiesProps) {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'general' | 'columns' | 'advanced'>('general');
 
-  const columns = field.options?.columns || [{ id: 'c1', label: 'Column 1' }, { id: 'c2', label: 'Column 2' }];
+  const columns = field.options?.columns || [{ id: 'c1', label: t('builder.properties.column') + ' 1' }, { id: 'c2', label: t('builder.properties.column') + ' 2' }];
   const options = field.options || {};
   const allowAddRow = field.options?.allowAddRow !== undefined ? field.options.allowAddRow : true;
 
@@ -37,7 +39,7 @@ export function TableProperties({ field, currentForm, updateField, duplicatesFie
 
   const addColumn = () => {
     const newId = `c${Date.now()}`;
-    updateColumns([...columns, { id: newId, label: `Column ${columns.length + 1}` }]);
+    updateColumns([...columns, { id: newId, label: `${t('builder.properties.column')} ${columns.length + 1}` }]);
   };
 
   const removeColumn = (index: number) => {
@@ -64,22 +66,22 @@ export function TableProperties({ field, currentForm, updateField, duplicatesFie
   const applyTemplate = (type: string) => {
       if (type === 'person') {
           updateColumns([
-              { id: `c${Date.now()}_1`, label: 'Name' },
-              { id: `c${Date.now()}_2`, label: 'Role' },
-              { id: `c${Date.now()}_3`, label: 'Email' }
+              { id: `c${Date.now()}_1`, label: t('builder.properties.first_name') + ' / ' + t('builder.properties.last_name') },
+              { id: `c${Date.now()}_2`, label: t('builder.field.role') },
+              { id: `c${Date.now()}_3`, label: t('builder.fields.email') }
           ]);
       } else if (type === 'address') {
            updateColumns([
-              { id: `c${Date.now()}_1`, label: 'Street' },
-              { id: `c${Date.now()}_2`, label: 'City' },
-              { id: `c${Date.now()}_3`, label: 'Zip Code' }
+              { id: `c${Date.now()}_1`, label: t('builder.properties.street_address_1') },
+              { id: `c${Date.now()}_2`, label: t('builder.properties.city') },
+              { id: `c${Date.now()}_3`, label: t('builder.properties.postal_zip') }
           ]);
       } else if (type === 'inventory') {
            updateColumns([
-              { id: `c${Date.now()}_1`, label: 'Item Name' },
-              { id: `c${Date.now()}_2`, label: 'Quantity' },
-              { id: `c${Date.now()}_3`, label: 'Price' },
-              { id: `c${Date.now()}_4`, label: 'Total' }
+              { id: `c${Date.now()}_1`, label: t('builder.field.item_name') },
+              { id: `c${Date.now()}_2`, label: t('builder.field.quantity') },
+              { id: `c${Date.now()}_3`, label: t('builder.field.price') },
+              { id: `c${Date.now()}_4`, label: t('builder.field.total') }
           ]);
       }
   };
@@ -87,21 +89,12 @@ export function TableProperties({ field, currentForm, updateField, duplicatesFie
   return (
     <div className="space-y-4">
       {/* Tabs */}
-      <div className="flex items-center gap-0.5 mb-4 bg-gray-100 p-1 rounded-md">
-        {['general', 'columns', 'advanced'].map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab as any)}
-            className={`flex-1 px-2 py-1.5 text-[10px] font-medium rounded-md transition-colors uppercase whitespace-nowrap ${
-              activeTab === tab
-                ? 'bg-white text-black shadow-sm'
-                : 'text-gray-600 hover:text-black'
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
-      </div>
+      {/* Tabs */}
+      <PropertiesTabs 
+        activeTab={activeTab} 
+        setActiveTab={setActiveTab} 
+        tabs={['general', 'columns', 'advanced']} 
+      />
 
       {/* GENERAL TAB */}
       {activeTab === 'general' && (
@@ -109,11 +102,11 @@ export function TableProperties({ field, currentForm, updateField, duplicatesFie
           {/* Field Label */}
           <div>
             <label className="block text-sm font-medium text-black mb-1">
-              Field Label
+              {t('builder.properties.field_label')}
             </label>
             <input
               type="text"
-              value={field.label}
+              value={stripHtml(field.label)}
               onChange={(e) => handleUpdate({ label: e.target.value })}
               className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
             />
@@ -122,7 +115,7 @@ export function TableProperties({ field, currentForm, updateField, duplicatesFie
           {/* Required */}
           <div>
              <label className="block text-sm font-medium text-black mb-1">
-                Required
+                {t('builder.properties.required')}
             </label>
              <label className="relative inline-flex items-center cursor-pointer">
               <input
@@ -134,28 +127,28 @@ export function TableProperties({ field, currentForm, updateField, duplicatesFie
               <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
             </label>
             <p className="mt-1 text-xs text-gray-500">
-                At least one row must be filled.
+                {t('builder.properties.min_one_row')}
             </p>
           </div>
 
           {/* Sublabel */}
           <div>
             <label className="block text-sm font-medium text-black mb-1">
-              Sublabel
+              {t('builder.properties.sublabel')}
             </label>
             <input
               type="text"
               value={options.subLabel || ''}
               onChange={(e) => handleOptionUpdate('subLabel', e.target.value)}
               className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
-              placeholder="Additional description..."
+              placeholder={t('builder.properties.sublabel')}
             />
           </div>
 
            {/* Allow Add Row */}
            <div>
              <label className="block text-sm font-medium text-black mb-1">
-                Allow User to Add Rows
+                {t('builder.properties.allow_add_row')}
             </label>
              <label className="relative inline-flex items-center cursor-pointer">
               <input
@@ -167,7 +160,7 @@ export function TableProperties({ field, currentForm, updateField, duplicatesFie
               <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
             </label>
             <p className="mt-1 text-xs text-gray-500">
-                If enabled, users can add more rows as needed.
+                {t('builder.properties.allow_add_row_desc')}
             </p>
           </div>
 
@@ -181,7 +174,7 @@ export function TableProperties({ field, currentForm, updateField, duplicatesFie
             className="w-full mt-4 px-3 py-2 text-sm font-medium text-black bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
           >
             <Copy className="h-4 w-4" />
-            DUPLICATE
+            {t('builder.properties.duplicate')}
           </button>
         </div>
       )}
@@ -193,20 +186,20 @@ export function TableProperties({ field, currentForm, updateField, duplicatesFie
           {/* Quick Templates */}
            <div className="grid grid-cols-3 gap-2 mb-4">
                 <button onClick={() => applyTemplate('person')} className="text-xs bg-gray-50 hover:bg-gray-100 border border-gray-200 p-2 rounded text-center">
-                    Person
+                    {t('builder.templates.person')}
                 </button>
                  <button onClick={() => applyTemplate('address')} className="text-xs bg-gray-50 hover:bg-gray-100 border border-gray-200 p-2 rounded text-center">
-                    Address
+                    {t('builder.templates.address')}
                 </button>
                  <button onClick={() => applyTemplate('inventory')} className="text-xs bg-gray-50 hover:bg-gray-100 border border-gray-200 p-2 rounded text-center">
-                    Inventory
+                    {t('builder.templates.inventory')}
                 </button>
            </div>
 
           {/* Columns Editor */}
           <div>
               <div className="flex items-center justify-between mb-2">
-                  <label className="text-sm font-medium text-black">Columns defined</label>
+                  <label className="text-sm font-medium text-black">{t('builder.properties.columns_defined')}</label>
                   <button 
                       onClick={addColumn}
                       className="p-1 hover:bg-gray-100 rounded-full text-indigo-600 transition-colors"
@@ -235,7 +228,7 @@ export function TableProperties({ field, currentForm, updateField, duplicatesFie
                                                   value={col.label}
                                                   onChange={(e) => updateColumnLabel(index, e.target.value)}
                                                   className="flex-1 px-3 py-2 text-sm border border-gray-400 rounded-md focus:border-black focus:ring-1 focus:ring-black outline-none transition-all"
-                                                  placeholder={`Column ${index + 1}`}
+                                                  placeholder={`${t('builder.properties.column')} ${index + 1}`}
                                               />
                                               {columns.length > 1 && (
                                                   <button 
@@ -264,7 +257,7 @@ export function TableProperties({ field, currentForm, updateField, duplicatesFie
              {/* Read Only */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Read Only
+                {t('builder.properties.read_only')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -275,12 +268,15 @@ export function TableProperties({ field, currentForm, updateField, duplicatesFie
                   />
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
                 </label>
+                 <p className="mt-1 text-xs text-gray-500">
+                {t('builder.properties.read_only_desc')}
+              </p>
             </div>
 
             {/* Hover Text */}
             <div>
               <label className="block text-sm font-medium text-black mb-1">
-                Hover Text
+                {t('builder.properties.hover_text')}
               </label>
               <textarea
                 value={options.hoverText || ''}
@@ -288,12 +284,15 @@ export function TableProperties({ field, currentForm, updateField, duplicatesFie
                 rows={2}
                 className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
               />
+               <p className="mt-1 text-xs text-gray-500">
+                {t('builder.properties.hover_text_desc')}
+              </p>
             </div>
 
              {/* Shrink */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Shrink
+                {t('builder.properties.shrink')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -304,12 +303,15 @@ export function TableProperties({ field, currentForm, updateField, duplicatesFie
                   />
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
                 </label>
+                 <p className="mt-1 text-xs text-gray-500">
+                {t('builder.properties.shrink_desc')}
+              </p>
             </div>
             
             {/* Hide field */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Hide field
+                {t('builder.properties.hide_field')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -320,6 +322,9 @@ export function TableProperties({ field, currentForm, updateField, duplicatesFie
                   />
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
                 </label>
+                 <p className="mt-1 text-xs text-gray-500">
+                  {t('builder.properties.hide_field_desc')}
+                </p>
             </div>
         </div>
       )}

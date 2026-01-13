@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Field } from '@/types';
 import { Plus, X, Trash2 } from 'lucide-react';
 
@@ -9,7 +10,8 @@ interface TableFieldProps {
 }
 
 export const TableField: React.FC<TableFieldProps> = ({ field, isSelected, updateField }) => {
-  const columns = field.options?.columns || [{ id: 'c1', label: 'Column 1' }, { id: 'c2', label: 'Column 2' }];
+  const { t } = useTranslation();
+  const columns = field.options?.columns || [{ id: 'c1', label: `${t('builder.field.column')} 1` }, { id: 'c2', label: `${t('builder.field.column')} 2` }];
   const allowAddRow = field.options?.allowAddRow !== undefined ? field.options.allowAddRow : true;
 
   // Helper to update columns in parent
@@ -21,7 +23,7 @@ export const TableField: React.FC<TableFieldProps> = ({ field, isSelected, updat
 
   const handleAddColumn = () => {
     const newId = `c${Date.now()}`;
-    updateColumns([...columns, { id: newId, label: `Column ${columns.length + 1}` }]);
+    updateColumns([...columns, { id: newId, label: `${t('builder.field.column')} ${columns.length + 1}` }]);
   };
 
   const handleRemoveColumn = (index: number) => {
@@ -61,7 +63,7 @@ export const TableField: React.FC<TableFieldProps> = ({ field, isSelected, updat
                                     <button
                                         onClick={() => handleRemoveColumn(idx)}
                                         className="ml-2 p-0.5 bg-white rounded-full shadow border border-gray-200 text-gray-400 hover:text-red-500 opacity-0 group-hover/col:opacity-100 transition-opacity"
-                                        title="Remove Column"
+                                        title={t('builder.field.remove_column')}
                                     >
                                         <X className="w-3 h-3" />
                                     </button>
@@ -75,7 +77,7 @@ export const TableField: React.FC<TableFieldProps> = ({ field, isSelected, updat
                             <button 
                                 onClick={handleAddColumn}
                                 className="p-1 hover:bg-gray-200 rounded-full text-indigo-600 transition-colors"
-                                title="Add Column"
+                                title={t('builder.field.add_column')}
                             >
                                 <Plus className="w-4 h-4" />
                             </button>
@@ -92,7 +94,7 @@ export const TableField: React.FC<TableFieldProps> = ({ field, isSelected, updat
                                     type="text" 
                                     className="bg-white border border-gray-300 text-gray-900 text-sm rounded focus:ring-black focus:border-black block w-full p-2.5"
                                     disabled
-                                    placeholder={`${col.label} (Row ${rIdx + 1})`}
+                                    placeholder={`${col.label} (${t('builder.field.row')} ${rIdx + 1})`}
                                 />
                             </td>
                         ))}
@@ -100,7 +102,7 @@ export const TableField: React.FC<TableFieldProps> = ({ field, isSelected, updat
                             <button 
                                 disabled
                                 className="p-1 text-gray-400 hover:text-red-500 transition-colors cursor-not-allowed"
-                                title="Delete Row (Preview)"
+                                title={t('builder.field.delete_row')}
                             >
                                 <Trash2 className="w-4 h-4" />
                             </button>
@@ -116,7 +118,7 @@ export const TableField: React.FC<TableFieldProps> = ({ field, isSelected, updat
                     disabled 
                     className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-indigo-700 bg-indigo-50 rounded-md border border-indigo-200 opacity-60 cursor-not-allowed"
                 >
-                    <Plus className="w-3 h-3" /> Add Row
+                    <Plus className="w-3 h-3" /> {t('builder.field.add_row')}
                 </button>
             </div>
         )}

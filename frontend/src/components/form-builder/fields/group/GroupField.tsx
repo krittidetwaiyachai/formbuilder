@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Droppable } from '@hello-pangea/dnd';
 import { useFormStore } from '@/store/formStore';
 import FieldItem from '@/components/form-builder/FieldItem';
+import { useTranslation } from 'react-i18next';
 import { motion, LayoutGroup } from 'framer-motion';
 
 interface GroupFieldProps {
@@ -27,6 +28,7 @@ export function GroupField({
   const updateField = useFormStore((state) => state.updateField);
   const selectField = useFormStore((state) => state.selectField);
   const storeSelectedFieldId = useFormStore((state) => state.selectedFieldId);
+  const { t } = useTranslation();
 
 
 
@@ -129,11 +131,11 @@ export function GroupField({
             color: '#374151',
           }}
         >
-          Field Group
+          {t('builder.group.field_group')}
         </span>
 
         <span style={{ fontSize: '11px', color: '#9ca3af' }}>
-          {childFields.length} fields
+          {t('builder.group.fields_count', { count: childFields.length })}
         </span>
       </div>
 
@@ -176,7 +178,7 @@ export function GroupField({
                             }}
                             disabled={index === 0}
                             className={`p-2 rounded-lg bg-white shadow-md border transition-colors ${index === 0 ? 'text-gray-200 cursor-not-allowed' : 'text-gray-500 hover:text-indigo-600 hover:border-indigo-300'}`}
-                            title="Move up"
+                            title={t('builder.group.move_up')}
                           >
                             <ChevronUp size={18} />
                           </button>
@@ -188,7 +190,7 @@ export function GroupField({
                             }}
                             disabled={index === sortedChildFields.length - 1}
                             className={`p-2 rounded-lg bg-white shadow-md border transition-colors ${index === sortedChildFields.length - 1 ? 'text-gray-200 cursor-not-allowed' : 'text-gray-500 hover:text-indigo-600 hover:border-indigo-300'}`}
-                            title="Move down"
+                            title={t('builder.group.move_down')}
                           >
                             <ChevronDown size={18} />
                           </button>
@@ -202,7 +204,7 @@ export function GroupField({
                               removeFieldFromGroup(childField.id);
                             }}
                             className="p-2 bg-white rounded-full shadow-md border text-gray-400 hover:text-indigo-600 hover:border-indigo-300 transition-colors"
-                            title="Remove from group"
+                            title={t('builder.group.remove_from_group')}
                           >
                             <LogOut size={18} />
                           </button>
@@ -214,7 +216,7 @@ export function GroupField({
                               deleteField(childField.id);
                             }}
                             className="p-2 bg-white rounded-full shadow-md border text-gray-400 hover:text-red-500 hover:border-red-300 transition-colors"
-                            title="Delete field"
+                            title={t('builder.group.delete_field')}
                           >
                             <Trash2 size={18} />
                           </button>
@@ -246,7 +248,7 @@ export function GroupField({
                     transition: 'all 0.2s ease',
                   }}
                 >
-                  {snapshot.isDraggingOver ? 'Drop here!' : 'Drag fields here or use button below'}
+                  {snapshot.isDraggingOver ? t('builder.group.drop_here') : t('builder.group.drag_fields')}
                 </div>
               )}
               {provided.placeholder}
@@ -284,7 +286,7 @@ export function GroupField({
                   }}
                 >
                   <Plus size={14} />
-                  Add field to group
+                  {t('builder.group.add_field')}
                 </button>
 
                 {showAddMenu && (
@@ -340,7 +342,7 @@ export function GroupField({
                       ))
                     ) : (
                       <div style={{ padding: '12px', color: '#9ca3af', fontSize: '13px', textAlign: 'center' }}>
-                        No available fields
+                        {t('builder.group.no_available_fields')}
                       </div>
                     )}
                   </div>

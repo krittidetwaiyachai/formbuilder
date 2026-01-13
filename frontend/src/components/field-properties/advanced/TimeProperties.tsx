@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Field } from '@/types';
 import { Copy } from 'lucide-react';
+import { stripHtml } from '@/lib/ui/utils';
+import { PropertiesTabs } from '../common/PropertiesTabs';
+import { useTranslation } from 'react-i18next';
 
 interface TimePropertiesProps {
   field: Field;
@@ -9,6 +12,7 @@ interface TimePropertiesProps {
 }
 
 export const TimeProperties: React.FC<TimePropertiesProps> = ({ field, updateField, duplicatesField }) => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'general' | 'options' | 'advanced'>('general');
 
   const validation = field.validation || {};
@@ -39,32 +43,18 @@ export const TimeProperties: React.FC<TimePropertiesProps> = ({ field, updateFie
   return (
     <div className="space-y-4">
       {/* Tabs */}
-      <div className="flex items-center gap-0.5 mb-3 bg-gray-100 p-1 rounded-md overflow-x-auto">
-        {['general', 'options', 'advanced'].map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab as any)}
-            className={`flex-1 px-2 py-1.5 text-[10px] font-medium rounded-md transition-colors uppercase whitespace-nowrap ${
-              activeTab === tab
-                ? 'bg-white text-black shadow-sm'
-                : 'text-gray-600 hover:text-black'
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
-      </div>
+      <PropertiesTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {activeTab === 'general' && (
         <div className="space-y-4">
            {/* Field Label */}
            <div>
               <label className="block text-sm font-medium text-black mb-1">
-                Field Label
+                {t('builder.properties.field_label')}
               </label>
               <input
                 type="text"
-                value={field.label}
+                value={stripHtml(field.label)}
                 onChange={(e) => handleUpdate({ label: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
               />
@@ -73,10 +63,10 @@ export const TimeProperties: React.FC<TimePropertiesProps> = ({ field, updateFie
             {/* Label Alignment */}
             <div>
               <label className="block text-sm font-medium text-black mb-2">
-                Label Alignment
+                {t('builder.properties.label_alignment')}
               </label>
               <div className="flex gap-2">
-                {(['LEFT', 'RIGHT', 'TOP'] as const).map((align) => (
+                {(['LEFT', 'CENTER', 'TOP'] as const).map((align) => (
                   <button
                     key={align}
                     onClick={() => handleOptionUpdate('labelAlignment', align)}
@@ -86,7 +76,7 @@ export const TimeProperties: React.FC<TimePropertiesProps> = ({ field, updateFie
                         : 'bg-white text-black border-gray-400 hover:bg-gray-50'
                     }`}
                   >
-                    {align}
+                    {align === 'LEFT' ? t('builder.properties.left') : align === 'CENTER' ? t('builder.properties.center') : t('builder.properties.top')}
                   </button>
                 ))}
               </div>
@@ -96,7 +86,7 @@ export const TimeProperties: React.FC<TimePropertiesProps> = ({ field, updateFie
             {/* Required */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                  Required
+                  {t('builder.properties.required')}
               </label>
                <label className="relative inline-flex items-center cursor-pointer">
                 <input
@@ -108,37 +98,37 @@ export const TimeProperties: React.FC<TimePropertiesProps> = ({ field, updateFie
                 <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
               </label>
                <p className="mt-1 text-xs text-gray-500">
-                Prevent submission if this field is empty
+                {t('builder.properties.required_desc')}
               </p>
             </div>
 
             {/* Sublabels */}
              <div>
               <label className="block text-sm font-medium text-black mb-2">
-                Sublabels
+                {t('builder.properties.sublabels')}
               </label>
               <div className="grid grid-cols-[auto,1fr] bg-gray-50 rounded-md border border-gray-200 overflow-hidden text-sm">
                   {/* Hour */}
                   <div className="px-3 py-2 border-r border-gray-200 font-medium text-gray-700 flex items-center bg-gray-100">
-                      Hour
+                      {t('builder.time.hour')}
                   </div>
                   <input
                     type="text"
-                    value={options.subLabelHour || 'Hour'}
+                    value={options.subLabelHour || t('builder.time.hour')}
                     onChange={(e) => handleOptionUpdate('subLabelHour', e.target.value)}
                     className="w-full px-3 py-2 bg-white focus:outline-none"
-                    placeholder="Hour"
+                    placeholder={t('builder.time.hour')}
                   />
                    {/* Minutes */}
                   <div className="px-3 py-2 border-t border-r border-gray-200 font-medium text-gray-700 flex items-center bg-gray-100">
-                      Minutes
+                      {t('builder.time.minutes')}
                   </div>
                   <input
                     type="text"
-                    value={options.subLabelMinutes || 'Minutes'}
+                    value={options.subLabelMinutes || t('builder.time.minutes')}
                     onChange={(e) => handleOptionUpdate('subLabelMinutes', e.target.value)}
                     className="w-full px-3 py-2 border-t border-gray-200 bg-white focus:outline-none"
-                    placeholder="Minutes"
+                    placeholder={t('builder.time.minutes')}
                   />
               </div>
             </div>
@@ -159,7 +149,7 @@ export const TimeProperties: React.FC<TimePropertiesProps> = ({ field, updateFie
                className="w-full mt-4 px-3 py-2 text-sm font-medium text-black bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
              >
                <Copy className="h-4 w-4" />
-               DUPLICATE
+               {t('builder.properties.duplicate')}
              </button>
         </div>
       )}
@@ -169,7 +159,7 @@ export const TimeProperties: React.FC<TimePropertiesProps> = ({ field, updateFie
             {/* Time Format */}
              <div>
               <label className="block text-sm font-medium text-black mb-2">
-                Time Format
+                {t('builder.properties.time_format')}
               </label>
               <div className="flex rounded-md overflow-hidden border border-gray-300">
                 {['24HOUR', 'AMPM'].map((fmt) => (
@@ -187,14 +177,14 @@ export const TimeProperties: React.FC<TimePropertiesProps> = ({ field, updateFie
                 ))}
               </div>
                <p className="mt-1 text-xs text-gray-500">
-                Select a time format
+                {t('builder.properties.time_format_desc')}
               </p>
             </div>
 
             {/* Limit Time */}
             <div>
               <label className="block text-sm font-medium text-black mb-2">
-                Limit time
+                {t('builder.properties.limit_time')}
               </label>
               <div className="flex rounded-md overflow-hidden border border-gray-300">
                 {['BOTH', 'AM', 'PM'].map((mode) => (
@@ -207,19 +197,19 @@ export const TimeProperties: React.FC<TimePropertiesProps> = ({ field, updateFie
                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                     }`}
                   >
-                    {mode === 'BOTH' ? 'BOTH AM & PM' : mode === 'AM' ? 'AM ONLY' : 'PM ONLY'}
+                    {mode === 'BOTH' ? t('builder.properties.limit_time_both') : mode === 'AM' ? t('builder.properties.limit_time_am') : t('builder.properties.limit_time_pm')}
                   </button>
                 ))}
               </div>
                <p className="mt-1 text-xs text-gray-500">
-                Require users to select a specific time period
+                {t('builder.properties.limit_time_desc')}
               </p>
             </div>
 
             {/* Default Time */}
             <div>
-              <label className="block text-sm font-medium text-black mb-2">
-                Default Time
+               <label className="block text-sm font-medium text-black mb-2">
+                {t('builder.properties.default_time')}
               </label>
                <div className="flex rounded-md overflow-hidden border border-gray-300 mb-2">
                 {['NONE', 'CURRENT', 'CUSTOM'].map((mode) => (
@@ -232,7 +222,7 @@ export const TimeProperties: React.FC<TimePropertiesProps> = ({ field, updateFie
                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                     }`}
                   >
-                    {mode}
+                    {mode === 'NONE' ? t('builder.properties.default_time_none') : mode === 'CURRENT' ? t('builder.properties.default_time_current') : t('builder.properties.default_time_custom')}
                   </button>
                 ))}
               </div>
@@ -247,14 +237,14 @@ export const TimeProperties: React.FC<TimePropertiesProps> = ({ field, updateFie
                   </div>
               )}
                <p className="mt-1 text-xs text-gray-500">
-                Pre-populate with the current time or a custom time
+                {t('builder.properties.default_time_desc')}
               </p>
             </div>
 
              {/* Time Range */}
              <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Time Range
+                {t('builder.properties.time_range')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -266,7 +256,7 @@ export const TimeProperties: React.FC<TimePropertiesProps> = ({ field, updateFie
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
                 </label>
                <p className="mt-1 text-xs text-gray-500">
-                Show two time fields to indicate a range
+                {t('builder.properties.time_range_desc')}
                </p>
             </div>
         </div>
@@ -277,7 +267,7 @@ export const TimeProperties: React.FC<TimePropertiesProps> = ({ field, updateFie
              {/* Hover Text */}
              <div>
               <label className="block text-sm font-medium text-black mb-1">
-                Hover Text
+                {t('builder.properties.hover_text')}
               </label>
               <textarea
                 value={options.hoverText || ''}
@@ -286,14 +276,14 @@ export const TimeProperties: React.FC<TimePropertiesProps> = ({ field, updateFie
                 className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
               />
               <p className="mt-1 text-xs text-gray-500">
-                Show a description when a user hovers over this field
+                {t('builder.properties.hover_text_desc')}
               </p>
             </div>
 
              {/* Read Only */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Read Only
+                {t('builder.properties.read_only')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -305,14 +295,14 @@ export const TimeProperties: React.FC<TimePropertiesProps> = ({ field, updateFie
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
                 </label>
                <p className="mt-1 text-xs text-gray-500">
-                Prevent entry in this field
+                {t('builder.properties.read_only_desc')}
               </p>
             </div>
 
              {/* Shrink */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Shrink
+                {t('builder.properties.shrink')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                    <input
@@ -324,14 +314,14 @@ export const TimeProperties: React.FC<TimePropertiesProps> = ({ field, updateFie
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
                 </label>
                <p className="mt-1 text-xs text-gray-500">
-                Make field smaller
+                {t('builder.properties.shrink_desc')}
               </p>
             </div>
             
             {/* Hide field */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
-                Hide field
+                {t('builder.properties.hide_field')}
                </label>
                <label className="relative inline-flex items-center cursor-pointer">
                    <input
@@ -343,7 +333,7 @@ export const TimeProperties: React.FC<TimePropertiesProps> = ({ field, updateFie
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
                 </label>
                  <p className="mt-1 text-xs text-gray-500">
-                  Hide this field from the form
+                  {t('builder.properties.hide_field_desc')}
                 </p>
             </div>
         </div>

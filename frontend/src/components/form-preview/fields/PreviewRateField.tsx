@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Field } from '@/types';
 import { useForm } from 'react-hook-form';
 import { Star, Heart, Shield, Zap, Flag, ThumbsUp, Smile } from 'lucide-react';
+import { PreviewLabel } from '../PreviewLabel';
 
 interface PreviewFieldProps {
   field: Field;
@@ -9,9 +10,11 @@ interface PreviewFieldProps {
   errors: any;
   watch: ReturnType<typeof useForm>['watch'];
   setValue: ReturnType<typeof useForm>['setValue'];
+  questionNumber?: string;
+  isPublic?: boolean;
 }
 
-export const PreviewRateField: React.FC<PreviewFieldProps> = ({ field, register, errors, watch, setValue }) => {
+export const PreviewRateField: React.FC<PreviewFieldProps> = ({ field, register, errors, watch, setValue, questionNumber, isPublic }) => {
   const fieldName = `field_${field.id}`;
   const fieldError = errors[fieldName];
   
@@ -80,17 +83,14 @@ export const PreviewRateField: React.FC<PreviewFieldProps> = ({ field, register,
   return (
     <div className={`mb-4 ${isRowLayout ? 'flex items-start gap-4' : ''}`}>
        <div className={`${isRowLayout ? 'w-40 flex-shrink-0 pt-2' : 'mb-2'} ${labelAlignment === 'RIGHT' ? 'text-right' : ''}`}>
-        <label className="block text-sm font-medium text-black">
-          {field.label}
-          {field.required && <span className="text-red-500 ml-1">*</span>}
-        </label>
+        <PreviewLabel field={field} questionNumber={questionNumber} isPublic={isPublic} htmlFor={fieldName} />
         {options.subLabel && options.subLabel !== 'Sublabel' && (
             <p className="mt-1 text-xs text-gray-500">{options.subLabel}</p>
         )}
       </div>
 
       <div className="flex-1 min-w-0" title={hoverText}>
-          <div className="flex items-center gap-1">
+          <div className={`flex items-center gap-1 ${labelAlignment === 'CENTER' ? 'justify-center' : ''}`}>
             {Array.from({ length: maxRating }).map((_, index) => {
               const star = index + 1;
               const isActive = rating !== null && star <= rating;

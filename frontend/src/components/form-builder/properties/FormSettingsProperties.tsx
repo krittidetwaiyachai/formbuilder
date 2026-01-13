@@ -1,6 +1,6 @@
 import { Form } from '@/types';
+import { useRef, useEffect, useState } from 'react';
 import { useFormStore } from '@/store/formStore';
-import { useState, useRef, useEffect } from 'react';
 import {
   Select,
   SelectContent,
@@ -9,6 +9,7 @@ import {
   SelectValue,
 } from '@/components/ui/custom-select';
 import { GraduationCap } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface FormSettingsPropertiesProps {
   currentForm: Form;
@@ -27,6 +28,7 @@ export function FormSettingsProperties({
   setFormDescription,
   handleFormUpdate,
 }: FormSettingsPropertiesProps) {
+  const { t } = useTranslation();
   const settings = currentForm.settings || {};
   const [hasResponseLimit, setHasResponseLimit] = useState(!!settings.responseLimit);
   const [activeTab, setActiveTab] = useState<'general' | 'submission' | 'display'>('general');
@@ -36,6 +38,17 @@ export function FormSettingsProperties({
       ...settings,
       [key]: value,
     });
+  };
+
+  // Helper function to convert ISO date string to local datetime string for datetime-local input
+  const toLocalDateTimeString = (dateString: string): string => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
   };
 
   /* Custom Smooth Scroll Animation */
@@ -112,7 +125,7 @@ export function FormSettingsProperties({
                 : 'text-gray-600 hover:text-black'
             }`}
           >
-            {tab}
+            {t(`settings.tabs.${tab}`)}
           </button>
         ))}
       </div>
@@ -123,7 +136,7 @@ export function FormSettingsProperties({
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-black mb-1">
-                Title
+                {t('settings.general.title')}
               </label>
               <input
                 type="text"
@@ -143,7 +156,7 @@ export function FormSettingsProperties({
 
             <div>
               <label className="block text-sm font-medium text-black mb-1">
-                Description
+                {t('settings.general.description')}
               </label>
               <textarea
                 value={formDescription}
@@ -163,26 +176,26 @@ export function FormSettingsProperties({
 
             <div>
               <label className="block text-sm font-medium text-black mb-1">
-                Status
+                {t('settings.general.status')}
               </label>
               <Select
                 value={currentForm.status}
                 onValueChange={(value) => handleFormUpdate('status', value)}
               >
                 <SelectTrigger className="w-full bg-white border-gray-400">
-                  <SelectValue placeholder="Select status" />
+                  <SelectValue placeholder={t('dashboard.filters.all')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="DRAFT">Draft</SelectItem>
-                  <SelectItem value="PUBLISHED">Published</SelectItem>
-                  <SelectItem value="ARCHIVED">Archived</SelectItem>
+                  <SelectItem value="DRAFT">{t('dashboard.filters.draft')}</SelectItem>
+                  <SelectItem value="PUBLISHED">{t('dashboard.filters.published')}</SelectItem>
+                  <SelectItem value="ARCHIVED">{t('dashboard.filters.archived')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-black mb-1">
-                Footer Text
+                {t('settings.general.footer_text')}
               </label>
               <input
                 type="text"
@@ -192,7 +205,7 @@ export function FormSettingsProperties({
                 className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
               />
               <p className="mt-1 text-xs text-gray-500">
-                Custom text displayed at the bottom of the form
+                {t('settings.general.footer_desc')}
               </p>
             </div>
 
@@ -216,9 +229,9 @@ export function FormSettingsProperties({
                 </div>
                 <div>
                   <h4 className={`font-semibold text-base ${currentForm.isQuiz ? 'text-black' : 'text-gray-700'}`}>
-                    Quiz Mode
+                    {t('settings.general.quiz_mode')}
                   </h4>
-                  <p className="text-xs text-gray-500 mt-1 font-medium">Assign points and set correct answers</p>
+                  <p className="text-xs text-gray-500 mt-1 font-medium">{t('settings.general.quiz_desc')}</p>
                 </div>
               </div>
 
@@ -240,12 +253,12 @@ export function FormSettingsProperties({
                 ref={quizSettingsRef}
                 className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200 space-y-4 animate-in fade-in slide-in-from-top-4 duration-300"
               >
-                <h4 className="text-xs font-bold text-gray-700 uppercase tracking-wide">Quiz Settings</h4>
+                <h4 className="text-xs font-bold text-gray-700 uppercase tracking-wide">{t('settings.quiz.settings')}</h4>
                 
                 {/* Release Score Mode */}
                 <div>
                   <label className="block text-sm font-medium text-black mb-2">
-                    Release Score
+                    {t('settings.quiz.release_score')}
                   </label>
                   <div className="space-y-2">
                     <label className="flex items-center cursor-pointer">
@@ -260,7 +273,7 @@ export function FormSettingsProperties({
                         })}
                         className="h-4 w-4 text-black focus:ring-black border-gray-400"
                       />
-                      <span className="ml-2 text-sm text-black">Immediately after submission</span>
+                      <span className="ml-2 text-sm text-black">{t('settings.quiz.release_immediate')}</span>
                     </label>
                     <label className="flex items-center cursor-pointer">
                       <input
@@ -274,20 +287,20 @@ export function FormSettingsProperties({
                         })}
                         className="h-4 w-4 text-black focus:ring-black border-gray-400"
                       />
-                      <span className="ml-2 text-sm text-black">Later, after manual review</span>
+                      <span className="ml-2 text-sm text-black">{t('settings.quiz.release_manual')}</span>
                     </label>
                   </div>
                 </div>
 
                 {/* Respondents Can See */}
                 <div className="pt-3 border-t border-gray-200">
-                  <p className="text-xs font-semibold text-gray-700 mb-3 uppercase">Respondents Can See</p>
+                  <p className="text-xs font-semibold text-gray-700 mb-3 uppercase">{t('settings.quiz.respondents_see')}</p>
                   
                   <div className="space-y-3">
                     {/* Total Score */}
                     <div>
                       <label className="block text-sm font-medium text-black mb-1">
-                        Total Score
+                        {t('settings.quiz.total_score')}
                       </label>
                       <input
                         type="number"
@@ -299,12 +312,12 @@ export function FormSettingsProperties({
                         })}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
                       />
-                      <p className="mt-1 text-xs text-gray-500">Set the maximum score for this quiz (e.g., 50, 100, 200)</p>
+                      <p className="mt-1 text-xs text-gray-500">{t('settings.quiz.total_score_desc')}</p>
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-black mb-1">
-                        Show Score
+                        {t('settings.quiz.show_score')}
                       </label>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input
@@ -318,12 +331,12 @@ export function FormSettingsProperties({
                         />
                         <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
                       </label>
-                      <p className="mt-1 text-xs text-gray-500">Display total score to respondents</p>
+                      <p className="mt-1 text-xs text-gray-500">{t('settings.quiz.show_score_desc')}</p>
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-black mb-1">
-                        Show Correct Answers
+                        {t('settings.quiz.show_correct')}
                       </label>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input
@@ -337,12 +350,12 @@ export function FormSettingsProperties({
                         />
                         <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
                       </label>
-                      <p className="mt-1 text-xs text-gray-500">Show the correct answers</p>
+                      <p className="mt-1 text-xs text-gray-500">{t('settings.quiz.show_correct_desc')}</p>
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-black mb-1">
-                        Missed Questions
+                        {t('settings.quiz.missed_questions')}
                       </label>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input
@@ -356,12 +369,12 @@ export function FormSettingsProperties({
                         />
                         <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
                       </label>
-                      <p className="mt-1 text-xs text-gray-500">Allow viewing questions answered incorrectly</p>
+                      <p className="mt-1 text-xs text-gray-500">{t('settings.quiz.missed_desc')}</p>
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-black mb-1">
-                        Point Values
+                        {t('settings.quiz.point_values')}
                       </label>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input
@@ -375,12 +388,12 @@ export function FormSettingsProperties({
                         />
                         <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
                       </label>
-                      <p className="mt-1 text-xs text-gray-500">Show points for each question</p>
+                      <p className="mt-1 text-xs text-gray-500">{t('settings.quiz.point_desc')}</p>
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-black mb-1">
-                        Show Explanation
+                        {t('settings.quiz.show_explanation')}
                       </label>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input
@@ -394,19 +407,19 @@ export function FormSettingsProperties({
                         />
                         <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
                       </label>
-                      <p className="mt-1 text-xs text-gray-500">Display explanations for answers</p>
+                      <p className="mt-1 text-xs text-gray-500">{t('settings.quiz.explanation_desc')}</p>
                     </div>
                   </div>
                 </div>
 
                 {/* Quiz Options */}
                 <div className="pt-3 border-t border-gray-200">
-                  <p className="text-xs font-semibold text-gray-700 mb-3 uppercase">Quiz Options</p>
+                  <p className="text-xs font-semibold text-gray-700 mb-3 uppercase">{t('settings.quiz.options')}</p>
                   
                   <div className="space-y-3">
                     <div>
                       <label className="block text-sm font-medium text-black mb-1">
-                        Shuffle Questions
+                        {t('settings.quiz.shuffle')}
                       </label>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input
@@ -420,12 +433,12 @@ export function FormSettingsProperties({
                         />
                         <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
                       </label>
-                      <p className="mt-1 text-xs text-gray-500">Randomize question order for each respondent</p>
+                      <p className="mt-1 text-xs text-gray-500">{t('settings.quiz.shuffle_desc')}</p>
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-black mb-1">
-                        Require Sign In
+                        {t('settings.quiz.require_signin')}
                       </label>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input
@@ -439,7 +452,73 @@ export function FormSettingsProperties({
                         />
                         <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
                       </label>
-                      <p className="mt-1 text-xs text-gray-500">Require users to log in before taking the quiz</p>
+                      <p className="mt-1 text-xs text-gray-500">{t('settings.quiz.signin_desc')}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Quiz Timing Settings */}
+                <div className="pt-3 border-t border-gray-200">
+                  <p className="text-xs font-semibold text-gray-700 mb-3 uppercase">{t('settings.quiz.timing')}</p>
+                  
+                  <div className="space-y-3">
+                    {/* Time Limit */}
+                    <div>
+                      <label className="block text-sm font-medium text-black mb-1">
+                        {t('settings.quiz.time_limit')}
+                      </label>
+                      <input
+                        type="number"
+                        min="1"
+                        value={currentForm.quizSettings?.timeLimit || ''}
+                        onChange={(e) => handleFormUpdate('quizSettings', {
+                          ...currentForm.quizSettings,
+                          timeLimit: e.target.value ? parseInt(e.target.value) : undefined
+                        })}
+                        placeholder="No time limit"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
+                      />
+                      <p className="mt-1 text-xs text-gray-500">{t('settings.quiz.time_limit_desc')}</p>
+                    </div>
+
+                    {/* Start Time */}
+                    <div>
+                      <label className="block text-sm font-medium text-black mb-1">
+                        {t('settings.quiz.start_time')}
+                      </label>
+                      <input
+                        type="datetime-local"
+                        lang="en-GB"
+                        step="60"
+                        value={currentForm.quizSettings?.startTime ? toLocalDateTimeString(currentForm.quizSettings.startTime) : ''}
+                        onChange={(e) => handleFormUpdate('quizSettings', {
+                          ...currentForm.quizSettings,
+                          startTime: e.target.value ? new Date(e.target.value).toISOString() : undefined
+                        })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
+                        style={{ fontVariantNumeric: 'tabular-nums' }}
+                      />
+                      <p className="mt-1 text-xs text-gray-500">{t('settings.quiz.start_time_desc')}</p>
+                    </div>
+
+                    {/* End Time */}
+                    <div>
+                      <label className="block text-sm font-medium text-black mb-1">
+                        {t('settings.quiz.end_time')}
+                      </label>
+                      <input
+                        type="datetime-local"
+                        lang="en-GB"
+                        step="60"
+                        value={currentForm.quizSettings?.endTime ? toLocalDateTimeString(currentForm.quizSettings.endTime) : ''}
+                        onChange={(e) => handleFormUpdate('quizSettings', {
+                          ...currentForm.quizSettings,
+                          endTime: e.target.value ? new Date(e.target.value).toISOString() : undefined
+                        })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
+                        style={{ fontVariantNumeric: 'tabular-nums' }}
+                      />
+                      <p className="mt-1 text-xs text-gray-500">{t('settings.quiz.end_time_desc')}</p>
                     </div>
                   </div>
                 </div>
@@ -453,36 +532,36 @@ export function FormSettingsProperties({
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-black mb-1">
-                Submit Button Text
+                {t('settings.submission.submit_text')}
               </label>
               <input
                 type="text"
                 value={settings.submitButtonText || ''}
                 onChange={(e) => updateSettings('submitButtonText', e.target.value)}
-                placeholder="Submit"
+                placeholder={t('settings.submission.btn_placeholder')}
                 className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-black mb-1">
-                Success Message
+                {t('settings.submission.success_msg')}
               </label>
               <textarea
                 value={settings.successMessage || ''}
                 onChange={(e) => updateSettings('successMessage', e.target.value)}
                 rows={2}
-                placeholder="Thank you! Your response has been recorded."
+                placeholder={t('settings.submission.success_placeholder')}
                 className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
               />
               <p className="mt-1 text-xs text-gray-500">
-                Message shown after successful submission
+                {t('settings.submission.success_desc')}
               </p>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-black mb-1">
-                Allow Multiple Submissions
+                {t('settings.submission.allow_multiple')}
               </label>
               <label className="relative inline-flex items-center cursor-pointer">
                 <input
@@ -494,13 +573,13 @@ export function FormSettingsProperties({
                 <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
               </label>
               <p className="mt-1 text-xs text-gray-500">
-                Allow users to submit the form multiple times
+                {t('settings.submission.multiple_desc')}
               </p>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-black mb-1">
-                Collect Email
+                {t('settings.submission.collect_email')}
               </label>
               <label className="relative inline-flex items-center cursor-pointer">
                 <input
@@ -512,13 +591,13 @@ export function FormSettingsProperties({
                 <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
               </label>
               <p className="mt-1 text-xs text-gray-500">
-                Require respondents to enter their email address
+                {t('settings.submission.email_desc')}
               </p>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-black mb-1">
-                Response Limit
+                {t('settings.submission.response_limit')}
               </label>
               <label className="relative inline-flex items-center cursor-pointer">
                 <input
@@ -549,7 +628,7 @@ export function FormSettingsProperties({
                 </div>
               )}
               <p className="mt-1 text-xs text-gray-500">
-                Limit the total number of responses accepted
+                {t('settings.submission.limit_desc')}
               </p>
             </div>
           </div>
@@ -561,7 +640,7 @@ export function FormSettingsProperties({
             {/* Form Layout */}
             <div>
               <label className="block text-sm font-medium text-black mb-2">
-                Form Layout
+                {t('settings.display.layout')}
               </label>
               <div className="grid grid-cols-2 gap-3">
                 {/* Classic Form Card */}
@@ -583,8 +662,8 @@ export function FormSettingsProperties({
                     </div>
                   </div>
                   <div className="text-center">
-                    <div className="text-xs font-semibold text-black">Classic Form</div>
-                    <div className="text-xs text-gray-500">All questions on one page</div>
+                    <div className="text-xs font-semibold text-black">{t('settings.display.layout_classic')}</div>
+                    <div className="text-xs text-gray-500">{t('settings.display.classic_desc')}</div>
                   </div>
                   {(!settings.formLayout || settings.formLayout === 'classic') && (
                     <div className="absolute top-1 right-1 w-5 h-5 bg-black rounded-full flex items-center justify-center">
@@ -613,8 +692,8 @@ export function FormSettingsProperties({
                     </div>
                   </div>
                   <div className="text-center">
-                    <div className="text-xs font-semibold text-black">Card Form</div>
-                    <div className="text-xs text-gray-500">Single question per page</div>
+                    <div className="text-xs font-semibold text-black">{t('settings.display.layout_card')}</div>
+                    <div className="text-xs text-gray-500">{t('settings.display.card_desc')}</div>
                   </div>
                   {settings.formLayout === 'card' && (
                     <div className="absolute top-1 right-1 w-5 h-5 bg-black rounded-full flex items-center justify-center">
@@ -626,13 +705,13 @@ export function FormSettingsProperties({
                 </button>
               </div>
               <p className="mt-2 text-xs text-gray-500">
-                Choose how questions are displayed to respondents
+                {t('settings.display.layout_desc')}
               </p>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-black mb-1">
-                Show Progress Bar
+                {t('settings.display.progress_bar')}
               </label>
               <label className="relative inline-flex items-center cursor-pointer">
                 <input
@@ -644,13 +723,13 @@ export function FormSettingsProperties({
                 <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
               </label>
               <p className="mt-1 text-xs text-gray-500">
-                Display progress indicator (e.g., "Question 3 of 10")
+                {t('settings.display.progress_desc')}
               </p>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-black mb-1">
-                Show Question Number
+                {t('settings.display.question_number')}
               </label>
               <label className="relative inline-flex items-center cursor-pointer">
                 <input
@@ -662,7 +741,7 @@ export function FormSettingsProperties({
                 <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
               </label>
               <p className="mt-1 text-xs text-gray-500">
-                Prefix questions with numbers (1., 2., 3., etc.)
+                {t('settings.display.number_desc')}
               </p>
             </div>
           </div>

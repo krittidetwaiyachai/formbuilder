@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import DraggableFormCard from './DraggableFormCard';
 import DashboardFormCard from './DashboardFormCard';
 import { Form } from '@/types';
+import { useTranslation } from 'react-i18next';
 
 interface UngroupedFormsSectionProps {
   forms: any[]; // Using any to avoid type complexity with FormWithStats for now, or import properly
@@ -27,6 +28,7 @@ export default function UngroupedFormsSection({
   setCollaboratorModalData,
   formatDate
 }: UngroupedFormsSectionProps) {
+  const { t } = useTranslation();
   const { setNodeRef, isOver } = useDroppable({
     id: 'ungrouped',
   });
@@ -38,44 +40,52 @@ export default function UngroupedFormsSection({
         isOver ? 'bg-indigo-50/50 ring-2 ring-indigo-200 ring-dashed' : ''
       }`}
     >
-      {foldersCount > 0 && <h2 className="text-xl font-bold text-gray-900 mb-4 px-2 pt-2">All Forms</h2>}
+      {foldersCount > 0 && <h2 className="text-xl font-bold text-gray-900 mb-4 px-2 pt-2">{t('dashboard.all_forms')}</h2>}
       
-      <motion.div 
-        layout
+      <div 
         className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-2"
       >
-        <AnimatePresence>
+        <AnimatePresence mode="popLayout">
         {forms.map((form) => (
-          <DraggableFormCard key={form.id} formId={form.id}>
-            <DashboardFormCard
-              form={form}
-              currentUserId={user?.id}
-              onCardClick={() => navigate(`/forms/${form.id}/builder`)}
-              onContextMenu={(e) => handleContextMenu(e, form.id)}
-              onViewDetails={(e) => {
-                e.stopPropagation();
-                setSelectedForm(form);
-              }}
-              onDelete={(e) => handleDeleteForm(form.id, e)}
-              onCollaboratorsClick={(e, collaborators, title, formId) => {
-                e.stopPropagation();
-                setCollaboratorModalData({
-                  isOpen: true,
-                  collaborators,
-                  formTitle: title,
-                  formId
-                });
-              }}
-              formatDate={formatDate}
-            />
-          </DraggableFormCard>
+          <motion.div
+            layout
+            key={form.id}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.2 }}
+          >
+            <DraggableFormCard formId={form.id}>
+              <DashboardFormCard
+                form={form}
+                currentUserId={user?.id}
+                onCardClick={() => navigate(`/forms/${form.id}/builder`)}
+                onContextMenu={(e) => handleContextMenu(e, form.id)}
+                onViewDetails={(e) => {
+                  e.stopPropagation();
+                  setSelectedForm(form);
+                }}
+                onDelete={(e) => handleDeleteForm(form.id, e)}
+                onCollaboratorsClick={(e, collaborators, title, formId) => {
+                  e.stopPropagation();
+                  setCollaboratorModalData({
+                    isOpen: true,
+                    collaborators,
+                    formTitle: title,
+                    formId
+                  });
+                }}
+                formatDate={formatDate}
+              />
+            </DraggableFormCard>
+          </motion.div>
         ))}
         </AnimatePresence>
-      </motion.div>
+      </div>
       
       {forms.length === 0 && isOver && (
         <div className="h-40 flex items-center justify-center text-indigo-400 font-medium">
-          Drop here to ungroup
+          {t('dashboard.drop_ungroup')}
         </div>
       )}
     </div>

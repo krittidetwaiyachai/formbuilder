@@ -85,18 +85,7 @@ export class FormsService {
         // EDITOR sees only their own forms AND forms shared with them
       where.OR = [
         { createdById: userId },
-        { collaborators: { some: { id: userId } } },
-        { status: FormStatus.PUBLISHED } // also allow seeing published for stats? maybe not needed for dashboard list but logic is here
-      ];
-      // Actually for the "My Forms" dashboard, we typically want only edited forms.
-      // Let's refine: Users should see forms they created OR are collaborators on. 
-      // Published forms are typically public, but for "Dashboard" management, we want editing rights.
-      
-      delete where.OR; // Reset the simple OR above for a more specific one
-      
-      where.OR = [
-          { createdById: userId },
-          { collaborators: { some: { id: userId } } }
+        { collaborators: { some: { id: userId } } }
       ];
     }
 
@@ -189,7 +178,7 @@ export class FormsService {
     }
 
     // Check permissions
-    console.log('findOne', { id, userId, userRole, creator: form.createdById });
+
     
     if (
       userRole === RoleType.VIEWER &&
@@ -207,7 +196,7 @@ export class FormsService {
       !isCollaborator &&
       form.status !== FormStatus.PUBLISHED
     ) {
-      console.log('Access denied', { isCreator, isCollaborator });
+
       throw new ForbiddenException('You can only edit your own forms or forms shared with you');
     }
 

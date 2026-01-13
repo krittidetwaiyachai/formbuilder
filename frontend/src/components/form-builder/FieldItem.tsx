@@ -24,6 +24,9 @@ import { GroupField } from './fields/group/GroupField';
 import { MatrixField } from './fields/matrix/MatrixField';
 import { TableField } from './fields/table/TableField';
 import InlineQuizBar from './InlineQuizBar';
+import { RichTextEditor } from '@/components/ui/RichTextEditor';
+import { RichTextToolbar } from '@/components/ui/RichTextToolbar';
+import { useTranslation } from 'react-i18next';
 
 interface FieldItemProps {
   field: Field;
@@ -63,20 +66,17 @@ function FieldItem({
   const style = provided?.draggableProps.style;
   const labelInputRef = useRef<HTMLDivElement>(null);
   const isFocusingRef = useRef(false);
+  const { t } = useTranslation();
 
-  // Initialize stable HTML
-  const [labelHtml, setLabelHtml] = useState({ __html: field.label || (field.type === FieldType.HEADER ? 'Heading' : '') });
+  const [labelHtml, setLabelHtml] = useState({ __html: field.label || (field.type === FieldType.HEADER ? t('common.heading') : '') });
   
   const subLabelRef = useRef<HTMLDivElement>(null);
-  const [subLabelHtml, setSubLabelHtml] = useState({ __html: field.options?.subLabel || (isSelected ? 'Sublabel' : '') });
+  const [subLabelHtml, setSubLabelHtml] = useState({ __html: field.options?.subLabel || (isSelected ? t('common.sublabel') : '') });
 
-  // Sync state with prop when field.label changes (e.g. from Properties Panel)
   React.useEffect(() => {
     const currentText = labelInputRef.current?.textContent;
-    const newLabel = field.label || (field.type === FieldType.HEADER ? 'Heading' : '');
+    const newLabel = field.label || (field.type === FieldType.HEADER ? t('common.heading') : '');
     
-    // Only update internal HTML if the new label via props is different from what's currently in the DOM.
-    // This prevents the cursor from jumping when We are the ones typing (Cycle: Type -> Store -> Prop -> Re-render).
     if (currentText !== newLabel) {
       setLabelHtml({ __html: newLabel });
     }
@@ -84,8 +84,7 @@ function FieldItem({
 
   React.useEffect(() => {
      const currentText = subLabelRef.current?.textContent;
-     const newSubLabel = field.options?.subLabel || (isSelected ? 'Sublabel' : '');
-     // Just a loose check, if we are typing "Sublabel" as placeholder it might differ
+     const newSubLabel = field.options?.subLabel || (isSelected ? t('common.sublabel') : '');
      if (currentText !== newSubLabel) {
          setSubLabelHtml({ __html: newSubLabel });
      }
@@ -95,12 +94,10 @@ function FieldItem({
     e.preventDefault();
     e.stopPropagation();
     
-    // Select the field if not already selected
     if (!isSelected) {
         onSelect(field.id, false);
     }
     
-    // Call Parent Handler
     if (onOpenContextMenu) {
         onOpenContextMenu(e);
     }
@@ -114,7 +111,6 @@ function FieldItem({
 
   const getFieldStyle = () => {
     switch (field.type) {
-      // Input / Text Fields -> Blue
       case FieldType.TEXT:
       case FieldType.TEXTAREA:
         return {
@@ -125,7 +121,6 @@ function FieldItem({
           overlayBorder: 'border-blue-500'
         };
 
-      // numeric -> Amber (Distinct from Orange)
       case FieldType.NUMBER:
         return {
           cardBorder: 'border-l-4 border-l-amber-500',
@@ -135,7 +130,6 @@ function FieldItem({
           overlayBorder: 'border-amber-500'
         };
 
-      // Contact Info -> Purple (Distinct from Blue)
       case FieldType.EMAIL:
       case FieldType.PHONE:
         return {
@@ -146,7 +140,6 @@ function FieldItem({
           overlayBorder: 'border-purple-600'
         };
 
-      // Choices -> Pink (Distinct from Purple/Red)
       case FieldType.DROPDOWN:
       case FieldType.CHECKBOX:
       case FieldType.RADIO:
@@ -159,7 +152,6 @@ function FieldItem({
           overlayBorder: 'border-pink-500'
         };
 
-      // Date / Time / Rate -> Teal (Distinct from Blue/Green)
       case FieldType.DATE:
       case FieldType.TIME:
       case FieldType.RATE:
@@ -171,7 +163,6 @@ function FieldItem({
           overlayBorder: 'border-teal-500'
         };
 
-      // Personal Info -> Orange (Distinct from Amber)
       case FieldType.FULLNAME:
       case FieldType.ADDRESS:
         return {
@@ -204,7 +195,6 @@ function FieldItem({
            overlayBorder: 'border-slate-500'
         };
 
-      // Action -> Emerald
       case FieldType.SUBMIT:
         return {
           cardBorder: 'border-l-4 border-l-emerald-500',
@@ -214,7 +204,6 @@ function FieldItem({
           overlayBorder: 'border-emerald-500'
         };
 
-      // Default
       default:
         return {
           cardBorder: 'border-l-4 border-l-gray-400',
@@ -266,7 +255,7 @@ function FieldItem({
          return (
              <div className="flex items-center gap-2 p-3 bg-gray-50 border border-gray-200 rounded-lg text-slate-600 font-medium">
                 <ChevronRight className="w-5 h-5" />
-                <span>{field.label || 'Collapsible Section'}</span>
+                <span>{field.label || t('common.collapsible_section')}</span>
              </div>
          );
       case FieldType.SUBMIT:
@@ -305,14 +294,14 @@ function FieldItem({
              <div className="flex flex-col items-center justify-center py-4 w-full">
                  <div className="flex items-center gap-3 text-sm font-semibold text-gray-500 uppercase tracking-widest bg-gray-100 px-4 py-1.5 rounded-full border border-gray-200">
                     <span className="w-2 h-2 rounded-full bg-gray-400"></span>
-                    Page Break
+                    {t('common.page_break')}
                     <span className="w-2 h-2 rounded-full bg-gray-400"></span>
                  </div>
                  <div className="w-full border-b-2 border-dashed border-gray-300 mt-4 relative">
                     <div className="absolute left-0 -top-1 w-1 h-3 bg-gray-300"></div>
                     <div className="absolute right-0 -top-1 w-1 h-3 bg-gray-300"></div>
                  </div>
-                 <p className="mt-2 text-xs text-gray-400">Content below this line will appear on the next page</p>
+                 <p className="mt-2 text-xs text-gray-400">{t('common.content_next_page')}</p>
              </div>
         );
       default:
@@ -322,7 +311,6 @@ function FieldItem({
 
   const isPageBreak = field.type === FieldType.PAGE_BREAK;
 
-  // Render for DragOverlay
   if (isOverlay) {
     return (
       <div 
@@ -333,7 +321,7 @@ function FieldItem({
               <div className="w-8 h-1 bg-gray-200 rounded-full" />
           </div>
           <div className="flex items-center gap-2 mb-2">
-              <div className={`font-medium text-base truncate ${fieldStyle.iconColor}`}>{field.label || 'Untitled Field'}</div>
+              <div className={`font-medium text-base truncate ${fieldStyle.iconColor}`}>{field.label || t('common.untitled_field')}</div>
           </div>
           <div className="h-8 w-full bg-gray-50 rounded border border-gray-100 flex items-center px-3 text-xs text-gray-400 font-medium select-none">
               {field.type} Field
@@ -354,19 +342,17 @@ function FieldItem({
             {...provided?.draggableProps}
             style={style}
             data-field-id={field.id}
-            onContextMenu={handleContextMenu} // Attach Context Menu Handler
+            onContextMenu={handleContextMenu}
             onMouseDown={() => {
               isFocusingRef.current = true;
             }}
             onClick={(e) => {
                e.stopPropagation();
-               // Multi-Selection Logic
                if ((e.ctrlKey || e.metaKey)) {
                    if (onToggle) {
                        onToggle(field.id);
                    }
                } else {
-                   // Single Selection
                    if (!isSelected) {
                        onSelect(field.id, false);
                    }
@@ -390,7 +376,7 @@ function FieldItem({
             )}
             {/* Hidden Indicator */}
             {(field.validation?.hidden || field.options?.hidden) && !isOverlay && !isDragging && (
-                <div className="absolute top-2 right-2 z-20 bg-gray-100/80 p-1 rounded-full text-gray-500 backdrop-blur-sm" title="This field is hidden">
+                <div className="absolute top-2 right-2 z-20 bg-gray-100/80 p-1 rounded-full text-gray-500 backdrop-blur-sm" title={t('common.field_hidden')}>
                     <EyeOff className="h-4 w-4" />
                 </div>
             )}
@@ -411,129 +397,115 @@ function FieldItem({
                    {renderFieldPreview()}
                  </div>
                ) : (
-                 <>
-                   {(() => {
-                      const labelAlignment = field.options?.labelAlignment || 'TOP';
-                      const isRowLayout = labelAlignment === 'LEFT' || labelAlignment === 'RIGHT';
-                      
-                      return (
-                        <div className={`${isRowLayout ? 'flex items-start gap-6' : ''}`}>
-                           <div className={`${isRowLayout ? 'w-40 flex-shrink-0 pt-3' : (isDragging ? 'mb-1' : 'mb-3')} ${labelAlignment === 'RIGHT' ? 'text-right' : ''}`}>
-                             <div className={`flex items-start gap-1 ${labelAlignment === 'RIGHT' ? 'justify-end' : ''}`}>
-                                 <div
-                                 ref={labelInputRef}
-                                 contentEditable={isSelected}
-                                 suppressContentEditableWarning
-                                 spellCheck={false}
-                                 className="font-medium text-black outline-none cursor-text break-words max-w-full"
-                                 style={{ 
-                                   pointerEvents: 'auto', 
-                                   userSelect: 'text', 
-                                   WebkitUserSelect: 'text',
-                                   minHeight: '1.5em',
-                                   minWidth: '1px' 
-                                 }}
-                                 dangerouslySetInnerHTML={labelHtml}
-                                 onMouseDown={(e) => {
-                                   e.stopPropagation();
-                                   isFocusingRef.current = true;
-                                   if (labelInputRef.current) {
-                                     labelInputRef.current.focus();
-                                   }
-                                 }}
-                                 onPointerDown={(e) => e.stopPropagation()}
-                                 onMouseUp={(e) => e.stopPropagation()}
-                                 onClick={(e) => {
-                                   e.stopPropagation();
-                                   if (!isSelected) {
-                                     onSelect(field.id, true);
-                                   }
-                                 }}
-                                 onInput={(e) => {
-                                    const newText = e.currentTarget.textContent || '';
-                                    updateField(field.id, { label: newText });
-                                 }}
-                                 onBlur={(e) => {
-                                    const newText = e.currentTarget.textContent || '';
-                                    if (newText !== field.label) {
-                                      updateField(field.id, { label: newText });
-                                    }
-                                 }}
-                                 onKeyDown={(e) => {
-                                   if (e.key === 'Enter' && !e.shiftKey) {
-                                     e.preventDefault();
-                                     e.currentTarget.blur();
-                                   }
-                                 }}
-                               />
-                               {field.required && (
-                                 <span className="text-red-500 select-none -mt-1 text-lg leading-none">*</span>
-                               )}
-                             </div>
-                           </div>
-                           
-                           <div className="flex-1 min-w-0">
-                             {(isOverlay || isDragging) ? (
-                                 <div className="h-10 bg-gray-50 rounded border border-gray-100 flex items-center px-3 text-xs text-gray-400 font-medium select-none">
-                                     {field.type === FieldType.TEXTAREA ? 'Long Text' : field.type === FieldType.ADDRESS ? 'Address' : `${field.type} Field`}
-                                 </div>
-                             ) : (
-                                 <>
-                                     {renderFieldPreview()}
-                                      {![FieldType.HEADER, FieldType.PARAGRAPH, FieldType.DIVIDER, FieldType.SUBMIT, FieldType.PAGE_BREAK, FieldType.GROUP, FieldType.SECTION_COLLAPSE].includes(field.type) && (isSelected || (field.options?.subLabel && field.options.subLabel !== 'Sublabel')) && (
-                                        <div
-                                            ref={subLabelRef}
-                                            contentEditable={isSelected}
-                                            suppressContentEditableWarning
-                                            spellCheck={false}
-                                            className={`text-xs mt-2 outline-none cursor-text w-full break-words min-h-[1.25em] ${(field.options?.subLabel && field.options.subLabel !== 'Sublabel') ? 'text-gray-500' : 'text-gray-300'}`}
-                                            dangerouslySetInnerHTML={subLabelHtml}
-                                            onMouseDown={(e) => {
-                                                e.stopPropagation();
-                                            }}
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                if (!isSelected) {
-                                                    onSelect(field.id, false);
-                                                }
-                                            }}
-                                            onFocus={(e) => {
-                                                const currentText = e.currentTarget.textContent;
-                                                if (currentText === 'Sublabel') {
-                                                    e.currentTarget.textContent = '';
-                                                }
-                                            }}
-                                            onInput={(e) => {
-                                                const newText = e.currentTarget.textContent || '';
-                                                updateField(field.id, { options: { ...field.options, subLabel: newText } });
-                                            }}
-                                            onBlur={(e) => {
-                                                const newText = e.currentTarget.textContent?.trim() || '';
-                                                // Don't save "Sublabel" as actual data, save empty instead
-                                                const valueToSave = (newText === 'Sublabel' || !newText) ? '' : newText;
-                                                if (valueToSave !== field.options?.subLabel) {
-                                                    updateField(field.id, { options: { ...field.options, subLabel: valueToSave } });
-                                                }
-                                                // Show placeholder when selected and empty
-                                                if (!valueToSave && isSelected) {
-                                                    e.currentTarget.textContent = 'Sublabel';
-                                                }
-                                            }}
-                                            onKeyDown={(e) => {
-                                                if (e.key === 'Enter') {
-                                                    e.preventDefault();
-                                                    e.currentTarget.blur();
-                                                }
-                                            }}
-                                        />
-                                      )}
-                                 </>
-                             )}
-                           </div>
-                        </div>
-                      );
-                   })()}
-                 </>
+                <>
+                  {(() => {
+                     const labelAlignment = field.options?.labelAlignment || 'TOP';
+                     const isRowLayout = labelAlignment === 'LEFT' || labelAlignment === 'RIGHT';
+                     const isCenterAligned = labelAlignment === 'CENTER';
+                     
+                     const modules = useMemo(() => ({
+                       toolbar: {
+                         container: `#toolbar-label-${field.id}`,
+                       }
+                     }), [field.id]);
+
+                     return (
+                       <>
+                          {isSelected && (
+                              <div className="absolute -top-12 left-0 right-0 z-[60] flex justify-center">
+                                  <RichTextToolbar id={`toolbar-label-${field.id}`} />
+                              </div>
+                          )}
+
+                          <div className={`${isRowLayout ? 'flex items-start gap-6 relative' : ''}`}>
+                             <div className={`${isRowLayout ? 'w-48 flex-shrink-0 pt-3' : (isDragging ? 'mb-1' : 'mb-3')} ${labelAlignment === 'RIGHT' ? 'text-right' : ''} ${isCenterAligned ? 'text-center' : ''}`}>
+                                <div className={`flex flex-col gap-2 ${labelAlignment === 'RIGHT' ? 'items-end' : isCenterAligned ? 'items-center' : 'items-start'}`}>
+                                    <div className="w-full relative group/editor">
+                                       {isSelected ? (
+                                          <RichTextEditor
+                                            theme="snow"
+                                            value={field.label || ''}
+                                            onChange={(value) => updateField(field.id, { label: value })}
+                                            placeholder={t('common.question')}
+                                            modules={modules}
+                                            className={`text-base font-medium text-black leading-tight borderless animate-slide-down min-h-[1.5em] ${labelAlignment === 'RIGHT' ? 'text-right' : ''} ${isCenterAligned ? 'text-center' : ''}`}
+                                          />
+                                       ) : (
+                                           <div className={`flex items-start gap-1 ${labelAlignment === 'RIGHT' ? 'justify-end' : isCenterAligned ? 'justify-center' : ''}`}>
+                                             <div
+                                               className={`font-medium text-black outline-none cursor-text break-words max-w-full ql-editor !p-0 ${labelAlignment === 'RIGHT' ? 'text-right' : ''} ${isCenterAligned ? 'text-center' : ''}`}
+                                               dangerouslySetInnerHTML={{ __html: field.label || t('common.question') }}
+                                             />
+                                           {field.required && (
+                                              <span className="text-red-500 select-none -mt-1 text-lg leading-none">*</span>
+                                           )}
+                                         </div>
+                                       )}
+                                    </div>
+                                </div>
+                              </div>
+                          
+                          <div className="flex-1 min-w-0">
+                            {(isOverlay || isDragging) ? (
+                                <div className="h-10 bg-gray-50 rounded border border-gray-100 flex items-center px-3 text-xs text-gray-400 font-medium select-none">
+                                    {field.type === FieldType.TEXTAREA ? t('common.long_text') : field.type === FieldType.ADDRESS ? t('common.address') : `${field.type} ${t('common.field')}`}
+                                </div>
+                            ) : (
+                                <>
+                                    {renderFieldPreview()}
+                                     {![FieldType.HEADER, FieldType.PARAGRAPH, FieldType.DIVIDER, FieldType.SUBMIT, FieldType.PAGE_BREAK, FieldType.GROUP, FieldType.SECTION_COLLAPSE].includes(field.type) && (isSelected || (field.options?.subLabel && field.options.subLabel !== 'Sublabel')) && (
+                                       <div
+                                           ref={subLabelRef}
+                                           contentEditable={isSelected}
+                                           suppressContentEditableWarning
+                                           spellCheck={false}
+                                           className={`text-xs mt-2 outline-none cursor-text w-full break-words min-h-[1.25em] ${(field.options?.subLabel && field.options.subLabel !== t('common.sublabel')) ? 'text-gray-500' : 'text-gray-300'}`}
+                                           dangerouslySetInnerHTML={subLabelHtml}
+                                           onMouseDown={(e) => {
+                                               e.stopPropagation();
+                                           }}
+                                           onClick={(e) => {
+                                               e.stopPropagation();
+                                               if (!isSelected) {
+                                                   onSelect(field.id, false);
+                                               }
+                                           }}
+                                           onFocus={(e) => {
+                                               const currentText = e.currentTarget.textContent;
+                                               if (currentText === t('common.sublabel')) {
+                                                   e.currentTarget.textContent = '';
+                                               }
+                                           }}
+                                           onInput={(e) => {
+                                               const newText = e.currentTarget.textContent || '';
+                                               updateField(field.id, { options: { ...field.options, subLabel: newText } });
+                                           }}
+                                           onBlur={(e) => {
+                                               const newText = e.currentTarget.textContent?.trim() || '';
+                                               const valueToSave = (newText === t('common.sublabel') || !newText) ? '' : newText;
+                                               if (valueToSave !== field.options?.subLabel) {
+                                                   updateField(field.id, { options: { ...field.options, subLabel: valueToSave } });
+                                               }
+                                               if (!valueToSave && isSelected) {
+                                                   e.currentTarget.textContent = t('common.sublabel');
+                                               }
+                                           }}
+                                           onKeyDown={(e) => {
+                                               if (e.key === 'Enter') {
+                                                   e.preventDefault();
+                                                   e.currentTarget.blur();
+                                               }
+                                           }}
+                                       />
+                                     )}
+                                </>
+                            )}
+                          </div>
+                       </div>
+                       </>
+                     );
+                  })()}
+                </>
                )}
             </div>
              
@@ -554,7 +526,7 @@ function FieldItem({
                 handleDelete(e);
               }}
               className="flex-shrink-0 p-1 text-gray-400 hover:text-black"
-              title="Delete field"
+              title={t('common.delete_field')}
             >
               <Trash2 className="h-4 w-4" />
             </button>

@@ -45,8 +45,10 @@ export const RateField: React.FC<RateFieldProps> = ({ field, fieldStyle, disable
       return 'text-yellow-400 fill-yellow-400'; // Default star
   };
 
+  const labelAlignment = options.labelAlignment || 'TOP';
+
   return (
-    <div className={`flex items-center gap-2 py-2 px-4 rounded-xl border ${fieldStyle.inputBorder} bg-white max-w-fit ${disabledClass}`}>
+    <div className={`flex items-center gap-2 py-2 px-4 rounded-xl border ${fieldStyle.inputBorder} bg-white max-w-fit ${disabledClass} ${labelAlignment === 'CENTER' ? 'mx-auto' : ''}`}>
       {Array.from({ length: maxRating }).map((_, index) => {
           const star = index + 1;
           const isActive = star <= defaultValue; // Show default value in builder
