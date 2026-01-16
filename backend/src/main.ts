@@ -1,9 +1,7 @@
-import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
+import { NestFactory, Reflector } from '@nestjs/core';
+import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
-
-
-
+import helmet from 'helmet';
 
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
@@ -16,10 +14,16 @@ async function bootstrap() {
   app.useStaticAssets(join(process.cwd(), '..', 'frontend', 'public'), {
     prefix: '/', 
   });
+
+  app.use(helmet({
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+    contentSecurityPolicy: false,
+  }));
   
   // Enable CORS - allow all origins in development
+  const allowedOrigins = process.env.FRONTEND_URL?.split(',') || [];
   app.enableCors({
-    origin: true,
+    origin: allowedOrigins.length > 0 ? allowedOrigins : true,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -33,6 +37,8 @@ async function bootstrap() {
       transform: true,
     }),
   );
+
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
   app.setGlobalPrefix('api');
 

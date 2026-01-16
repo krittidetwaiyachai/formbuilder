@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Delete, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
@@ -12,5 +12,9 @@ export class UsersController {
   getProfile(@CurrentUser() user: any) {
     return this.usersService.getProfile(user.id);
   }
-}
 
+  @Delete('me/data')
+  deleteMyData(@CurrentUser() user: any) {
+    return this.usersService.deleteUserData(user.id);
+  }
+}

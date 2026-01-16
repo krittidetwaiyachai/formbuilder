@@ -1,11 +1,15 @@
 import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { EncryptionService } from '../common/encryption.service';
 import { CreateResponseDto } from './dto/create-response.dto';
 import { FormStatus, RoleType } from '@prisma/client';
 
 @Injectable()
 export class ResponsesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private encryptionService: EncryptionService,
+  ) {}
 
   async create(createResponseDto: CreateResponseDto) {
     try {
@@ -121,9 +125,13 @@ export class ResponsesService {
             answers: {
               create: answers.map((answer) => {
                 const result = answerResults.find((r) => r.fieldId === answer.fieldId);
+                const field = form.fields.find((f) => f.id === answer.fieldId);
+                const valueToStore = field?.isPII && answer.value 
+                  ? this.encryptionService.encrypt(answer.value) 
+                  : answer.value;
                 return {
                   fieldId: answer.fieldId,
-                  value: answer.value,
+                  value: valueToStore,
                   isCorrect: result?.isCorrect || null,
                 };
               }),
@@ -256,7 +264,7 @@ export class ResponsesService {
       throw new ForbiddenException('You can only view responses for your own forms');
     }
 
-    return this.prisma.formResponse.findMany({
+    const responses = await this.prisma.formResponse.findMany({
       where: { formId },
       include: {
         answers: {
@@ -277,6 +285,16 @@ export class ResponsesService {
         submittedAt: 'desc',
       },
     });
+
+    return responses.map(response => ({
+      ...response,
+      answers: response.answers.map(answer => ({
+        ...answer,
+        value: answer.field?.isPII && answer.value
+          ? this.encryptionService.decrypt(answer.value)
+          : answer.value,
+      })),
+    }));
   }
 
   async findOne(id: string, userId: string, userRole: RoleType) {
@@ -318,7 +336,15 @@ export class ResponsesService {
       throw new ForbiddenException('You can only view responses for your own forms');
     }
 
-    return response;
+    return {
+      ...response,
+      answers: response.answers.map(answer => ({
+        ...answer,
+        value: answer.field?.isPII && answer.value
+          ? this.encryptionService.decrypt(answer.value)
+          : answer.value,
+      })),
+    };
   }
 
   async exportToCSV(formId: string, userId: string, userRole: RoleType) {

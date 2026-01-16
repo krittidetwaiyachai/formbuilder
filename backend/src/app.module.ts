@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
@@ -12,6 +13,7 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { ActivityLogModule } from './activity-log/activity-log.module';
 import { FoldersModule } from './folders/folders.module';
 import { EventsModule } from './events/events.module';
+import { CommonModule } from './common/common.module';
 
 
 @Module({
@@ -19,6 +21,10 @@ import { EventsModule } from './events/events.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    ThrottlerModule.forRoot([{
+      ttl: 60000,
+      limit: 60,
+    }]),
     PrismaModule,
     AuthModule,
     UsersModule,
@@ -29,11 +35,16 @@ import { EventsModule } from './events/events.module';
     ActivityLogModule,
     FoldersModule,
     EventsModule,
+    CommonModule,
   ],
   providers: [
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
     },
   ],
 })

@@ -116,6 +116,7 @@ model Field {
   score           Int?
   groupId         String?
   shrink          Boolean          @default(false)
+  isPII           Boolean          @default(false)
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
   conditions      FieldCondition[] @relation("SourceField")

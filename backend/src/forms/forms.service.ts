@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { ActivityLogService } from '../activity-log/activity-log.service';
+import { EncryptionService } from '../common/encryption.service';
 import { CreateFormDto } from './dto/create-form.dto';
 import { UpdateFormDto } from './dto/update-form.dto';
 import { FormStatus, RoleType } from '@prisma/client';
@@ -14,6 +15,7 @@ export class FormsService {
   constructor(
     private prisma: PrismaService,
     private activityLog: ActivityLogService,
+    private encryptionService: EncryptionService,
   ) {}
 
   async create(userId: string, createFormDto: CreateFormDto) {
@@ -257,7 +259,7 @@ export class FormsService {
               data: {
                 formId: id,
                 fingerprint: fingerprint,
-                ipAddress: ipAddress || null,
+                ipAddress: ipAddress ? this.encryptionService.hashIpAddress(ipAddress) : null,
                 userAgent: userAgent || null,
               },
             }),

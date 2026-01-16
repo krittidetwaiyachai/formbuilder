@@ -7,6 +7,7 @@ import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 import { PrismaService } from '../prisma/prisma.service';
 import { LoginDto } from './dto/login.dto';
+import { DEFAULT_USER_ROLE } from './auth.constants';
 
 import { ConfigService } from '@nestjs/config';
 
@@ -74,7 +75,7 @@ export class AuthService {
       });
     } else {
       const defaultRole = await this.prisma.role.findUnique({
-        where: { name: 'EDITOR' },
+        where: { name: DEFAULT_USER_ROLE },
       });
 
       if (!defaultRole) {

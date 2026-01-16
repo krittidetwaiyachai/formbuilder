@@ -222,14 +222,37 @@ export default function DashboardPage() {
     }
   };
 
-  const handleCopyLink = (formId: string) => {
+  const handleCopyLink = async (formId: string) => {
     const url = `${window.location.origin}/forms/${formId}/view`;
-    navigator.clipboard.writeText(url);
-    toast({
-      variant: "success",
-      title: t('dashboard.toast.link_copied'),
-      description: t('dashboard.toast.link_copied')
-    });
+    
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(url);
+      } else {
+        const textArea = document.createElement('textarea');
+        textArea.value = url;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-9999px';
+        textArea.style.top = '-9999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+      }
+      
+      toast({
+        variant: "success",
+        title: t('dashboard.toast.link_copied'),
+        description: t('dashboard.toast.link_copied')
+      });
+    } catch (error) {
+      toast({
+        variant: "error",
+        title: t('dashboard.toast.error'),
+        description: "Failed to copy link"
+      });
+    }
   };
 
   const handleDeleteFolderClick = (folderId: string) => {

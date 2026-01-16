@@ -6,6 +6,7 @@ import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
 import { useFormStore } from "@/store/formStore";
 import DesignerElementWrapper from "./DesignerElementWrapper";
 import { cn } from "@/lib/utils";
+import { DEFAULT_THEME } from "@/config/themeDefaults";
 
 interface CanvasProps {
   activeId?: string | null;
@@ -141,8 +142,8 @@ export default function Canvas({ activeId }: CanvasProps) {
         )}
         style={{
           ...getBackgroundStyle(),
-          color: theme?.textColor || "#1F2937",
-          fontFamily: theme?.fontFamily || "Inter",
+          color: theme?.textColor || DEFAULT_THEME.textColor,
+          fontFamily: theme?.fontFamily || DEFAULT_THEME.fontFamily,
         }}
       >
         {elements.length > 0 ? (
