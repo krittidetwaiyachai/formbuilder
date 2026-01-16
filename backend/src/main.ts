@@ -22,8 +22,9 @@ async function bootstrap() {
   
   // Enable CORS - allow all origins in development
   const allowedOrigins = process.env.FRONTEND_URL?.split(',') || [];
+  console.log('Allowed Origins:', allowedOrigins);
   app.enableCors({
-    origin: allowedOrigins.length > 0 ? allowedOrigins : true,
+    origin: allowedOrigins.length > 0 ? allowedOrigins : ['http://localhost:5173'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],

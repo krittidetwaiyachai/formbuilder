@@ -314,6 +314,7 @@ export default function PublicFormRenderer({ form, loading = false, isPreview = 
         showScore={!!showScore}
         quizReview={quizReview}
         isQuiz={form.isQuiz}
+        viewMode={viewMode}
       />
     );
   }
@@ -330,8 +331,11 @@ export default function PublicFormRenderer({ form, loading = false, isPreview = 
     );
   }
 
+  const isMobileView = viewMode === 'mobile';
+  const isTabletView = viewMode === 'tablet';
+
   return (
-    <div className={`min-h-screen bg-gray-50 ${isCardLayout ? 'h-screen overflow-hidden' : ''}`}>
+    <div className={`min-h-screen bg-gray-50 ${isCardLayout ? 'min-h-screen flex flex-col' : ''} ${isMobileView ? 'text-sm' : ''}`}>
       {/* Background */}
       {form.settings?.backgroundImage && (
          <div 
@@ -366,7 +370,7 @@ export default function PublicFormRenderer({ form, loading = false, isPreview = 
       )}
 
       <motion.div 
-        className={`relative z-10 w-full max-w-3xl mx-auto ${isCardLayout ? 'h-full flex flex-col justify-center' : 'pt-20 pb-12 px-4'}`}
+        className={`relative z-10 w-full mx-auto ${isMobileView ? 'max-w-full px-4' : isTabletView ? 'max-w-2xl px-6' : 'max-w-3xl'} ${isCardLayout ? 'flex-1 flex flex-col justify-center py-4' : isMobileView ? 'pt-6 pb-8 px-4' : 'pt-20 pb-12 px-4'}`}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -379,7 +383,7 @@ export default function PublicFormRenderer({ form, loading = false, isPreview = 
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
-                className={isCardLayout ? "bg-white shadow-2xl rounded-2xl overflow-hidden flex flex-col h-[85vh] md:h-[80vh] mx-4 md:mx-0 border border-gray-100/50" : "space-y-6"}
+                className={isCardLayout ? `bg-white shadow-xl rounded-xl overflow-hidden flex flex-col ${isMobileView ? 'max-h-[90vh] mx-2 rounded-2xl' : isTabletView ? 'max-h-[85vh] mx-4 rounded-xl' : 'max-h-[80vh] mx-0 rounded-2xl'} border border-gray-100/50` : 'space-y-4'}
              >
                  {/* Card Header Effect */}
                 <div className={`
@@ -392,13 +396,13 @@ export default function PublicFormRenderer({ form, loading = false, isPreview = 
 
                    {/* Form Header Content */}
                    {((!isCardLayout && currentPageIndex === 0) || (isCardLayout)) && (
-                      <div className={isCardLayout ? "p-6 md:p-8 space-y-2" : "space-y-2"}>
+                      <div className={isCardLayout ? `${isMobileView ? 'p-4' : isTabletView ? 'p-5' : 'p-6 md:p-8'} space-y-2` : 'space-y-2'}>
                         {form.logoUrl && (
                            <div className="flex justify-center mb-6">
                               <img src={form.logoUrl} alt="Logo" className="h-16 object-contain" />
                            </div>
                         )}
-                        <h1 className={`font-bold text-gray-900 ${isCardLayout ? 'text-2xl md:text-3xl' : 'text-3xl'}`}>
+                        <h1 className={`font-bold text-gray-900 ${isMobileView ? 'text-lg' : isTabletView ? 'text-xl' : isCardLayout ? 'text-2xl md:text-3xl' : 'text-3xl'}`}>
                            {form.title}
                         </h1>
                         {form.description && (
@@ -443,7 +447,7 @@ export default function PublicFormRenderer({ form, loading = false, isPreview = 
                     )}
                 </div>
 
-                  <div className="flex flex-wrap gap-x-6 gap-y-0 min-h-[200px] md:min-h-[300px]">
+                  <div className={`${isCardLayout ? `flex-1 overflow-y-auto ${isMobileView ? 'p-4' : isTabletView ? 'p-5' : 'p-6'}` : `flex flex-wrap gap-x-6 gap-y-0 ${!isMobileView ? 'bg-white rounded-xl shadow-sm border border-gray-100 p-6 md:p-8' : ''}`} ${isMobileView ? 'min-h-[150px]' : 'min-h-[200px] md:min-h-[300px]'}`}>
                     {isCardLayout ? (
                       // Card Layout
                       <CardLayout 
@@ -486,7 +490,7 @@ export default function PublicFormRenderer({ form, loading = false, isPreview = 
         </form>
         
         {/* Footer */}
-        <div className="mt-8 text-center">
+        <div className={`${isMobileView ? 'mt-4' : 'mt-8'} text-center`}>
             {form.settings?.footerText && (
                <p className="text-sm text-gray-400 mb-2">{form.settings.footerText}</p>
             )}

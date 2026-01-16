@@ -6,6 +6,7 @@ export default {
   "builder.publish": "เผยแพร์",
   "builder.back_to_canvas": "กลับไปหน้าออกแบบ",
   "builder.add_element": "เพิ่มองค์ประกอบ",
+  "builder.add_field": "เพิ่มฟิลด์",
   "builder.properties.title": "คุณสมบัติ",
   "builder.settings": "ตั้งค่า",
   "builder.cannot_delete_last_page": "ไม่สามารถลบหน้าได้ ฟอร์มต้องมีอย่างน้อย 1 หน้า",

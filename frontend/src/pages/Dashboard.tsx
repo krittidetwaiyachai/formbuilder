@@ -12,8 +12,9 @@ import { DashboardContextMenu } from '@/components/dashboard/DashboardContextMen
 import ConfirmDialog from '@/components/ui/ConfirmDialog';
 import { motion } from 'framer-motion';
 import Loader from '@/components/common/Loader';
-import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, useSensor, useSensors, PointerSensor, TouchSensor, pointerWithin } from '@dnd-kit/core';
+import { DndContext, DragOverlay, pointerWithin } from '@dnd-kit/core';
 import { useFolders } from '@/hooks/useFolders';
+import { useDashboardDnd } from '@/hooks/useDashboardDnd';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
 import SearchFilters from '@/components/dashboard/SearchFilters';
 import FolderFilters from '@/components/dashboard/FolderFilters';
@@ -22,6 +23,7 @@ import DashboardFormCard from '@/components/dashboard/DashboardFormCard';
 import FoldersSection from '@/components/dashboard/FoldersSection';
 import CreateFolderModal from '@/components/dashboard/CreateFolderModal';
 import { useToast } from '@/components/ui/toaster';
+import BackgroundParticles from '@/components/dashboard/BackgroundParticles';
 
 import UngroupedFormsSection from '@/components/dashboard/UngroupedFormsSection';
 import MobileFormsSection from '@/components/mobile/MobileFormsSection';
@@ -60,77 +62,9 @@ export default function DashboardPage() {
   const [folderDeleteConfirmOpen, setFolderDeleteConfirmOpen] = useState(false);
   const { toast } = useToast();
   
-  const { folders, createFolder, updateFolder, deleteFolder, moveFormToFolder, refreshFolders } = useFolders();
+  const { folders, createFolder, updateFolder, deleteFolder, moveFormToFolder } = useFolders();
 
   const [isCreateFolderModalOpen, setIsCreateFolderModalOpen] = useState(false);
-
-  // Drag and Drop State
-  const [activeId, setActiveId] = useState<string | null>(null);
-  const activeForm = forms.find(f => f.id === activeId);
-
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 8,
-      },
-    }),
-    useSensor(TouchSensor, {
-      activationConstraint: {
-        delay: 250,
-        tolerance: 5,
-      },
-    })
-  );
-
-
-
-
-
-  // Particle animation logic
-  const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; size: number; duration: number; delay: number }>>([]);
-
-  useEffect(() => {
-    // Generate random particles only on client side to avoid hydration mismatch
-    const newParticles = Array.from({ length: 20 }).map((_, i) => ({
-      id: i,
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      size: Math.random() * 10 + 2, // 2-12px
-      duration: Math.random() * 20 + 10, // 10-30s
-      delay: Math.random() * 5
-    }));
-    setParticles(newParticles);
-  }, []);
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      loadForms();
-    } else {
-      setLoading(false);
-    }
-  }, [isAuthenticated]);
-
-  // Prevent text selection (Ctrl+A) globally on this page
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Prevent Ctrl+A (Cmd+A on Mac) - but allow in input fields
-      if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
-        const target = e.target as HTMLElement;
-        // Allow Ctrl+A in input, textarea, and contenteditable elements
-        if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
-          return;
-        }
-        e.preventDefault();
-        e.stopPropagation();
-        return false;
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown, true);
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown, true);
-    };
-  }, []);
 
   const loadForms = async () => {
     try {
@@ -145,6 +79,39 @@ export default function DashboardPage() {
       setLoading(false);
     }
   };
+
+  const { activeId, setActiveId, sensors, handleDragStart, handleDragEnd } = useDashboardDnd({
+    forms,
+    onRefresh: loadForms,
+  });
+  const activeForm = forms.find(f => f.id === activeId);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      loadForms();
+    } else {
+      setLoading(false);
+    }
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
+        const target = e.target as HTMLElement;
+        if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
+          return;
+        }
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown, true);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown, true);
+    };
+  }, []);
 
   const [isCreating, setIsCreating] = useState(false);
 
@@ -336,32 +303,6 @@ export default function DashboardPage() {
     );
   }
 
-
-
-  const handleDragStart = (event: DragStartEvent) => {
-    setActiveId(event.active.id as string);
-  };
-
-  const handleDragEnd = async (event: DragEndEvent) => {
-    const { active, over } = event;
-    setActiveId(null);
-    if (!over) return;
-
-    const formId = active.id as string;
-    const overId = over.id as string;
-
-    if (overId.startsWith('folder-')) {
-      const folderId = overId.replace('folder-', '');
-      await moveFormToFolder(formId, folderId);
-      await loadForms();
-      await refreshFolders();
-    } else if (overId === 'ungrouped') {
-      await moveFormToFolder(formId, null);
-      await loadForms();
-      await refreshFolders();
-    }
-  };
-
   const ungroupedForms = filteredForms.filter(f => !f.folderId);
 
 
@@ -372,31 +313,7 @@ export default function DashboardPage() {
         e.stopPropagation();
       }
     }}>
-      {/* Background Particles - Reduced opacity for cleaner look */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-        {particles.map((particle) => (
-          <motion.div
-            key={particle.id}
-            initial={{ opacity: 0, x: `${particle.x}%`, y: `${particle.y}%` }}
-            animate={{ 
-              opacity: [0.1, 0.4, 0.1], 
-              y: [`${particle.y}%`, `${particle.y - 20}%`, `${particle.y}%`],
-              x: [`${particle.x}%`, `${particle.x + 5}%`, `${particle.x}%`] 
-            }}
-            transition={{ 
-              duration: particle.duration, 
-              repeat: Infinity, 
-              ease: "easeInOut",
-              delay: particle.delay 
-            }}
-            className="absolute rounded-full bg-gradient-to-br from-indigo-100/30 to-purple-100/30 blur-xl"
-            style={{ 
-              width: particle.size * 5, 
-              height: particle.size * 5,
-            }}
-          />
-        ))}
-      </div>
+      <BackgroundParticles />
 
       {/* DashboardHeader - hidden on desktop, shown on mobile */}
       <div className="md:hidden">

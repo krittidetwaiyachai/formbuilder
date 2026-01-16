@@ -6,10 +6,20 @@ import * as crypto from 'crypto';
 export class EncryptionService {
   private readonly algorithm = 'aes-256-gcm';
   private readonly key: Buffer;
+  private readonly ipHashSalt: string;
 
   constructor(private configService: ConfigService) {
-    const secret = this.configService.get<string>('ENCRYPTION_KEY') || 'default-encryption-key-change-me!!';
+    const secret = this.configService.get<string>('ENCRYPTION_KEY');
+    if (!secret) {
+      throw new Error('ENCRYPTION_KEY environment variable is required. Server cannot start without it.');
+    }
     this.key = crypto.scryptSync(secret, 'salt', 32);
+
+    const salt = this.configService.get<string>('IP_HASH_SALT');
+    if (!salt) {
+      throw new Error('IP_HASH_SALT environment variable is required. Server cannot start without it.');
+    }
+    this.ipHashSalt = salt;
   }
 
   encrypt(text: string): string {
@@ -47,7 +57,6 @@ export class EncryptionService {
   }
 
   hashIpAddress(ip: string): string {
-    const salt = this.configService.get<string>('IP_HASH_SALT') || 'ip-hash-salt';
-    return crypto.createHmac('sha256', salt).update(ip).digest('hex').substring(0, 16);
+    return crypto.createHmac('sha256', this.ipHashSalt).update(ip).digest('hex').substring(0, 16);
   }
 }

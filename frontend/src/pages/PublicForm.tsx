@@ -97,7 +97,7 @@ export default function PublicForm() {
   }
 
   return (
-    <div className="h-screen w-screen overflow-hidden bg-white">
+    <div className="min-h-screen w-full overflow-auto bg-white">
       <PublicFormRenderer form={form} loading={loading} />
     </div>
   );

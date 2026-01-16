@@ -6,6 +6,7 @@ export default {
   "builder.publish": "Publish",
   "builder.back_to_canvas": "Back to Canvas",
   "builder.add_element": "Add Element",
+  "builder.add_field": "Add Field",
   "builder.properties.title": "Properties",
   "builder.settings": "Settings",
   "builder.cannot_delete_last_page": "Cannot delete page. Form must have at least 1 page.",

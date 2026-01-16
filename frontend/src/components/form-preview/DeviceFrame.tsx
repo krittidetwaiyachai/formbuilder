@@ -102,9 +102,16 @@ export default function DeviceFrame({ device, children }: DeviceFrameProps) {
 
             {/* Screen Area */}
             <div 
-               className={`absolute bg-white overflow-hidden ${device === 'mobile' ? 'rounded-[2.5rem] top-[6px] bottom-[6px] left-[6px] right-[6px]' : 'rounded-[1.5rem] top-[12px] bottom-[12px] left-[12px] right-[12px]'}`}
+               className={`absolute bg-gray-50 overflow-hidden ${device === 'mobile' ? 'rounded-[2.5rem] top-[6px] bottom-[6px] left-[6px] right-[6px]' : 'rounded-[1.5rem] top-[12px] bottom-[12px] left-[12px] right-[12px]'}`}
             >
-               <div className="w-full h-full overflow-hidden select-none">
+               {/* Safe Area Container with padding for rounded corners */}
+               <div 
+                  className={`w-full h-full overflow-y-auto overflow-x-hidden select-none ${device === 'mobile' ? 'pt-10 pb-8' : 'pt-6 pb-4'}`}
+                  style={{ 
+                    scrollbarWidth: 'thin',
+                    scrollbarColor: '#cbd5e1 transparent'
+                  }}
+               >
                   {children}
                </div>
             </div>

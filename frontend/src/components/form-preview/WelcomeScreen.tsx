@@ -33,6 +33,7 @@ interface WelcomeScreenProps {
 
 export default function WelcomeScreen({ settings, onStart, viewMode = 'desktop' }: WelcomeScreenProps) {
   const isMobile = viewMode === 'mobile';
+  const isTablet = viewMode === 'tablet';
   const layout = settings?.layout || 'simple';
   const bgImage = settings?.backgroundImage;
   const iconColor = (settings as any)?.iconColor || 'blue'; // Default to blue
@@ -108,16 +109,20 @@ export default function WelcomeScreen({ settings, onStart, viewMode = 'desktop' 
     <motion.div 
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      className={`w-full max-w-6xl bg-white shadow-2xl rounded-2xl overflow-hidden flex ${
+      className={`w-full bg-white shadow-2xl overflow-hidden flex ${
           layout === 'split-left' ? 'flex-col md:flex-row' : 
           layout === 'split-right' ? 'flex-col-reverse md:flex-row-reverse' : 
           'flex-col'
-      } relative min-h-[600px]`}
+      } relative ${
+          isMobile || isTablet 
+            ? 'min-h-full rounded-none max-w-full' 
+            : 'min-h-[600px] rounded-2xl max-w-6xl'
+      }`}
     >
       
       {/* SIMPLE LAYOUT */}
       {layout === 'simple' && (
-          <div className="flex flex-col items-center justify-center w-full min-h-[500px]">
+          <div className={`flex flex-col items-center justify-center w-full ${isMobile || isTablet ? 'flex-1 h-full' : 'min-h-[500px]'}`}>
                {/* Image removed in favor of icon in renderContent */}
                
                <div className="w-full flex-1 flex items-center justify-center">

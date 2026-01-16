@@ -10,7 +10,7 @@ interface LiquidFabProps {
 export const LiquidFab: React.FC<LiquidFabProps> = ({ onClick, isOpen, className }) => {
   return (
     <div 
-        className={`loader cursor-pointer ${className || ''}`}
+        className={`liquid-fab cursor-pointer ${className || ''}`}
         onClick={onClick}
         style={{ 
             '--size': '0.73', 

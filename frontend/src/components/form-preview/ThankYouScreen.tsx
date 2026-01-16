@@ -21,6 +21,7 @@ interface ThankYouScreenProps {
   showScore?: boolean;
   quizReview?: any;
   isQuiz?: boolean;
+  viewMode?: 'desktop' | 'tablet' | 'mobile';
 }
 
 const iconColorClasses = {
@@ -35,11 +36,13 @@ const iconColorClasses = {
   white: 'bg-white text-gray-900 border border-gray-100 shadow-gray-200',
 };
 
-export default function ThankYouScreen({ settings, globalSettings, score, showScore, quizReview, isQuiz }: ThankYouScreenProps) {
+export default function ThankYouScreen({ settings, globalSettings, score, showScore, quizReview, isQuiz, viewMode = 'desktop' }: ThankYouScreenProps) {
   const layout = settings?.layout || 'simple';
   const bgImage = settings?.backgroundImage;
   const iconColor = settings?.iconColor || 'green';
   const IconComponent = iconMap[(settings as any)?.icon || 'check'] || Check;
+  const isMobile = viewMode === 'mobile';
+  const isTablet = viewMode === 'tablet';
   
   const defaultTitle = 'Thank you!';
   const defaultMessage = 'Your submission has been received.';
@@ -244,16 +247,20 @@ export default function ThankYouScreen({ settings, globalSettings, score, showSc
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className={`w-full ${layout === 'simple' ? 'max-w-3xl' : 'max-w-5xl'} bg-white shadow-2xl ${isQuiz ? 'rounded-t-2xl rounded-b-none' : 'rounded-2xl'} border border-gray-100 overflow-hidden flex ${
+      className={`w-full bg-white shadow-2xl ${isQuiz ? 'rounded-t-2xl rounded-b-none' : (isMobile || isTablet ? 'rounded-none' : 'rounded-2xl')} border border-gray-100 overflow-hidden flex ${
           layout === 'split-left' ? 'flex-col md:flex-row' : 
           layout === 'split-right' ? 'flex-col-reverse md:flex-row-reverse' : 
           'flex-col'
-      } relative ${isQuiz ? 'min-h-full' : 'min-h-[400px]'}`}
+      } relative ${
+          isMobile || isTablet 
+            ? 'min-h-full max-w-full' 
+            : `${layout === 'simple' ? 'max-w-3xl' : 'max-w-5xl'} ${isQuiz ? 'min-h-full' : 'min-h-[400px]'}`
+      }`}
     >
       
       {/* SIMPLE LAYOUT */}
       {layout === 'simple' && (
-          <div className={`flex flex-col items-center justify-start w-full ${isQuiz ? 'py-8 pb-0' : 'py-16'} px-8 overflow-y-auto ${isQuiz ? 'flex-1 max-h-full' : 'max-h-[90vh]'}`}>
+          <div className={`flex flex-col items-center justify-center flex-1 w-full ${isQuiz ? 'py-8 pb-0' : 'py-16'} px-8 overflow-y-auto ${isQuiz ? 'flex-1 max-h-full' : 'max-h-[90vh]'}`}>
                {bgImage ? (
                   <div className="w-40 h-40 mb-6 mx-auto">
                       <img src={bgImage} alt="Success" className="w-full h-full object-contain" />
