@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { stripHtml } from '@/lib/ui/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/custom-select';
 import { Field } from '@/types';
+import { PdpaToggle } from '../common/PdpaToggle';
 import { PropertiesTabs } from '../common/PropertiesTabs';
 
 interface LongTextPropertiesProps {
@@ -137,6 +138,11 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
               <Copy className="h-4 w-4" />
               {t('builder.properties.duplicate')}
             </button>
+
+            <PdpaToggle 
+                value={field.isPII || false} 
+                onChange={(val) => handleUpdate({ isPII: val })} 
+            />
           </div>
         )}
 

@@ -78,6 +78,7 @@ export interface Field {
   min?: number;
   content?: string;
   headingImage?: string;
+  isPII?: boolean;
 }
 
 export interface FieldCondition {

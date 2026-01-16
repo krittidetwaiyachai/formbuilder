@@ -1,17 +1,30 @@
 
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Check, Facebook, Twitter, Linkedin, ThumbsUp, Heart, Star, Trophy, PartyPopper } from 'lucide-react';
+import { Check, CheckCircle, Facebook, Twitter, Linkedin, ThumbsUp, Heart, Star, Trophy, PartyPopper } from 'lucide-react';
 import { FormSettings, ThankYouScreenSettings } from '@/types';
 import QuizResults from './QuizResults';
 
 const iconMap: Record<string, any> = {
-  check: Check,
+  check: CheckCircle,
   thumbsUp: ThumbsUp,
   heart: Heart,
   star: Star,
   trophy: Trophy,
   party: PartyPopper,
+};
+
+// Premium Icon Backgrounds
+const iconStyles: Record<string, string> = {
+  green: 'bg-emerald-50 text-emerald-600 border-emerald-100',
+  blue: 'bg-blue-50 text-blue-600 border-blue-100',
+  purple: 'bg-purple-50 text-purple-600 border-purple-100',
+  orange: 'bg-orange-50 text-orange-600 border-orange-100',
+  pink: 'bg-pink-50 text-pink-600 border-pink-100',
+  red: 'bg-red-50 text-red-600 border-red-100',
+  yellow: 'bg-yellow-50 text-yellow-600 border-yellow-100',
+  gray: 'bg-gray-50 text-gray-900 border-gray-100',
+  white: 'bg-white text-gray-900 border-gray-100 shadow-sm',
 };
 
 interface ThankYouScreenProps {
@@ -23,18 +36,6 @@ interface ThankYouScreenProps {
   isQuiz?: boolean;
   viewMode?: 'desktop' | 'tablet' | 'mobile';
 }
-
-const iconColorClasses = {
-  green: 'from-emerald-400 to-green-500 shadow-green-500/30',
-  blue: 'from-blue-400 to-blue-500 shadow-blue-500/30',
-  purple: 'from-purple-400 to-purple-500 shadow-purple-500/30',
-  orange: 'from-orange-400 to-orange-500 shadow-orange-500/30',
-  pink: 'from-pink-400 to-pink-500 shadow-pink-500/30',
-  red: 'from-red-400 to-red-500 shadow-red-500/30',
-  yellow: 'from-yellow-400 to-yellow-500 shadow-yellow-500/30',
-  gray: 'from-gray-600 to-gray-800 shadow-gray-500/30',
-  white: 'bg-white text-gray-900 border border-gray-100 shadow-gray-200',
-};
 
 export default function ThankYouScreen({ settings, globalSettings, score, showScore, quizReview, isQuiz, viewMode = 'desktop' }: ThankYouScreenProps) {
   const layout = settings?.layout || 'simple';
@@ -63,7 +64,7 @@ export default function ThankYouScreen({ settings, globalSettings, score, showSc
   useEffect(() => {
     if (settings?.showConfetti) {
       const confettiContainer = document.createElement('div');
-      confettiContainer.className = 'fixed inset-0 pointer-events-none z-50';
+      confettiContainer.className = 'fixed inset-0 pointer-events-none z-[9999]';
       confettiContainer.innerHTML = Array.from({ length: 50 }).map(() => {
         const left = Math.random() * 100;
         const delay = Math.random() * 2;
@@ -85,42 +86,51 @@ export default function ThankYouScreen({ settings, globalSettings, score, showSc
 
   const handleShare = (platform: string) => {
     const url = window.location.href;
-    const text = 'I just completed this form!';
     const shareUrls: Record<string, string> = {
       facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
-      twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`,
+      twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}`,
       linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
     };
     window.open(shareUrls[platform], '_blank', 'width=600,height=400');
   };
 
   const renderContent = (isCover = false) => (
-    <div className="flex flex-col items-center justify-center w-full text-center space-y-4">
+    <div className="flex flex-col items-center justify-center w-full text-center space-y-8 px-4">
       
       {/* Title */}
-      <h2 className={`text-3xl md:text-4xl font-bold ${isCover ? 'text-white' : 'text-gray-900'}`}>
+      <motion.h2 
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.1 }}
+        className={`text-4xl md:text-5xl font-bold tracking-tight ${isCover ? 'text-white drop-shadow-md' : 'text-gray-900'}`}
+      >
         {title}
-      </h2>
+      </motion.h2>
 
       {/* Message */}
-      <p className={`text-lg md:text-xl whitespace-pre-wrap leading-relaxed max-w-lg ${isCover ? 'text-white/90' : 'text-gray-500'}`}>
+      <motion.p 
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.2 }}
+        className={`text-lg md:text-xl font-normal whitespace-pre-wrap leading-relaxed max-w-2xl ${isCover ? 'text-white/90 drop-shadow' : 'text-gray-500'}`}
+      >
         {message}
-      </p>
+      </motion.p>
 
-      {/* Score Display */}
+      {/* Score Display (Clean & Modern) */}
       {showScore && score && (
         <motion.div 
-           initial={{ y: 10, opacity: 0 }}
-           animate={{ y: 0, opacity: 1 }}
+           initial={{ scale: 0.9, opacity: 0 }}
+           animate={{ scale: 1, opacity: 1 }}
            transition={{ delay: 0.3 }}
-           className={`mt-6 rounded-2xl p-6 ${isCover ? 'bg-white/20 backdrop-blur-md border border-white/30' : 'bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-200'}`}
+           className={`mt-4 rounded-2xl p-6 min-w-[200px] ${isCover ? 'bg-white/10 backdrop-blur-md border border-white/20' : 'bg-gray-50 border border-gray-100'}`}
         >
-           <p className={`text-sm font-medium uppercase tracking-wider mb-2 ${isCover ? 'text-white/80' : 'text-gray-400'}`}>
-             Your Score
+           <p className={`text-xs font-semibold uppercase tracking-widest mb-2 ${isCover ? 'text-white/70' : 'text-gray-400'}`}>
+             Total Score
            </p>
-           <div className="flex items-end justify-center gap-1">
-             <span className={`text-5xl font-bold ${isCover ? 'text-white' : 'text-gray-900'}`}>{score.score}</span>
-             <span className={`text-2xl mb-1 ${isCover ? 'text-white/70' : 'text-gray-400'}`}>/ {score.totalScore}</span>
+           <div className="flex items-baseline justify-center gap-1.5">
+             <span className={`text-5xl font-bold ${isCover ? 'text-white' : 'text-black'}`}>{score.score}</span>
+             <span className={`text-xl font-medium ${isCover ? 'text-white/60' : 'text-gray-400'}`}>/ {score.totalScore}</span>
            </div>
         </motion.div>
       )}
@@ -132,78 +142,72 @@ export default function ThankYouScreen({ settings, globalSettings, score, showSc
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
           href={settings?.buttonLink || '/'}
-          className={`mt-6 px-8 py-3 rounded-lg font-medium transition-all ${
+          className={`mt-4 px-10 py-4 rounded-full font-bold text-lg shadow-lg hover:shadow-xl transition-all ${
             isCover 
-              ? 'bg-white text-gray-900 hover:bg-white/90' 
-              : 'bg-gray-900 text-white hover:bg-gray-800'
+              ? 'bg-white text-black hover:bg-gray-50' 
+              : 'bg-black text-white hover:bg-gray-800'
           }`}
         >
           {settings.buttonText}
         </motion.a>
       )}
 
-      {/* Social Share */}
+      {/* Social Share (Minimalist) */}
       {settings?.showSocialShare && (
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
-          className="flex items-center gap-3 mt-6"
+          className="flex items-center gap-4 mt-8"
         >
-          <button
-            onClick={() => handleShare('facebook')}
-            className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
-              isCover ? 'bg-white/20 hover:bg-white/30 text-white' : 'bg-blue-500 hover:bg-blue-600 text-white'
-            }`}
-          >
-            <Facebook className="w-5 h-5" />
-          </button>
-          <button
-            onClick={() => handleShare('twitter')}
-            className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
-              isCover ? 'bg-white/20 hover:bg-white/30 text-white' : 'bg-sky-500 hover:bg-sky-600 text-white'
-            }`}
-          >
-            <Twitter className="w-5 h-5" />
-          </button>
-          <button
-            onClick={() => handleShare('linkedin')}
-            className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
-              isCover ? 'bg-white/20 hover:bg-white/30 text-white' : 'bg-blue-700 hover:bg-blue-800 text-white'
-            }`}
-          >
-            <Linkedin className="w-5 h-5" />
-          </button>
+          {[
+            { id: 'facebook', icon: Facebook, color: 'hover:text-blue-600' },
+            { id: 'twitter', icon: Twitter, color: 'hover:text-sky-500' },
+            { id: 'linkedin', icon: Linkedin, color: 'hover:text-blue-700' }
+          ].map((item) => (
+             <button
+                key={item.id}
+                onClick={() => handleShare(item.id)}
+                className={`p-3 rounded-full transition-all ${
+                  isCover 
+                    ? 'bg-white/10 text-white hover:bg-white/20' 
+                    : `bg-gray-100 text-gray-500 hover:bg-white hover:shadow-md ${item.color}`
+                }`}
+             >
+                <item.icon className="w-5 h-5" />
+             </button>
+          ))}
         </motion.div>
       )}
 
-      {/* Quiz Results - Show answer review */}
+      {/* Quiz Results */}
       {quizReview && score && (
         <QuizResults quizReview={quizReview} score={score} />
       )}
 
       {/* Redirect Countdown */}
       {settings?.autoRedirect && settings?.redirectUrl && (
-        <motion.p 
+        <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className={`text-sm ${isCover ? 'text-white/60' : 'text-gray-400'}`}
+          transition={{ delay: 0.6 }}
+          className={`flex items-center gap-2 text-sm font-medium mt-4 ${isCover ? 'text-white/70' : 'text-gray-400'}`}
         >
-          Redirecting in {settings?.redirectDelay || 3} seconds...
-        </motion.p>
+           <div className="w-4 h-4 rounded-full border-2 border-current border-t-transparent animate-spin" />
+           <span>Redirecting in {settings?.redirectDelay || 3}s...</span>
+        </motion.div>
       )}
     </div>
   );
 
   const renderImage = () => (
-      <div className="w-full h-full bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center min-h-[300px]">
+      <div className="w-full h-full bg-gray-50 flex items-center justify-center min-h-[300px]">
           {bgImage ? (
               <img src={bgImage} alt="Thank You" className="w-full h-full object-cover" />
           ) : (
-            <div className="flex flex-col items-center justify-center text-gray-300">
-                <div className="w-24 h-24 bg-white rounded-2xl shadow-sm flex items-center justify-center">
-                    <Check className="w-12 h-12 text-gray-300" />
+            <div className="flex flex-col items-center justify-center text-gray-300 space-y-4">
+                <div className="w-20 h-20 bg-white rounded-3xl shadow-sm flex items-center justify-center">
+                    <Check className="w-8 h-8 text-emerald-500 opacity-50" />
                 </div>
             </div>
           )}
@@ -214,28 +218,25 @@ export default function ThankYouScreen({ settings, globalSettings, score, showSc
     <motion.div 
       initial={{ scale: 0.5, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
-      transition={{ type: "spring", stiffness: 200, damping: 15 }}
-      className="mb-6"
+      transition={{ type: "spring", stiffness: 200, damping: 20 }}
+      className="mb-8 relative"
     >
-      <motion.div 
-        animate={{ scale: [1, 1.1, 1] }}
-        transition={{ 
-          duration: 2, 
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-        className={`w-20 h-20 bg-gradient-to-br ${iconColorClasses[iconColor]} rounded-full flex items-center justify-center shadow-lg`}
-      >
-        <IconComponent className="w-10 h-10 text-white" strokeWidth={3} />
-      </motion.div>
+       {/* Background Ripple Effect */}
+      <div className={`absolute inset-0 rounded-full opacity-20 animate-ping ${
+          iconColor === 'white' ? 'bg-gray-200' : iconStyles[iconColor]?.split(' ')[0]?.replace('bg-', 'bg-') || 'bg-emerald-200'
+      }`} />
+      
+      <div className={`w-24 h-24 rounded-[2rem] flex items-center justify-center relative z-10 shadow-xl border-4 border-white ${iconStyles[iconColor] || iconStyles.green}`}>
+        <IconComponent className="w-10 h-10" strokeWidth={2.5} />
+      </div>
     </motion.div>
   );
 
   const renderFooter = (isCover = false) => {
     if (!settings?.showFooter) return null;
     return (
-      <div className="absolute bottom-0 left-0 right-0 py-4 text-center">
-        <p className={`text-xs ${isCover ? 'text-white/60' : 'text-gray-400'}`}>
+      <div className="absolute bottom-6 left-0 right-0 text-center">
+        <p className={`text-xs font-medium tracking-wide opacity-50 ${isCover ? 'text-white' : 'text-gray-400'}`}>
           {settings?.footerText || 'Powered by FormBuilder'}
         </p>
       </div>
@@ -244,41 +245,49 @@ export default function ThankYouScreen({ settings, globalSettings, score, showSc
 
   return (
     <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className={`w-full bg-white shadow-2xl ${isQuiz ? 'rounded-t-2xl rounded-b-none' : (isMobile || isTablet ? 'rounded-none' : 'rounded-2xl')} border border-gray-100 overflow-hidden flex ${
+      initial={{ opacity: 0, scale: 0.98 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      className={`w-full bg-white shadow-2xl shadow-gray-200/50 overflow-hidden flex ${
           layout === 'split-left' ? 'flex-col md:flex-row' : 
           layout === 'split-right' ? 'flex-col-reverse md:flex-row-reverse' : 
           'flex-col'
       } relative ${
-          isMobile || isTablet 
-            ? 'min-h-full max-w-full' 
-            : `${layout === 'simple' ? 'max-w-3xl' : 'max-w-5xl'} ${isQuiz ? 'min-h-full' : 'min-h-[400px]'}`
+          (isMobile || isTablet)
+            ? 'min-h-full rounded-none max-w-full' 
+            : `${layout === 'simple' ? 'max-w-4xl' : 'max-w-6xl'} ${isQuiz ? 'min-h-full' : 'min-h-[500px]'} rounded-[2.5rem] my-8 border border-white`
       }`}
     >
       
       {/* SIMPLE LAYOUT */}
       {layout === 'simple' && (
           <div className={`flex flex-col items-center justify-center flex-1 w-full ${isQuiz ? 'py-8 pb-0' : 'py-16'} px-8 overflow-y-auto ${isQuiz ? 'flex-1 max-h-full' : 'max-h-[90vh]'}`}>
+               {/* Decorative background blobs */}
+               <div className="absolute top-0 right-0 w-64 h-64 bg-gray-50 rounded-full mix-blend-multiply filter blur-3xl opacity-50 translate-x-1/2 -translate-y-1/2" />
+               <div className="absolute bottom-0 left-0 w-64 h-64 bg-gray-50 rounded-full mix-blend-multiply filter blur-3xl opacity-50 -translate-x-1/2 translate-y-1/2" />
+
                {bgImage ? (
-                  <div className="w-40 h-40 mb-6 mx-auto">
+                  <div className="w-40 h-40 mb-8 mx-auto relative z-10">
                       <img src={bgImage} alt="Success" className="w-full h-full object-contain" />
                   </div>
                ) : (
-                  successIcon
+                  <div className="relative z-10">
+                    {successIcon}
+                  </div>
                )}
-               {renderContent()}
+               <div className="relative z-10 w-full">
+                  {renderContent()}
+               </div>
           </div>
       )}
 
       {/* SPLIT LAYOUTS */}
       {(layout === 'split-left' || layout === 'split-right') && (
           <>
-              <div className="w-full md:w-1/2 relative min-h-[250px] md:min-h-full">
+              <div className="w-full md:w-1/2 relative min-h-[300px] md:min-h-full">
                    {renderImage()}
               </div>
-              <div className="w-full md:w-1/2 flex flex-col items-center justify-center p-8 md:p-10">
+              <div className="w-full md:w-1/2 flex flex-col items-center justify-center p-8 md:p-16 bg-white">
                    {successIcon}
                    {renderContent()}
               </div>
@@ -291,18 +300,10 @@ export default function ThankYouScreen({ settings, globalSettings, score, showSc
               {bgImage ? (
                    <img src={bgImage} alt="Cover" className="absolute inset-0 w-full h-full object-cover" />
               ) : (
-                  <div className="absolute inset-0 bg-gradient-to-br from-emerald-500 to-green-600" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-emerald-600 to-teal-800" />
               )}
-              <div className="absolute inset-0 bg-black/30 backdrop-blur-sm flex flex-col items-center justify-center p-8 md:p-12">
-                   <motion.div 
-                     initial={{ scale: 0.5, opacity: 0 }}
-                     animate={{ scale: 1, opacity: 1 }}
-                     className="mb-8"
-                   >
-                     <div className="w-24 h-24 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30">
-                       <IconComponent className="w-12 h-12 text-white" strokeWidth={3} />
-                     </div>
-                   </motion.div>
+              <div className="absolute inset-0 bg-black/40 backdrop-blur-sm flex flex-col items-center justify-center p-8 md:p-12">
+                   {successIcon}
                    {renderContent(true)}
                    {renderFooter(true)}
               </div>

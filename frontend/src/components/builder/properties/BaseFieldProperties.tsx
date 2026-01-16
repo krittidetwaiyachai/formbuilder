@@ -12,6 +12,27 @@ interface BaseFieldPropertiesProps {
 export default function BaseFieldProperties({ element, onUpdate }: BaseFieldPropertiesProps) {
   return (
     <>
+
+      <div className="rounded-lg border p-4 shadow-sm bg-slate-50 dark:bg-slate-900 mb-4 border-blue-200">
+        <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+                <Label className="text-base font-medium">เก็บข้อมูลส่วนบุคคล (PDPA)</Label>
+                <div className="text-[0.8rem] text-muted-foreground">
+                    ข้อมูลในช่องนี้จะถูกเข้ารหัสก่อนบันทึก
+                </div>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
+                <input 
+                    type="checkbox" 
+                    checked={element.isPII || false} 
+                    onChange={(e) => onUpdate({ isPII: e.target.checked })}
+                    className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none ring-offset-background rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+            </label>
+        </div>
+      </div>
+
       <div className="space-y-2">
         <Label>Label</Label>
         <Input
@@ -48,6 +69,8 @@ export default function BaseFieldProperties({ element, onUpdate }: BaseFieldProp
           Required
         </Label>
       </div>
+
+
     </>
   );
 }

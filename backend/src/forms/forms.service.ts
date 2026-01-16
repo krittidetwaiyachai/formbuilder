@@ -359,12 +359,12 @@ export class FormsService {
             };
 
             // 1. Check Top-Level Properties
-            ['label', 'placeholder', 'required', 'shrink', 'groupId', 'score', 'correctAnswer'].forEach(prop => {
+            ['label', 'placeholder', 'required', 'shrink', 'groupId', 'score', 'correctAnswer', 'isPII'].forEach(prop => {
               const oldVal = normalize(oldField[prop]);
               const newVal = normalize(newField[prop]);
               
               // For boolean properties, treat false as null (not set)
-              const isBooleanProp = ['required', 'shrink'].includes(prop);
+              const isBooleanProp = ['required', 'shrink', 'isPII'].includes(prop);
               const normalizedOld = isBooleanProp && oldVal === false ? null : oldVal;
               const normalizedNew = isBooleanProp && newVal === false ? null : newVal;
               

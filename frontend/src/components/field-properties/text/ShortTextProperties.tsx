@@ -4,6 +4,7 @@ import { Field } from '@/types';
 import { Copy } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/custom-select';
 import { stripHtml } from '@/lib/ui/utils';
+import { PdpaToggle } from '../common/PdpaToggle';
 import { PropertiesTabs } from '../common/PropertiesTabs';
 
 interface ShortTextPropertiesProps {
@@ -122,6 +123,7 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
             </div>
 
             {/* Duplicate Field */}
+            {/* duplicate button remains above */}
              <button
               onClick={() => duplicatesField({
                   type: field.type,
@@ -138,6 +140,11 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
               <Copy className="h-4 w-4" />
               {t('builder.properties.duplicate')}
             </button>
+
+            <PdpaToggle 
+                value={field.isPII || false} 
+                onChange={(val) => handleUpdate({ isPII: val })} 
+            />
           </div>
         )}
 

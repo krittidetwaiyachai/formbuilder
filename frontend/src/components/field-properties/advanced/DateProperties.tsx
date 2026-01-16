@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Field } from '@/types';
 import { Copy } from 'lucide-react';
 import { stripHtml } from '@/lib/ui/utils';
+import { PdpaToggle } from '../common/PdpaToggle';
 import { PropertiesTabs } from '../common/PropertiesTabs';
 import { useTranslation } from 'react-i18next';
 
@@ -112,8 +113,13 @@ export const DateProperties = ({ field, updateField, duplicatesField }: DateProp
             className="w-full mt-4 px-3 py-2 text-sm font-medium text-black bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
           >
             <Copy className="h-4 w-4" />
-            {t('builder.properties.duplicate')}
+             {t('builder.properties.duplicate')}
           </button>
+
+            <PdpaToggle 
+                value={field.isPII || false} 
+                onChange={(val) => updateField(field.id, { isPII: val })} 
+            />
         </div>
       )}
 

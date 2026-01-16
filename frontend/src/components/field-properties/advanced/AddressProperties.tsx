@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Field } from '@/types';
 import { Copy } from 'lucide-react';
 import { stripHtml } from '@/lib/ui/utils';
+import { PdpaToggle } from '../common/PdpaToggle';
 import { useTranslation } from 'react-i18next';
 import { PropertiesTabs } from '../common/PropertiesTabs';
 
@@ -125,6 +126,11 @@ export const AddressProperties = ({ field, updateField, duplicatesField }: Addre
               <Copy className="h-4 w-4" />
               {t('builder.properties.duplicate')}
             </button>
+
+            <PdpaToggle 
+                value={field.isPII || false} 
+                onChange={(val) => handleUpdate({ isPII: val })} 
+            />
           </div>
         )}
 

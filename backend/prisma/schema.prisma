@@ -227,6 +227,7 @@ model FormResponse {
   formId      String
   userId      String?
   respondentEmail String?
+  ipAddress       String?
   fingerprint String?
   submittedAt DateTime         @default(now())
   score       Int?

@@ -54,6 +54,10 @@ export class CreateFieldDto {
   @IsOptional()
   @IsBoolean()
   shrink?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  isPII?: boolean;
 }
 
 export class CreateFieldConditionDto {

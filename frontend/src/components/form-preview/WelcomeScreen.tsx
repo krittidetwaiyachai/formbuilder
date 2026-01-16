@@ -13,16 +13,17 @@ const iconMap: Record<string, any> = {
   sparkles: Sparkles,
 };
 
-const iconGlowClasses: Record<string, string> = {
-  green: 'bg-emerald-100 text-emerald-600',
-  blue: 'bg-blue-100 text-blue-600',
-  purple: 'bg-purple-100 text-purple-600',
-  orange: 'bg-orange-100 text-orange-600',
-  pink: 'bg-pink-100 text-pink-600',
-  red: 'bg-red-100 text-red-600',
-  yellow: 'bg-yellow-100 text-yellow-600',
-  gray: 'bg-gray-100 text-gray-600',
-  white: 'bg-white text-gray-900 border border-gray-100 shadow-sm',
+// Premium, standardized icon backgrounds
+const iconStyles: Record<string, string> = {
+  green: 'bg-emerald-50 text-emerald-600 border-emerald-100',
+  blue: 'bg-blue-50 text-blue-600 border-blue-100',
+  purple: 'bg-purple-50 text-purple-600 border-purple-100',
+  orange: 'bg-orange-50 text-orange-600 border-orange-100',
+  pink: 'bg-pink-50 text-pink-600 border-pink-100',
+  red: 'bg-red-50 text-red-600 border-red-100',
+  yellow: 'bg-yellow-50 text-yellow-600 border-yellow-100',
+  gray: 'bg-gray-50 text-gray-700 border-gray-100',
+  white: 'bg-white text-black border-gray-100 shadow-sm',
 };
 
 interface WelcomeScreenProps {
@@ -36,35 +37,38 @@ export default function WelcomeScreen({ settings, onStart, viewMode = 'desktop' 
   const isTablet = viewMode === 'tablet';
   const layout = settings?.layout || 'simple';
   const bgImage = settings?.backgroundImage;
-  const iconColor = (settings as any)?.iconColor || 'blue'; // Default to blue
-  const IconComponent = iconMap[(settings as any)?.icon || 'sparkles'] || Sparkles; // Default to sparkles
+  const iconColor = (settings as any)?.iconColor || 'blue';
+  const IconComponent = iconMap[(settings as any)?.icon || 'sparkles'] || Sparkles;
   const title = settings?.title;
   const description = settings?.description;
   const buttonText = settings?.buttonText || 'Start';
-  const showButton = settings?.showStartButton !== false; // Default true
+  const showButton = settings?.showStartButton !== false;
 
   const renderContent = (isCover = false) => (
-    <div className={`flex flex-col items-center justify-center ${isMobile ? 'px-0 py-8' : 'p-6 md:p-12'} w-full h-full text-center space-y-6`}>
+    <div className={`flex flex-col items-center justify-center ${isMobile ? 'px-4 py-10' : 'p-12 md:p-16'} w-full max-w-2xl mx-auto text-center space-y-8`}>
       
        {/* Icon */}
        {layout === 'simple' && (
-          <div className="flex justify-center mb-8">
-            <div className={`w-24 h-24 rounded-2xl flex items-center justify-center ${iconGlowClasses[iconColor]} bg-opacity-50 backdrop-blur-sm`}>
-               <IconComponent className="w-12 h-12" strokeWidth={2} />
-            </div>
-          </div>
+          <motion.div 
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className={`w-28 h-28 rounded-3xl flex items-center justify-center border-4 border-white shadow-xl ${iconStyles[iconColor] || iconStyles.blue}`}
+          >
+             <IconComponent className="w-12 h-12" strokeWidth={1.5} />
+          </motion.div>
        )}
 
       {/* Title */}
       {title && (
-          <h1 className={`${isMobile ? 'text-2xl' : 'text-3xl md:text-5xl'} font-extrabold tracking-tight ${isCover ? 'text-white' : 'text-gray-900'}`}>
+          <h1 className={`${isMobile ? 'text-3xl' : 'text-4xl md:text-6xl'} font-bold tracking-tight leading-tight ${isCover ? 'text-white drop-shadow-md' : 'text-gray-900'}`}>
             {title}
           </h1>
       )}
 
       {/* Description */}
       {description && (
-        <p className={`${isMobile ? 'text-base' : 'text-xl'} whitespace-pre-wrap leading-relaxed max-w-2xl ${isCover ? 'text-white/90' : 'text-gray-500'}`}>
+        <p className={`${isMobile ? 'text-base' : 'text-xl'} font-normal leading-relaxed max-w-xl mx-auto ${isCover ? 'text-white/90 drop-shadow' : 'text-gray-500'}`}>
             {description}
         </p>
       )}
@@ -72,34 +76,31 @@ export default function WelcomeScreen({ settings, onStart, viewMode = 'desktop' 
       {/* Start Button */}
       {showButton && (
         <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.02, y: -2 }}
+            whileTap={{ scale: 0.98 }}
             onClick={onStart}
-            className={`flex items-center justify-center gap-2 px-10 py-4 font-bold rounded-full text-lg shadow-xl hover:shadow-2xl transition-all w-full md:w-auto ${
+            className={`group relative mt-4 flex items-center justify-center gap-3 px-12 py-4 font-bold rounded-full text-lg shadow-xl shadow-gray-200 hover:shadow-2xl hover:shadow-gray-300 transition-all w-full md:w-auto min-w-[200px] ${
                 isCover 
-                ? 'bg-black text-white hover:bg-gray-800' 
-                : 'bg-black text-white hover:bg-gray-800'
+                ? 'bg-white text-black border-2 border-transparent hover:border-white/50' 
+                : 'bg-gray-900 text-white hover:bg-black'
             }`}
         >
-            {buttonText}
+            <span>{buttonText}</span>
         </motion.button>
       )}
     </div>
   );
 
   const renderImage = () => (
-      <div className="w-full h-full bg-gray-100 flex items-center justify-center min-h-[300px] overflow-hidden">
+      <div className="w-full h-full bg-gray-50 flex items-center justify-center overflow-hidden">
           {bgImage ? (
-              <img src={bgImage} alt="Welcome" className="w-full h-full object-cover" />
+              <img src={bgImage} alt="Welcome" className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-1000" />
           ) : (
-             // Sidebar placeholder logic from builder
-             <div className="flex flex-col items-center justify-center text-gray-400">
-                <div className="w-16 h-16 mb-4 bg-gray-200 rounded-full flex items-center justify-center">
-                    <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
+             <div className="flex flex-col items-center justify-center text-gray-300 space-y-4">
+                <div className="w-20 h-20 bg-white rounded-3xl shadow-sm flex items-center justify-center">
+                    <IconComponent className="w-8 h-8 opacity-20" />
                 </div>
-                <span className="text-sm">No Image</span>
+                <span className="text-sm font-medium tracking-widest text-gray-400 uppercase">Image Placeholder</span>
             </div>
           )}
       </div>
@@ -107,25 +108,28 @@ export default function WelcomeScreen({ settings, onStart, viewMode = 'desktop' 
 
   return (
     <motion.div 
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className={`w-full bg-white shadow-2xl overflow-hidden flex ${
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      className={`w-full bg-white shadow-2xl shadow-gray-200/50 overflow-hidden flex ${
           layout === 'split-left' ? 'flex-col md:flex-row' : 
           layout === 'split-right' ? 'flex-col-reverse md:flex-row-reverse' : 
           'flex-col'
       } relative ${
-          isMobile || isTablet 
+          (isMobile || isTablet)
             ? 'min-h-full rounded-none max-w-full' 
-            : 'min-h-[600px] rounded-2xl max-w-6xl'
+            : 'min-h-[650px] rounded-[2.5rem] max-w-6xl my-8 border border-white'
       }`}
     >
       
       {/* SIMPLE LAYOUT */}
       {layout === 'simple' && (
-          <div className={`flex flex-col items-center justify-center w-full ${isMobile || isTablet ? 'flex-1 h-full' : 'min-h-[500px]'}`}>
-               {/* Image removed in favor of icon in renderContent */}
+          <div className="flex flex-col items-center justify-center w-full min-h-[inherit] relative bg-white">
+               {/* Decorative background blobs */}
+               <div className="absolute top-0 left-0 w-64 h-64 bg-gray-50 rounded-full mix-blend-multiply filter blur-3xl opacity-50 -translate-x-1/2 -translate-y-1/2" />
+               <div className="absolute bottom-0 right-0 w-64 h-64 bg-gray-50 rounded-full mix-blend-multiply filter blur-3xl opacity-50 translate-x-1/2 translate-y-1/2" />
                
-               <div className="w-full flex-1 flex items-center justify-center">
+               <div className="w-full flex-1 flex items-center justify-center relative z-10">
                     {renderContent()}
                </div>
           </div>
@@ -134,12 +138,12 @@ export default function WelcomeScreen({ settings, onStart, viewMode = 'desktop' 
       {/* SPLIT LAYOUTS */}
       {(layout === 'split-left' || layout === 'split-right') && (
           <>
-              <div className="w-full md:w-1/2 relative bg-gray-50 border-r border-gray-100 min-h-[300px] md:min-h-full">
+               <div className="w-full md:w-1/2 relative min-h-[350px] md:min-h-full">
                    {renderImage()}
-              </div>
-              <div className="w-full md:w-1/2 flex flex-col items-center justify-center p-4">
+               </div>
+               <div className="w-full md:w-1/2 flex flex-col items-center justify-center bg-white">
                    {renderContent()}
-              </div>
+               </div>
           </>
       )}
 
@@ -151,7 +155,7 @@ export default function WelcomeScreen({ settings, onStart, viewMode = 'desktop' 
               ) : (
                   <div className="absolute inset-0 bg-gray-900" />
               )}
-              <div className="absolute inset-0 bg-black/40 backdrop-blur-sm flex flex-col items-center justify-center px-4">
+              <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex flex-col items-center justify-center px-4">
                    {renderContent(true)}
               </div>
           </div>

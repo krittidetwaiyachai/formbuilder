@@ -1,6 +1,7 @@
 
 import { Form } from '@/types';
 import { Check, ThumbsUp, Heart, Star, Trophy, PartyPopper, Rocket, Sparkles } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const iconMap: Record<string, any> = {
   check: Check,
@@ -13,17 +14,17 @@ const iconMap: Record<string, any> = {
   sparkles: Sparkles,
 };
 
-// For Welcome Screen, we use softer, glowy backgrounds or text colors
-const iconGlowClasses: Record<string, string> = {
-  green: 'bg-emerald-100 text-emerald-600',
-  blue: 'bg-blue-100 text-blue-600',
-  purple: 'bg-purple-100 text-purple-600',
-  orange: 'bg-orange-100 text-orange-600',
-  pink: 'bg-pink-100 text-pink-600',
-  red: 'bg-red-100 text-red-600',
-  yellow: 'bg-yellow-100 text-yellow-600',
-  gray: 'bg-gray-100 text-gray-600',
-  white: 'bg-white text-gray-900 border border-gray-100 shadow-sm',
+// Premium, standardized icon backgrounds
+const iconStyles: Record<string, string> = {
+  green: 'bg-emerald-50 text-emerald-600 border-emerald-100',
+  blue: 'bg-blue-50 text-blue-600 border-blue-100',
+  purple: 'bg-purple-50 text-purple-600 border-purple-100',
+  orange: 'bg-orange-50 text-orange-600 border-orange-100',
+  pink: 'bg-pink-50 text-pink-600 border-pink-100',
+  red: 'bg-red-50 text-red-600 border-red-100',
+  yellow: 'bg-yellow-50 text-yellow-600 border-yellow-100',
+  gray: 'bg-gray-50 text-gray-700 border-gray-100',
+  white: 'bg-white text-black border-gray-100 shadow-sm',
 };
 
 interface WelcomeScreenEditorProps {
@@ -37,15 +38,15 @@ export default function WelcomeScreenEditor({ currentForm, updateForm }: Welcome
   const settings = currentForm.welcomeSettings;
   const layout = settings?.layout || 'simple';
   const bgImage = settings?.backgroundImage;
-  const iconColor = (settings as any)?.iconColor || 'blue'; // Default to blue for Welcome
-  const IconComponent = iconMap[(settings as any)?.icon || 'sparkles'] || Sparkles; // Default to Sparkles for Welcome
+  const iconColor = (settings as any)?.iconColor || 'blue';
+  const IconComponent = iconMap[(settings as any)?.icon || 'sparkles'] || Sparkles;
 
   const renderContent = () => (
-      <div className="max-w-2xl w-full text-center space-y-6 p-8">
-        {/* Icon Placeholder - New "Hero" Style */}
-        <div className="flex justify-center mb-6">
-          <div className={`w-20 h-20 rounded-2xl flex items-center justify-center ${iconGlowClasses[iconColor]} bg-opacity-50 backdrop-blur-sm`}>
-             <IconComponent className="w-10 h-10" strokeWidth={2} />
+      <div className="max-w-2xl w-full text-center space-y-8 p-12">
+        {/* Icon Placeholder - Premium Style */}
+        <div className="flex justify-center mb-8">
+          <div className={`w-28 h-28 rounded-3xl flex items-center justify-center border-4 border-white shadow-xl ${iconStyles[iconColor] || iconStyles.blue}`}>
+             <IconComponent className="w-12 h-12" strokeWidth={1.5} />
           </div>
         </div>
 
@@ -53,8 +54,8 @@ export default function WelcomeScreenEditor({ currentForm, updateForm }: Welcome
         <div className="relative group">
           <input
             type="text"
-            className={`block w-full text-center text-3xl font-extrabold border-none bg-transparent focus:ring-0 placeholder-gray-300 focus:placeholder-gray-200 ${
-                 layout === 'cover' ? 'text-white placeholder-white/50' : 'text-gray-900'
+            className={`block w-full text-center text-4xl md:text-5xl font-bold tracking-tight leading-tight border-none bg-transparent focus:ring-0 placeholder-gray-300 focus:placeholder-gray-200 ${
+                 layout === 'cover' ? 'text-white placeholder-white/50 drop-shadow-md' : 'text-gray-900'
             }`}
             value={currentForm?.welcomeSettings?.title || ''}
             onChange={(e) => updateForm({
@@ -68,7 +69,7 @@ export default function WelcomeScreenEditor({ currentForm, updateForm }: Welcome
             })}
             placeholder="Click to edit title"
           />
-          <div className={`absolute inset-0 border-2 border-transparent group-hover:border-dashed group-hover:border-gray-200 rounded-lg pointer-events-none transition-colors ${
+          <div className={`absolute -inset-2 border-2 border-transparent group-hover:border-dashed group-hover:border-gray-200 rounded-lg pointer-events-none transition-colors ${
              layout === 'cover' ? 'group-hover:border-white/50' : ''
           }`} />
         </div>
@@ -76,8 +77,8 @@ export default function WelcomeScreenEditor({ currentForm, updateForm }: Welcome
         {/* Inline Editable Description */}
         <div className="relative group">
           <textarea
-            className={`block w-full text-center text-base border-none bg-transparent focus:ring-0 resize-none min-h-[80px] placeholder-gray-300 focus:placeholder-gray-200 ${
-                 layout === 'cover' ? 'text-white/90 placeholder-white/50' : 'text-gray-500'
+            className={`block w-full text-center text-xl font-normal border-none bg-transparent focus:ring-0 resize-none min-h-[80px] placeholder-gray-300 focus:placeholder-gray-200 leading-relaxed ${
+                 layout === 'cover' ? 'text-white/90 placeholder-white/50 drop-shadow' : 'text-gray-500'
             }`}
             value={currentForm?.welcomeSettings?.description || ''}
             onChange={(e) => updateForm({
@@ -91,18 +92,22 @@ export default function WelcomeScreenEditor({ currentForm, updateForm }: Welcome
             })}
             placeholder="Click to add a description..."
           />
-          <div className={`absolute inset-0 border-2 border-transparent group-hover:border-dashed group-hover:border-gray-200 rounded-lg pointer-events-none transition-colors ${
+          <div className={`absolute -inset-2 border-2 border-transparent group-hover:border-dashed group-hover:border-gray-200 rounded-lg pointer-events-none transition-colors ${
              layout === 'cover' ? 'group-hover:border-white/50' : ''
           }`} />
         </div>
 
         {/* Start Button */}
         {currentForm?.welcomeSettings?.showStartButton !== false && (
-          <div className="flex justify-center pt-2">
+          <div className="flex justify-center pt-4">
             <div className="relative group">
               <input
                 type="text"
-                className="block w-40 text-center text-base font-bold text-white bg-black rounded-full py-2.5 px-6 shadow-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-100 transition-all cursor-text border-none"
+                className={`block w-auto min-w-[160px] text-center text-lg font-bold rounded-full py-4 px-10 shadow-xl transition-all cursor-text border-none ${
+                    layout === 'cover' 
+                    ? 'bg-white text-black hover:bg-white/90 shadow-lg' 
+                    : 'bg-black text-white hover:bg-gray-800 shadow-gray-200'
+                }`}
                 value={currentForm?.welcomeSettings?.buttonText || 'Start'}
                 onChange={(e) => updateForm({
                   welcomeSettings: {
@@ -114,7 +119,7 @@ export default function WelcomeScreenEditor({ currentForm, updateForm }: Welcome
                   }
                 })}
               />
-              <div className="absolute -inset-2 border-2 border-transparent group-hover:border-dashed group-hover:border-blue-200 rounded-full pointer-events-none transition-colors" />
+              <div className="absolute -inset-2 border-2 border-transparent group-hover:border-dashed group-hover:border-blue-400 rounded-full pointer-events-none transition-colors" />
             </div>
           </div>
         )}
@@ -122,44 +127,48 @@ export default function WelcomeScreenEditor({ currentForm, updateForm }: Welcome
   );
 
   const renderImagePlaceholder = () => (
-      <div className="w-full h-full bg-gray-100 flex items-center justify-center min-h-[400px]">
+      <div className="w-full h-full bg-gray-50 flex items-center justify-center min-h-[500px]">
           {bgImage ? (
               <img src={bgImage} alt="Welcome" className="w-full h-full object-cover" />
           ) : (
-            <div className="flex flex-col items-center justify-center text-gray-400">
-                <div className="w-16 h-16 mb-4 bg-gray-200 rounded-full flex items-center justify-center">
-                    <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
+            <div className="flex flex-col items-center justify-center text-gray-300 space-y-4">
+                <div className="w-20 h-20 bg-white rounded-3xl shadow-sm flex items-center justify-center">
+                    <IconComponent className="w-8 h-8 opacity-20" />
                 </div>
-                <span className="text-sm">No Image</span>
+                <span className="text-sm font-medium tracking-widest text-gray-400 uppercase">Image Placeholder</span>
             </div>
           )}
       </div>
   );
 
   return (
-    <div className="flex items-center justify-center min-h-full p-8 animate-in fade-in duration-500 w-full h-full">
-         <div className={`w-full ${layout === 'simple' ? 'max-w-xl' : 'max-w-4xl'} bg-white shadow-lg rounded-2xl border border-gray-100 overflow-hidden flex ${
+    <div className="flex items-center justify-center min-h-full p-8 animate-in fade-in duration-500 w-full h-full bg-gray-50/50">
+         <div className={`w-full ${layout === 'simple' ? 'max-w-6xl' : 'max-w-7xl'} bg-white shadow-2xl shadow-gray-200/50 rounded-[2.5rem] overflow-hidden flex ${
           layout === 'split-left' ? 'flex-row' : 
           layout === 'split-right' ? 'flex-row-reverse' : 
           'flex-col'
-      } relative min-h-[400px]`}>
+      } relative min-h-[600px] border border-white`}>
         
         {/* SIMPLE CENTERED */}
         {layout === 'simple' && (
-             <div className="w-full flex items-center justify-center">
-                {renderContent()}
+             <div className="w-full h-full flex items-center justify-center relative">
+                 {/* Decorative blobs */}
+                 <div className="absolute top-0 left-0 w-64 h-64 bg-gray-50 rounded-full mix-blend-multiply filter blur-3xl opacity-50 -translate-x-1/2 -translate-y-1/2" />
+                 <div className="absolute bottom-0 right-0 w-64 h-64 bg-gray-50 rounded-full mix-blend-multiply filter blur-3xl opacity-50 translate-x-1/2 translate-y-1/2" />
+                 
+                 <div className="relative z-10 w-full flex justify-center">
+                    {renderContent()}
+                 </div>
              </div>
         )}
 
         {/* SPLIT LAYOUTS */}
         {(layout === 'split-left' || layout === 'split-right') && (
             <>
-                <div className="w-1/2 relative bg-gray-50 border-r border-gray-100">
+                <div className="w-1/2 relative bg-gray-50 border-gray-100">
                      {renderImagePlaceholder()}
                 </div>
-                <div className="w-1/2 flex flex-col items-center justify-center">
+                <div className="w-1/2 flex flex-col items-center justify-center bg-white">
                      {renderContent()}
                 </div>
             </>
@@ -173,7 +182,7 @@ export default function WelcomeScreenEditor({ currentForm, updateForm }: Welcome
                 ) : (
                     <div className="absolute inset-0 bg-gray-900" />
                 )}
-                <div className="absolute inset-0 bg-black/40 backdrop-blur-sm flex flex-col items-center justify-center">
+                <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex flex-col items-center justify-center">
                      {renderContent()}
                 </div>
             </div>

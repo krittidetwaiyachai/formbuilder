@@ -13,7 +13,7 @@ export class ResponsesService {
 
   async create(createResponseDto: CreateResponseDto) {
     try {
-        const { formId, answers, userId, respondentEmail, fingerprint } = createResponseDto;
+        const { formId, answers, userId, respondentEmail, fingerprint, ipAddress } = createResponseDto;
 
 
 
@@ -120,6 +120,7 @@ export class ResponsesService {
             userId: userId || null,
             respondentEmail: createResponseDto.respondentEmail || null,
             fingerprint: fingerprint || null,
+            ipAddress: ipAddress ? this.encryptionService.hashIpAddress(ipAddress) : null,
             score: form.isQuiz ? score : null,
             totalScore: form.isQuiz ? totalScore : null,
             answers: {
@@ -288,12 +289,20 @@ export class ResponsesService {
 
     return responses.map(response => ({
       ...response,
-      answers: response.answers.map(answer => ({
-        ...answer,
-        value: answer.field?.isPII && answer.value
-          ? this.encryptionService.decrypt(answer.value)
-          : answer.value,
-      })),
+      answers: response.answers.map(answer => {
+        let value = answer.value;
+        if (answer.field?.isPII && answer.value) {
+            try {
+                value = this.encryptionService.decrypt(answer.value);
+            } catch (error) {
+                value = '[Error: Data Encrypted]';
+            }
+        }
+        return {
+            ...answer,
+            value,
+        };
+      }),
     }));
   }
 
@@ -338,12 +347,20 @@ export class ResponsesService {
 
     return {
       ...response,
-      answers: response.answers.map(answer => ({
-        ...answer,
-        value: answer.field?.isPII && answer.value
-          ? this.encryptionService.decrypt(answer.value)
-          : answer.value,
-      })),
+      answers: response.answers.map(answer => {
+        let value = answer.value;
+        if (answer.field?.isPII && answer.value) {
+            try {
+                value = this.encryptionService.decrypt(answer.value);
+            } catch (error) {
+                value = '[Error: Data Encrypted]';
+            }
+        }
+        return {
+            ...answer,
+            value,
+        };
+      }),
     };
   }
 

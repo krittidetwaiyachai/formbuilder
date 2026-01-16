@@ -747,6 +747,7 @@ export const useFormStore = create<FormBuilderState>()(persist((set, get) => {
            score: f.score,
            groupId: f.groupId,
            shrink: f.shrink,
+           isPII: f.isPII,
         })),
         conditions: form.conditions?.filter(c => {
              // Sanitize: Only keep conditions where both source and target exist in current fields

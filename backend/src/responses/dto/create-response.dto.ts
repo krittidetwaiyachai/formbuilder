@@ -23,7 +23,13 @@ export class CreateResponseDto {
 
   @IsOptional()
   @IsString()
+  @IsOptional()
+  @IsString()
   fingerprint?: string;
+
+  @IsOptional()
+  @IsString()
+  ipAddress?: string;
 
   @IsArray()
   @ValidateNested({ each: true })

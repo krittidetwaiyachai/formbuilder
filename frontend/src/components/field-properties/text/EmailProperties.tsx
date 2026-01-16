@@ -3,6 +3,7 @@ import { Field } from '@/types';
 import { Copy } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { stripHtml } from '@/lib/ui/utils';
+import { PdpaToggle } from '../common/PdpaToggle';
 import { PropertiesTabs } from '../common/PropertiesTabs';
 
 interface EmailPropertiesProps {
@@ -129,6 +130,11 @@ export const EmailProperties = ({ field, updateField, duplicatesField }: EmailPr
               <Copy className="h-4 w-4" />
               {t('builder.properties.duplicate')}
             </button>
+
+            <PdpaToggle 
+                value={field.isPII || false} 
+                onChange={(val) => handleUpdate({ isPII: val })} 
+            />
           </div>
         )}
 

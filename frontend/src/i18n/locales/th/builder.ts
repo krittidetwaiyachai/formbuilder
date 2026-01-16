@@ -9,6 +9,8 @@ export default {
   "builder.add_field": "เพิ่มฟิลด์",
   "builder.properties.title": "คุณสมบัติ",
   "builder.settings": "ตั้งค่า",
+  "builder.properties.pdpa_title": "เก็บข้อมูลส่วนบุคคล (PDPA)",
+  "builder.properties.pdpa_desc": "ข้อมูลในช่องนี้จะถูกเข้ารหัสก่อนบันทึก",
   "builder.cannot_delete_last_page": "ไม่สามารถลบหน้าได้ ฟอร์มต้องมีอย่างน้อย 1 หน้า",
   
   "builder.field_bundles": "ชุดฟิลด์",

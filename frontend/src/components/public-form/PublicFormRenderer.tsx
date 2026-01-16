@@ -307,15 +307,25 @@ export default function PublicFormRenderer({ form, loading = false, isPreview = 
   if (submitted) {
     const showScore = form.isQuiz && form.quizSettings?.showScore && form.quizSettings?.releaseScoreMode !== 'manual' && score;
     return (
-      <ThankYouScreen 
-        settings={form.thankYouSettings} 
-        globalSettings={form.settings} 
-        score={score}
-        showScore={!!showScore}
-        quizReview={quizReview}
-        isQuiz={form.isQuiz}
-        viewMode={viewMode}
-      />
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        {form.settings?.backgroundImage && (
+           <div 
+             className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-50 pointer-events-none"
+             style={{ backgroundImage: `url(${form.settings.backgroundImage})` }}
+           />
+        )}
+        <div className="relative z-10 w-full flex justify-center">
+            <ThankYouScreen 
+              settings={form.thankYouSettings} 
+              globalSettings={form.settings} 
+              score={score}
+              showScore={!!showScore}
+              quizReview={quizReview}
+              isQuiz={form.isQuiz}
+              viewMode={viewMode}
+            />
+        </div>
+      </div>
     );
   }
 
@@ -323,11 +333,21 @@ export default function PublicFormRenderer({ form, loading = false, isPreview = 
   
   if (showWelcome && isWelcomeActive) {
     return (
-      <WelcomeScreen 
-        settings={form.welcomeSettings}
-        onStart={() => setShowWelcome(false)} 
-        viewMode={viewMode}
-      />
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        {form.settings?.backgroundImage && (
+           <div 
+             className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-50 pointer-events-none"
+             style={{ backgroundImage: `url(${form.settings.backgroundImage})` }}
+           />
+        )}
+        <div className="relative z-10 w-full flex justify-center">
+            <WelcomeScreen 
+              settings={form.welcomeSettings}
+              onStart={() => setShowWelcome(false)} 
+              viewMode={viewMode}
+            />
+        </div>
+      </div>
     );
   }
 

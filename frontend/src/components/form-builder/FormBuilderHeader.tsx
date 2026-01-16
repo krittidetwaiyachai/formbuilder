@@ -152,7 +152,7 @@ export default function FormBuilderHeader({
                  {saving ? t('builder_header.saving') : (
                     <span>
                        {t('builder_header.all_saved')}
-                       {lastSaved && ` ${lastSaved.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`}
+                       {lastSaved && ` ${lastSaved.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}`}
                     </span>
                  )}
              </span>

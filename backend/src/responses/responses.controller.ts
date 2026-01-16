@@ -7,6 +7,7 @@ import {
   UseGuards,
   Res,
   Query,
+  Ip,
 } from '@nestjs/common';
 import { ResponsesService } from './responses.service';
 import { CreateResponseDto } from './dto/create-response.dto';
@@ -24,7 +25,8 @@ export class ResponsesController {
 
   @Post()
   @Public()
-  create(@Body() createResponseDto: CreateResponseDto) {
+  create(@Body() createResponseDto: CreateResponseDto, @Ip() ip: string) {
+    createResponseDto.ipAddress = ip;
     return this.responsesService.create(createResponseDto);
   }
 

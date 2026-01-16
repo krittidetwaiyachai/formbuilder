@@ -9,7 +9,10 @@
     "lint": "next lint",
     "dev:all": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
     "dev:backend": "cd backend && npm run start:nodemon",
-    "dev:frontend": "cd frontend && npm run dev"
+    "dev:frontend": "cd frontend && npm run dev",
+    "db:migrate": "cd backend && npx prisma migrate deploy",
+    "db:push": "cd backend && npx prisma db push",
+    "prisma": "cd backend && npx prisma"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

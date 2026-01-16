@@ -9,6 +9,8 @@ export default {
   "builder.add_field": "Add Field",
   "builder.properties.title": "Properties",
   "builder.settings": "Settings",
+  "builder.properties.pdpa_title": "Collect Personal Data (PDPA)",
+  "builder.properties.pdpa_desc": "Data in this field will be encrypted before saving",
   "builder.cannot_delete_last_page": "Cannot delete page. Form must have at least 1 page.",
   
   "builder.field_bundles": "Field Bundles",

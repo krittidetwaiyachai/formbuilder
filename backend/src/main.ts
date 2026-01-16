@@ -29,7 +29,6 @@ async function bootstrap() {
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   });
-
   // Global validation pipe
   app.useGlobalPipes(
     new ValidationPipe({
@@ -49,4 +48,3 @@ async function bootstrap() {
 }
 
 bootstrap();
-

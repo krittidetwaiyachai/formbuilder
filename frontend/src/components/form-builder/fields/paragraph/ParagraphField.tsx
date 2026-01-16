@@ -65,7 +65,7 @@ export const ParagraphField: React.FC<ParagraphFieldProps> = ({
                 onChange={(value) => updateField(field.id, { label: value })}
                 placeholder="Type '/' for commands"
                 modules={modules}
-                className="text-sm text-black leading-relaxed borderless animate-slide-down"
+                className="text-sm text-black leading-relaxed borderless animate-slide-down min-h-32"
              />
            </div>
         ) : (
