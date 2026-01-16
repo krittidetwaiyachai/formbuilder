@@ -283,7 +283,7 @@ export default function AnalyticsPage({ params }: { params: { id: string } }) {
                 Object.keys(fieldSummary).forEach((key) => {
                   const valueCounts: Record<string, number> = {};
                   submissions.forEach((submission) => {
-                    const value = submission.data[key];
+                    const value = (submission.data as Record<string, any>)[key];
                     const values = Array.isArray(value) ? value : [value];
                     values.forEach((v) => {
                       valueCounts[String(v)] = (valueCounts[String(v)] || 0) + 1;

@@ -41,7 +41,7 @@ export const TableField: React.FC<TableFieldProps> = ({ field, isSelected, updat
   const rowCount = 2; 
 
   return (
-    <div className="w-full overflow-x-auto">
+    <div className="w-max min-w-full">
         <table className="w-full text-sm text-left text-gray-500 border-collapse border border-gray-200 rounded-lg overflow-hidden">
             <thead className="text-xs text-gray-700 bg-gray-50">
                 <tr>

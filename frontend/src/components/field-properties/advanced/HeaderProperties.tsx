@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Field } from '@/types';
 import { AlignLeft, AlignCenter, AlignRight, Copy } from 'lucide-react';
-import { RichTextEditor } from '@/components/ui/RichTextEditor';
 import { PropertiesTabs } from '../common/PropertiesTabs';
 import { useTranslation } from 'react-i18next';
 
@@ -14,6 +13,17 @@ interface HeaderPropertiesProps {
 export function HeaderProperties({ field, updateField, duplicatesField }: HeaderPropertiesProps) {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'general' | 'options' | 'advanced'>('general');
+
+  const stripHtml = (html: string) => {
+    const tmp = document.createElement('DIV');
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || '';
+  };
+
+  const wrapWithParagraph = (text: string) => {
+    if (!text.trim()) return '';
+    return `<p>${text}</p>`;
+  };
 
   return (
     <>
@@ -28,11 +38,12 @@ export function HeaderProperties({ field, updateField, duplicatesField }: Header
             <label className="block text-sm font-medium text-black mb-1">
               {t('builder.properties.heading_text')}
             </label>
-            <RichTextEditor
-              value={field.label}
-              onChange={(value) => updateField(field.id, { label: value })}
-              className="text-sm [&_.ql-container]:min-h-[40px] [&_.ql-editor]:min-h-[40px]"
+            <textarea
+              value={stripHtml(field.label)}
+              onChange={(e) => updateField(field.id, { label: wrapWithParagraph(e.target.value) })}
+              className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white resize-none"
               placeholder={t('builder.properties.heading_placeholder')}
+              rows={2}
             />
           </div>
 
@@ -41,11 +52,12 @@ export function HeaderProperties({ field, updateField, duplicatesField }: Header
             <label className="block text-sm font-medium text-black mb-1">
               {t('builder.properties.subheading_text')}
             </label>
-            <RichTextEditor
-              value={field.placeholder || ''}
-              onChange={(value) => updateField(field.id, { placeholder: value })}
-              className="text-sm [&_.ql-container]:min-h-[40px] [&_.ql-editor]:min-h-[40px]"
+            <textarea
+              value={stripHtml(field.placeholder || '')}
+              onChange={(e) => updateField(field.id, { placeholder: wrapWithParagraph(e.target.value) })}
+              className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white resize-none"
               placeholder={t('builder.properties.subheading_placeholder')}
+              rows={2}
             />
             <p className="mt-1 text-xs text-gray-500">{t('builder.properties.subheading_desc')}</p>
           </div>

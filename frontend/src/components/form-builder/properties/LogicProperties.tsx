@@ -4,7 +4,7 @@ import { useFormStore } from '@/store/formStore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select } from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Plus, Trash2 } from 'lucide-react';
 
 interface LogicPropertiesProps {
@@ -54,7 +54,7 @@ export const LogicProperties: React.FC<LogicPropertiesProps> = ({ field }) => {
   return (
     <div className="space-y-6">
       <div className="space-y-4">
-        {fieldConditions.map((condition, index) => (
+        {fieldConditions.map((condition) => (
           <div key={condition.id} className="p-4 bg-gray-50 border border-gray-200 rounded-lg space-y-3 relative group">
             <button
                onClick={() => deleteCondition(condition.id)}
@@ -67,19 +67,22 @@ export const LogicProperties: React.FC<LogicPropertiesProps> = ({ field }) => {
                 <div className="space-y-1">
                     <Label className="text-xs text-gray-500">Operator</Label>
                     <Select
-                        className="h-8 text-xs bg-white"
                         value={condition.operator}
-                        onChange={(e) => updateCondition(condition.id, { operator: e.target.value })}
+                        onValueChange={(value) => updateCondition(condition.id, { operator: value })}
                     >
-                        <option value="EQUALS">Equals</option>
-                        <option value="NOT_EQUALS">Not Equals</option>
-                        <option value="CONTAINS">Contains</option>
-                        <option value="NOT_CONTAINS">Not Contains</option>
-                        <option value="IS_EMPTY">Is Empty</option>
-                        <option value="IS_NOT_EMPTY">Is Not Empty</option>
-                        {/* Numeric operators could act on strings too often */}
-                        <option value="GREATER_THAN">Greater Than</option>
-                        <option value="LESS_THAN">Less Than</option>
+                        <SelectTrigger className="h-8 text-xs bg-white">
+                            <SelectValue placeholder="Operator" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="EQUALS">Equals</SelectItem>
+                            <SelectItem value="NOT_EQUALS">Not Equals</SelectItem>
+                            <SelectItem value="CONTAINS">Contains</SelectItem>
+                            <SelectItem value="NOT_CONTAINS">Not Contains</SelectItem>
+                            <SelectItem value="IS_EMPTY">Is Empty</SelectItem>
+                            <SelectItem value="IS_NOT_EMPTY">Is Not Empty</SelectItem>
+                            <SelectItem value="GREATER_THAN">Greater Than</SelectItem>
+                            <SelectItem value="LESS_THAN">Less Than</SelectItem>
+                        </SelectContent>
                     </Select>
                 </div>
                 
@@ -88,14 +91,17 @@ export const LogicProperties: React.FC<LogicPropertiesProps> = ({ field }) => {
                      {/* Smart Input: Dropdown if source has options, else Text */}
                      {sourceOptions && !['IS_EMPTY', 'IS_NOT_EMPTY'].includes(condition.operator) ? (
                         <Select
-                            className="h-8 text-xs bg-white"
                             value={condition.value}
-                            onChange={(e) => updateCondition(condition.id, { value: e.target.value })}
+                            onValueChange={(value) => updateCondition(condition.id, { value })}
                         >
-                            <option value="">Select Value...</option>
-                            {sourceOptions.map((opt: string, i: number) => (
-                                <option key={i} value={opt}>{opt}</option>
-                            ))}
+                            <SelectTrigger className="h-8 text-xs bg-white">
+                                <SelectValue placeholder="Select Value..." />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {sourceOptions.map((opt: string, i: number) => (
+                                    <SelectItem key={i} value={opt}>{opt}</SelectItem>
+                                ))}
+                            </SelectContent>
                         </Select>
                      ) : (
                         <Input 
@@ -117,28 +123,35 @@ export const LogicProperties: React.FC<LogicPropertiesProps> = ({ field }) => {
                  <div className="col-span-1 space-y-1">
                     <Label className="text-xs text-gray-500">Action</Label>
                     <Select
-                        className="h-8 text-xs font-semibold text-blue-600 bg-blue-50 border-blue-100"
                         value={condition.action}
-                        onChange={(e) => updateCondition(condition.id, { action: e.target.value })}
+                        onValueChange={(value) => updateCondition(condition.id, { action: value })}
                     >
-                        <option value="SHOW">Show</option>
-                        <option value="HIDE">Hide</option>
+                        <SelectTrigger className="h-8 text-xs font-semibold text-blue-600 bg-blue-50 border-blue-100">
+                             <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="SHOW">Show</SelectItem>
+                            <SelectItem value="HIDE">Hide</SelectItem>
+                        </SelectContent>
                     </Select>
                  </div>
                  
                  <div className="col-span-2 space-y-1">
                     <Label className="text-xs text-gray-500">Target Field</Label>
                     <Select
-                        className="h-8 text-xs bg-white"
                         value={condition.targetFieldId}
-                        onChange={(e) => updateCondition(condition.id, { targetFieldId: e.target.value })}
+                        onValueChange={(value) => updateCondition(condition.id, { targetFieldId: value })}
                     >
-                        <option value="">Select Field...</option>
-                        {targetFields.map((f) => (
-                            <option key={f.id} value={f.id}>
-                                {f.label || f.id}
-                            </option>
-                        ))}
+                        <SelectTrigger className="h-8 text-xs bg-white">
+                             <SelectValue placeholder="Select Field..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {targetFields.map((f) => (
+                                <SelectItem key={f.id} value={f.id}>
+                                    {f.label || f.id}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
                     </Select>
                  </div>
             </div>

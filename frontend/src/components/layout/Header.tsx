@@ -111,7 +111,9 @@ export default function Header() {
                 */}
               </div>
             ) : (
-              <div className="relative group/btn">
+              <div className="flex items-center gap-3">
+                <LanguageSwitcher />
+                <div className="relative group/btn">
                 {/* Floating Particles */}
                 <div className="absolute -inset-10 pointer-events-none overflow-hidden z-20">
                   
@@ -247,6 +249,7 @@ export default function Header() {
                     </svg>
                   </span>
                 </button>
+                </div>
               </div>
             )}
           </div>

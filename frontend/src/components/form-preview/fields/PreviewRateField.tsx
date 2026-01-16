@@ -10,7 +10,7 @@ interface PreviewFieldProps {
   errors: any;
   watch: ReturnType<typeof useForm>['watch'];
   setValue: ReturnType<typeof useForm>['setValue'];
-  questionNumber?: string;
+  questionNumber?: number;
   isPublic?: boolean;
 }
 
@@ -101,7 +101,7 @@ export const PreviewRateField: React.FC<PreviewFieldProps> = ({ field, register,
                 type="button"
                 onClick={() => handleStarClick(star)}
                 className="group focus:outline-none transition-transform hover:scale-110 p-1"
-                onMouseEnter={(e) => {
+                onMouseEnter={() => {
                    // Optional: Add hover preview logic if complex hover needed
                 }}
               >

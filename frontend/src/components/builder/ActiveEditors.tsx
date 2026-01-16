@@ -1,7 +1,6 @@
 "use client";
 
 import { ActiveEditor } from "@/types/collaboration";
-import { cn } from "@/lib/utils";
 
 interface ActiveEditorsProps {
   editors: ActiveEditor[];

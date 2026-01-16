@@ -80,7 +80,6 @@ export default function ResponsesPage({ params }: { params: { id: string } }) {
       <div className="space-y-6">
         {/* Field & Analysis Selector */}
         <FieldAnalyticsSelector
-          submissions={submissions}
           availableFields={availableFields}
           onAnalysisChange={handleAnalysisChange}
         />

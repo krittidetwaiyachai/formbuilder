@@ -142,47 +142,58 @@ const useFieldLabels = () => {
 
 // --- COMPONENTS ---
 
+// --- HELPERS ---
+const getFieldColorTheme = (type: FieldType) => {
+    switch (type) {
+        case FieldType.TEXT: 
+        case FieldType.TEXTAREA: return { border: 'border-blue-200', text: 'text-blue-600', bg: 'bg-blue-50', hover: 'group-hover:bg-blue-100', iconBg: 'bg-blue-100' };
+        
+        case FieldType.NUMBER: return { border: 'border-amber-200', text: 'text-amber-600', bg: 'bg-amber-50', hover: 'group-hover:bg-amber-100', iconBg: 'bg-amber-100' };
+        
+        case FieldType.EMAIL: 
+        case FieldType.PHONE: return { border: 'border-purple-200', text: 'text-purple-600', bg: 'bg-purple-50', hover: 'group-hover:bg-purple-100', iconBg: 'bg-purple-100' };
+        
+        case FieldType.DROPDOWN: 
+        case FieldType.RADIO: 
+        case FieldType.CHECKBOX: 
+        case FieldType.MATRIX: 
+        case FieldType.TABLE: return { border: 'border-pink-200', text: 'text-pink-600', bg: 'bg-pink-50', hover: 'group-hover:bg-pink-100', iconBg: 'bg-pink-100' };
+        
+        case FieldType.DATE: 
+        case FieldType.TIME: 
+        case FieldType.RATE: return { border: 'border-teal-200', text: 'text-teal-600', bg: 'bg-teal-50', hover: 'group-hover:bg-teal-100', iconBg: 'bg-teal-100' };
+        
+        case FieldType.FULLNAME:
+        case FieldType.ADDRESS: return { border: 'border-orange-200', text: 'text-orange-600', bg: 'bg-orange-50', hover: 'group-hover:bg-orange-100', iconBg: 'bg-orange-100' };
+        
+        case FieldType.HEADER:
+        case FieldType.PARAGRAPH: 
+        case FieldType.DIVIDER:
+        case FieldType.PAGE_BREAK:
+        case FieldType.GROUP: return { border: 'border-slate-200', text: 'text-slate-600', bg: 'bg-slate-50', hover: 'group-hover:bg-slate-100', iconBg: 'bg-slate-200' };
+        
+        case FieldType.SUBMIT: return { border: 'border-emerald-200', text: 'text-emerald-600', bg: 'bg-emerald-50', hover: 'group-hover:bg-emerald-100', iconBg: 'bg-emerald-100' };
+        
+        default: return { border: 'border-gray-200', text: 'text-gray-600', bg: 'bg-gray-50', hover: 'group-hover:bg-gray-100', iconBg: 'bg-gray-100' };
+    }
+};
+
+// --- COMPONENTS ---
+
 // 1. The Dragging Preview Card
 function SidebarDragPreview({ fieldType }: { fieldType: typeof allFields[0] }) {
     const Icon = fieldType.icon;
+    const theme = getFieldColorTheme(fieldType.type);
     
-    const getDragStyle = () => {
-        switch (fieldType.type) {
-            case FieldType.TEXT: 
-            case FieldType.TEXTAREA: return { borderColor: 'border-blue-500', iconColor: 'text-blue-500', bg: 'bg-blue-50' };
-            
-            case FieldType.NUMBER: return { borderColor: 'border-amber-500', iconColor: 'text-amber-500', bg: 'bg-amber-50' };
-            
-            case FieldType.EMAIL: 
-            case FieldType.PHONE: return { borderColor: 'border-purple-600', iconColor: 'text-purple-600', bg: 'bg-purple-50' };
-            
-            case FieldType.DROPDOWN: 
-            case FieldType.RADIO: 
-            case FieldType.CHECKBOX: 
-            case FieldType.MATRIX: return { borderColor: 'border-pink-500', iconColor: 'text-pink-500', bg: 'bg-pink-50' };
-            
-            case FieldType.DATE: 
-            case FieldType.TIME: 
-            case FieldType.RATE: return { borderColor: 'border-teal-500', iconColor: 'text-teal-500', bg: 'bg-teal-50' };
-            
-            case FieldType.FULLNAME:
-            case FieldType.ADDRESS: return { borderColor: 'border-orange-500', iconColor: 'text-orange-500', bg: 'bg-orange-50' };
-            
-            case FieldType.HEADER:
-            case FieldType.PARAGRAPH: return { borderColor: 'border-slate-600', iconColor: 'text-slate-600', bg: 'bg-slate-50' };
-            
-            case FieldType.SUBMIT: return { borderColor: 'border-emerald-500', iconColor: 'text-emerald-500', bg: 'bg-emerald-50' };
-            
-            default: return { borderColor: 'border-gray-300', iconColor: 'text-gray-400', bg: 'bg-gray-50' };
-        }
-    };
-
-    const dragStyle = getDragStyle();
+    // Mapping theme legacy check for sidebar preview specific styles if needed, 
+    // but reusing the extracted theme logic for consistency where possible or keeping distinct drag styles.
+    // We'll map the new theme structure to the old component's expectations or update the component.
+    // The old component used specific hardcoded returns. Let's keep using the new theme for consistency.
 
     const renderPreview = () => {
         const commonInput = "w-full h-9 bg-white rounded border border-gray-200 px-3 flex items-center text-xs text-gray-400 select-none";
         switch (fieldType.type) {
-            case FieldType.TEXT:
+             case FieldType.TEXT:
             case FieldType.EMAIL:
             case FieldType.FULLNAME:
                 return <div className={commonInput}>Type here...</div>;
@@ -193,7 +204,6 @@ function SidebarDragPreview({ fieldType }: { fieldType: typeof allFields[0] }) {
             case FieldType.PHONE:
                 return <div className={commonInput + " text-gray-300 tracking-wider"}>(555) 000-0000</div>;
             case FieldType.TEXTAREA:
-                // Condensed view for drag
                 return <div className={commonInput}>Long Text</div>;
             case FieldType.DROPDOWN:
                 return (
@@ -217,7 +227,7 @@ function SidebarDragPreview({ fieldType }: { fieldType: typeof allFields[0] }) {
                         <span className="text-xs">Option 1</span>
                     </div>
                 );
-                case FieldType.MATRIX:
+            case FieldType.MATRIX:
                 return (
                     <div className="space-y-2 opacity-50">
                         <div className="flex gap-2">
@@ -225,76 +235,94 @@ function SidebarDragPreview({ fieldType }: { fieldType: typeof allFields[0] }) {
                            <div className="w-1/4 h-2 bg-gray-200 rounded"></div>
                            <div className="w-1/4 h-2 bg-gray-200 rounded"></div>
                         </div>
-                        <div className="flex gap-2">
-                           <div className="w-4 h-4 rounded-full border border-gray-300"></div>
-                           <div className="w-4 h-4 rounded-full border border-gray-300"></div>
-                           <div className="w-4 h-4 rounded-full border border-gray-300"></div>
-                        </div>
                     </div>
                 );
-                case FieldType.CHECKBOX:
+            case FieldType.CHECKBOX:
                 return (
                     <div className="flex items-center gap-2 text-gray-500">
                         <div className="w-4 h-4 rounded border border-gray-300 bg-white shadow-sm"></div>
                         <span className="text-xs">Option 1</span>
                     </div>
                 );
-                case FieldType.RATE:
+            case FieldType.RATE:
                 return (
                     <div className="flex gap-1 text-gray-300">
                         {[1,2,3,4,5].map(i => <Star key={i} className="h-5 w-5 fill-current" />)}
                     </div>
                 );
-                case FieldType.HEADER:
+            case FieldType.HEADER:
                 return <div className="h-6 w-3/4 bg-gray-200 rounded animate-pulse"></div>;
-                case FieldType.PARAGRAPH:
+            case FieldType.PARAGRAPH:
                 return (
                     <div className="space-y-2">
                         <div className="h-2 w-full bg-gray-200 rounded"></div>
                         <div className="h-2 w-4/5 bg-gray-200 rounded"></div>
                     </div>
                 );
-                case FieldType.SUBMIT:
+            case FieldType.SUBMIT:
                 return <div className="w-24 h-9 bg-black rounded-md text-white flex items-center justify-center text-sm font-medium shadow-sm">Submit</div>;
-                case FieldType.PAGE_BREAK:
-                    return <div className="w-full border-b border-dashed border-gray-300 text-center text-[10px] text-gray-400">PAGE BREAK</div>;
-                default:
+            case FieldType.PAGE_BREAK:
+                return <div className="w-full border-b border-dashed border-gray-300 text-center text-[10px] text-gray-400">PAGE BREAK</div>;
+            default:
                 return <div className={commonInput}>{fieldType.type} Field</div>;
         }
     };
 
     return (
         <div
-            style={{
-                width: '320px',
-                height: 'auto',
-                opacity: 1,
-            }}
-            className={`bg-white rounded-xl shadow-2xl p-4 border-2 ${dragStyle.borderColor} ring-1 ring-gray-200 cursor-grabbing z-[9999] isolate`}
+            style={{ width: '300px' }}
+            className={`bg-white rounded-xl shadow-2xl p-4 border-2 ${theme.border} ring-4 ring-black/5 cursor-grabbing z-[9999] isolate`}
         >
             <div className="flex justify-center mb-3">
                 <div className="w-8 h-1 bg-gray-200 rounded-full" />
             </div>
-            <div className="flex items-center gap-2 mb-3">
-                <div className={`p-1.5 rounded-lg ${dragStyle.bg} ${dragStyle.iconColor}`}>
+            <div className={`flex items-center gap-2 mb-3 ${theme.text}`}>
+                <div className={`p-1.5 rounded-lg ${theme.bg}`}>
                         <Icon className="h-4 w-4" />
                 </div>
-                <div className="font-medium text-base truncate text-gray-900">{fieldType.label}</div>
+                <div className="font-bold text-base truncate text-gray-900">{fieldType.label}</div>
             </div>
-            <div>
-                {renderPreview()}
-            </div>
+            <div>{renderPreview()}</div>
         </div>
     );
 }
 
 // 2. The Visual Representation of the Button (Shared)
-const FieldTypeButtonVisual = ({ fieldType, isCollapsed }: { fieldType: any, isCollapsed?: boolean }) => {
+const FieldTypeButtonVisual = ({ fieldType, isCollapsed, variant = 'list' }: { fieldType: any, isCollapsed?: boolean, variant?: 'list' | 'grid' }) => {
     const labels = useFieldLabels();
     const Icon = fieldType.icon;
     const translatedLabel = labels[fieldType.label as keyof ReturnType<typeof useFieldLabels>] || fieldType.label;
+    const theme = getFieldColorTheme(fieldType.type);
+
+    if (variant === 'grid' && !isCollapsed) {
+        return (
+            <div className={`
+                group w-full aspect-[1.3] flex flex-col items-center justify-center p-3 
+                bg-white border hover:border-transparent rounded-xl transition-all duration-200
+                hover:shadow-lg hover:-translate-y-1 relative overflow-hidden
+                ${theme.border}
+            `}>
+                <div className={`
+                    absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300
+                    bg-gradient-to-br ${theme.bg} to-white pointer-events-none
+                `}/>
+                
+                <div className={`
+                    w-12 h-12 rounded-full flex items-center justify-center mb-2
+                    ${theme.bg} ${theme.text} group-hover:scale-110 transition-transform duration-300
+                `}>
+                    <Icon className="h-6 w-6" />
+                </div>
+                
+                <span className={`text-xs font-semibold text-center leading-tight z-10 text-gray-700 group-hover:text-gray-900`}>
+                    {translatedLabel}
+                </span>
+            </div>
+        );
+    }
+
     return (
-        <div className={`w-full flex items-center ${isCollapsed ? 'justify-center px-1' : 'px-3'} py-2 text-sm text-black bg-white hover:bg-gray-100 rounded-md border border-gray-400 transition-colors cursor-grab active:cursor-grabbing touch-none select-none`}>
+        <div className={`w-full flex items-center ${isCollapsed ? 'justify-center px-1' : 'px-3'} py-2 text-sm text-black bg-white hover:bg-gray-50 rounded-md border border-gray-400 transition-colors cursor-grab active:cursor-grabbing touch-none select-none`}>
             <Icon className={`h-4 w-4 ${isCollapsed ? '' : 'mr-2'}`} />
             {!isCollapsed && <span>{translatedLabel}</span>}
         </div>
@@ -302,7 +330,7 @@ const FieldTypeButtonVisual = ({ fieldType, isCollapsed }: { fieldType: any, isC
 }
 
 // 3. The Draggable Wrapper (Unchanged for standard fields)
-function FieldTypeButton({ fieldType, isCollapsed }: { fieldType: { type: FieldType; label: string; icon: any; options?: any; validation?: any }, isCollapsed?: boolean }) {
+function FieldTypeButton({ fieldType, isCollapsed, onFieldAdd, variant }: { fieldType: { type: FieldType; label: string; icon: any; options?: any; validation?: any }, isCollapsed?: boolean, onFieldAdd?: () => void, variant?: 'list' | 'grid' }) {
   const { addField } = useFormStore();
   const index = allFields.indexOf(fieldType as any); 
   
@@ -316,13 +344,61 @@ function FieldTypeButton({ fieldType, isCollapsed }: { fieldType: { type: FieldT
       order: 0, 
       options: fieldType.options,
     });
+    onFieldAdd?.();
   };
+
+  // For grid (mobile), disable drag completely. Just tap to add.
+  // We use custom pointer handling to support "Long Press & Release" without triggering context menu or getting lost.
+  const pointerRef = React.useRef<{ x: number, y: number } | null>(null);
+
+  if (variant === 'grid') {
+      return (
+          <div 
+            onPointerDown={(e) => {
+                pointerRef.current = { x: e.clientX, y: e.clientY };
+            }}
+            onPointerUp={(e) => {
+                if (!pointerRef.current) return;
+                const dist = Math.sqrt(
+                    Math.pow(e.clientX - pointerRef.current.x, 2) + 
+                    Math.pow(e.clientY - pointerRef.current.y, 2)
+                );
+                pointerRef.current = null;
+                
+                // If moved less than 10px, treat as click/tap (even if held for a long time)
+                if (dist < 10) {
+                    handleDoubleClick(e as any);
+                }
+            }}
+            onClick={(e) => {
+                // Fallback for mouse users or simple clicks if pointer events miss for some reason
+                // But we must prevent double-firing if pointerUp already handled it.
+                // Actually, let's rely just on PointerUp for consistency on hybrid devices.
+                // Standard click might be suppressed by context menu prevention anyway.
+                e.stopPropagation();
+            }}
+            onContextMenu={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            }}
+            className="cursor-pointer active:scale-95 transition-transform select-none"
+            style={{ 
+                WebkitTouchCallout: 'none',
+                WebkitUserSelect: 'none',
+                userSelect: 'none',
+                touchAction: 'pan-y' // Allow vertical scrolling, but we detect tap if no scroll occurred
+            }}
+          >
+              <FieldTypeButtonVisual fieldType={fieldType} isCollapsed={isCollapsed} variant={variant} />
+          </div>
+      );
+  }
 
   return (
     <div className="relative w-full">
       {/* 1. Underlying Visual */}
       <div className="relative z-0 select-none">
-          <FieldTypeButtonVisual fieldType={fieldType} isCollapsed={isCollapsed} />
+          <FieldTypeButtonVisual fieldType={fieldType} isCollapsed={isCollapsed} variant={variant} />
       </div>
 
       {/* 2. Draggable */}
@@ -333,16 +409,21 @@ function FieldTypeButton({ fieldType, isCollapsed }: { fieldType: { type: FieldT
               {...provided.draggableProps}
               {...provided.dragHandleProps}
               onDoubleClick={handleDoubleClick}
+              onClick={(e) => {
+                 if (!snapshot.isDragging) {
+                     handleDoubleClick(e);
+                 }
+              }}
               style={
                   snapshot.isDragging 
                   ? { ...provided.draggableProps.style, opacity: 0 } 
                   : { ...provided.draggableProps.style }
               }
-              className={`z-10 w-full h-full ${snapshot.isDragging ? 'opacity-0' : 'absolute inset-0'}`}
+              className={`z-10 w-full h-full touch-none ${snapshot.isDragging ? 'opacity-0' : 'absolute inset-0'}`}
           >
               <div className="w-full h-full"> 
                    <div className="opacity-0">
-                        <FieldTypeButtonVisual fieldType={fieldType} isCollapsed={isCollapsed} />
+                        <FieldTypeButtonVisual fieldType={fieldType} isCollapsed={isCollapsed} variant={variant} />
                    </div>
               </div>
           </div>
@@ -571,23 +652,36 @@ const TemplatePopup = ({ onClose }: { onClose: () => void }) => {
   );
 };
 
-function SidebarCategory({ category, isCollapsed }: { category: { name: string; fields: any[] }, isCollapsed: boolean }) {
+
+
+function SidebarCategory({ category, isCollapsed, onFieldAdd, variant }: { category: { name: string; fields: any[] }, isCollapsed: boolean, onFieldAdd?: () => void, variant?: 'list' | 'grid' }) {
   const [isOpen, setIsOpen] = useState(true);
   const labels = useFieldLabels();
   const translatedCategoryName = labels[category.name as keyof ReturnType<typeof useFieldLabels>] || category.name;
 
   if (isCollapsed) {
-    // Collapsed view: No header, just customized icon-only buttons in a stack (or maybe small separator?)
-    // Actually, let's keep the category box but minimal?
-    // Or just list buttons.
     return (
         <div className="space-y-2">
              <div className="w-full h-px bg-gray-200 my-1" />
              {category.fields.map((field) => (
-                <FieldTypeButton key={field.type} fieldType={field} isCollapsed={true} />
+                <FieldTypeButton key={field.type} fieldType={field} isCollapsed={true} onFieldAdd={onFieldAdd} variant="list" />
               ))}
         </div>
     )
+  }
+
+  // Mobile Grid Mode
+  if (variant === 'grid') {
+      return (
+          <div className="mb-6">
+              <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 px-1">{translatedCategoryName}</h3>
+              <div className="grid grid-cols-2 gap-3">
+                  {category.fields.map((field) => (
+                      <FieldTypeButton key={field.type} fieldType={field} onFieldAdd={onFieldAdd} variant="grid" />
+                  ))}
+              </div>
+          </div>
+      );
   }
 
   return (
@@ -607,7 +701,7 @@ function SidebarCategory({ category, isCollapsed }: { category: { name: string; 
       {isOpen && (
         <div className="p-2 space-y-2 bg-gray-50/50 border-t border-gray-100">
           {category.fields.map((field) => (
-            <FieldTypeButton key={field.type} fieldType={field} />
+            <FieldTypeButton key={field.type} fieldType={field} onFieldAdd={onFieldAdd} variant="list" />
           ))}
         </div>
       )}
@@ -615,17 +709,35 @@ function SidebarCategory({ category, isCollapsed }: { category: { name: string; 
   )
 }
 
-export default function FieldSidebar() {
+interface FieldSidebarProps {
+  onFieldSelected?: () => void;
+  className?: string;
+  variant?: 'list' | 'grid'; // Explicit visual variant
+}
+
+export default function FieldSidebar({ onFieldSelected, className, variant }: FieldSidebarProps) {
   const [isTemplateOpen, setIsTemplateOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { t } = useTranslation();
 
+  // If className is provided (typical for mobile drawer), we might default to 'grid' if variant not specified, or just trust the prop.
+  // Actually, checking if className exists is a loose way to detect mobile. Explicit prop is better.
+  const visualVariant = variant || (className ? 'grid' : 'list');
+
+  // Helper to intercept add field calls
+  const handleFieldSelect = () => {
+      if (onFieldSelected) {
+          onFieldSelected();
+      }
+  };
+
   return (
     <div 
-      className={`bg-white border-r border-gray-200 flex flex-col h-full shadow-sm relative z-20 transition-all duration-300 ease-in-out ${isCollapsed ? 'w-16' : 'w-[300px]'}`}
+      className={className || `bg-white border-r border-gray-200 flex flex-col h-full shadow-sm relative z-20 transition-all duration-300 ease-in-out ${isCollapsed ? 'w-16' : 'w-[300px]'}`}
     >
 
-      {/* Floating Toggle Button - Centered Vertically on Sidebar Edge */}
+      {/* Floating Toggle Button - Desktop Only */}
+      {!className && (
       <button
         onClick={() => setIsCollapsed(!isCollapsed)}
         className="absolute -right-4 top-1/2 transform -translate-y-1/2 bg-white border border-gray-200 shadow-md rounded-full p-1.5 text-gray-400 hover:text-gray-600 hover:scale-110 transition-all z-50 flex items-center justify-center w-8 h-8"
@@ -633,12 +745,13 @@ export default function FieldSidebar() {
       >
         {isCollapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
       </button>
+      )}
 
       <div className={`p-4 border-b border-gray-200 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} bg-white relative`}>
         {!isCollapsed && <h2 className="font-semibold text-gray-800 whitespace-nowrap overflow-hidden">{t('builder.fields')}</h2>}
       </div>
 
-       {/* Template Section Button - Moved to Top */}
+       {/* Template Section Button */}
        <div className={`border-b border-gray-100 bg-gray-50/50 ${isCollapsed ? 'p-2' : 'px-4 py-4'}`}>
             {isCollapsed ? (
                 <button
@@ -646,82 +759,39 @@ export default function FieldSidebar() {
                     className="w-full flex items-center justify-center p-2 rounded-lg bg-black text-white hover:bg-zinc-800 transition-colors group relative overflow-hidden"
                     title="Field Bundles"
                 >
-                    {/* Compact Button Effects */}
-                    <div className="absolute inset-0 bg-white/10 rounded-lg blur-sm group-hover:bg-white/20 transition-colors animate-pulse" />
-                     <div className="absolute -inset-[1px] rounded-lg overflow-hidden">
-                        <div className="absolute top-[50%] left-[50%] w-[200%] h-[200%] -translate-x-1/2 -translate-y-1/2 bg-[conic-gradient(transparent_0deg,transparent_270deg,white_360deg)] opacity-50 animate-spin-slow" />
-                    </div>
-                    
-                    <div className="relative z-10 p-1">
-                         <Layers className="h-5 w-5 animate-wiggle" />
-                    </div>
+                     <div className="absolute inset-0 bg-white/10 rounded-lg blur-sm group-hover:bg-white/20 transition-colors animate-pulse" />
+                     <div className="relative z-10 p-1"><Layers className="h-5 w-5 animate-wiggle" /></div>
                 </button>
             ) : (
-                <div className="relative">
-                  <button
-                      onClick={() => setIsTemplateOpen(!isTemplateOpen)}
-                      className="relative w-full group isolate"
-                  >
-                      {/* Glowing Backdrop (Pulse) */}
-                      <div className="absolute inset-0 bg-white/20 rounded-xl blur-xl group-hover:bg-white/40 transition-colors duration-500 animate-pulse" />
-  
-                      {/* Running Border Light (Spinning Conic Gradient) - FASTER & BRIGHTER */}
-                      <div className="absolute -inset-[2px] rounded-xl overflow-hidden pb-px"> {/* Increased inset for thicker border */}
-                          <div className="absolute top-[50%] left-[50%] w-[200%] h-[200%] -translate-x-1/2 -translate-y-1/2 bg-[conic-gradient(transparent_0deg,transparent_270deg,white_360deg)] opacity-100 shadow-[0_0_30px_rgba(255,255,255,0.8)] animate-spin-slow" />
-                      </div>
-  
-                      {/* Button Content Container */}
-                      <div className="relative w-full bg-black rounded-[10px] px-4 py-3 flex items-center justify-between z-10 border border-transparent group-hover:bg-zinc-950 overflow-hidden">
-                          {/* Shimmer on Background */}
-                           <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-30 pointer-events-none" />
-                          
-                          {/* Sweeping Shine Effect (NEW) */}
-                          <div className="absolute inset-0 -translate-x-full group-hover:animate-shimmer bg-gradient-to-r from-transparent via-white/10 to-transparent z-10 pointer-events-none" />
-  
-                          {/* Floating Floating Particles (Loop) - Brighter */}
-                          {/* Floating Floating Particles (Loop) - Brighter */}
-                          <div className="absolute top-1 right-8 w-1 h-1 bg-white rounded-full animate-pulse-ring opacity-80" style={{ animationDelay: '0.2s', animationDuration: '2.5s' }} />
-                          <div className="absolute bottom-2 right-12 w-0.5 h-0.5 bg-white rounded-full animate-pulse-ring opacity-60" style={{ animationDelay: '1.5s', animationDuration: '3s' }} />
-                          <div className="absolute top-4 left-10 w-0.5 h-0.5 bg-white rounded-full animate-pulse-ring opacity-50" style={{ animationDelay: '0.5s', animationDuration: '2s' }} />
-                          <div className="absolute bottom-1 left-20 w-1 h-1 bg-white rounded-full animate-pulse-ring opacity-70" style={{ animationDelay: '0.8s', animationDuration: '2.2s' }} />
-                          <div className="absolute top-1/2 right-2 w-0.5 h-0.5 bg-white rounded-full animate-pulse-ring opacity-40" style={{ animationDelay: '1.2s', animationDuration: '1.8s' }} />
-                          
-                          {/* More Particles */}
-                          <div className="absolute top-2 left-1/3 w-0.5 h-0.5 bg-white rounded-full animate-pulse-ring opacity-40" style={{ animationDelay: '0.3s', animationDuration: '2s' }} />
-                          <div className="absolute bottom-4 right-1/4 w-0.5 h-0.5 bg-white rounded-full animate-pulse-ring opacity-60" style={{ animationDelay: '1.0s', animationDuration: '2.5s' }} />
-                          <div className="absolute top-8 left-2 w-1 h-1 bg-white rounded-full animate-pulse-ring opacity-30" style={{ animationDelay: '0.7s', animationDuration: '3s' }} />
-                          <div className="absolute bottom-1/2 left-1/4 w-0.5 h-0.5 bg-white rounded-full animate-pulse-ring opacity-50" style={{ animationDelay: '0.1s', animationDuration: '1.5s' }} />
-                          <div className="absolute top-1/4 right-10 w-0.5 h-0.5 bg-white rounded-full animate-pulse-ring opacity-70" style={{ animationDelay: '1.1s', animationDuration: '1.2s' }} />
-  
-                          <div className="flex items-center gap-3 z-20">
-                              {/* Icon Animation: Scale & Rotate & Glow */}
-                              <div className="relative group-hover:scale-125 group-hover:-rotate-12 transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]">
-                                  <Layers className="relative w-5 h-5 text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.8)] animate-wiggle" />
-                              </div>
-  
-                              {/* Text with Slide Effect */}
-                              <div className="flex flex-col items-start gap-0.5">
-                                  <span className="text-sm font-bold text-white tracking-wide drop-shadow-sm">{t('builder.field_bundles')}</span>
-                                  <span className="text-[10px] text-gray-400 font-medium tracking-wider uppercase group-hover:text-white transition-colors">{t('builder.bundles_subtitle')}</span>
-                              </div>
-                          </div>
-  
-                           {/* Arrow Animation */}
-                           <div className="relative z-20">
-                              <ChevronRight className="w-5 h-5 text-gray-500 group-hover:text-white group-hover:translate-x-1 group-hover:scale-110 transition-all duration-300 shadow-sm" />
-                           </div>
-                      </div>
-                  </button>
-                  
-                  {/* Modal (No longer absolute relative to button, but fixed to screen) */}
-                  {/* Modal (No longer absolute relative to button, but fixed to screen) */}
-                  <AnimatePresence>
-                      {isTemplateOpen && (
-                          <TemplatePopup onClose={() => setIsTemplateOpen(false)} />
-                      )}
-                  </AnimatePresence>
-              </div>
-         )}
+                <button
+                    onClick={() => setIsTemplateOpen(!isTemplateOpen)}
+                    className="relative w-full group isolate"
+                >
+                    <div className="absolute inset-0 bg-white/20 rounded-xl blur-xl group-hover:bg-white/40 transition-colors duration-500 animate-pulse" />
+                    <div className="absolute -inset-[2px] rounded-xl overflow-hidden pb-px">
+                        <div className="absolute top-[50%] left-[50%] w-[200%] h-[200%] -translate-x-1/2 -translate-y-1/2 bg-[conic-gradient(transparent_0deg,transparent_270deg,white_360deg)] opacity-100 shadow-[0_0_30px_rgba(255,255,255,0.8)] animate-spin-slow" />
+                    </div>
+                    <div className="relative w-full bg-black rounded-[10px] px-4 py-3 flex items-center justify-between z-10 border border-transparent group-hover:bg-zinc-950 overflow-hidden">
+                         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-30 pointer-events-none" />
+                        <div className="absolute inset-0 -translate-x-full group-hover:animate-shimmer bg-gradient-to-r from-transparent via-white/10 to-transparent z-10 pointer-events-none" />
+                        <div className="flex items-center gap-3 z-20">
+                            <div className="relative group-hover:scale-125 group-hover:-rotate-12 transition-all duration-300">
+                                <Layers className="relative w-5 h-5 text-white animate-wiggle" />
+                            </div>
+                            <div className="flex flex-col items-start gap-0.5">
+                                <span className="text-sm font-bold text-white tracking-wide">{t('builder.field_bundles')}</span>
+                                <span className="text-[10px] text-gray-400 font-medium tracking-wider uppercase group-hover:text-white transition-colors">{t('builder.bundles_subtitle')}</span>
+                            </div>
+                        </div>
+                         <div className="relative z-20">
+                            <ChevronRight className="w-5 h-5 text-gray-500 group-hover:text-white group-hover:translate-x-1 group-hover:scale-110 transition-all duration-300 shadow-sm" />
+                         </div>
+                    </div>
+                </button>
+            )}
+            <AnimatePresence>
+                {isTemplateOpen && (<TemplatePopup onClose={() => setIsTemplateOpen(false)} />)}
+            </AnimatePresence>
        </div>
  
        <div className={`flex-1 overflow-y-auto ${isCollapsed ? 'p-2' : 'p-4'} space-y-6 scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-transparent`}>
@@ -737,7 +807,6 @@ export default function FieldSidebar() {
                      {...provided.dragHandleProps}
                      style={{
                          ...provided.draggableProps.style,
-                         // transitionDuration: '0s', // Instant drop animation
                      }}
                   >
                       <SidebarDragPreview fieldType={fieldType} />
@@ -749,10 +818,10 @@ export default function FieldSidebar() {
               <div 
                  ref={provided.innerRef} 
                  {...provided.droppableProps}
-                 className="space-y-6"
+                 className={visualVariant === 'list' ? "space-y-6" : "space-y-8 pb-10"}
               >
                  {fieldCategories.map((category) => (
-                     <SidebarCategory key={category.name} category={category} isCollapsed={isCollapsed} />
+                     <SidebarCategory key={category.name} category={category} isCollapsed={isCollapsed} onFieldAdd={handleFieldSelect} variant={visualVariant} />
                  ))}
                  {provided.placeholder}
              </div>

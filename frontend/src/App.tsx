@@ -8,6 +8,31 @@ import ActivityPage from './pages/ActivityPage';
 import AnalyticsPage from './pages/AnalyticsPage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import ErrorPage from './pages/ErrorPage';
+import { useInactivityLogout } from './hooks/useInactivityLogout';
+import { useSocketLogout } from './hooks/useSocketLogout';
+
+function AppContent() {
+  useInactivityLogout();
+  useSocketLogout();
+
+  return (
+    <Routes>
+      <Route path="/forms/:id/view" element={<PublicForm />} />
+      <Route path="/" element={<Layout />}>
+        <Route index element={<Navigate to="/dashboard" />} />
+        <Route path="dashboard" element={<Dashboard />} />
+        
+        <Route element={<ProtectedRoute />}>
+           <Route path="forms/:id/builder" element={<FormEdit />} />
+           <Route path="forms/:id/activity" element={<ActivityPage />} />
+           <Route path="forms/:id/analytics" element={<AnalyticsPage />} />
+        </Route>
+      </Route>
+      <Route path="forms/:id/preview" element={<FormPreview />} />
+      <Route path="*" element={<ErrorPage code={404} />} />
+    </Routes>
+  );
+}
 
 function App() {
   return (
@@ -17,25 +42,11 @@ function App() {
         v7_relativeSplatPath: true,
       }}
     >
-      <Routes>
-        <Route path="/forms/:id/view" element={<PublicForm />} />
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Navigate to="/dashboard" />} />
-          <Route path="dashboard" element={<Dashboard />} />
-          
-          {/* Protected Routes */}
-          <Route element={<ProtectedRoute />}>
-             <Route path="forms/:id/builder" element={<FormEdit />} />
-             <Route path="forms/:id/activity" element={<ActivityPage />} />
-             <Route path="forms/:id/analytics" element={<AnalyticsPage />} />
-          </Route>
-        </Route>
-        <Route path="forms/:id/preview" element={<FormPreview />} />
-        <Route path="*" element={<ErrorPage code={404} />} />
-      </Routes>
+      <AppContent />
     </BrowserRouter>
   );
 }
 
 export default App;
+
 

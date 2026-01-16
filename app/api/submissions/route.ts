@@ -1,14 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { dataStore } from "@/lib/data-store";
-import { FormSubmission } from "@/types/form";
+import { Form, FormResponse } from "@/types";
 
-// GET /api/submissions - Get all submissions (optionally filtered by formId)
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
     const formId = searchParams.get("formId");
     
-    const submissions = dataStore.getAllSubmissions(formId || undefined);
+    let submissions = dataStore.submissions;
+    
+    if (formId) {
+      submissions = submissions.filter((s: FormResponse) => s.formId === formId);
+    }
     
     return NextResponse.json({ submissions }, { status: 200 });
   } catch (error) {
@@ -20,12 +23,10 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST /api/submissions - Create a new submission
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     
-    // Validate required fields
     if (!body.formId) {
       return NextResponse.json(
         { error: "formId is required" },
@@ -33,8 +34,7 @@ export async function POST(request: NextRequest) {
       );
     }
     
-    // Check if form exists
-    const form = dataStore.getForm(body.formId);
+    const form = dataStore.forms.find((f: Form) => f.id === body.formId);
     if (!form) {
       return NextResponse.json(
         { error: "Form not found" },
@@ -42,15 +42,13 @@ export async function POST(request: NextRequest) {
       );
     }
     
-    // Check if form is published
-    if (form.status !== "published") {
+    if (form.status !== "PUBLISHED") {
       return NextResponse.json(
         { error: "Form is not published" },
         { status: 400 }
       );
     }
     
-    // Detect device type from user agent
     const userAgent = request.headers.get("user-agent") || "";
     let device: "desktop" | "tablet" | "mobile" = "desktop";
     if (/mobile|android|iphone|ipod/i.test(userAgent)) {
@@ -59,20 +57,24 @@ export async function POST(request: NextRequest) {
       device = "tablet";
     }
     
-    const newSubmission: FormSubmission = {
+    const newSubmission: FormResponse = {
       id: body.id || `sub-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
       formId: body.formId,
-      data: body.data || {},
       submittedAt: new Date().toISOString(),
-      device: body.device || device,
+      answers: body.answers || [],
     };
     
-    const submission = dataStore.createSubmission(newSubmission);
+    dataStore.submissions.push(newSubmission);
     
-    // Increment form view count (submission implies a view)
-    dataStore.incrementFormView(body.formId);
+    const formIndex = dataStore.forms.findIndex((f: Form) => f.id === body.formId);
+    if (formIndex >= 0) {
+      dataStore.forms[formIndex] = {
+        ...dataStore.forms[formIndex],
+        responseCount: (dataStore.forms[formIndex].responseCount || 0) + 1,
+      };
+    }
     
-    return NextResponse.json({ submission }, { status: 201 });
+    return NextResponse.json({ submission: newSubmission }, { status: 201 });
   } catch (error) {
     console.error("Error creating submission:", error);
     return NextResponse.json(
@@ -81,4 +83,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-

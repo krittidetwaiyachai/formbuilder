@@ -14,5 +14,6 @@ export default {
   "auth.google_failed": "Google Login ไม่สำเร็จ",
   "auth.google_error": "ไม่สามารถเข้าสู่ระบบด้วย Google ได้",
   "auth.error": "เกิดข้อผิดพลาด",
-  "auth.error_message": "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง"
+  "auth.error_message": "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
+  "auth.logout": "ออกจากระบบ"
 };

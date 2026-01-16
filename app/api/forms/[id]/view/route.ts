@@ -1,27 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
 import { dataStore } from "@/lib/data-store";
+import { Form } from "@/types";
 
-// POST /api/forms/[id]/view - Increment form view count
 export async function POST(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const form = dataStore.getForm(params.id);
+    const formIndex = dataStore.forms.findIndex((f: Form) => f.id === params.id);
     
-    if (!form) {
+    if (formIndex === -1) {
       return NextResponse.json(
         { error: "Form not found" },
         { status: 404 }
       );
     }
     
-    dataStore.incrementFormView(params.id);
-    
-    const updatedForm = dataStore.getForm(params.id);
+    dataStore.forms[formIndex] = {
+      ...dataStore.forms[formIndex],
+      viewCount: (dataStore.forms[formIndex].viewCount || 0) + 1,
+    };
     
     return NextResponse.json(
-      { form: updatedForm, message: "View count incremented" },
+      { form: dataStore.forms[formIndex], message: "View count incremented" },
       { status: 200 }
     );
   } catch (error) {
@@ -32,4 +33,3 @@ export async function POST(
     );
   }
 }
-

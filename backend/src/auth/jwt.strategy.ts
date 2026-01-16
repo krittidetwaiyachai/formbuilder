@@ -17,12 +17,21 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: any) {
+  async validate(payload: { sub: string; sessionToken?: string }) {
     const user = await this.authService.validateUser(payload.sub);
     if (!user) {
       throw new UnauthorizedException();
     }
+
+    if (payload.sessionToken) {
+      const isValidSession = await this.authService.validateSession(payload.sub, payload.sessionToken);
+      if (!isValidSession) {
+        throw new UnauthorizedException({ message: 'Session expired', code: 'SESSION_EXPIRED' });
+      }
+    }
+
     return user;
   }
 }
+
 

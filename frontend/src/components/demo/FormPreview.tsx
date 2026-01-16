@@ -1,35 +1,35 @@
 "use client";
 
 import { MOCK_FORM_ELEMENTS } from "@/lib/mock-data";
-import { FormElement } from "@/types/form";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { FieldType } from "@/types";
 import { Button } from "@/components/ui/button";
-import { Star } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Card, CardContent } from "@/components/ui/card"; // Added back Card and CardContent
+import { Star } from "lucide-react"; // Added back Star
 
 export default function FormPreview() {
-  const renderElement = (element: FormElement) => {
+  const renderElement = (element: any) => {
     switch (element.type) {
-      case "heading":
+      case FieldType.HEADER:
         return (
           <h2 className="text-3xl font-bold text-foreground mb-2">
             {element.content}
           </h2>
         );
 
-      case "paragraph":
+      case FieldType.PARAGRAPH:
         return (
           <p className="text-muted-foreground mb-2">{element.content}</p>
         );
 
-      case "text":
-      case "email":
-      case "number":
+      case FieldType.TEXT:
+      case FieldType.EMAIL:
+      case FieldType.NUMBER:
         return (
           <div className="space-y-2">
             <Label htmlFor={element.id}>
@@ -40,7 +40,7 @@ export default function FormPreview() {
             </Label>
             <Input
               id={element.id}
-              type={element.type}
+              type={element.type === FieldType.EMAIL ? "email" : element.type === FieldType.NUMBER ? "number" : "text"}
               placeholder={element.placeholder}
             />
             {element.helperText && (
@@ -51,7 +51,7 @@ export default function FormPreview() {
           </div>
         );
 
-      case "textarea":
+      case FieldType.TEXTAREA:
         return (
           <div className="space-y-2">
             <Label htmlFor={element.id}>
@@ -73,7 +73,7 @@ export default function FormPreview() {
           </div>
         );
 
-      case "select":
+      case FieldType.DROPDOWN:
         return (
           <div className="space-y-2">
             <Label htmlFor={element.id}>
@@ -82,13 +82,17 @@ export default function FormPreview() {
                 <span className="text-destructive ml-1">*</span>
               )}
             </Label>
-            <Select id={element.id}>
-              <option value="">Select an option</option>
-              {element.options?.map((opt) => (
-                <option key={opt.id} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
+            <Select>
+              <SelectTrigger id={element.id}>
+                <SelectValue placeholder="Select an option" />
+              </SelectTrigger>
+              <SelectContent>
+                {element.options?.map((opt: any) => (
+                  <SelectItem key={opt.id} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
             </Select>
             {element.helperText && (
               <p className="text-sm text-muted-foreground">
@@ -98,7 +102,7 @@ export default function FormPreview() {
           </div>
         );
 
-      case "checkbox":
+      case FieldType.CHECKBOX:
         return (
           <div className="space-y-3">
             <Label>
@@ -108,7 +112,7 @@ export default function FormPreview() {
               )}
             </Label>
             <div className="space-y-2">
-              {element.options?.map((opt) => (
+              {element.options?.map((opt: any) => (
                 <div key={opt.id} className="flex items-center space-x-2">
                   <Checkbox id={opt.id} />
                   <Label
@@ -128,7 +132,7 @@ export default function FormPreview() {
           </div>
         );
 
-      case "radio":
+      case FieldType.RADIO:
         return (
           <div className="space-y-3">
             <Label>
@@ -138,7 +142,7 @@ export default function FormPreview() {
               )}
             </Label>
             <RadioGroup name={element.id}>
-              {element.options?.map((opt) => (
+              {element.options?.map((opt: any) => (
                 <div key={opt.id} className="flex items-center space-x-2">
                   <RadioGroupItem value={opt.value} id={opt.id} />
                   <Label
@@ -158,7 +162,7 @@ export default function FormPreview() {
           </div>
         );
 
-      case "date":
+      case FieldType.DATE:
         return (
           <div className="space-y-2">
             <Label htmlFor={element.id}>
@@ -176,7 +180,7 @@ export default function FormPreview() {
           </div>
         );
 
-      case "file":
+      case FieldType.FILE:
         return (
           <div className="space-y-2">
             <Label htmlFor={element.id}>
@@ -194,7 +198,7 @@ export default function FormPreview() {
           </div>
         );
 
-      case "rating":
+      case FieldType.RATE:
         return (
           <div className="space-y-2">
             <Label>
@@ -222,10 +226,10 @@ export default function FormPreview() {
           </div>
         );
 
-      default:
-        return null;
-    }
-  };
+        default:
+          return null;
+      }
+    };
 
   return (
     <Card className="w-full max-w-2xl mx-auto shadow-lg">

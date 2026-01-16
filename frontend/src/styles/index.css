@@ -1,0 +1,550 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Sarabun', 'Leelawadee UI', sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light;
+  color: #1a1a1a;
+  background-color: #ffffff;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: #ffffff;
+  color: #1a1a1a;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+* {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.scrollbar-visible {
+  -ms-overflow-style: auto !important;
+  scrollbar-width: auto !important;
+}
+
+.scrollbar-visible::-webkit-scrollbar {
+  display: block !important;
+  width: 8px !important;
+  height: 8px !important;
+}
+
+.scrollbar-visible::-webkit-scrollbar-track {
+  background: #f9fafb;
+  border-radius: 4px;
+}
+
+.scrollbar-visible::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.scrollbar-visible::-webkit-scrollbar-thumb:hover {
+  background-color: #9ca3af;
+}
+
+[data-dnd-kit-drag-overlay] {
+  position: fixed !important;
+  z-index: 99999 !important;
+  pointer-events: none !important;
+}
+
+[data-dnd-kit-drag-overlay] * {
+  pointer-events: none !important;
+}
+
+.glass-card-nav {
+  @apply bg-white/80 backdrop-blur-md;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05),
+    0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+.loader-container {
+  position: relative;
+  display: inline-block;
+}
+
+.loader {
+  transform: rotateZ(45deg);
+  perspective: 1000px;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  color: #000;
+}
+
+.loader:before,
+.loader:after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: inherit;
+  height: inherit;
+  border-radius: 50%;
+  transform: rotateX(70deg);
+  animation: 1s spin linear infinite;
+}
+
+.loader:after {
+  color: #6366f1;
+  transform: rotateY(70deg);
+  animation-delay: .4s;
+}
+
+@keyframes spin {
+  0%,
+  100% {
+    box-shadow: .2em 0px 0 0px currentcolor;
+  }
+  12% {
+    box-shadow: .2em .2em 0 0 currentcolor;
+  }
+  25% {
+    box-shadow: 0 .2em 0 0px currentcolor;
+  }
+  37% {
+    box-shadow: -.2em .2em 0 0 currentcolor;
+  }
+  50% {
+    box-shadow: -.2em 0 0 0 currentcolor;
+  }
+  62% {
+    box-shadow: -.2em -.2em 0 0 currentcolor;
+  }
+  75% {
+    box-shadow: 0px -.2em 0 0 currentcolor;
+  }
+  87% {
+    box-shadow: .2em -.2em 0 0 currentcolor;
+  }
+}
+
+.liquid-fab {
+  --color-one: #ffffff;
+  --color-two: #1a1a1a;
+  --color-three: #ffffff80;
+  --color-four: #00000080;
+  --color-five: #4a4a4a40;
+  --time-animation: 2s;
+  --size: 1;
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  transform: scale(var(--size)) rotate(var(--rotation, 0deg));
+  transition: transform 0.3s ease-in-out;
+  box-shadow:
+    0 0 25px 0 var(--color-three),
+    0 20px 50px 0 var(--color-four);
+  animation: colorize calc(var(--time-animation) * 3) ease-in-out infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.liquid-fab::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border-top: solid 1px var(--color-one);
+  border-bottom: solid 1px var(--color-two);
+  background: linear-gradient(180deg, var(--color-five), var(--color-four));
+  box-shadow:
+    inset 0 10px 10px 0 var(--color-three),
+    inset 0 -10px 10px 0 var(--color-four);
+}
+
+.liquid-fab .box {
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(
+    180deg,
+    var(--color-one) 30%,
+    var(--color-two) 70%
+  );
+  mask: url(#clipping);
+  -webkit-mask: url(#clipping);
+}
+
+.liquid-fab svg {
+  position: absolute;
+}
+
+.liquid-fab svg #clipping {
+  filter: contrast(15);
+  animation: roundness calc(var(--time-animation) / 2) linear infinite;
+}
+
+.liquid-fab svg #clipping polygon {
+  filter: blur(7px);
+}
+
+.liquid-fab svg #clipping polygon:nth-child(1) {
+  transform-origin: 75% 25%;
+  transform: rotate(90deg);
+}
+
+.liquid-fab svg #clipping polygon:nth-child(2) {
+  transform-origin: 50% 50%;
+  animation: rotation var(--time-animation) linear infinite reverse;
+}
+
+.liquid-fab svg #clipping polygon:nth-child(3) {
+  transform-origin: 50% 60%;
+  animation: rotation var(--time-animation) linear infinite;
+  animation-delay: calc(var(--time-animation) / -3);
+}
+
+.liquid-fab svg #clipping polygon:nth-child(4) {
+  transform-origin: 40% 40%;
+  animation: rotation var(--time-animation) linear infinite reverse;
+}
+
+.liquid-fab svg #clipping polygon:nth-child(5) {
+  transform-origin: 40% 40%;
+  animation: rotation var(--time-animation) linear infinite reverse;
+  animation-delay: calc(var(--time-animation) / -2);
+}
+
+.liquid-fab svg #clipping polygon:nth-child(6) {
+  transform-origin: 60% 40%;
+  animation: rotation var(--time-animation) linear infinite;
+}
+
+.liquid-fab svg #clipping polygon:nth-child(7) {
+  transform-origin: 60% 40%;
+  animation: rotation var(--time-animation) linear infinite;
+  animation-delay: calc(var(--time-animation) / -1.5);
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes roundness {
+  0% {
+    filter: contrast(15);
+  }
+  20% {
+    filter: contrast(3);
+  }
+  40% {
+    filter: contrast(3);
+  }
+  60% {
+    filter: contrast(15);
+  }
+  100% {
+    filter: contrast(15);
+  }
+}
+
+@keyframes colorize {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+  20% {
+    filter: hue-rotate(-30deg);
+  }
+  40% {
+    filter: hue-rotate(-60deg);
+  }
+  60% {
+    filter: hue-rotate(-90deg);
+  }
+  80% {
+    filter: hue-rotate(-45deg);
+  }
+  100% {
+    filter: hue-rotate(0deg);
+  }
+}
+
+.speed-dial-label {
+  position: absolute;
+  right: 100%;
+  margin-right: 8px;
+  white-space: nowrap;
+  padding: 4px 10px;
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 6px;
+  pointer-events: none;
+  animation: labelFadeOut 3s ease-out forwards;
+}
+
+@keyframes labelFadeOut {
+  0% { opacity: 1; transform: translateX(0); }
+  60% { opacity: 1; transform: translateX(0); }
+  100% { opacity: 0; transform: translateX(10px); }
+}
+
+.rich-text-editor-wrapper.snow .quill {
+  @apply bg-white rounded-md border border-gray-300 overflow-hidden;
+}
+
+.rich-text-editor-wrapper.borderless .ql-toolbar {
+  @apply border-none bg-transparent px-0 !important;
+  border: none !important;
+}
+
+.rich-text-editor-wrapper.snow .ql-toolbar {
+  @apply border-b border-gray-200 bg-gray-50;
+}
+
+.rich-text-editor-wrapper.snow .ql-container {
+  @apply min-h-[50px];
+}
+
+.rich-text-editor-wrapper.snow .ql-editor {
+  @apply min-h-[50px];
+}
+
+.rich-text-editor-wrapper.borderless,
+.rich-text-editor-wrapper.borderless .quill,
+.rich-text-editor-wrapper.snow.borderless .quill,
+.rich-text-editor-wrapper.borderless .ql-container,
+.rich-text-editor-wrapper.snow.borderless .ql-container.ql-snow,
+.rich-text-editor-wrapper.borderless .ql-editor {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  border-radius: 0 !important;
+  outline: none !important;
+  padding: 0 !important;
+}
+
+.rich-text-editor-wrapper.borderless .ql-container.ql-snow,
+.rich-text-editor-wrapper.borderless .ql-editor {
+  text-transform: inherit !important;
+  font-family: inherit !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+  font-weight: inherit !important;
+  min-height: 0 !important;
+  overflow: visible !important;
+  text-align: inherit !important;
+}
+
+.rich-text-editor-wrapper.borderless .ql-editor h1,
+.rich-text-editor-wrapper.borderless .ql-editor h2,
+.rich-text-editor-wrapper.borderless .ql-editor p {
+    font-weight: inherit;
+    line-height: inherit !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.rich-text-editor-wrapper.bubble .quill {
+  @apply overflow-visible;
+}
+
+@keyframes slideDownFade {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-down {
+  animation: slideDownFade 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.ql-toolbar button {
+  @apply rounded-md text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 transition-colors duration-200;
+}
+
+.ql-toolbar button.ql-active {
+  @apply text-indigo-600 bg-indigo-50;
+}
+
+.ql-toolbar .ql-picker-label {
+  @apply text-gray-500 hover:text-indigo-600 flex items-center outline-none;
+  white-space: nowrap !important;
+}
+
+.ql-toolbar .ql-picker-label.ql-active {
+  @apply text-indigo-600;
+}
+
+.ql-toolbar .ql-picker-options {
+  @apply bg-white border border-gray-100 shadow-xl rounded-xl p-1 mt-2 !important;
+  min-width: 150px !important;
+  z-index: 50 !important;
+}
+
+.ql-toolbar .ql-picker-item {
+  @apply text-sm text-gray-600 px-3 py-2 rounded-lg cursor-pointer hover:bg-indigo-50 hover:text-indigo-600 transition-colors duration-150 !important;
+}
+
+.ql-toolbar .ql-picker-item.ql-selected {
+  @apply bg-indigo-50 text-indigo-600 font-medium !important;
+}
+
+.ql-toolbar button {
+    height: 28px !important;
+    width: 28px !important;
+    padding: 4px !important;
+}
+
+.ql-toolbar.ql-snow .ql-picker-label {
+    padding-left: 8px !important;
+    padding-right: 24px !important;
+}
+
+.ql-toolbar.ql-snow .ql-picker-label::before {
+    position: relative !important;
+    top: auto !important;
+    margin-right: 4px !important;
+}
+
+.rich-text-editor-wrapper.bubble .ql-container {
+  @apply text-[length:inherit] font-[inherit] min-h-0 !important;
+  font-size: inherit !important;
+}
+
+.rich-text-editor-wrapper.bubble .ql-editor {
+  @apply min-h-0 p-0 overflow-visible !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+}
+
+.rich-text-editor-wrapper.bubble .ql-editor p {
+  @apply m-0;
+}
+
+.rich-text-editor-wrapper.snow .ql-editor::-webkit-scrollbar {
+  width: 8px;
+}
+
+.rich-text-editor-wrapper.snow .ql-editor::-webkit-scrollbar-track {
+  @apply bg-gray-100;
+}
+
+.rich-text-editor-wrapper.snow .ql-editor::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 rounded-full;
+}
+
+.ql-editor, .ql-container {
+  font-family: 'Sarabun', 'Prompt', 'Leelawadee UI', 'Tahoma', 'Noto Sans Thai', sans-serif !important;
+  font-synthesis: style weight !important;
+  -webkit-font-smoothing: antialiased;
+}
+
+.ql-editor strong {
+  font-weight: 700 !important;
+  font-family: inherit;
+}
+
+.ql-editor em {
+  font-style: italic !important;
+  font-family: inherit;
+  font-synthesis: style !important;
+}
+
+@media (max-width: 768px) {
+  .ql-toolbar button {
+    height: 32px !important;
+    width: 32px !important;
+    padding: 5px !important;
+    margin: 0 !important;
+  }
+  
+  .ql-toolbar.ql-snow .ql-picker-label {
+    padding-left: 8px !important;
+    padding-right: 24px !important;
+    height: 32px !important;
+    line-height: 32px !important;
+    font-size: 12px !important;
+  }
+
+  .ql-toolbar.ql-snow .ql-picker.ql-header {
+    width: auto !important;
+  }
+  
+  .ql-toolbar {
+    padding: 6px !important;
+    gap: 4px !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+  }
+
+  .ql-toolbar .ql-formats {
+    margin-right: 0 !important;
+  }
+
+  .ql-toolbar .ql-stroke {
+    stroke-width: 2 !important;
+  }
+
+  .ql-toolbar .ql-fill {
+    fill: currentColor !important;
+  }
+}
+
+.ql-editor a,
+.rich-text-editor-wrapper a {
+  color: #2563eb !important;
+  text-decoration: underline !important;
+  cursor: pointer;
+  pointer-events: auto !important;
+}
+
+.ql-editor a:hover,
+.rich-text-editor-wrapper a:hover {
+  color: #1d4ed8 !important;
+}

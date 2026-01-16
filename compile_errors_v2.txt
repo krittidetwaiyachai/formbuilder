@@ -1,0 +1,72 @@
+app/activity/[id]/page.tsx(8,10): error TS2305: Module '"@/lib/mock-data"' has no exported member 'mockForms'.
+app/activity/[id]/page.tsx(8,21): error TS2305: Module '"@/lib/mock-data"' has no exported member 'mockActivityLogs'.
+app/activity/[id]/page.tsx(12,32): error TS7006: Parameter 'f' implicitly has an 'any' type.
+app/activity/[id]/page.tsx(13,49): error TS7006: Parameter 'log' implicitly has an 'any' type.
+app/analytics/[id]/page.tsx(7,10): error TS2305: Module '"@/lib/mock-data"' has no exported member 'mockForms'.
+app/analytics/[id]/page.tsx(7,21): error TS2724: '"@/lib/mock-data"' has no exported member named 'mockSubmissions'. Did you mean 'MOCK_SUBMISSIONS'?
+app/analytics/[id]/page.tsx(14,32): error TS7006: Parameter 'f' implicitly has an 'any' type.
+app/analytics/[id]/page.tsx(15,47): error TS7006: Parameter 's' implicitly has an 'any' type.
+app/analytics/[id]/page.tsx(209,46): error TS7006: Parameter 'submission' implicitly has an 'any' type.
+app/analytics/[id]/page.tsx(273,38): error TS7006: Parameter 'submission' implicitly has an 'any' type.
+app/analytics/[id]/page.tsx(285,40): error TS7006: Parameter 'submission' implicitly has an 'any' type.
+app/api/activity/[id]/route.ts(2,27): error TS2307: Cannot find module '@/lib/data-store' or its corresponding type declarations.
+app/api/activity/[id]/route.ts(50,7): error TS2353: Object literal may only specify known properties, and 'formId' does not exist in type 'ActivityLog'.
+app/api/analytics/[id]/route.ts(2,27): error TS2307: Cannot find module '@/lib/data-store' or its corresponding type declarations.
+app/api/editors/[id]/route.ts(2,27): error TS2307: Cannot find module '@/lib/data-store' or its corresponding type declarations.
+app/api/editors/[id]/route.ts(51,7): error TS2353: Object literal may only specify known properties, and 'userAvatar' does not exist in type 'ActiveEditor'.
+app/api/forms/[id]/publish/route.ts(2,27): error TS2307: Cannot find module '@/lib/data-store' or its corresponding type declarations.
+app/api/forms/[id]/publish/route.ts(35,15): error TS2339: Property 'ActivityLog' does not exist on type 'typeof import("D:/formbuilder/frontend/src/types/collaboration")'.
+app/api/forms/[id]/publish/route.ts(37,26): error TS2749: 'ActivityLog' refers to a value, but is being used as a type here. Did you mean 'typeof ActivityLog'?
+app/api/forms/[id]/route.ts(2,27): error TS2307: Cannot find module '@/lib/data-store' or its corresponding type declarations.
+app/api/forms/[id]/route.ts(55,15): error TS2339: Property 'ActivityLog' does not exist on type 'typeof import("D:/formbuilder/frontend/src/types/collaboration")'.
+app/api/forms/[id]/route.ts(57,26): error TS2749: 'ActivityLog' refers to a value, but is being used as a type here. Did you mean 'typeof ActivityLog'?
+app/api/forms/[id]/submissions/route.ts(2,27): error TS2307: Cannot find module '@/lib/data-store' or its corresponding type declarations.
+app/api/forms/[id]/view/route.ts(2,27): error TS2307: Cannot find module '@/lib/data-store' or its corresponding type declarations.
+app/api/forms/route.ts(2,27): error TS2307: Cannot find module '@/lib/data-store' or its corresponding type declarations.
+app/api/forms/route.ts(3,28): error TS2307: Cannot find module '@/types/form' or its corresponding type declarations.
+app/api/forms/route.ts(16,28): error TS7006: Parameter 'form' implicitly has an 'any' type.
+app/api/forms/route.ts(23,9): error TS7006: Parameter 'form' implicitly has an 'any' type.
+app/api/forms/route.ts(62,49): error TS2307: Cannot find module '@/lib/data-store' or its corresponding type declarations.
+app/api/forms/route.ts(63,15): error TS2339: Property 'ActivityLog' does not exist on type 'typeof import("D:/formbuilder/frontend/src/types/collaboration")'.
+app/api/forms/route.ts(65,26): error TS2749: 'ActivityLog' refers to a value, but is being used as a type here. Did you mean 'typeof ActivityLog'?
+app/api/submissions/[id]/route.ts(2,27): error TS2307: Cannot find module '@/lib/data-store' or its corresponding type declarations.
+app/api/submissions/route.ts(2,27): error TS2307: Cannot find module '@/lib/data-store' or its corresponding type declarations.
+app/api/submissions/route.ts(3,32): error TS2307: Cannot find module '@/types/form' or its corresponding type declarations.
+app/builder/[id]/page.tsx(7,33): error TS2307: Cannot find module '@/hooks/useBuilderStore' or its corresponding type declarations.
+app/builder/[id]/page.tsx(80,44): error TS7006: Parameter 'el' implicitly has an 'any' type.
+app/builder/[id]/page.tsx(107,47): error TS7006: Parameter 'el' implicitly has an 'any' type.
+app/builder/[id]/page.tsx(160,44): error TS7006: Parameter 'el' implicitly has an 'any' type.
+app/builder/[id]/page.tsx(161,44): error TS7006: Parameter 'el' implicitly has an 'any' type.
+app/builder/[id]/page.tsx(260,41): error TS7006: Parameter 'el' implicitly has an 'any' type.
+app/builder/[id]/page.tsx(286,43): error TS7015: Element implicitly has an 'any' type because index expression is not of type 'number'.
+app/builder/[id]/page.tsx(456,56): error TS7006: Parameter 'el' implicitly has an 'any' type.
+app/dashboard/page.tsx(10,10): error TS2305: Module '"@/lib/mock-data"' has no exported member 'mockForms'.
+app/dashboard/page.tsx(11,28): error TS2307: Cannot find module '@/types/form' or its corresponding type declarations.
+app/dashboard/page.tsx(125,15): error TS2322: Type '{ children: Element[]; value: FilterStatus; onChange: (e: any) => void; className: string; }' is not assignable to type 'IntrinsicAttributes & SelectSharedProps & { value?: string | undefined; defaultValue?: string | undefined; onValueChange?(value: string): void; }'.
+  Property 'onChange' does not exist on type 'IntrinsicAttributes & SelectSharedProps & { value?: string | undefined; defaultValue?: string | undefined; onValueChange?(value: string): void; }'.
+app/dashboard/page.tsx(125,26): error TS7006: Parameter 'e' implicitly has an 'any' type.
+app/dashboard/page.tsx(139,15): error TS2322: Type '{ children: Element[]; value: SortOption; onChange: (e: any) => void; className: string; }' is not assignable to type 'IntrinsicAttributes & SelectSharedProps & { value?: string | undefined; defaultValue?: string | undefined; onValueChange?(value: string): void; }'.
+  Property 'onChange' does not exist on type 'IntrinsicAttributes & SelectSharedProps & { value?: string | undefined; defaultValue?: string | undefined; onValueChange?(value: string): void; }'.
+app/dashboard/page.tsx(139,26): error TS7006: Parameter 'e' implicitly has an 'any' type.
+app/dashboard/page.tsx(175,14): error TS2739: Type '{ key: any; form: FormSchema; }' is missing the following properties from type 'FormCardProps': onDelete, onDuplicate, onEdit, onView
+app/preview/[id]/page.tsx(5,25): error TS2307: Cannot find module '@/components/preview/DeviceFrame' or its corresponding type declarations.
+app/preview/[id]/page.tsx(7,33): error TS2307: Cannot find module '@/hooks/useBuilderStore' or its corresponding type declarations.
+app/preview/[id]/page.tsx(9,10): error TS2305: Module '"@/lib/mock-data"' has no exported member 'mockForms'.
+app/preview/[id]/page.tsx(54,32): error TS7006: Parameter 'f' implicitly has an 'any' type.
+app/preview/[id]/page.tsx(163,33): error TS7006: Parameter 'element' implicitly has an 'any' type.
+app/responses/[id]/page.tsx(9,10): error TS2724: '"@/lib/mock-data"' has no exported member named 'mockSubmissions'. Did you mean 'MOCK_SUBMISSIONS'?
+app/responses/[id]/page.tsx(9,27): error TS2305: Module '"@/lib/mock-data"' has no exported member 'mockForms'.
+app/responses/[id]/page.tsx(15,32): error TS7006: Parameter 'f' implicitly has an 'any' type.
+app/responses/[id]/page.tsx(16,47): error TS7006: Parameter 's' implicitly has an 'any' type.
+app/responses/[id]/page.tsx(24,28): error TS7006: Parameter 'submission' implicitly has an 'any' type.
+app/responses/[id]/page.tsx(36,28): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'string'.
+app/responses/[id]/page.tsx(84,11): error TS2322: Type 'unknown[]' is not assignable to type 'string[]'.
+  Type 'unknown' is not assignable to type 'string'.
+app/submission/[id]/page.tsx(7,10): error TS2724: '"@/lib/mock-data"' has no exported member named 'mockSubmissions'. Did you mean 'MOCK_SUBMISSIONS'?
+app/submission/[id]/page.tsx(7,27): error TS2305: Module '"@/lib/mock-data"' has no exported member 'mockForms'.
+app/submission/[id]/page.tsx(12,44): error TS7006: Parameter 's' implicitly has an 'any' type.
+app/submission/[id]/page.tsx(13,45): error TS7006: Parameter 'f' implicitly has an 'any' type.
+app/submission/[id]/page.tsx(35,22): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{ desktop: LucideIcon; tablet: LucideIcon; mobile: LucideIcon; }'.
+frontend/src/lib/api.ts(4,29): error TS2339: Property 'env' does not exist on type 'ImportMeta'.
+frontend/src/store/formStore.ts(645,39): error TS2339: Property 'env' does not exist on type 'ImportMeta'.
+frontend/src/store/formStore.ts(651,33): error TS2339: Property 'env' does not exist on type 'ImportMeta'.

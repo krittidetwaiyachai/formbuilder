@@ -4,11 +4,11 @@ import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Search, Filter, SortAsc, X } from "lucide-react";
 import FormCard from "@/components/dashboard/FormCard";
 import { mockForms } from "@/lib/mock-data";
-import { FormSchema } from "@/types/form";
+import { Form as FormSchema } from "@/types";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 type SortOption = "newest" | "oldest" | "mostViews" | "mostResponses" | "title";
@@ -40,7 +40,6 @@ export default function DashboardPage() {
   const filteredAndSortedForms = useMemo(() => {
     let filtered: FormSchema[] = [...mockForms];
 
-    // Filter by search query
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
@@ -50,12 +49,10 @@ export default function DashboardPage() {
       );
     }
 
-    // Filter by status
     if (statusFilter !== "all") {
-      filtered = filtered.filter((form) => form.status === statusFilter);
+      filtered = filtered.filter((form) => form.status === statusFilter.toUpperCase());
     }
 
-    // Sort
     const sorted = [...filtered].sort((a, b) => {
       switch (sortBy) {
         case "newest":
@@ -94,10 +91,8 @@ export default function DashboardPage() {
         </Button>
       </div>
 
-      {/* Search and Filter Bar */}
       <div className="mb-6 space-y-4">
         <div className="flex flex-col sm:flex-row gap-4">
-          {/* Search Input */}
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
@@ -117,38 +112,43 @@ export default function DashboardPage() {
             )}
           </div>
 
-          {/* Status Filter */}
           <div className="flex items-center gap-2">
             <Filter className="h-4 w-4 text-muted-foreground" />
             <Select
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value as FilterStatus)}
-              className="w-[140px]"
+              onValueChange={(value) => setStatusFilter(value as FilterStatus)}
             >
-              <option value="all">All Status</option>
-              <option value="published">Published</option>
-              <option value="draft">Draft</option>
+              <SelectTrigger className="w-[140px]">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="published">Published</SelectItem>
+                <SelectItem value="draft">Draft</SelectItem>
+              </SelectContent>
             </Select>
           </div>
 
-          {/* Sort */}
           <div className="flex items-center gap-2">
             <SortAsc className="h-4 w-4 text-muted-foreground" />
             <Select
               value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as SortOption)}
-              className="w-[160px]"
+              onValueChange={(value) => setSortBy(value as SortOption)}
             >
-              <option value="newest">Newest First</option>
-              <option value="oldest">Oldest First</option>
-              <option value="mostViews">Most Views</option>
-              <option value="mostResponses">Most Responses</option>
-              <option value="title">Title (A-Z)</option>
+              <SelectTrigger className="w-[160px]">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="newest">Newest First</SelectItem>
+                <SelectItem value="oldest">Oldest First</SelectItem>
+                <SelectItem value="mostViews">Most Views</SelectItem>
+                <SelectItem value="mostResponses">Most Responses</SelectItem>
+                <SelectItem value="title">Title (A-Z)</SelectItem>
+              </SelectContent>
             </Select>
           </div>
         </div>
 
-        {/* Results Count */}
         <div className="text-sm text-muted-foreground">
           Showing <span className="font-semibold text-foreground">{showingForms}</span> of{" "}
           <span className="font-semibold text-foreground">{totalForms}</span> forms
@@ -168,11 +168,17 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Forms Grid */}
       {filteredAndSortedForms.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredAndSortedForms.map((form) => (
-            <FormCard key={form.id} form={form} />
+            <FormCard 
+              key={form.id} 
+              form={form} 
+              onDelete={() => {}} 
+              onDuplicate={() => {}} 
+              onEdit={() => router.push(`/builder/${form.id}`)} 
+              onView={() => router.push(`/preview/${form.id}`)}
+            />
           ))}
         </div>
       ) : (

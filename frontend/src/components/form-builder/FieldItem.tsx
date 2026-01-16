@@ -1,7 +1,7 @@
 import React, { useRef, useState, useMemo } from 'react';
 import { DraggableProvided } from '@hello-pangea/dnd';
 import { Field, FieldType } from '@/types';
-import { Trash2, ChevronRight, EyeOff } from 'lucide-react';
+import { Trash2, ChevronRight, EyeOff, Settings } from 'lucide-react';
 import { useFormStore } from '@/store/formStore';
 import { ShortTextField } from './fields/short-text';
 import { EmailField } from './fields/email';
@@ -34,6 +34,7 @@ interface FieldItemProps {
   onSelect: (id: string, autoFocus?: boolean) => void;
   onToggle?: (id: string) => void;
   onOpenContextMenu?: (e: React.MouseEvent) => void;
+  onOpenProperties?: () => void;
   isHidden?: boolean;
   isNewFromSidebar?: boolean;
   isOverlay?: boolean;
@@ -50,6 +51,7 @@ function FieldItem({
   onSelect,
   onToggle,
   onOpenContextMenu,
+  onOpenProperties,
   isHidden = false, 
   isNewFromSidebar = false, 
   isOverlay = false,
@@ -64,23 +66,16 @@ function FieldItem({
   const currentForm = useFormStore((state) => state.currentForm);
 
   const style = provided?.draggableProps.style;
-  const labelInputRef = useRef<HTMLDivElement>(null);
+
   const isFocusingRef = useRef(false);
   const { t } = useTranslation();
 
-  const [labelHtml, setLabelHtml] = useState({ __html: field.label || (field.type === FieldType.HEADER ? t('common.heading') : '') });
+
   
   const subLabelRef = useRef<HTMLDivElement>(null);
   const [subLabelHtml, setSubLabelHtml] = useState({ __html: field.options?.subLabel || (isSelected ? t('common.sublabel') : '') });
 
-  React.useEffect(() => {
-    const currentText = labelInputRef.current?.textContent;
-    const newLabel = field.label || (field.type === FieldType.HEADER ? t('common.heading') : '');
-    
-    if (currentText !== newLabel) {
-      setLabelHtml({ __html: newLabel });
-    }
-  }, [field.label, field.type]);
+
 
   React.useEffect(() => {
      const currentText = subLabelRef.current?.textContent;
@@ -93,6 +88,10 @@ function FieldItem({
   const handleContextMenu = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    
+    if ('ontouchstart' in window) {
+      return;
+    }
     
     if (!isSelected) {
         onSelect(field.id, false);
@@ -358,18 +357,19 @@ function FieldItem({
                    }
                }
             }}
-            className={`relative group/field isolate flex-1 ${fieldStyle.bgGradient} ${isPageBreak ? '' : 'border rounded-2xl'} transition-colors duration-200 ${field.type === FieldType.HEADER ? 'cursor-text' : 'cursor-pointer'} ${
+            className={`relative group/field isolate flex-1 min-w-0 bg-white ${fieldStyle.bgGradient} ${isPageBreak ? '' : 'border rounded-2xl'} transition-colors duration-200 ${field.type === FieldType.HEADER ? 'cursor-text' : 'cursor-pointer'} ${
               isSelected && !isOverlay ? `ring-2 ring-black shadow-lg z-10 border-transparent ${fieldStyle.cardBorder}` : 
               isNewFromSidebar ? `border-blue-500 ring-4 ring-blue-500/10 shadow-blue-100/50 ${fieldStyle.cardBorder}` : 
               `${isPageBreak ? '' : 'border-gray-200'} ${fieldStyle.cardBorder} ${isPageBreak ? '' : (disableHover ? '' : 'hover:border-gray-300 hover:shadow-md')}`
-            } ${isDragging ? 'shadow-2xl rotate-1 w-[320px]' : ''} ${isHidden ? 'opacity-50' : ''}`}
+            } ${isDragging ? 'shadow-2xl rotate-1 w-[320px] !bg-white !opacity-100 z-[9999]' : ''} ${isHidden ? 'opacity-50' : ''}`}
           >
             {/* ... Content of FieldItem (Drag Handle, Label, etc.) */}
             {!hideDragHandle && (
               <div
                 {...provided?.dragHandleProps}
-                className={`absolute top-0 left-1/2 -translate-x-1/2 z-50 cursor-grab active:cursor-grabbing p-2`}
+                className={`absolute top-0 left-1/2 -translate-x-1/2 z-50 cursor-grab active:cursor-grabbing p-4 touch-none select-none`}
                 onClick={(e) => e.stopPropagation()}
+                style={{ touchAction: 'none' }}
               >
                 <div className={`w-12 h-1.5 rounded-full transition-colors ${isSelected ? 'bg-gray-400' : 'bg-gray-200 hover:bg-gray-300'}`}></div>
               </div>
@@ -445,7 +445,7 @@ function FieldItem({
                                 </div>
                               </div>
                           
-                          <div className="flex-1 min-w-0">
+                          <div className="flex-1 min-w-0 w-full max-w-full overflow-x-auto pb-3 scrollbar-visible">
                             {(isOverlay || isDragging) ? (
                                 <div className="h-10 bg-gray-50 rounded border border-gray-100 flex items-center px-3 text-xs text-gray-400 font-medium select-none">
                                     {field.type === FieldType.TEXTAREA ? t('common.long_text') : field.type === FieldType.ADDRESS ? t('common.address') : `${field.type} ${t('common.field')}`}
@@ -523,12 +523,24 @@ function FieldItem({
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                handleDelete(e);
+                if (isSelected && window.innerWidth < 768 && onOpenProperties) {
+                  onOpenProperties();
+                } else {
+                  handleDelete(e);
+                }
               }}
-              className="flex-shrink-0 p-1 text-gray-400 hover:text-black"
-              title={t('common.delete_field')}
+              className={`flex-shrink-0 p-1 transition-colors ${
+                isSelected && window.innerWidth < 768 
+                  ? 'text-purple-500 hover:text-purple-700 bg-purple-50 rounded-full' 
+                  : 'text-gray-400 hover:text-black'
+              }`}
+              title={isSelected && window.innerWidth < 768 ? t('common.settings') : t('common.delete_field')}
             >
-              <Trash2 className="h-4 w-4" />
+              {isSelected && window.innerWidth < 768 ? (
+                <Settings className="h-4 w-4" />
+              ) : (
+                <Trash2 className="h-4 w-4" />
+              )}
             </button>
           )}
         </div>

@@ -32,21 +32,60 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
   const router = useRouter();
   const { toast } = useToast();
   const { 
-    elements, 
-    removeElement,
-    duplicateElement,
+    currentForm,
+    deleteField,
+    duplicateField,
     undo,
     redo,
     historyIndex,
     history,
-    theme, 
-    settings, 
-    setTheme, 
-    setSettings,
-    addElement,
-    addElementAt,
-    reorderElements,
+    updateForm,
+    addField,
+    reorderFields,
   } = useBuilderStore();
+
+  const elements = currentForm?.fields || [];
+  
+
+  const theme = currentForm?.settings ? {
+    primaryColor: currentForm.settings.primaryColor || '#0f172a',
+    backgroundColor: currentForm.settings.backgroundColor || '#ffffff',
+    backgroundType: currentForm.settings.backgroundType || 'color',
+    textColor: currentForm.settings.textColor || '#0f172a',
+    buttonStyle: 'filled' as const,
+    borderRadius: currentForm.settings.borderRadius || 'medium',
+    fontFamily: currentForm.settings.fontFamily || 'Inter',
+    backgroundImage: currentForm.settings.backgroundImage,
+  } : undefined;
+
+  const settings = currentForm?.settings;
+
+
+  const removeElement = deleteField;
+  const duplicateElement = duplicateField;
+  const reorderElements = reorderFields;
+  
+  const setTheme = (newTheme: any) => {
+      if (currentForm) {
+          updateForm({ settings: { ...currentForm.settings, ...newTheme } });
+      }
+  };
+
+  const setSettings = (newSettings: any) => {
+      if (currentForm) {
+          updateForm({ settings: { ...currentForm.settings, ...newSettings } });
+      }
+  };
+
+  const addElement = (el: any) => {
+      const { id, ...rest } = el; 
+      addField(rest);
+  };
+
+  const addElementAt = (el: any, index: number) => {
+      const { id, ...rest } = el;
+      addField({ ...rest, order: index });
+  };
   const [activeTab, setActiveTab] = useState<"properties" | "theme" | "settings">("properties");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [elementToDelete, setElementToDelete] = useState<string | null>(null);
@@ -71,12 +110,10 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
     const id = event.active.id as string;
     setActiveId(id);
     
-    // Extract type from sidebar drag
     if (id.startsWith('sidebar-')) {
       const type = id.replace('sidebar-', '');
       setDraggedType(type);
     } else {
-      // Canvas element drag - find the element
       const draggedElement = elements.find(el => el.id === id);
       if (draggedElement) {
         setDraggedType(draggedElement.type);
@@ -94,16 +131,12 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
     const activeData = active.data.current;
     const overData = over.data.current;
 
-    // Drag from sidebar to canvas
     if (activeData?.source === "sidebar") {
-      // Check if dropped on canvas or on an element in canvas
       let insertIndex = elements.length;
       
       if (over.id === "canvas") {
-        // Dropped directly on canvas
         insertIndex = elements.length;
       } else {
-        // Dropped on an element - find its index
         const overIndex = elements.findIndex((el) => el.id === over.id);
         if (overIndex !== -1) {
           insertIndex = overIndex;
@@ -155,7 +188,6 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
         addElementAt(newElement, insertIndex);
       }
     }
-    // Reorder elements in canvas
     else if (activeData?.source === "canvas" && overData?.source === "canvas") {
       const oldIndex = elements.findIndex((el) => el.id === active.id);
       const newIndex = elements.findIndex((el) => el.id === over.id);
@@ -168,7 +200,6 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
 
 
   const handleSave = () => {
-    // In a real app, this would save to a backend
     console.log("Saving form:", { id: params.id, elements });
     toast({
       title: "Form saved",
@@ -182,7 +213,6 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
   };
 
   const handlePublish = () => {
-    // In a real app, this would publish the form
     console.log("Publishing form:", params.id);
     toast({
       title: "Form published",
@@ -236,17 +266,14 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
     });
   };
 
-  // Keyboard shortcuts
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Ctrl/Cmd + Z for undo
       if ((e.ctrlKey || e.metaKey) && e.key === "z" && !e.shiftKey) {
         e.preventDefault();
         if (historyIndex > 0) {
           handleUndo();
         }
       }
-      // Ctrl/Cmd + Shift + Z or Ctrl/Cmd + Y for redo
       if (((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === "z") || 
           ((e.ctrlKey || e.metaKey) && e.key === "y")) {
         e.preventDefault();
@@ -254,25 +281,22 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
           handleRedo();
         }
       }
-      // Delete key to remove selected element
       if (e.key === "Delete" || e.key === "Backspace") {
         const state = useBuilderStore.getState();
-        const selected = elements.find((el) => el.id === state.selectedElementId);
+        const selected = elements.find((el) => el.id === state.selectedFieldId);
         if (selected && document.activeElement?.tagName !== "INPUT" && document.activeElement?.tagName !== "TEXTAREA") {
           e.preventDefault();
           handleDeleteElement(selected.id);
         }
       }
-      // Ctrl/Cmd + D to duplicate
       if ((e.ctrlKey || e.metaKey) && e.key === "d") {
         e.preventDefault();
         const state = useBuilderStore.getState();
-        const selected = state.selectedElementId;
+        const selected = state.selectedFieldId;
         if (selected) {
           handleDuplicate(selected);
         }
       }
-      // Ctrl/Cmd + S to save
       if ((e.ctrlKey || e.metaKey) && e.key === "s") {
         e.preventDefault();
         handleSave();
@@ -283,7 +307,7 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [historyIndex, history.length, elements]);
 
-  const activeEditors = mockActiveEditors[params.id] || [];
+  const activeEditors = (mockActiveEditors as any)[params.id] || [];
 
   return (
     <div 
@@ -293,7 +317,6 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
         overscrollBehaviorX: 'none',
       }}
     >
-        {/* Header */}
         <div className="border-b bg-white px-6 py-4 flex items-center justify-between shadow-sm">
           <div className="flex items-center gap-4">
             <Tooltip content="Back to Dashboard">
@@ -311,7 +334,6 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            {/* Undo/Redo */}
             <Tooltip content="Undo (Ctrl+Z)">
               <Button
                 variant="ghost"
@@ -354,12 +376,10 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
           </div>
         </div>
 
-        {/* Active Editors */}
         {activeEditors.length > 0 && (
           <ActiveEditors editors={activeEditors} />
         )}
 
-        {/* Main Content */}
         <DndContext
           sensors={sensors}
           onDragStart={handleDragStart}
@@ -421,7 +441,6 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
           <DragOverlay>
             {activeId && draggedType ? (
               activeId.startsWith('sidebar-') ? (
-                // Sidebar drag overlay
                 <div className="flex items-center gap-3 p-3 rounded-lg border bg-white shadow-lg opacity-90 cursor-grabbing">
                   {draggedType === "text" && <Type className="h-5 w-5" />}
                   {draggedType === "email" && <Mail className="h-5 w-5" />}
@@ -451,7 +470,6 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
                   </span>
                 </div>
               ) : (
-                // Canvas element drag overlay - show the actual element card
                 (() => {
                   const draggedElement = elements.find(el => el.id === activeId);
                   if (!draggedElement) return null;
@@ -469,9 +487,8 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
             ) : null}
           </DragOverlay>
         </DndContext>
-      </div>
 
-      {/* Delete Confirmation Dialog */}
+
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>

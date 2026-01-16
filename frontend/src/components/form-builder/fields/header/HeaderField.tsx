@@ -20,7 +20,7 @@ interface HeaderFieldProps {
 
 export const HeaderField: React.FC<HeaderFieldProps> = ({ 
   field, 
-  fieldStyle, 
+ 
   isSelected = false,
   onSelect 
 }) => {
@@ -96,7 +96,7 @@ export const HeaderField: React.FC<HeaderFieldProps> = ({
   }
 
   // Parse header properties
-  const headerProps = field.properties as any || {};
+  const headerProps = field.options || {};
   const headerAlignment = headerProps.alignment || 'LEFT';
   const headerSize = headerProps.size || 'MEDIUM';
   const headerSubheading = field.placeholder && field.placeholder.length > 0;
@@ -180,7 +180,7 @@ export const HeaderField: React.FC<HeaderFieldProps> = ({
           </div>
         ) : (
           <h2
-            className={`${getHeaderSizeClass()} ${getHeaderAlignmentClass()} text-gray-900 leading-tight tracking-tight ql-editor !p-0 !overflow-visible`}
+            className={`${getHeaderSizeClass()} ${getHeaderAlignmentClass()} text-gray-900 leading-tight tracking-tight ql-editor !p-0 !overflow-visible break-words break-all`}
             dangerouslySetInnerHTML={{ __html: field.label || 'Heading' }}
           />
         )}

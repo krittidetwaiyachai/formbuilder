@@ -19,7 +19,7 @@ export const PreviewTimeField: React.FC<PreviewFieldProps> = ({ field, register,
   const fieldError = errors[fieldName];
   
   const options = field.options || {};
-  const validation = field.validation || {};
+
   
   const labelAlignment = options.labelAlignment || 'TOP';
   const subLabelHour = options.subLabelHour || 'Hour';

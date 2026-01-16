@@ -1,8 +1,10 @@
 
-import { useState } from 'react';
+
 import { Field, FieldType, Form, PageSettings } from '@/types';
-import { arrayMove } from '@dnd-kit/sortable';
+import { useTranslation } from 'react-i18next';
+
 import { useFormStore } from '@/store/formStore';
+import { generateUUID } from '@/utils/uuid';
 
 interface UsePageManagementProps {
   currentForm: Form | null;
@@ -19,6 +21,7 @@ export function usePageManagement({
   setCurrentPage,
   currentPage
 }: UsePageManagementProps) {
+    const { t } = useTranslation();
     const { updateForm } = useFormStore();
     const id = currentForm?.id;
 
@@ -30,7 +33,7 @@ export function usePageManagement({
         if (newSettings.length < pageCount) {
             for (let i = newSettings.length; i < pageCount; i++) {
                 newSettings.push({
-                    id: crypto.randomUUID(),
+                    id: generateUUID(),
                     title: `Page ${i + 1}`
                 });
             }
@@ -43,20 +46,19 @@ export function usePageManagement({
 
     const handleAddPage = () => {
         const newPageBreak: Field = {
-            id: crypto.randomUUID(),
+            id: generateUUID(),
             formId: id!,
             type: FieldType.PAGE_BREAK,
             label: 'Page Break', 
             required: false,
             order: activeFields.length,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
+
         };
         
         const newFields = [...activeFields, newPageBreak];
         
         const newPageSetting: PageSettings = {
-            id: crypto.randomUUID(),
+            id: generateUUID(),
             title: `Page ${(currentForm?.pageSettings?.length || 0) + 1}`
         };
         
@@ -115,8 +117,12 @@ export function usePageManagement({
     
     // Content Page Deletion
     const pageBreaks = activeFields.filter(f => f.type === FieldType.PAGE_BREAK);
+    
     // Validation: Cannot delete the last remaining page
-    if (pageBreaks.length === 0) return;
+    if (pageBreaks.length === 0) {
+        alert(t('builder.cannot_delete_last_page'));
+        return;
+    }
     
     // Chunk strategy
     let tempFields = [...activeFields];
@@ -184,7 +190,7 @@ export function usePageManagement({
             if (newPageSettings.length <= pageIndex) {
                 // Should have been synced, but if not:
                 for(let i=newPageSettings.length; i<=pageIndex; i++) {
-                    newPageSettings.push({ id: crypto.randomUUID(), title: `Page ${i+1}` });
+                    newPageSettings.push({ id: generateUUID(), title: `Page ${i+1}` });
                 }
         }
         
@@ -232,7 +238,7 @@ export function usePageManagement({
                 } else {
                         // Create new break if needed (shouldn't happen)
                         finalFields.push({
-                        id: crypto.randomUUID(),
+                        id: generateUUID(),
                         formId: id!,
                         type: FieldType.PAGE_BREAK,
                         label: 'Page Break',
@@ -253,7 +259,7 @@ export function usePageManagement({
         }
         
         // Ensure we have enough settings for the move
-        const movedSetting = newPageSettings[oldIndex] || { id: crypto.randomUUID(), title: `Page ${oldIndex+1}` }; 
+        const movedSetting = newPageSettings[oldIndex] || { id: generateUUID(), title: `Page ${oldIndex+1}` }; 
         if (newPageSettings[oldIndex]) {
             newPageSettings.splice(oldIndex, 1);
             newPageSettings.splice(newIndex, 0, movedSetting);

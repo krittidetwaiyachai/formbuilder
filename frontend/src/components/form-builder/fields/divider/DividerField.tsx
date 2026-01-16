@@ -11,7 +11,7 @@ interface DividerFieldProps {
   };
 }
 
-export const DividerField: React.FC<DividerFieldProps> = ({ field }) => {
+export const DividerField: React.FC<DividerFieldProps> = () => {
   return (
     <div className="w-full py-4">
         <hr className="border-t border-gray-300" />

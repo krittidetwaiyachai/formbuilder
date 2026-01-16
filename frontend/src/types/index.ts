@@ -28,6 +28,7 @@ export enum FieldType {
   GROUP = 'GROUP',
   MATRIX = 'MATRIX',
   TABLE = 'TABLE',
+  FILE = 'FILE',
 }
 
 export enum FormStatus {
@@ -70,6 +71,13 @@ export interface Field {
   correctAnswer?: string;
   score?: number;
   groupId?: string;
+  helperText?: string;
+  rows?: number;
+  accept?: string;
+  max?: number;
+  min?: number;
+  content?: string;
+  headingImage?: string;
 }
 
 export interface FieldCondition {
@@ -139,6 +147,7 @@ export interface Form {
     lastName?: string;
     photoUrl?: string;
   };
+  logoUrl?: string;
   collaborators?: {
     id: string;
     email: string;
@@ -165,6 +174,29 @@ export interface FormSettings {
   showQuestionNumber?: boolean;
   responseLimit?: number;
   formLayout?: 'classic' | 'card';
+  backgroundImage?: string;
+  backgroundType?: 'color' | 'image' | 'gradient';
+  backgroundColor?: string;
+  primaryColor?: string;
+  borderRadius?: 'none' | 'small' | 'medium' | 'large';
+  textColor?: string;
+  fontFamily?: string;
+  notificationEmails?: string[];
+  requireLogin?: boolean;
+  showPageNumbers?: boolean;
+  redirectUrl?: string;
+  emailNotifications?: boolean;
+}
+
+export interface FormTheme {
+  primaryColor: string;
+  backgroundColor: string;
+  backgroundType: 'color' | 'image' | 'gradient';
+  textColor: string;
+  buttonStyle: 'filled' | 'outlined' | 'ghost';
+  borderRadius: 'none' | 'small' | 'medium' | 'large';
+  fontFamily: string;
+  backgroundImage?: string;
 }
 
 export interface PageSettings {

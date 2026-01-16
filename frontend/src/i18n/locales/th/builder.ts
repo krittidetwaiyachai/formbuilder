@@ -4,6 +4,11 @@ export default {
   "builder.save": "บันทึก",
   "builder.preview": "ตัวอย่าง",
   "builder.publish": "เผยแพร์",
+  "builder.back_to_canvas": "กลับไปหน้าออกแบบ",
+  "builder.add_element": "เพิ่มองค์ประกอบ",
+  "builder.properties.title": "คุณสมบัติ",
+  "builder.settings": "ตั้งค่า",
+  "builder.cannot_delete_last_page": "ไม่สามารถลบหน้าได้ ฟอร์มต้องมีอย่างน้อย 1 หน้า",
   
   "builder.field_bundles": "ชุดฟิลด์",
   "builder.bundles_subtitle": "ชุดสำเร็จรูป",
@@ -111,6 +116,8 @@ export default {
   "builder.pagination.welcome_page": "หน้าต้อนรับ",
   "builder.pagination.end_page": "หน้าจบ",
   "builder.pagination.add_page": "เพิ่มหน้า",
+  "builder.drag_drop_instructions": "ลากฟิลด์มาวางที่นี่ หรือกดเพิ่มฟิลจากแถบด้านข้าง",
+  "builder.drop_here": "วางที่นี่",
   "builder.pagination.added": "(เพิ่มแล้ว)",
   
   "builder.special_page.appearance": "รูปลักษณ์",
@@ -124,5 +131,15 @@ export default {
   "builder.special_page.show_button": "แสดงปุ่ม",
   "builder.special_page.button_text": "ข้อความบนปุ่ม",
   "builder.special_page.button_link": "ลิงก์ของปุ่ม",
-  "builder.special_page.show_start_button": "แสดงปุ่มเริ่มต้น"
+  "builder.special_page.show_start_button": "แสดงปุ่มเริ่มต้น",
+
+  "builder.placeholder.short_text": "กรอกข้อความ...",
+  "builder.placeholder.long_text": "กรอกข้อความยาวๆ...",
+  "builder.placeholder.email": "กรอกอีเมล...",
+  "builder.placeholder.phone": "กรอกเบอร์โทร...",
+  "builder.placeholder.number": "กรอกตัวเลข...",
+  "builder.placeholder.dropdown": "เลือกตัวเลือก...",
+  "builder.placeholder.date": "เลือกวันที่...",
+  "builder.placeholder.time": "เลือกเวลา...",
+  "builder.placeholder.header_subheading": "เพิ่มรายละเอียด..."
 };

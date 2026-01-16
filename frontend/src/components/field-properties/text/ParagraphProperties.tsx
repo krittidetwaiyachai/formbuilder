@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Field } from '@/types';
-import { Copy, Edit2 } from 'lucide-react';
-import { RichTextEditor } from '@/components/ui/RichTextEditor';
+import { Copy } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { PropertiesTabs } from '../common/PropertiesTabs';
 
@@ -14,7 +13,17 @@ interface ParagraphPropertiesProps {
 export const ParagraphProperties: React.FC<ParagraphPropertiesProps> = ({ field, updateField, duplicatesField }) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'general' | 'options' | 'advanced'>('general');
-  const [isEditing, setIsEditing] = useState(false);
+
+  const stripHtml = (html: string) => {
+    const tmp = document.createElement('DIV');
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || '';
+  };
+
+  const wrapWithParagraph = (text: string) => {
+    if (!text.trim()) return '';
+    return `<p>${text}</p>`;
+  };
 
   const options = field.options || {};
 
@@ -56,38 +65,13 @@ export const ParagraphProperties: React.FC<ParagraphPropertiesProps> = ({ field,
             <label className="block text-sm font-medium text-black mb-2">
               {t('builder.properties.paragraph_text')}
             </label>
-            
-            {isEditing ? (
-               <div className="space-y-2">
-                 <RichTextEditor
-                  value={field.label}
-                  onChange={(value) => updateField(field.id, { label: value })}
-                  placeholder="Enter your text here..."
-                  className="min-h-[200px] text-sm [&_.ql-container]:min-h-[150px] [&_.ql-editor]:min-h-[150px]"
-                 />
-                 <button
-                  onClick={() => setIsEditing(false)}
-                  className="text-sm text-black hover:text-blue-800 font-medium"
-                 >
-                   {t('builder.properties.done_editing')}
-                 </button>
-               </div>
-            ) : (
-              <div>
-                 <button
-                  type="button"
-                  onClick={() => setIsEditing(true)}
-                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-md border border-gray-300 transition-colors"
-                >
-                  <Edit2 className="h-4 w-4" />
-                  {t('builder.properties.edit')}
-                </button>
-                <div 
-                  className="mt-2 text-xs text-gray-500 line-clamp-3 p-2 border border-gray-100 rounded bg-gray-50"
-                  dangerouslySetInnerHTML={{ __html: field.label || t('builder.properties.empty_paragraph') }}
-                />
-              </div>
-            )}
+            <textarea
+              value={stripHtml(field.label)}
+              onChange={(e) => updateField(field.id, { label: wrapWithParagraph(e.target.value) })}
+              className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white resize-none"
+              placeholder={t('builder.properties.paragraph_placeholder') || 'Enter your text here...'}
+              rows={6}
+            />
           </div>
 
           {/* Duplicate Field */}

@@ -60,7 +60,7 @@ export function MatrixField({ field, fieldStyle, isSelected, updateField }: Matr
   };
 
   return (
-    <div className="w-full overflow-x-auto">
+    <div className="w-max min-w-full">
       <table className="min-w-full border-collapse">
         <thead>
           <tr>

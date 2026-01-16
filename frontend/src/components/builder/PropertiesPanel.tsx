@@ -1,12 +1,12 @@
 "use client";
 
-import { useBuilderStore } from "@/hooks/useBuilderStore";
+import { useFormStore } from "@/store/formStore";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Plus, Trash2, Copy, Image as ImageIcon } from "lucide-react";
-import { FormElementType } from "@/types/form";
+import { FieldType as FormElementType, Field } from "@/types";
 import { Tooltip } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/toaster";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -14,11 +14,12 @@ import { useState } from "react";
 
 export default function PropertiesPanel() {
   const { toast } = useToast();
-  const { selectedElementId, elements, updateElement, removeElement, duplicateElement } =
-    useBuilderStore();
+  const { selectedFieldId, currentForm, updateField, deleteField, duplicateField } =
+    useFormStore();
+  const elements = currentForm?.fields || [];
   const [headingTab, setHeadingTab] = useState<"general" | "image">("general");
 
-  const selectedElement = elements.find((el) => el.id === selectedElementId);
+  const selectedElement = elements.find((el: Field) => el.id === selectedFieldId);
 
   if (!selectedElement) {
     return (
@@ -31,7 +32,7 @@ export default function PropertiesPanel() {
   }
 
   const handleUpdate = (updates: Partial<typeof selectedElement>) => {
-    updateElement(selectedElement.id, updates);
+    updateField(selectedElement.id, updates);
   };
 
   const handleAddOption = () => {
@@ -47,25 +48,25 @@ export default function PropertiesPanel() {
 
   const handleRemoveOption = (optionId: string) => {
     handleUpdate({
-      options: selectedElement.options?.filter((opt) => opt.id !== optionId),
+      options: selectedElement.options?.filter((opt: any) => opt.id !== optionId),
     });
   };
 
   const handleUpdateOption = (optionId: string, updates: { label?: string; value?: string }) => {
     handleUpdate({
-      options: selectedElement.options?.map((opt) =>
+      options: selectedElement.options?.map((opt: any) =>
         opt.id === optionId ? { ...opt, ...updates } : opt
       ),
     });
   };
 
-  const needsOptions: FormElementType[] = ["select", "radio", "checkbox"];
+  const needsOptions: FormElementType[] = [FormElementType.DROPDOWN, FormElementType.RADIO, FormElementType.CHECKBOX];
 
   const handleDelete = () => {
     // This will be handled by the parent component's delete dialog
     // For now, we'll use a simple confirmation
     if (confirm("Are you sure you want to delete this element?")) {
-      removeElement(selectedElement.id);
+      deleteField(selectedElement.id);
       toast({
         title: "Element deleted",
         description: "The element has been removed from your form.",
@@ -75,7 +76,7 @@ export default function PropertiesPanel() {
   };
 
   const handleDuplicate = () => {
-    duplicateElement(selectedElement.id);
+    duplicateField(selectedElement.id);
     toast({
       title: "Element duplicated",
       description: "The element has been duplicated.",
@@ -110,8 +111,8 @@ export default function PropertiesPanel() {
           </Tooltip>
         </div>
       </div>
-        {selectedElement.type !== "heading" &&
-          selectedElement.type !== "paragraph" && (
+        {selectedElement.type !== FormElementType.HEADER &&
+          selectedElement.type !== FormElementType.PARAGRAPH && (
             <>
               <div className="space-y-2">
                 <Label>Label</Label>
@@ -158,7 +159,7 @@ export default function PropertiesPanel() {
             </>
           )}
 
-        {selectedElement.type === "paragraph" && (
+        {selectedElement.type === FormElementType.PARAGRAPH && (
           <div className="space-y-2">
             <Label>Content</Label>
             <Textarea
@@ -169,7 +170,7 @@ export default function PropertiesPanel() {
           </div>
         )}
 
-        {selectedElement.type === "heading" && (
+        {selectedElement.type === FormElementType.HEADER && (
           <div className="bg-gray-800 rounded-lg">
             <Tabs value={headingTab} onValueChange={(v) => setHeadingTab(v as "general" | "image")} className="w-full">
               <TabsList className="grid w-full grid-cols-2 bg-transparent text-white h-auto p-0 border-b border-gray-700">
@@ -263,7 +264,7 @@ export default function PropertiesPanel() {
           </div>
         )}
 
-        {selectedElement.type === "textarea" && (
+        {selectedElement.type === FormElementType.TEXTAREA && (
           <div className="space-y-2">
             <Label>Rows</Label>
             <Input
@@ -276,7 +277,7 @@ export default function PropertiesPanel() {
           </div>
         )}
 
-        {selectedElement.type === "number" && (
+        {selectedElement.type === FormElementType.NUMBER && (
           <>
             <div className="space-y-2">
               <Label>Min</Label>
@@ -301,7 +302,7 @@ export default function PropertiesPanel() {
           </>
         )}
 
-        {selectedElement.type === "rating" && (
+        {selectedElement.type === FormElementType.RATE && (
           <div className="space-y-2">
             <Label>Max Rating</Label>
             <Input
@@ -314,7 +315,7 @@ export default function PropertiesPanel() {
           </div>
         )}
 
-        {selectedElement.type === "file" && (
+        {/* {selectedElement.type === FormElementType.FILE && ( // FILE type not yet in enum
           <div className="space-y-2">
             <Label>Accept</Label>
             <Input
@@ -323,7 +324,7 @@ export default function PropertiesPanel() {
               placeholder="e.g., image/*, .pdf"
             />
           </div>
-        )}
+        )} */}
 
         {needsOptions.includes(selectedElement.type) && (
           <div className="space-y-2">
@@ -340,7 +341,7 @@ export default function PropertiesPanel() {
               </Button>
             </div>
             <div className="space-y-2">
-              {selectedElement.options?.map((option) => (
+              {selectedElement.options?.map((option: any) => (
                 <div key={option.id} className="flex gap-2">
                   <Input
                     value={option.label}

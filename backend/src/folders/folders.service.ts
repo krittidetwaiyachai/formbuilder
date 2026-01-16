@@ -104,7 +104,10 @@ export class FoldersService {
     const form = await this.prisma.form.findFirst({
       where: { 
         id: formId,
-        createdById: userId,
+        OR: [
+          { createdById: userId },
+          { collaborators: { some: { id: userId } } }
+        ]
       },
     });
 

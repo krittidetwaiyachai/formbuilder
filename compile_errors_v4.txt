@@ -1,0 +1,55 @@
+app/activity/[id]/page.tsx(13,61): error TS2339: Property 'formId' does not exist on type 'ActivityLog'.
+app/analytics/[id]/page.tsx(15,55): error TS2339: Property 'formId' does not exist on type '{ id: string; submittedAt: string; device: string; data: { email: string; satisfaction: string; feedback: string; }; }'.
+app/analytics/[id]/page.tsx(286,35): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ email: string; satisfaction: string; feedback: string; }'.
+  No index signature with a parameter of type 'string' was found on type '{ email: string; satisfaction: string; feedback: string; }'.
+app/api/activity/[id]/route.ts(2,10): error TS2305: Module '"@/lib/data-store"' has no exported member 'dataStore'.
+app/api/activity/[id]/route.ts(50,7): error TS2353: Object literal may only specify known properties, and 'formId' does not exist in type 'ActivityLog'.
+app/api/analytics/[id]/route.ts(2,10): error TS2305: Module '"@/lib/data-store"' has no exported member 'dataStore'.
+app/api/editors/[id]/route.ts(2,10): error TS2305: Module '"@/lib/data-store"' has no exported member 'dataStore'.
+app/api/editors/[id]/route.ts(51,7): error TS2353: Object literal may only specify known properties, and 'userAvatar' does not exist in type 'ActiveEditor'.
+app/api/forms/[id]/publish/route.ts(2,10): error TS2305: Module '"@/lib/data-store"' has no exported member 'dataStore'.
+app/api/forms/[id]/publish/route.ts(35,15): error TS2339: Property 'ActivityLog' does not exist on type 'typeof import("D:/formbuilder/frontend/src/types/collaboration")'.
+app/api/forms/[id]/publish/route.ts(37,26): error TS2749: 'ActivityLog' refers to a value, but is being used as a type here. Did you mean 'typeof ActivityLog'?
+app/api/forms/[id]/route.ts(2,10): error TS2305: Module '"@/lib/data-store"' has no exported member 'dataStore'.
+app/api/forms/[id]/route.ts(55,15): error TS2339: Property 'ActivityLog' does not exist on type 'typeof import("D:/formbuilder/frontend/src/types/collaboration")'.
+app/api/forms/[id]/route.ts(57,26): error TS2749: 'ActivityLog' refers to a value, but is being used as a type here. Did you mean 'typeof ActivityLog'?
+app/api/forms/[id]/submissions/route.ts(2,10): error TS2305: Module '"@/lib/data-store"' has no exported member 'dataStore'.
+app/api/forms/[id]/view/route.ts(2,10): error TS2305: Module '"@/lib/data-store"' has no exported member 'dataStore'.
+app/api/forms/route.ts(2,10): error TS2305: Module '"@/lib/data-store"' has no exported member 'dataStore'.
+app/api/forms/route.ts(3,28): error TS2307: Cannot find module '@/types/form' or its corresponding type declarations.
+app/api/forms/route.ts(16,28): error TS7006: Parameter 'form' implicitly has an 'any' type.
+app/api/forms/route.ts(23,9): error TS7006: Parameter 'form' implicitly has an 'any' type.
+app/api/forms/route.ts(62,15): error TS2339: Property 'dataStore' does not exist on type 'typeof import("D:/formbuilder/frontend/src/lib/data-store")'.
+app/api/forms/route.ts(63,15): error TS2339: Property 'ActivityLog' does not exist on type 'typeof import("D:/formbuilder/frontend/src/types/collaboration")'.
+app/api/forms/route.ts(65,26): error TS2749: 'ActivityLog' refers to a value, but is being used as a type here. Did you mean 'typeof ActivityLog'?
+app/api/submissions/[id]/route.ts(2,10): error TS2305: Module '"@/lib/data-store"' has no exported member 'dataStore'.
+app/api/submissions/route.ts(2,10): error TS2305: Module '"@/lib/data-store"' has no exported member 'dataStore'.
+app/api/submissions/route.ts(3,32): error TS2307: Cannot find module '@/types/form' or its corresponding type declarations.
+app/builder/[id]/page.tsx(35,5): error TS2339: Property 'elements' does not exist on type 'FormBuilderState'.
+app/builder/[id]/page.tsx(36,5): error TS2339: Property 'removeElement' does not exist on type 'FormBuilderState'.
+app/builder/[id]/page.tsx(37,5): error TS2339: Property 'duplicateElement' does not exist on type 'FormBuilderState'.
+app/builder/[id]/page.tsx(42,5): error TS2339: Property 'theme' does not exist on type 'FormBuilderState'.
+app/builder/[id]/page.tsx(43,5): error TS2339: Property 'settings' does not exist on type 'FormBuilderState'.
+app/builder/[id]/page.tsx(44,5): error TS2339: Property 'setTheme' does not exist on type 'FormBuilderState'.
+app/builder/[id]/page.tsx(45,5): error TS2339: Property 'setSettings' does not exist on type 'FormBuilderState'.
+app/builder/[id]/page.tsx(46,5): error TS2339: Property 'addElement' does not exist on type 'FormBuilderState'.
+app/builder/[id]/page.tsx(47,5): error TS2339: Property 'addElementAt' does not exist on type 'FormBuilderState'.
+app/builder/[id]/page.tsx(48,5): error TS2339: Property 'reorderElements' does not exist on type 'FormBuilderState'.
+app/builder/[id]/page.tsx(80,44): error TS7006: Parameter 'el' implicitly has an 'any' type.
+app/builder/[id]/page.tsx(107,47): error TS7006: Parameter 'el' implicitly has an 'any' type.
+app/builder/[id]/page.tsx(160,44): error TS7006: Parameter 'el' implicitly has an 'any' type.
+app/builder/[id]/page.tsx(161,44): error TS7006: Parameter 'el' implicitly has an 'any' type.
+app/builder/[id]/page.tsx(260,41): error TS7006: Parameter 'el' implicitly has an 'any' type.
+app/builder/[id]/page.tsx(260,64): error TS2339: Property 'selectedElementId' does not exist on type 'FormBuilderState'.
+app/builder/[id]/page.tsx(270,32): error TS2339: Property 'selectedElementId' does not exist on type 'FormBuilderState'.
+app/builder/[id]/page.tsx(286,43): error TS7015: Element implicitly has an 'any' type because index expression is not of type 'number'.
+app/builder/[id]/page.tsx(456,56): error TS7006: Parameter 'el' implicitly has an 'any' type.
+app/preview/[id]/page.tsx(5,25): error TS2307: Cannot find module '@/components/preview/DeviceFrame' or its corresponding type declarations.
+app/preview/[id]/page.tsx(50,11): error TS2339: Property 'elements' does not exist on type 'FormBuilderState'.
+app/preview/[id]/page.tsx(50,21): error TS2339: Property 'theme' does not exist on type 'FormBuilderState'.
+app/preview/[id]/page.tsx(163,33): error TS7006: Parameter 'element' implicitly has an 'any' type.
+app/responses/[id]/page.tsx(16,55): error TS2339: Property 'formId' does not exist on type '{ id: string; submittedAt: string; device: string; data: { email: string; satisfaction: string; feedback: string; }; }'.
+app/responses/[id]/page.tsx(83,11): error TS2322: Type '{ submissions: { id: string; submittedAt: string; device: string; data: { email: string; satisfaction: string; feedback: string; }; }[]; availableFields: string[]; onAnalysisChange: (field: string, analysisType: string) => void; }' is not assignable to type 'IntrinsicAttributes & FieldAnalyticsSelectorProps'.
+  Property 'submissions' does not exist on type 'IntrinsicAttributes & FieldAnalyticsSelectorProps'.
+app/submission/[id]/page.tsx(13,71): error TS2339: Property 'formId' does not exist on type '{ id: string; submittedAt: string; device: string; data: { email: string; satisfaction: string; feedback: string; }; }'.
+app/submission/[id]/page.tsx(145,69): error TS2339: Property 'formId' does not exist on type '{ id: string; submittedAt: string; device: string; data: { email: string; satisfaction: string; feedback: string; }; }'.

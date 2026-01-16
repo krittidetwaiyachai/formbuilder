@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { dataStore } from "@/lib/data-store";
+import { Form, FormResponse } from "@/types";
 
-// GET /api/analytics/[id] - Get analytics data for a form
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const form = dataStore.getForm(params.id);
+    const form = dataStore.forms.find((f: Form) => f.id === params.id);
     
     if (!form) {
       return NextResponse.json(
@@ -16,14 +16,14 @@ export async function GET(
       );
     }
     
-    const analytics = dataStore.getAnalyticsData(params.id);
+    const submissions = dataStore.submissions.filter((s: FormResponse) => s.formId === params.id);
     
-    if (!analytics) {
-      return NextResponse.json(
-        { error: "Failed to generate analytics" },
-        { status: 500 }
-      );
-    }
+    const analytics = {
+      totalResponses: submissions.length,
+      viewCount: form.viewCount || 0,
+      conversionRate: form.viewCount ? ((submissions.length / form.viewCount) * 100).toFixed(1) : 0,
+      submissions: submissions,
+    };
     
     return NextResponse.json({ analytics }, { status: 200 });
   } catch (error) {
@@ -34,4 +34,3 @@ export async function GET(
     );
   }
 }
-

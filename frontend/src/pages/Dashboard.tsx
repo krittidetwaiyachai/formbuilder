@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronDown } from 'lucide-react';
+
 import api from '@/lib/api';
 import { Form } from '@/types';
 import { useAuthStore } from '@/store/authStore';
@@ -10,12 +10,13 @@ import FormDetailsModal from '@/components/dashboard/FormDetailsModal';
 import CollaboratorListModal from '@/components/dashboard/CollaboratorListModal';
 import { DashboardContextMenu } from '@/components/dashboard/DashboardContextMenu';
 import ConfirmDialog from '@/components/ui/ConfirmDialog';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import Loader from '@/components/common/Loader';
-import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, useSensor, useSensors, PointerSensor, TouchSensor } from '@dnd-kit/core';
+import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, useSensor, useSensors, PointerSensor, TouchSensor, pointerWithin } from '@dnd-kit/core';
 import { useFolders } from '@/hooks/useFolders';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
 import SearchFilters from '@/components/dashboard/SearchFilters';
+import FolderFilters from '@/components/dashboard/FolderFilters';
 import EmptyState from '@/components/dashboard/EmptyState';
 import DashboardFormCard from '@/components/dashboard/DashboardFormCard';
 import FoldersSection from '@/components/dashboard/FoldersSection';
@@ -23,6 +24,11 @@ import CreateFolderModal from '@/components/dashboard/CreateFolderModal';
 import { useToast } from '@/components/ui/toaster';
 
 import UngroupedFormsSection from '@/components/dashboard/UngroupedFormsSection';
+import MobileFormsSection from '@/components/mobile/MobileFormsSection';
+import MobileSearchFilters from '@/components/mobile/MobileSearchFilters';
+import MobileMoveFolderSheet from '@/components/mobile/MobileMoveFolderSheet';
+import MobileFilterSheet from '@/components/mobile/MobileFilterSheet';
+import MobileProfileSheet from '@/components/mobile/MobileProfileSheet';
 
 interface FormWithStats extends Form {
   responseCount: number;
@@ -42,6 +48,11 @@ export default function DashboardPage() {
   const { isAuthenticated, user } = useAuthStore();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('All');
+  const [sortOrder, setSortOrder] = useState('newest'); // Added sort state
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false); // Added sheet state
+  const [isMobileMoveFolderSheetOpen, setIsMobileMoveFolderSheetOpen] = useState(false); // Added sheet state
+  const [activeMobileFolderId, setActiveMobileFolderId] = useState<string | null>(null);
+  const [isProfileSheetOpen, setIsProfileSheetOpen] = useState(false);
   const navigate = useNavigate();
   const [formToDelete, setFormToDelete] = useState<string | null>(null);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
@@ -50,6 +61,7 @@ export default function DashboardPage() {
   const { toast } = useToast();
   
   const { folders, createFolder, updateFolder, deleteFolder, moveFormToFolder, refreshFolders } = useFolders();
+
   const [isCreateFolderModalOpen, setIsCreateFolderModalOpen] = useState(false);
 
   // Drag and Drop State
@@ -70,9 +82,7 @@ export default function DashboardPage() {
     })
   );
 
-  // Scroll hint logic
-  const scrollContainerRef = React.useRef<HTMLDivElement>(null);
-  const [showScrollHint, setShowScrollHint] = useState(true);
+
 
 
 
@@ -262,15 +272,30 @@ export default function DashboardPage() {
     });
   };
 
-
-
   const filteredForms = forms.filter(form => {
     const matchesSearch = form.title.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = filterStatus === 'All' || 
                          (filterStatus === 'PUBLISHED' && form.status === 'PUBLISHED') ||
                          (filterStatus === 'DRAFT' && form.status === 'DRAFT') ||
                          (filterStatus === 'ARCHIVED' && form.status === 'ARCHIVED');
-    return matchesSearch && matchesStatus;
+    
+    // Mobile Folder Filter
+    const matchesFolder = activeMobileFolderId === null 
+        ? true 
+        : activeMobileFolderId === 'ungrouped' 
+            ? !form.folderId 
+            : form.folderId === activeMobileFolderId;
+
+    return matchesSearch && matchesStatus && matchesFolder;
+  }).sort((a, b) => {
+    if (sortOrder === 'newest') {
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    } else if (sortOrder === 'oldest') {
+      return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+    } else if (sortOrder === 'alphabetical') {
+      return a.title.localeCompare(b.title);
+    }
+    return 0;
   });
 
   if (loading) {
@@ -287,45 +312,6 @@ export default function DashboardPage() {
       </div>
     );
   }
-
-
-
-  const handleScroll = () => {
-    if (scrollContainerRef.current) {
-      const { scrollTop } = scrollContainerRef.current;
-      setShowScrollHint(scrollTop < 50);
-    }
-  };
-
-  const scrollToContent = () => {
-    const container = scrollContainerRef.current;
-    if (!container) return;
-
-    const start = container.scrollTop;
-    const target = window.innerHeight - 100;
-    const distance = target - start;
-    const duration = 800; // ms
-    let startTime: number | null = null;
-
-    const easeInOutQuad = (t: number) => {
-      return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-    };
-
-    const animation = (currentTime: number) => {
-      if (startTime === null) startTime = currentTime;
-      const timeElapsed = currentTime - startTime;
-      const progress = Math.min(timeElapsed / duration, 1);
-      const ease = easeInOutQuad(progress);
-
-      container.scrollTop = start + distance * ease;
-
-      if (timeElapsed < duration) {
-        requestAnimationFrame(animation);
-      }
-    };
-
-    requestAnimationFrame(animation);
-  };
 
 
 
@@ -357,20 +343,20 @@ export default function DashboardPage() {
 
 
   return (
-    <div className="h-full bg-gray-50/50 overflow-hidden select-none flex flex-col relative" onKeyDown={(e) => {
+    <div className="h-full bg-gray-50 overflow-hidden select-none flex flex-col relative" onKeyDown={(e) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
         e.preventDefault();
         e.stopPropagation();
       }
     }}>
-      {/* Background Particles */}
+      {/* Background Particles - Reduced opacity for cleaner look */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
         {particles.map((particle) => (
           <motion.div
             key={particle.id}
             initial={{ opacity: 0, x: `${particle.x}%`, y: `${particle.y}%` }}
             animate={{ 
-              opacity: [0.3, 0.8, 0.3], 
+              opacity: [0.1, 0.4, 0.1], 
               y: [`${particle.y}%`, `${particle.y - 20}%`, `${particle.y}%`],
               x: [`${particle.x}%`, `${particle.x + 5}%`, `${particle.x}%`] 
             }}
@@ -380,82 +366,167 @@ export default function DashboardPage() {
               ease: "easeInOut",
               delay: particle.delay 
             }}
-            className="absolute rounded-full bg-gradient-to-br from-indigo-200/20 to-purple-200/20 blur-sm"
+            className="absolute rounded-full bg-gradient-to-br from-indigo-100/30 to-purple-100/30 blur-xl"
             style={{ 
-              width: particle.size * 4, 
-              height: particle.size * 4,
+              width: particle.size * 5, 
+              height: particle.size * 5,
             }}
           />
         ))}
       </div>
 
-      <DashboardHeader 
-        username={user?.firstName}
-        onCreateForm={createNewForm}
-        isCreating={isCreating}
-      />
-
-      <div className="flex-shrink-0 z-10 bg-gray-50/80 backdrop-blur-sm border-b border-gray-100 shadow-sm">
-        <div className="max-w-7xl mx-auto px-8 py-8">
-          <SearchFilters
-            searchTerm={searchTerm}
-            onSearchChange={setSearchTerm}
-            filterStatus={filterStatus}
-            onFilterChange={setFilterStatus}
-          />
-        </div>
+      {/* DashboardHeader - hidden on desktop, shown on mobile */}
+      <div className="md:hidden">
+        <DashboardHeader
+          username={user?.firstName}
+          onCreateForm={createNewForm}
+          isCreating={isCreating}
+          onLogin={() => setIsLoginModalOpen(true)}
+          onProfileClick={() => setIsProfileSheetOpen(true)}
+        />
       </div>
 
-      {/* Scrollable Content Area */}
-      <div 
-        className="flex-1 overflow-y-auto bg-gray-50/50 pb-20 scroll-smooth" 
-        ref={scrollContainerRef}
-        onScroll={handleScroll}
-      >
-        <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-          <div className="max-w-7xl mx-auto px-8 py-8">
-            <FoldersSection 
-              folders={folders}
-              forms={forms} // Pass all forms so folder can find them
-              onCreateFolder={() => setIsCreateFolderModalOpen(true)}
-              onUpdateFolder={updateFolder}
-              onDeleteFolder={handleDeleteFolderClick}
-              onFormClick={(formId) => navigate(`/forms/${formId}/builder`)}
-              currentUserId={user?.id}
-              formatDate={formatDate}
-              onContextMenu={handleContextMenu}
-              onViewDetails={(e, form) => {
-                e.stopPropagation();
-                setSelectedForm(form);
-              }}
-              onDeleteForm={handleDeleteForm}
-              onCollaboratorsClick={(e, collaborators, title, formId) => {
-                 e.stopPropagation();
-                 setCollaboratorModalData({
-                   isOpen: true,
-                   collaborators,
-                   formTitle: title,
-                   formId
-                 });
-              }}
-            />
+      <MobileSearchFilters
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        onFilterClick={() => setIsMobileFilterOpen(true)}
+        activeFiltersCount={(filterStatus !== 'All' ? 1 : 0) + (sortOrder !== 'newest' ? 1 : 0)}
+        folders={folders}
+        activeFolderId={activeMobileFolderId}
+        onFolderSelect={setActiveMobileFolderId}
+        onCreateFolder={() => setIsCreateFolderModalOpen(true)}
+      />
 
-            {filteredForms.length === 0 && folders.length === 0 ? (
-              <EmptyState searchTerm={searchTerm} onCreateForm={createNewForm} />
-            ) : (
-              <UngroupedFormsSection
-                forms={ungroupedForms}
-                foldersCount={folders.length}
-                user={user}
-                navigate={navigate}
-                handleContextMenu={handleContextMenu}
-                setSelectedForm={setSelectedForm}
-                handleDeleteForm={handleDeleteForm}
-                setCollaboratorModalData={setCollaboratorModalData}
-                formatDate={formatDate}
+
+
+        {/* Mobile: Simple List View */}
+        <MobileFormsSection
+          forms={filteredForms}
+          onCreateForm={createNewForm}
+          isCreating={isCreating}
+          loading={loading}
+          onRefresh={loadForms}
+          onDelete={(id) => handleDeleteForm(id)}
+          onMove={(id) => {
+             setActiveId(id);
+             setIsMobileMoveFolderSheetOpen(true);
+          }}
+        />
+
+        <MobileMoveFolderSheet
+            isOpen={isMobileMoveFolderSheetOpen}
+            onClose={() => {
+                setIsMobileMoveFolderSheetOpen(false);
+                setActiveId(null);
+            }}
+            folders={folders}
+            onSelectFolder={async (folderId) => {
+                if (activeId) {
+                    await moveFormToFolder(activeId, folderId);
+                    await loadForms();
+                    toast({
+                        variant: "success",
+                        title: t('dashboard.toast.moved'),
+                        description: t('dashboard.toast.moved_desc')
+                    });
+                }
+            }}
+            onCreateFolder={() => {
+                setIsMobileMoveFolderSheetOpen(false);
+                setIsCreateFolderModalOpen(true);
+            }}
+        />
+
+        {/* Desktop: Grid with Folders & Drag-and-Drop */}
+        <div className="hidden md:block flex-1 overflow-y-auto">
+          {/* DashboardHeader for desktop - scrolls with content */}
+          <DashboardHeader
+            username={user?.firstName}
+            onCreateForm={createNewForm}
+            isCreating={isCreating}
+            onLogin={() => setIsLoginModalOpen(true)}
+            onProfileClick={() => setIsProfileSheetOpen(true)}
+          />
+          
+          {/* SearchFilters - sticky on desktop */}
+          <div className="sticky top-0 z-30 bg-gray-50/95 backdrop-blur-sm border-b border-gray-100 shadow-sm">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+              <SearchFilters
+                searchTerm={searchTerm}
+                onSearchChange={setSearchTerm}
+                filterStatus={filterStatus}
+                onFilterChange={setFilterStatus}
               />
-            )}
+            </div>
           </div>
+          
+          <DndContext 
+            sensors={sensors} 
+            collisionDetection={pointerWithin}
+            onDragStart={handleDragStart} 
+            onDragEnd={handleDragEnd}
+          >
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8">
+              <FolderFilters
+                folders={folders}
+                activeFolderId={activeMobileFolderId}
+                onFolderSelect={setActiveMobileFolderId}
+                onCreateFolder={() => setIsCreateFolderModalOpen(true)}
+                showIndividualFolders={!(activeMobileFolderId === null && !searchTerm)}
+                isAuthenticated={isAuthenticated}
+                onLoginRequired={() => setIsLoginModalOpen(true)}
+              />
+              {activeMobileFolderId === null && !searchTerm && (
+                <FoldersSection 
+                  folders={folders}
+                  forms={forms}
+                  onUpdateFolder={updateFolder}
+                  onDeleteFolder={handleDeleteFolderClick}
+                  onFormClick={(formId) => navigate(`/forms/${formId}/builder`)}
+                  currentUserId={user?.id}
+                  formatDate={formatDate}
+                  onContextMenu={handleContextMenu}
+                  onViewDetails={(e, form) => {
+                    e.stopPropagation();
+                    setSelectedForm(form);
+                  }}
+                  onDeleteForm={handleDeleteForm}
+                  onCollaboratorsClick={(e, collaborators, title, formId) => {
+                     e.stopPropagation();
+                     setCollaboratorModalData({
+                       isOpen: true,
+                       collaborators,
+                       formTitle: title,
+                       formId
+                     });
+                  }}
+                />
+              )}
+
+              {filteredForms.length === 0 && folders.length === 0 && !searchTerm ? (
+                <EmptyState searchTerm={searchTerm} onCreateForm={createNewForm} />
+              ) : (
+                <UngroupedFormsSection
+                  forms={activeMobileFolderId === null ? ungroupedForms : filteredForms}
+                  foldersCount={folders.length}
+                  user={user}
+                  navigate={navigate}
+                  handleContextMenu={handleContextMenu}
+                  setSelectedForm={setSelectedForm}
+                  handleDeleteForm={handleDeleteForm}
+                  setCollaboratorModalData={setCollaboratorModalData}
+                  formatDate={formatDate}
+                  droppableId={activeMobileFolderId || 'ungrouped'}
+                  title={
+                    activeMobileFolderId === 'ungrouped' 
+                      ? t('dashboard.ungrouped_forms')
+                      : activeMobileFolderId
+                        ? folders.find(f => f.id === activeMobileFolderId)?.name
+                        : undefined
+                  }
+                />
+              )}
+            </div>
           <DragOverlay>
             {activeForm ? (
               <div 
@@ -478,54 +549,7 @@ export default function DashboardPage() {
         </DndContext>
       </div>
       
-      {/* Scroll Hint Button */}
-      <AnimatePresence>
-        {filteredForms.length > 4 && showScrollHint && (
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 20 }}
-                className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-30 flex flex-col items-center pointer-events-none"
-            >
-                <div className="relative pointer-events-auto cursor-pointer" onClick={scrollToContent}>
-                    {/* Pulsing Ring */}
-                    <motion.div
-                        animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0, 0.3] }}
-                        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                        className="absolute inset-0 bg-gray-400 rounded-full blur-sm"
-                    />
-                    
-                    {/* Orbiting Particles */}
-                    {[0, 1, 2].map((i) => (
-                        <motion.div
-                            key={i}
-                            animate={{ 
-                                rotate: 360,
-                                scale: [1, 1.2, 1]
-                            }}
-                            transition={{ 
-                                rotate: { duration: 3 + i, repeat: Infinity, ease: "linear" },
-                                scale: { duration: 2, repeat: Infinity, repeatType: "reverse" }
-                            }}
-                            className="absolute inset-0"
-                        >
-                            <div className="w-1.5 h-1.5 bg-gray-600 rounded-full absolute -top-1 left-1/2 transform -translate-x-1/2" />
-                        </motion.div>
-                    ))}
 
-                    <motion.div
-                        animate={{ y: [0, 8, 0] }}
-                        transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                        className="relative flex items-center justify-center w-12 h-12 rounded-full bg-white shadow-xl border border-gray-200 text-black hover:scale-110 hover:bg-gray-50 transition-all duration-300 z-10"
-                    >
-                        <ChevronDown className="w-6 h-6" />
-                    </motion.div>
-                </div>
-                
-
-            </motion.div>
-        )}
-      </AnimatePresence>
 
       <LoginModal 
         isOpen={isLoginModalOpen} 
@@ -536,7 +560,22 @@ export default function DashboardPage() {
       <CreateFolderModal
         isOpen={isCreateFolderModalOpen}
         onClose={() => setIsCreateFolderModalOpen(false)}
-        onCreate={(name, color) => createFolder(name, color)}
+        onCreate={async (name, color) => {
+          try {
+            await createFolder(name, color);
+            toast({
+              variant: "success",
+              title: t('dashboard.toast.folder_created'),
+              description: t('dashboard.toast.folder_created')
+            });
+          } catch (error) {
+            toast({
+              variant: "error",
+              title: t('dashboard.toast.error'),
+              description: t('dashboard.toast.error_folder_create') || 'Failed to create folder'
+            });
+          }
+        }}
       />
       
       <FormDetailsModal 
@@ -613,6 +652,20 @@ export default function DashboardPage() {
         cancelText={t('dashboard.confirm.cancel')}
         onConfirm={confirmDeleteFolder}
         variant="destructive"
+      />
+      <MobileFilterSheet
+        isOpen={isMobileFilterOpen}
+        onClose={() => setIsMobileFilterOpen(false)}
+        filterStatus={filterStatus}
+        onFilterChange={setFilterStatus}
+        sortOrder={sortOrder}
+        onSortChange={setSortOrder}
+      />
+      
+      <MobileProfileSheet
+        isOpen={isProfileSheetOpen}
+        onClose={() => setIsProfileSheetOpen(false)}
+        username={user?.firstName || 'User'}
       />
     </div>
   );

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Field } from '@/types';
 import { useFormStore } from '@/store/formStore';
-import { User } from 'lucide-react';
+
 
 interface FullNameFieldProps {
   field: Field;

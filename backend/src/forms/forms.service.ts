@@ -156,11 +156,6 @@ export class FormsService {
             photoUrl: true,
           },
         },
-        presetFields: {
-          include: {
-            preset: true,
-          },
-        },
         collaborators: {
           select: {
             id: true,
@@ -230,11 +225,7 @@ export class FormsService {
             lastName: true,
           },
         },
-        presetFields: {
-          include: {
-            preset: true,
-          },
-        },
+
       },
     });
 

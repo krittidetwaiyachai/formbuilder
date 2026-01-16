@@ -1,6 +1,6 @@
 import React from 'react';
 import { Field } from '@/types';
-import { Send, RotateCcw, Printer } from 'lucide-react';
+import { RotateCcw, Printer } from 'lucide-react';
 
 interface PreviewFieldProps {
   field: Field;

@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { dataStore } from "@/lib/data-store";
+import { Form, FormResponse } from "@/types";
 
-// GET /api/forms/[id]/submissions - Get all submissions for a specific form
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const form = dataStore.getForm(params.id);
+    const form = dataStore.forms.find((f: Form) => f.id === params.id);
     
     if (!form) {
       return NextResponse.json(
@@ -16,7 +16,7 @@ export async function GET(
       );
     }
     
-    const submissions = dataStore.getAllSubmissions(params.id);
+    const submissions = dataStore.submissions.filter((s: FormResponse) => s.formId === params.id);
     
     return NextResponse.json({ submissions }, { status: 200 });
   } catch (error) {
@@ -27,4 +27,3 @@ export async function GET(
     );
   }
 }
-

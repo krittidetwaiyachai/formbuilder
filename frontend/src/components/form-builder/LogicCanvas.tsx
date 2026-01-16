@@ -106,8 +106,19 @@ export default function LogicCanvas() {
           <p className="text-gray-500 mb-6">
             {t('builder.logic.not_enough_desc')}
           </p>
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-amber-200 rounded-lg shadow-sm text-amber-700 text-sm font-medium">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-amber-200 rounded-lg shadow-sm text-amber-700 text-sm font-medium mb-4">
              <span>{t('builder.logic.please_add', { count: missingCount })}</span>
+          </div>
+          
+          <div className="flex justify-center">
+            <Button 
+              variant="outline" 
+              onClick={() => setActiveSidebarTab('builder')}
+              className="gap-2 text-gray-600 hover:text-gray-900 border-gray-200"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              {t('builder.back_to_canvas')}
+            </Button>
           </div>
         </div>
       </div>

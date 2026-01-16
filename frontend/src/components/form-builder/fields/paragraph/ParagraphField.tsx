@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React from 'react';
 import { Field } from '@/types';
 import { useFormStore } from '@/store/formStore';
 import { RichTextEditor } from '@/components/ui/RichTextEditor';
@@ -19,7 +19,7 @@ interface ParagraphFieldProps {
 
 export const ParagraphField: React.FC<ParagraphFieldProps> = ({ 
   field, 
-  fieldStyle,
+
   isSelected = false,
   onSelect
 }) => {
@@ -34,8 +34,8 @@ export const ParagraphField: React.FC<ParagraphFieldProps> = ({
   // Render content safely
   const htmlContent = { __html: field.label || 'This is a paragraph. Click to edit.' };
 
-  const options = field.options || {};
-  const { shrink, moveToNewLine } = options;
+
+
 
   return (
     <div 

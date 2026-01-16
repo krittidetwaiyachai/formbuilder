@@ -4,6 +4,11 @@ export default {
   "builder.save": "Save",
   "builder.preview": "Preview",
   "builder.publish": "Publish",
+  "builder.back_to_canvas": "Back to Canvas",
+  "builder.add_element": "Add Element",
+  "builder.properties.title": "Properties",
+  "builder.settings": "Settings",
+  "builder.cannot_delete_last_page": "Cannot delete page. Form must have at least 1 page.",
   
   "builder.field_bundles": "Field Bundles",
   "builder.bundles_subtitle": "Common Sets",
@@ -111,6 +116,8 @@ export default {
   "builder.pagination.welcome_page": "Welcome Page",
   "builder.pagination.end_page": "End Page",
   "builder.pagination.add_page": "Add Page",
+  "builder.drag_drop_instructions": "Drag fields here or press to add from sidebar",
+  "builder.drop_here": "Drop here",
   "builder.pagination.added": "(Added)",
 
   "builder.special_page.appearance": "Appearance",
@@ -124,5 +131,15 @@ export default {
   "builder.special_page.show_button": "Show Button",
   "builder.special_page.button_text": "Button Text",
   "builder.special_page.button_link": "Button Link",
-  "builder.special_page.show_start_button": "Show Start Button"
+  "builder.special_page.show_start_button": "Show Start Button",
+
+  "builder.placeholder.short_text": "Enter text...",
+  "builder.placeholder.long_text": "Enter long text...",
+  "builder.placeholder.email": "Enter email...",
+  "builder.placeholder.phone": "Enter phone...",
+  "builder.placeholder.number": "Enter number...",
+  "builder.placeholder.dropdown": "Select an option...",
+  "builder.placeholder.date": "Pick a date...",
+  "builder.placeholder.time": "Pick a time...",
+  "builder.placeholder.header_subheading": "Add a subheading..."
 };

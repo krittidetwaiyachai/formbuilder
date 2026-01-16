@@ -11,6 +11,7 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
 
 import { ActivityLogModule } from './activity-log/activity-log.module';
 import { FoldersModule } from './folders/folders.module';
+import { EventsModule } from './events/events.module';
 
 
 @Module({
@@ -27,6 +28,7 @@ import { FoldersModule } from './folders/folders.module';
 
     ActivityLogModule,
     FoldersModule,
+    EventsModule,
   ],
   providers: [
     {

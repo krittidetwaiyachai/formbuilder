@@ -1,8 +1,18 @@
-import React from 'react'
+
 import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
-import './index.css'
+import './styles/index.css'
 import './i18n';
+
+if (import.meta.env.DEV) {
+  const originalError = console.error;
+  console.error = (...args: any[]) => {
+    if (typeof args[0] === 'string' && args[0].includes('findDOMNode')) {
+      return;
+    }
+    originalError.call(console, ...args);
+  };
+}
 
 // Unregister service workers
 if ('serviceWorker' in navigator) {

@@ -1,184 +1,20 @@
-.rich-text-editor-wrapper.snow .quill {
-  @apply bg-white rounded-md border border-gray-300 overflow-hidden;
-}
-
-.rich-text-editor-wrapper.borderless .ql-toolbar {
-  @apply border-none bg-transparent px-0 !important;
-  border: none !important;
-}
-
-.rich-text-editor-wrapper.snow .ql-toolbar {
-  @apply border-b border-gray-200 bg-gray-50;
-}
-
-.rich-text-editor-wrapper.snow .ql-container {
-  /* Allow font size and height to be controlled by parent/utility classes */
-  @apply min-h-[50px];
-}
-
-.rich-text-editor-wrapper.snow .ql-editor {
-  @apply min-h-[50px];
-}
-
-/* Borderless Mode - Aggressive Reset */
-.rich-text-editor-wrapper.borderless,
-.rich-text-editor-wrapper.borderless .quill,
-.rich-text-editor-wrapper.snow.borderless .quill,
-.rich-text-editor-wrapper.borderless .ql-container,
-.rich-text-editor-wrapper.snow.borderless .ql-container.ql-snow,
-.rich-text-editor-wrapper.borderless .ql-editor {
-  border: none !important;
-  box-shadow: none !important;
-  background: transparent !important;
-  background-color: transparent !important;
-  border-radius: 0 !important;
-  outline: none !important;
-  padding: 0 !important; /* Reset padding to prevent internal spacing issues */
-}
-
-/* Ensure font and line-height inheritance */
-.rich-text-editor-wrapper.borderless .ql-container.ql-snow,
-.rich-text-editor-wrapper.borderless .ql-editor {
-  text-transform: inherit !important;
-  font-family: inherit !important;
-  font-size: inherit !important;
-  line-height: inherit !important;
-  font-weight: inherit !important;
-  min-height: 0 !important;
-  overflow: visible !important;
-  text-align: inherit !important;
-}
-
-/* Allow headers inside to inherit styles but override specific weights if needed */
-.rich-text-editor-wrapper.borderless .ql-editor h1,
-.rich-text-editor-wrapper.borderless .ql-editor h2,
-.rich-text-editor-wrapper.borderless .ql-editor p {
-    font-weight: inherit;
-    line-height: inherit !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-/* Bubble Theme Specifics */
-.rich-text-editor-wrapper.bubble .quill {
-  @apply overflow-visible;
-}
-
-@keyframes slideDownFade {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-slide-down {
-  animation: slideDownFade 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-/* Custom Toolbar Styling - Global to support standalone toolbars */
-.ql-toolbar button {
-  @apply rounded-md text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 transition-colors duration-200;
-}
-
-.ql-toolbar button.ql-active {
-  @apply text-indigo-600 bg-indigo-50;
-}
-
-.ql-toolbar .ql-picker-label {
-  @apply text-gray-500 hover:text-indigo-600 flex items-center outline-none;
-  white-space: nowrap !important;
-}
-
-.ql-toolbar .ql-picker-label.ql-active {
-  @apply text-indigo-600;
-}
-
-/* Custom Dropdown Styling */
-.ql-toolbar .ql-picker-options {
-  @apply bg-white border border-gray-100 shadow-xl rounded-xl p-1 mt-2 !important;
-  min-width: 150px !important;
-  z-index: 50 !important;
-}
-
-.ql-toolbar .ql-picker-item {
-  @apply text-sm text-gray-600 px-3 py-2 rounded-lg cursor-pointer hover:bg-indigo-50 hover:text-indigo-600 transition-colors duration-150 !important;
-}
-
-.ql-toolbar .ql-picker-item.ql-selected {
-  @apply bg-indigo-50 text-indigo-600 font-medium !important;
-}
-
-/* Borderless Mode Toolbar Overrides */
-/* Ensure default sizing is consistent */
-.ql-toolbar button {
-    height: 28px !important;
-    width: 28px !important;
-    padding: 4px !important;
-}
-
-.ql-toolbar.ql-snow .ql-picker-label {
-    padding-left: 8px !important;
-    padding-right: 24px !important;
-}
-
-/* Fix dropdown arrow position */
-.ql-toolbar.ql-snow .ql-picker-label::before {
-    position: relative !important;
-    top: auto !important;
-    margin-right: 4px !important;
-}
-
-.rich-text-editor-wrapper.bubble .ql-container {
-  @apply text-[length:inherit] font-[inherit] min-h-0 !important;
-  font-size: inherit !important;
-}
-
-.rich-text-editor-wrapper.bubble .ql-editor {
-  @apply min-h-0 p-0 overflow-visible !important;
-  font-size: inherit !important;
-  line-height: inherit !important;
-}
-
-.rich-text-editor-wrapper.bubble .ql-editor p {
-  @apply m-0;
-}
-
-/* Custom Scrollbar for editor if needed */
-.rich-text-editor-wrapper.snow .ql-editor::-webkit-scrollbar {
-  width: 8px;
-}
-
-.rich-text-editor-wrapper.snow .ql-editor::-webkit-scrollbar-track {
-  @apply bg-gray-100;
-}
-
-.rich-text-editor-wrapper.snow .ql-editor::-webkit-scrollbar-thumb {
-  @apply bg-gray-300 rounded-full;
-}
-
-/* Thai Font Support & Universal Formatting */
-/* Import common Thai fonts if not already available or rely on system fallback priority */
-.ql-editor, .ql-container {
-  /* Prioritize Leelawadee UI and Tahoma for Windows as they handle Thai Italics natively */
-  font-family: 'Sarabun', 'Prompt', 'Leelawadee UI', 'Tahoma', 'Noto Sans Thai', sans-serif !important;
-  /* Force browser to synthesize bold/italic if the font file is missing it */
-  font-synthesis: style weight !important;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* Force bold/italic rendering even if specific font weight isn't available */
-.ql-editor strong {
-  font-weight: 700 !important;
+.ql-container {
   font-family: inherit;
+  font-size: inherit;
 }
 
-.ql-editor em {
-  font-style: italic !important;
-  font-family: inherit;
-  /* Ensure synthesis is active for em tags specifically */
-  font-synthesis: style !important;
+.ql-editor {
+  min-height: auto;
+}
+
+.ql-toolbar.ql-snow {
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+  border-color: #e2e8f0;
+}
+
+.ql-container.ql-snow {
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+  border-color: #e2e8f0;
 }

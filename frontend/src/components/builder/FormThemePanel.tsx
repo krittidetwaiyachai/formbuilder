@@ -5,10 +5,10 @@ import * as React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Palette, Image, Type, Layout, Sparkles } from "lucide-react";
-import { FormTheme } from "@/types/form";
+import { Palette, Sparkles } from "lucide-react";
+import { FormTheme } from "@/types";
 
 interface FormThemePanelProps {
   theme: FormTheme;
@@ -114,7 +114,7 @@ export default function FormThemePanel({ theme, onThemeChange }: FormThemePanelP
             Preset Themes
           </Label>
           <div className="grid grid-cols-2 gap-2">
-            {Object.entries(presetThemes).map(([name, theme]) => (
+            {Object.entries(presetThemes).map(([name]) => (
               <Button
                 key={name}
                 variant="outline"
@@ -153,11 +153,16 @@ export default function FormThemePanel({ theme, onThemeChange }: FormThemePanelP
           <Label>Background Type</Label>
           <Select
             value={localTheme.backgroundType}
-            onChange={(e) => handleChange({ backgroundType: e.target.value as "color" | "image" | "gradient" })}
+            onValueChange={(value) => handleChange({ backgroundType: value as "color" | "image" | "gradient" })}
           >
-            <option value="color">Solid Color</option>
-            <option value="gradient">Gradient</option>
-            <option value="image">Image</option>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="color">Solid Color</SelectItem>
+              <SelectItem value="gradient">Gradient</SelectItem>
+              <SelectItem value="image">Image</SelectItem>
+            </SelectContent>
           </Select>
         </div>
 
@@ -263,11 +268,16 @@ export default function FormThemePanel({ theme, onThemeChange }: FormThemePanelP
           <Label>Button Style</Label>
           <Select
             value={localTheme.buttonStyle}
-            onChange={(e) => handleChange({ buttonStyle: e.target.value as "filled" | "outlined" | "ghost" })}
+            onValueChange={(value) => handleChange({ buttonStyle: value as "filled" | "outlined" | "ghost" })}
           >
-            <option value="filled">Filled</option>
-            <option value="outlined">Outlined</option>
-            <option value="ghost">Ghost</option>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="filled">Filled</SelectItem>
+              <SelectItem value="outlined">Outlined</SelectItem>
+              <SelectItem value="ghost">Ghost</SelectItem>
+            </SelectContent>
           </Select>
         </div>
 
@@ -276,12 +286,17 @@ export default function FormThemePanel({ theme, onThemeChange }: FormThemePanelP
           <Label>Border Radius</Label>
           <Select
             value={localTheme.borderRadius}
-            onChange={(e) => handleChange({ borderRadius: e.target.value as "none" | "small" | "medium" | "large" })}
+            onValueChange={(value) => handleChange({ borderRadius: value as "none" | "small" | "medium" | "large" })}
           >
-            <option value="none">None</option>
-            <option value="small">Small</option>
-            <option value="medium">Medium</option>
-            <option value="large">Large</option>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="none">None</SelectItem>
+              <SelectItem value="small">Small</SelectItem>
+              <SelectItem value="medium">Medium</SelectItem>
+              <SelectItem value="large">Large</SelectItem>
+            </SelectContent>
           </Select>
         </div>
 
@@ -290,14 +305,19 @@ export default function FormThemePanel({ theme, onThemeChange }: FormThemePanelP
           <Label>Font Family</Label>
           <Select
             value={localTheme.fontFamily}
-            onChange={(e) => handleChange({ fontFamily: e.target.value })}
+            onValueChange={(value) => handleChange({ fontFamily: value })}
           >
-            <option value="Inter">Inter</option>
-            <option value="Roboto">Roboto</option>
-            <option value="Open Sans">Open Sans</option>
-            <option value="Lato">Lato</option>
-            <option value="Montserrat">Montserrat</option>
-            <option value="Poppins">Poppins</option>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Inter">Inter</SelectItem>
+              <SelectItem value="Roboto">Roboto</SelectItem>
+              <SelectItem value="Open Sans">Open Sans</SelectItem>
+              <SelectItem value="Lato">Lato</SelectItem>
+              <SelectItem value="Montserrat">Montserrat</SelectItem>
+              <SelectItem value="Poppins">Poppins</SelectItem>
+            </SelectContent>
           </Select>
         </div>
       </CardContent>

@@ -1,0 +1,11 @@
+app/api/forms/route.ts(74,15): error TS1005: ';' expected.
+app/api/forms/route.ts(75,15): error TS1005: ';' expected.
+app/api/forms/route.ts(76,17): error TS1005: ';' expected.
+app/api/forms/route.ts(77,15): error TS1005: ';' expected.
+app/api/forms/route.ts(78,15): error TS1005: ';' expected.
+app/api/forms/route.ts(79,20): error TS1005: ';' expected.
+app/api/forms/route.ts(80,18): error TS1005: ';' expected.
+app/api/forms/route.ts(81,7): error TS1109: Expression expected.
+app/api/forms/route.ts(86,5): error TS1472: 'catch' or 'finally' expected.
+app/api/forms/route.ts(87,5): error TS1005: 'try' expected.
+app/api/forms/route.ts(94,1): error TS1128: Declaration or statement expected.

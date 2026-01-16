@@ -78,12 +78,12 @@ export const PreviewHeaderField: React.FC<PreviewFieldProps> = ({ field }) => {
               headerAlignment === 'RIGHT' ? 'items-end' : 'items-start'
             }` : ''}>
               <h2 className={`${getHeaderSizeClass()} font-bold ${hasBackgroundImage ? 'text-white' : 'bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent'} ${getHeaderAlignmentClass()} leading-tight tracking-tight pb-1`}>
-                {field.label || 'Heading'}
+                <div className="ql-editor !p-0 !min-h-0 [&>p]:!m-0" dangerouslySetInnerHTML={{ __html: field.label || 'Heading' }} />
               </h2>
               {headerSubheading && (
-                <p className={`text-base mt-3 ${hasBackgroundImage ? 'text-white/90' : 'text-gray-600'} ${getHeaderAlignmentClass()}`}>
-                  {headerSubheading}
-                </p>
+                <div className={`text-base mt-3 ${hasBackgroundImage ? 'text-white/90' : 'text-gray-600'} ${getHeaderAlignmentClass()}`}>
+                  <div className="ql-editor !p-0 !min-h-0 [&>p]:!m-0" dangerouslySetInnerHTML={{ __html: headerSubheading }} />
+                </div>
               )}
               {headingImage && headingImage.startsWith('http') && imagePosition !== 'BACKGROUND' && (
                 <div className={`mt-6 ${

@@ -1,4 +1,4 @@
-import React from 'react';
+
 import FormFieldRenderer from '@/components/form-preview/FormFieldRenderer';
 import { Form } from '@/types';
 
@@ -28,7 +28,7 @@ export function ClassicLayout({
         return (
           <div 
             key={field.id} 
-            className={`${isShrunk ? 'w-full md:w-[calc(50%-0.75rem)]' : 'w-full'} pb-8 border-b border-gray-50 last:border-0 last:pb-0`}
+            className={`${isShrunk ? 'w-full md:w-[calc(50%-0.75rem)]' : 'w-full'} pb-6 border-b border-gray-50 last:border-0 last:pb-0`}
           >
             <FormFieldRenderer
               field={field}

@@ -1,6 +1,7 @@
 export default {
   "dashboard.welcome": "ยินดีต้อนรับ {{username}}",
   "dashboard.welcome_default": "ยินดีต้อนรับ",
+  "dashboard.welcome_back": "ยินดีต้อนรับกลับมา",
   "dashboard.create_form": "สร้างฟอร์มใหม่",
   "dashboard.search_placeholder": "ค้นหาฟอร์ม...",
   "dashboard.loading": "กำลังโหลดแดชบอร์ด...",
@@ -11,14 +12,18 @@ export default {
   "dashboard.filters.archived": "เก็บถาวร",
   
   "dashboard.folders": "โฟลเดอร์",
+  "dashboard.move_to_folder": "ย้ายไปยังโฟลเดอร์",
   "dashboard.new_folder": "โฟลเดอร์ใหม่",
   "dashboard.all_forms": "ฟอร์มทั้งหมด",
   "dashboard.ungrouped_forms": "ฟอร์ม",
+  "dashboard.folder.all": "ทั้งหมด",
+  "dashboard.folder.ungrouped": "ไม่ได้จัดกลุ่ม",
   
   "dashboard.empty.title": "ไม่พบฟอร์ม",
   "dashboard.empty.no_search": "ไม่พบฟอร์มที่ตรงกับการค้นหา",
   "dashboard.empty.no_forms": "คุณยังไม่ได้สร้างฟอร์ม เริ่มต้นเลยตอนนี้!",
   "dashboard.empty.create_first": "สร้างฟอร์มแรกของคุณ",
+  "dashboard.empty.description": "คลิกปุ่มด้านบนเพื่อสร้างฟอร์มแรกของคุณ",
   
   "dashboard.form.responses": "คำตอบ",
   "dashboard.form.responses_plural": "คำตอบ",
@@ -59,6 +64,8 @@ export default {
   "dashboard.toast.link_copied": "คัดลอกลิงก์แล้ว!",
   "dashboard.toast.folder_created": "สร้างโฟลเดอร์สำเร็จ",
   "dashboard.toast.folder_deleted": "ลบโฟลเดอร์สำเร็จ",
+  "dashboard.toast.moved": "ย้ายฟอร์มสำเร็จ",
+  "dashboard.toast.moved_desc": "ฟอร์มถูกย้ายไปยังโฟลเดอร์ใหม่แล้ว",
   "dashboard.toast.error": "เกิดข้อผิดพลาด",
   "dashboard.toast.error_create": "ไม่สามารถสร้างฟอร์มได้ในขณะนี้",
   "dashboard.toast.error_delete": "ไม่สามารถลบฟอร์มได้ กรุณาลองใหม่อีกครั้ง",
@@ -95,5 +102,23 @@ export default {
   "dashboard.form.statistics": "สถิติ",
   "dashboard.form.timeline": "ไทม์ไลน์",
   "dashboard.form.created": "สร้างเมื่อ",
-  "dashboard.form.last_updated": "อัปเดตล่าสุด"
+  "dashboard.form.last_updated": "อัปเดตล่าสุด",
+  
+  "dashboard.filters.title": "ตัวกรองและการจัดเรียง",
+  "dashboard.filters.status": "สถานะ",
+  "dashboard.filters.apply": "แสดงผลลัพธ์",
+  "dashboard.sort.title": "จัดเรียงตาม",
+  "dashboard.sort.newest": "ใหม่ล่าสุด",
+  "dashboard.sort.oldest": "เก่าที่สุด",
+  "dashboard.sort.alphabetical": "ตามตัวอักษร (A-Z)",
+  
+  "dashboard.folder.expand": "ขยาย",
+  "dashboard.folder.collapse": "ย่อ",
+  "dashboard.folder.actions": "การกระทำ",
+  "dashboard.folder.empty": "โฟลเดอร์นี้ยังไม่มีฟอร์ม",
+  "dashboard.folder.count": "โฟลเดอร์",
+  "dashboard.folder.count_plural": "โฟลเดอร์",
+  "dashboard.modal.close": "ปิด",
+  "dashboard.modal.creating": "กำลังสร้าง...",
+  "dashboard.toast.error_folder_create": "ไม่สามารถสร้างโฟลเดอร์ได้ กรุณาลองใหม่อีกครั้ง"
 };

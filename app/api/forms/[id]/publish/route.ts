@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { dataStore } from "@/lib/data-store";
+import { Form } from "@/types";
+import { ActivityLog } from "@/types/collaboration";
 
-// POST /api/forms/[id]/publish - Publish or unpublish a form
 export async function POST(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -10,30 +11,22 @@ export async function POST(
     const body = await request.json();
     const { publish, userId, userName } = body;
     
-    const form = dataStore.getForm(params.id);
-    if (!form) {
+    const formIndex = dataStore.forms.findIndex((f: Form) => f.id === params.id);
+    if (formIndex === -1) {
       return NextResponse.json(
         { error: "Form not found" },
         { status: 404 }
       );
     }
     
-    const newStatus = publish ? "published" : "draft";
-    const updated = dataStore.updateForm(params.id, {
-      status: newStatus,
-    });
+    const newStatus = publish ? "PUBLISHED" : "DRAFT";
+    dataStore.forms[formIndex] = {
+      ...dataStore.forms[formIndex],
+      status: newStatus as any,
+      updatedAt: new Date().toISOString(),
+    };
     
-    if (!updated) {
-      return NextResponse.json(
-        { error: "Failed to update form status" },
-        { status: 500 }
-      );
-    }
-    
-    // Create activity log
     if (userId) {
-      const { ActivityLog } = await import("@/types/collaboration");
-      
       const activityLog: ActivityLog = {
         id: `act-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
         formId: params.id,
@@ -45,11 +38,11 @@ export async function POST(
         timestamp: new Date().toISOString(),
       };
       
-      dataStore.createActivityLog(activityLog);
+      dataStore.activityLogs.push(activityLog);
     }
     
     return NextResponse.json(
-      { form: updated, message: `Form ${publish ? "published" : "unpublished"} successfully` },
+      { form: dataStore.forms[formIndex], message: `Form ${publish ? "published" : "unpublished"} successfully` },
       { status: 200 }
     );
   } catch (error) {
@@ -60,4 +53,3 @@ export async function POST(
     );
   }
 }
-

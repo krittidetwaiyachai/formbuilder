@@ -1,0 +1,1245 @@
+app/activity/[id]/page.tsx(3,75): error TS2307: Cannot find module '@/components/ui/card' or its corresponding type declarations.
+app/activity/[id]/page.tsx(4,24): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+app/activity/[id]/page.tsx(7,25): error TS2307: Cannot find module '@/components/builder/ActivityLog' or its corresponding type declarations.
+app/analytics/[id]/page.tsx(4,75): error TS2307: Cannot find module '@/components/ui/card' or its corresponding type declarations.
+app/analytics/[id]/page.tsx(5,24): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+app/analytics/[id]/page.tsx(6,58): error TS2307: Cannot find module '@/components/ui/tabs' or its corresponding type declarations.
+app/api/forms/[id]/publish/route.ts(35,15): error TS2339: Property 'ActivityLog' does not exist on type 'typeof import("D:/formbuilder/types/collaboration")'.
+app/api/forms/[id]/publish/route.ts(37,26): error TS2749: 'ActivityLog' refers to a value, but is being used as a type here. Did you mean 'typeof ActivityLog'?
+app/api/forms/[id]/route.ts(55,15): error TS2339: Property 'ActivityLog' does not exist on type 'typeof import("D:/formbuilder/types/collaboration")'.
+app/api/forms/[id]/route.ts(57,26): error TS2749: 'ActivityLog' refers to a value, but is being used as a type here. Did you mean 'typeof ActivityLog'?
+app/api/forms/route.ts(63,15): error TS2339: Property 'ActivityLog' does not exist on type 'typeof import("D:/formbuilder/types/collaboration")'.
+app/api/forms/route.ts(65,26): error TS2749: 'ActivityLog' refers to a value, but is being used as a type here. Did you mean 'typeof ActivityLog'?
+app/builder/[id]/page.tsx(8,29): error TS2307: Cannot find module '@/components/builder/ElementsSidebar' or its corresponding type declarations.
+app/builder/[id]/page.tsx(9,20): error TS2307: Cannot find module '@/components/builder/Canvas' or its corresponding type declarations.
+app/builder/[id]/page.tsx(10,29): error TS2307: Cannot find module '@/components/builder/PropertiesPanel' or its corresponding type declarations.
+app/builder/[id]/page.tsx(11,33): error TS2307: Cannot find module '@/components/builder/DesignerElementCard' or its corresponding type declarations.
+app/builder/[id]/page.tsx(12,28): error TS2307: Cannot find module '@/components/builder/FormThemePanel' or its corresponding type declarations.
+app/builder/[id]/page.tsx(13,31): error TS2307: Cannot find module '@/components/builder/FormSettingsPanel' or its corresponding type declarations.
+app/builder/[id]/page.tsx(14,27): error TS2307: Cannot find module '@/components/builder/ActiveEditors' or its corresponding type declarations.
+app/builder/[id]/page.tsx(15,24): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+app/builder/[id]/page.tsx(16,58): error TS2307: Cannot find module '@/components/ui/tabs' or its corresponding type declarations.
+app/builder/[id]/page.tsx(20,26): error TS2307: Cannot find module '@/components/ui/toaster' or its corresponding type declarations.
+app/builder/[id]/page.tsx(21,25): error TS2307: Cannot find module '@/components/ui/tooltip' or its corresponding type declarations.
+app/builder/[id]/page.tsx(29,8): error TS2307: Cannot find module '@/components/ui/dialog' or its corresponding type declarations.
+app/builder/[id]/page.tsx(379,53): error TS7006: Parameter 'v' implicitly has an 'any' type.
+app/dashboard/page.tsx(5,24): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+app/dashboard/page.tsx(6,23): error TS2307: Cannot find module '@/components/ui/input' or its corresponding type declarations.
+app/dashboard/page.tsx(7,24): error TS2307: Cannot find module '@/components/ui/select' or its corresponding type declarations.
+app/dashboard/page.tsx(9,22): error TS2307: Cannot find module '@/components/dashboard/FormCard' or its corresponding type declarations.
+app/dashboard/page.tsx(12,62): error TS2307: Cannot find module '@/components/ui/card' or its corresponding type declarations.
+app/dashboard/page.tsx(107,26): error TS7006: Parameter 'e' implicitly has an 'any' type.
+app/dashboard/page.tsx(125,26): error TS7006: Parameter 'e' implicitly has an 'any' type.
+app/dashboard/page.tsx(139,26): error TS7006: Parameter 'e' implicitly has an 'any' type.
+app/demo/page.tsx(3,25): error TS2307: Cannot find module '@/components/demo/FormPreview' or its corresponding type declarations.
+app/demo/page.tsx(4,27): error TS2307: Cannot find module '@/components/demo/DashboardGrid' or its corresponding type declarations.
+app/demo/page.tsx(5,31): error TS2307: Cannot find module '@/components/demo/AnalyticsOverview' or its corresponding type declarations.
+app/demo/page.tsx(6,30): error TS2307: Cannot find module '@/components/demo/SubmissionsTable' or its corresponding type declarations.
+app/demo/page.tsx(7,58): error TS2307: Cannot find module '@/components/ui/tabs' or its corresponding type declarations.
+app/demo/page.tsx(8,75): error TS2307: Cannot find module '@/components/ui/card' or its corresponding type declarations.
+app/layout.tsx(4,20): error TS2307: Cannot find module '@/components/Navbar' or its corresponding type declarations.
+app/layout.tsx(5,28): error TS2307: Cannot find module '@/components/ToasterWrapper' or its corresponding type declarations.
+app/preview/[id]/page.tsx(4,58): error TS2307: Cannot find module '@/components/ui/tabs' or its corresponding type declarations.
+app/preview/[id]/page.tsx(5,25): error TS2307: Cannot find module '@/components/preview/DeviceFrame' or its corresponding type declarations.
+app/preview/[id]/page.tsx(6,33): error TS2307: Cannot find module '@/components/builder/FormElementRenderer' or its corresponding type declarations.
+app/preview/[id]/page.tsx(11,24): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+app/preview/[id]/page.tsx(12,25): error TS2307: Cannot find module '@/components/ui/tooltip' or its corresponding type declarations.
+app/preview/[id]/page.tsx(127,31): error TS7006: Parameter 'value' implicitly has an 'any' type.
+app/responses/[id]/page.tsx(6,75): error TS2307: Cannot find module '@/components/ui/card' or its corresponding type declarations.
+app/responses/[id]/page.tsx(7,24): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+app/responses/[id]/page.tsx(10,36): error TS2307: Cannot find module '@/components/analytics/FieldAnalyticsSelector' or its corresponding type declarations.
+app/responses/[id]/page.tsx(11,30): error TS2307: Cannot find module '@/components/analytics/AnalysisRenderer' or its corresponding type declarations.
+app/submission/[id]/page.tsx(4,75): error TS2307: Cannot find module '@/components/ui/card' or its corresponding type declarations.
+app/submission/[id]/page.tsx(5,24): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+app/submission/[id]/page.tsx(8,23): error TS2307: Cannot find module '@/components/ui/badge' or its corresponding type declarations.
+backend/src/activity-log/activity-log.controller.ts(11,5): error TS1206: Decorators are not valid here.
+backend/src/activity-log/activity-log.controller.ts(12,5): error TS1206: Decorators are not valid here.
+backend/src/activity-log/activity-log.controller.ts(13,5): error TS1206: Decorators are not valid here.
+backend/src/activity-log/activity-log.controller.ts(14,5): error TS1206: Decorators are not valid here.
+backend/src/activity-log/activity-log.controller.ts(15,5): error TS1206: Decorators are not valid here.
+backend/src/auth/auth.controller.ts(14,3): error TS1241: Unable to resolve signature of method decorator when called as an expression.
+  The runtime will invoke the decorator with 2 arguments, but the decorator expects 3.
+backend/src/auth/auth.controller.ts(14,4): error TS1270: Decorator function return type 'void | TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((loginDto: LoginDto) => Promise<{ access_token: string; user: { id: string; email: string; firstName: string | null; lastName: string | null; role: RoleType; }; }>)'.
+  Type 'TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((loginDto: LoginDto) => Promise<{ access_token: string; user: { id: string; email: string; firstName: string | null; lastName: string | null; role: RoleType; }; }>)'.
+backend/src/auth/auth.controller.ts(15,15): error TS1206: Decorators are not valid here.
+backend/src/auth/auth.controller.ts(20,3): error TS1241: Unable to resolve signature of method decorator when called as an expression.
+  The runtime will invoke the decorator with 2 arguments, but the decorator expects 3.
+backend/src/auth/auth.controller.ts(20,4): error TS1270: Decorator function return type 'void | TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((token: string) => Promise<{ access_token: string; user: { id: string; email: string; firstName: string | null; lastName: string | null; photoUrl: string | null; role: RoleType; }; }>)'.
+  Type 'TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((token: string) => Promise<{ access_token: string; user: { id: string; email: string; firstName: string | null; lastName: string | null; photoUrl: string | null; role: RoleType; }; }>)'.
+backend/src/auth/auth.controller.ts(21,21): error TS1206: Decorators are not valid here.
+backend/src/auth/auth.service.ts(134,60): error TS2345: Argument of type 'string | null' is not assignable to parameter of type 'string'.
+  Type 'null' is not assignable to type 'string'.
+backend/src/auth/dto/login.dto.ts(4,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/auth/dto/login.dto.ts(5,3): error TS2564: Property 'email' has no initializer and is not definitely assigned in the constructor.
+backend/src/auth/dto/login.dto.ts(7,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/auth/dto/login.dto.ts(8,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/auth/dto/login.dto.ts(9,3): error TS2564: Property 'password' has no initializer and is not definitely assigned in the constructor.
+backend/src/events/events.gateway.ts(17,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/events/events.gateway.ts(18,3): error TS2564: Property 'server' has no initializer and is not definitely assigned in the constructor.
+backend/src/folders/dto/create-folder.dto.ts(4,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/folders/dto/create-folder.dto.ts(5,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/folders/dto/create-folder.dto.ts(6,3): error TS2564: Property 'name' has no initializer and is not definitely assigned in the constructor.
+backend/src/folders/dto/create-folder.dto.ts(8,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/folders/dto/create-folder.dto.ts(9,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/folders/dto/update-folder.dto.ts(4,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/folders/dto/update-folder.dto.ts(5,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/folders/dto/update-folder.dto.ts(6,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/folders/dto/update-folder.dto.ts(9,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/folders/dto/update-folder.dto.ts(10,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/folders/folders.controller.ts(23,3): error TS1241: Unable to resolve signature of method decorator when called as an expression.
+  The runtime will invoke the decorator with 2 arguments, but the decorator expects 3.
+backend/src/folders/folders.controller.ts(23,4): error TS1270: Decorator function return type 'void | TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((req: any, createFolderDto: CreateFolderDto) => Promise<{ _count: { forms: number; }; } & { color: string | null; id: string; name: string; userId: string; createdAt: Date; updatedAt: Date; }>)'.
+  Type 'TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((req: any, createFolderDto: CreateFolderDto) => Promise<{ _count: { forms: number; }; } & { color: string | null; id: string; name: string; userId: string; createdAt: Date; updatedAt: Date; }>)'.
+backend/src/folders/folders.controller.ts(24,10): error TS1206: Decorators are not valid here.
+backend/src/folders/folders.controller.ts(24,10): error TS7006: Parameter 'req' implicitly has an 'any' type.
+backend/src/folders/folders.controller.ts(24,26): error TS1206: Decorators are not valid here.
+backend/src/folders/folders.controller.ts(28,3): error TS1241: Unable to resolve signature of method decorator when called as an expression.
+  The runtime will invoke the decorator with 2 arguments, but the decorator expects 3.
+backend/src/folders/folders.controller.ts(28,4): error TS1270: Decorator function return type 'void | TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((req: any) => Promise<({ _count: { forms: number; }; } & { color: string | null; id: string; name: string; userId: string; createdAt: Date; updatedAt: Date; })[]>)'.
+  Type 'TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((req: any) => Promise<({ _count: { forms: number; }; } & { color: string | null; id: string; name: string; userId: string; createdAt: Date; updatedAt: Date; })[]>)'.
+backend/src/folders/folders.controller.ts(29,11): error TS1206: Decorators are not valid here.
+backend/src/folders/folders.controller.ts(29,11): error TS7006: Parameter 'req' implicitly has an 'any' type.
+backend/src/folders/folders.controller.ts(33,3): error TS1241: Unable to resolve signature of method decorator when called as an expression.
+  The runtime will invoke the decorator with 2 arguments, but the decorator expects 3.
+backend/src/folders/folders.controller.ts(33,4): error TS1270: Decorator function return type 'void | TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((formId: string, folderId: string | null, req: any) => Promise<{ id: string; title: string; status: FormStatus; settings: JsonValue; description: string | null; ... 10 more ...; folderId: string | null; }>)'.
+  Type 'TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((formId: string, folderId: string | null, req: any) => Promise<{ id: string; title: string; status: FormStatus; settings: JsonValue; description: string | null; ... 10 more ...; folderId: string | null; }>)'.
+backend/src/folders/folders.controller.ts(35,5): error TS1206: Decorators are not valid here.
+backend/src/folders/folders.controller.ts(36,5): error TS1206: Decorators are not valid here.
+backend/src/folders/folders.controller.ts(37,5): error TS1206: Decorators are not valid here.
+backend/src/folders/folders.controller.ts(37,5): error TS7006: Parameter 'req' implicitly has an 'any' type.
+backend/src/folders/folders.controller.ts(42,3): error TS1241: Unable to resolve signature of method decorator when called as an expression.
+  The runtime will invoke the decorator with 2 arguments, but the decorator expects 3.
+backend/src/folders/folders.controller.ts(42,4): error TS1270: Decorator function return type 'void | TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((id: string, req: any) => Promise<{ _count: { forms: number; }; forms: { id: string; title: string; status: FormStatus; createdAt: Date; updatedAt: Date; viewCount: number; }[]; } & { ...; }>)'.
+  Type 'TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((id: string, req: any) => Promise<{ _count: { forms: number; }; forms: { id: string; title: string; status: FormStatus; createdAt: Date; updatedAt: Date; viewCount: number; }[]; } & { ...; }>)'.
+backend/src/folders/folders.controller.ts(43,11): error TS1206: Decorators are not valid here.
+backend/src/folders/folders.controller.ts(43,36): error TS1206: Decorators are not valid here.
+backend/src/folders/folders.controller.ts(43,36): error TS7006: Parameter 'req' implicitly has an 'any' type.
+backend/src/folders/folders.controller.ts(47,3): error TS1241: Unable to resolve signature of method decorator when called as an expression.
+  The runtime will invoke the decorator with 2 arguments, but the decorator expects 3.
+backend/src/folders/folders.controller.ts(47,4): error TS1270: Decorator function return type 'void | TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((id: string, req: any, updateFolderDto: UpdateFolderDto) => Promise<{ _count: { forms: number; }; } & { color: string | null; id: string; name: string; userId: string; createdAt: Date; updatedAt: Date; }>)'.
+  Type 'TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((id: string, req: any, updateFolderDto: UpdateFolderDto) => Promise<{ _count: { forms: number; }; } & { color: string | null; id: string; name: string; userId: string; createdAt: Date; updatedAt: Date; }>)'.
+backend/src/folders/folders.controller.ts(49,5): error TS1206: Decorators are not valid here.
+backend/src/folders/folders.controller.ts(50,5): error TS1206: Decorators are not valid here.
+backend/src/folders/folders.controller.ts(50,5): error TS7006: Parameter 'req' implicitly has an 'any' type.
+backend/src/folders/folders.controller.ts(51,5): error TS1206: Decorators are not valid here.
+backend/src/folders/folders.controller.ts(56,3): error TS1241: Unable to resolve signature of method decorator when called as an expression.
+  The runtime will invoke the decorator with 2 arguments, but the decorator expects 3.
+backend/src/folders/folders.controller.ts(56,4): error TS1270: Decorator function return type 'void | TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((id: string, req: any) => Promise<{ color: string | null; id: string; name: string; userId: string; createdAt: Date; updatedAt: Date; }>)'.
+  Type 'TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((id: string, req: any) => Promise<{ color: string | null; id: string; name: string; userId: string; createdAt: Date; updatedAt: Date; }>)'.
+backend/src/folders/folders.controller.ts(57,10): error TS1206: Decorators are not valid here.
+backend/src/folders/folders.controller.ts(57,35): error TS1206: Decorators are not valid here.
+backend/src/folders/folders.controller.ts(57,35): error TS7006: Parameter 'req' implicitly has an 'any' type.
+backend/src/forms/dto/create-form.dto.ts(14,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(15,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(18,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(19,3): error TS2564: Property 'type' has no initializer and is not definitely assigned in the constructor.
+backend/src/forms/dto/create-form.dto.ts(21,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(22,3): error TS2564: Property 'label' has no initializer and is not definitely assigned in the constructor.
+backend/src/forms/dto/create-form.dto.ts(24,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(25,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(28,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(29,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(32,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(35,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(36,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(39,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(42,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(43,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(46,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(47,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(50,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(51,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(54,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(55,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(60,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(61,3): error TS2564: Property 'sourceFieldId' has no initializer and is not definitely assigned in the constructor.
+backend/src/forms/dto/create-form.dto.ts(63,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(64,3): error TS2564: Property 'targetFieldId' has no initializer and is not definitely assigned in the constructor.
+backend/src/forms/dto/create-form.dto.ts(66,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(67,3): error TS2564: Property 'operator' has no initializer and is not definitely assigned in the constructor.
+backend/src/forms/dto/create-form.dto.ts(69,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(70,3): error TS2564: Property 'value' has no initializer and is not definitely assigned in the constructor.
+backend/src/forms/dto/create-form.dto.ts(72,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(73,3): error TS2564: Property 'action' has no initializer and is not definitely assigned in the constructor.
+backend/src/forms/dto/create-form.dto.ts(77,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(78,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(81,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(82,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(83,3): error TS2564: Property 'fieldId' has no initializer and is not definitely assigned in the constructor.
+backend/src/forms/dto/create-form.dto.ts(85,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(86,3): error TS2564: Property 'operator' has no initializer and is not definitely assigned in the constructor.
+backend/src/forms/dto/create-form.dto.ts(88,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(93,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(94,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(97,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(98,3): error TS2564: Property 'type' has no initializer and is not definitely assigned in the constructor.
+backend/src/forms/dto/create-form.dto.ts(100,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(101,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(102,3): error TS2564: Property 'fieldId' has no initializer and is not definitely assigned in the constructor.
+backend/src/forms/dto/create-form.dto.ts(106,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(107,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(110,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(111,3): error TS2564: Property 'name' has no initializer and is not definitely assigned in the constructor.
+backend/src/forms/dto/create-form.dto.ts(113,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(114,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(117,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(118,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(119,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(120,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(123,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(124,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(125,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(126,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(131,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(132,3): error TS2564: Property 'title' has no initializer and is not definitely assigned in the constructor.
+backend/src/forms/dto/create-form.dto.ts(134,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(135,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(138,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(139,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(142,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(143,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(146,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(153,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(156,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(159,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(162,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(165,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(166,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(167,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(168,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(171,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(172,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(173,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(174,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(177,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(178,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(179,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/dto/create-form.dto.ts(180,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/form.gateway.ts(20,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/forms/form.gateway.ts(21,3): error TS2564: Property 'server' has no initializer and is not definitely assigned in the constructor.
+backend/src/forms/form.gateway.ts(33,3): error TS1241: Unable to resolve signature of method decorator when called as an expression.
+  The runtime will invoke the decorator with 2 arguments, but the decorator expects 3.
+backend/src/forms/form.gateway.ts(33,4): error TS1270: Decorator function return type 'void | TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((formId: string, client: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => { ...; })'.
+  Type 'TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((formId: string, client: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => { ...; })'.
+backend/src/forms/form.gateway.ts(35,5): error TS1206: Decorators are not valid here.
+backend/src/forms/form.gateway.ts(36,5): error TS1206: Decorators are not valid here.
+backend/src/forms/form.gateway.ts(44,3): error TS1241: Unable to resolve signature of method decorator when called as an expression.
+  The runtime will invoke the decorator with 2 arguments, but the decorator expects 3.
+backend/src/forms/form.gateway.ts(44,4): error TS1270: Decorator function return type 'void | TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((formId: string, client: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => void)'.
+  Type 'TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((formId: string, client: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => void)'.
+backend/src/forms/form.gateway.ts(46,5): error TS1206: Decorators are not valid here.
+backend/src/forms/form.gateway.ts(47,5): error TS1206: Decorators are not valid here.
+backend/src/forms/form.gateway.ts(54,3): error TS1241: Unable to resolve signature of method decorator when called as an expression.
+  The runtime will invoke the decorator with 2 arguments, but the decorator expects 3.
+backend/src/forms/form.gateway.ts(54,4): error TS1270: Decorator function return type 'void | TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((payload: { formId: string; data: any; }, client: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => void)'.
+  Type 'TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((payload: { formId: string; data: any; }, client: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) => void)'.
+backend/src/forms/form.gateway.ts(56,5): error TS1206: Decorators are not valid here.
+backend/src/forms/form.gateway.ts(57,5): error TS1206: Decorators are not valid here.
+backend/src/forms/forms.controller.ts(31,3): error TS1241: Unable to resolve signature of method decorator when called as an expression.
+  The runtime will invoke the decorator with 2 arguments, but the decorator expects 3.
+backend/src/forms/forms.controller.ts(31,4): error TS1270: Decorator function return type 'void | TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((user: any, createFormDto: CreateFormDto) => Promise<{ form: { fields: { id: string; type: FieldType; order: number; label: string; createdAt: Date; updatedAt: Date; ... 8 more ...; shrink: boolean; }[]; conditions: { ...; }[]; createdBy: { ...; }; } & { ...; }; }>)'.
+  Type 'TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((user: any, createFormDto: CreateFormDto) => Promise<{ form: { fields: { id: string; type: FieldType; order: number; label: string; createdAt: Date; updatedAt: Date; ... 8 more ...; shrink: boolean; }[]; conditions: { ...; }[]; createdBy: { ...; }; } & { ...; }; }>)'.
+backend/src/forms/forms.controller.ts(34,5): error TS1206: Decorators are not valid here.
+backend/src/forms/forms.controller.ts(35,5): error TS1206: Decorators are not valid here.
+backend/src/forms/forms.controller.ts(40,3): error TS1241: Unable to resolve signature of method decorator when called as an expression.
+  The runtime will invoke the decorator with 2 arguments, but the decorator expects 3.
+backend/src/forms/forms.controller.ts(40,4): error TS1270: Decorator function return type 'void | TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((user: any) => Promise<{ forms: { responseCount: number; viewCount: any; createdBy: { id: string; email: string; firstName: string | null; lastName: string | null; photoUrl: string | null; }; ... 15 more ...; folderId: string | null; }[]; }>)'.
+  Type 'TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((user: any) => Promise<{ forms: { responseCount: number; viewCount: any; createdBy: { id: string; email: string; firstName: string | null; lastName: string | null; photoUrl: string | null; }; ... 15 more ...; folderId: string | null; }[]; }>)'.
+backend/src/forms/forms.controller.ts(41,11): error TS1206: Decorators are not valid here.
+backend/src/forms/forms.controller.ts(45,3): error TS1241: Unable to resolve signature of method decorator when called as an expression.
+  The runtime will invoke the decorator with 2 arguments, but the decorator expects 3.
+backend/src/forms/forms.controller.ts(45,4): error TS1270: Decorator function return type 'void | TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((id: string, user: any) => Promise<{ form: { fields: { id: string; type: FieldType; order: number; label: string; createdAt: Date; updatedAt: Date; formId: string; score: number | null; ... 6 more ...; shrink: boolean; }[]; conditions: ({ ...; } & { ...; })[]; createdBy: { ...; }; collaborators: { ...; }[]; ...'.
+  Type 'TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((id: string, user: any) => Promise<{ form: { fields: { id: string; type: FieldType; order: number; label: string; createdAt: Date; updatedAt: Date; formId: string; score: number | null; ... 6 more ...; shrink: boolean; }[]; conditions: ({ ...; } & { ...; })[]; createdBy: { ...; }; collaborators: { ...; }[]; ...'.
+backend/src/forms/forms.controller.ts(47,5): error TS1206: Decorators are not valid here.
+backend/src/forms/forms.controller.ts(48,5): error TS1206: Decorators are not valid here.
+backend/src/forms/forms.controller.ts(53,3): error TS1241: Unable to resolve signature of method decorator when called as an expression.
+  The runtime will invoke the decorator with 2 arguments, but the decorator expects 3.
+backend/src/forms/forms.controller.ts(53,4): error TS1270: Decorator function return type 'void | TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((id: string, user: any, updateFormDto: UpdateFormDto) => Promise<{ fields: { id: string; type: FieldType; order: number; label: string; createdAt: Date; ... 9 more ...; shrink: boolean; }[]; conditions: { ...; }[]; logicRules: ({ ...; } & { ...; })[]; } & { ...; }>)'.
+  Type 'TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((id: string, user: any, updateFormDto: UpdateFormDto) => Promise<{ fields: { id: string; type: FieldType; order: number; label: string; createdAt: Date; ... 9 more ...; shrink: boolean; }[]; conditions: { ...; }[]; logicRules: ({ ...; } & { ...; })[]; } & { ...; }>)'.
+backend/src/forms/forms.controller.ts(56,5): error TS1206: Decorators are not valid here.
+backend/src/forms/forms.controller.ts(57,5): error TS1206: Decorators are not valid here.
+backend/src/forms/forms.controller.ts(58,5): error TS1206: Decorators are not valid here.
+backend/src/forms/forms.controller.ts(63,3): error TS1241: Unable to resolve signature of method decorator when called as an expression.
+  The runtime will invoke the decorator with 2 arguments, but the decorator expects 3.
+backend/src/forms/forms.controller.ts(63,4): error TS1270: Decorator function return type 'void | TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((id: string, user: any) => Promise<{ message: string; }>)'.
+  Type 'TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((id: string, user: any) => Promise<{ message: string; }>)'.
+backend/src/forms/forms.controller.ts(65,10): error TS1206: Decorators are not valid here.
+backend/src/forms/forms.controller.ts(65,35): error TS1206: Decorators are not valid here.
+backend/src/forms/forms.controller.ts(69,3): error TS1241: Unable to resolve signature of method decorator when called as an expression.
+  The runtime will invoke the decorator with 2 arguments, but the decorator expects 3.
+backend/src/forms/forms.controller.ts(69,4): error TS1270: Decorator function return type 'void | TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((id: string, user: any) => Promise<{ id: string; title: string; status: FormStatus; settings: JsonValue; description: string | null; createdAt: Date; updatedAt: Date; ... 8 more ...; folderId: string | null; }>)'.
+  Type 'TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((id: string, user: any) => Promise<{ id: string; title: string; status: FormStatus; settings: JsonValue; description: string | null; createdAt: Date; updatedAt: Date; ... 8 more ...; folderId: string | null; }>)'.
+backend/src/forms/forms.controller.ts(71,9): error TS1206: Decorators are not valid here.
+backend/src/forms/forms.controller.ts(71,34): error TS1206: Decorators are not valid here.
+backend/src/forms/forms.controller.ts(75,3): error TS1241: Unable to resolve signature of method decorator when called as an expression.
+  The runtime will invoke the decorator with 2 arguments, but the decorator expects 3.
+backend/src/forms/forms.controller.ts(75,4): error TS1270: Decorator function return type 'void | TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((id: string, page?: string, limit?: string, sort?: "desc" | "asc", action?: string | undefined, userId?: string | undefined) => Promise<{ data: ({ user: { id: string; email: string; firstName: string | null; lastName: string | null; photoUrl: string | null; }; } & { ...; })[]; meta: { ...; }; }>)'.
+  Type 'TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((id: string, page?: string, limit?: string, sort?: "desc" | "asc", action?: string | undefined, userId?: string | undefined) => Promise<{ data: ({ user: { id: string; email: string; firstName: string | null; lastName: string | null; photoUrl: string | null; }; } & { ...; })[]; meta: { ...; }; }>)'.
+backend/src/forms/forms.controller.ts(77,5): error TS1206: Decorators are not valid here.
+backend/src/forms/forms.controller.ts(78,5): error TS1206: Decorators are not valid here.
+backend/src/forms/forms.controller.ts(79,5): error TS1206: Decorators are not valid here.
+backend/src/forms/forms.controller.ts(80,5): error TS1206: Decorators are not valid here.
+backend/src/forms/forms.controller.ts(81,5): error TS1206: Decorators are not valid here.
+backend/src/forms/forms.controller.ts(82,5): error TS1206: Decorators are not valid here.
+backend/src/forms/forms.controller.ts(94,3): error TS1241: Unable to resolve signature of method decorator when called as an expression.
+  The runtime will invoke the decorator with 2 arguments, but the decorator expects 3.
+backend/src/forms/forms.controller.ts(94,4): error TS1270: Decorator function return type 'void | TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((id: string) => Promise<{ id: string; email: string; firstName: string | null; lastName: string | null; photoUrl: string | null; }[]>)'.
+  Type 'TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((id: string) => Promise<{ id: string; email: string; firstName: string | null; lastName: string | null; photoUrl: string | null; }[]>)'.
+backend/src/forms/forms.controller.ts(95,24): error TS1206: Decorators are not valid here.
+backend/src/forms/forms.controller.ts(99,3): error TS1241: Unable to resolve signature of method decorator when called as an expression.
+  The runtime will invoke the decorator with 2 arguments, but the decorator expects 3.
+backend/src/forms/forms.controller.ts(99,4): error TS1270: Decorator function return type 'void | TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((id: string, fingerprint?: string | undefined, ipAddress?: string | undefined, userAgent?: string | undefined) => Promise<{ form: { fields: { id: string; type: FieldType; ... 12 more ...; shrink: boolean; }[]; conditions: ({ ...; } & { ...; })[]; createdBy: { ...; }; logicRules: ({ ...; } & { ...; })[]; } & ...'.
+  Type 'TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((id: string, fingerprint?: string | undefined, ipAddress?: string | undefined, userAgent?: string | undefined) => Promise<{ form: { fields: { id: string; type: FieldType; ... 12 more ...; shrink: boolean; }[]; conditions: ({ ...; } & { ...; })[]; createdBy: { ...; }; logicRules: ({ ...; } & { ...; })[]; } & ...'.
+backend/src/forms/forms.controller.ts(102,5): error TS1206: Decorators are not valid here.
+backend/src/forms/forms.controller.ts(103,5): error TS1206: Decorators are not valid here.
+backend/src/forms/forms.controller.ts(104,5): error TS1206: Decorators are not valid here.
+backend/src/forms/forms.controller.ts(105,5): error TS1206: Decorators are not valid here.
+backend/src/forms/forms.controller.ts(110,3): error TS1241: Unable to resolve signature of method decorator when called as an expression.
+  The runtime will invoke the decorator with 2 arguments, but the decorator expects 3.
+backend/src/forms/forms.controller.ts(110,4): error TS1270: Decorator function return type 'void | TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((id: string, email: string) => Promise<{ message: string; user?: undefined; } | { message: string; user: { id: string; email: string; firstName: string | null; lastName: string | null; photoUrl: string | null; }; }>)'.
+  Type 'TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((id: string, email: string) => Promise<{ message: string; user?: undefined; } | { message: string; user: { id: string; email: string; firstName: string | null; lastName: string | null; photoUrl: string | null; }; }>)'.
+backend/src/forms/forms.controller.ts(113,5): error TS1206: Decorators are not valid here.
+backend/src/forms/forms.controller.ts(114,5): error TS1206: Decorators are not valid here.
+backend/src/forms/forms.controller.ts(119,3): error TS1241: Unable to resolve signature of method decorator when called as an expression.
+  The runtime will invoke the decorator with 2 arguments, but the decorator expects 3.
+backend/src/forms/forms.controller.ts(119,4): error TS1270: Decorator function return type 'void | TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((id: string, userIdToRemove: string, user: any) => Promise<{ message: string; }>)'.
+  Type 'TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((id: string, userIdToRemove: string, user: any) => Promise<{ message: string; }>)'.
+backend/src/forms/forms.controller.ts(122,5): error TS1206: Decorators are not valid here.
+backend/src/forms/forms.controller.ts(123,5): error TS1206: Decorators are not valid here.
+backend/src/forms/forms.controller.ts(124,5): error TS1206: Decorators are not valid here.
+backend/src/forms/forms.service.ts(308,11): error TS7034: Variable 'settingsChanges' implicitly has type 'any[]' in some locations where its type cannot be determined.
+backend/src/forms/forms.service.ts(311,24): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ fields: { id: string; type: FieldType; order: number; label: string; createdAt: Date; updatedAt: Date; formId: string; score: number | null; placeholder: string | null; ... 5 more ...; shrink: boolean; }[]; conditions: ({ ...; } & { ...; })[]; createdBy: { ...; }; collaborators: { ...; }[]; logicRules: ({ ...; } &...'.
+  No index signature with a parameter of type 'string' was found on type '{ fields: { id: string; type: FieldType; order: number; label: string; createdAt: Date; updatedAt: Date; formId: string; score: number | null; placeholder: string | null; ... 5 more ...; shrink: boolean; }[]; conditions: ({ ...; } & { ...; })[]; createdBy: { ...; }; collaborators: { ...; }[]; logicRules: ({ ...; } &...'.
+backend/src/forms/forms.service.ts(320,41): error TS7005: Variable 'settingsChanges' implicitly has an 'any[]' type.
+backend/src/forms/forms.service.ts(328,49): error TS7006: Parameter 'f' implicitly has an 'any' type.
+backend/src/forms/forms.service.ts(331,25): error TS7006: Parameter 'f' implicitly has an 'any' type.
+backend/src/forms/forms.service.ts(345,25): error TS7006: Parameter 'newField' implicitly has an 'any' type.
+backend/src/forms/forms.service.ts(348,17): error TS7034: Variable 'fieldChanges' implicitly has type 'any[]' in some locations where its type cannot be determined.
+backend/src/forms/forms.service.ts(361,40): error TS18048: 'oldField' is possibly 'undefined'.
+backend/src/forms/forms.service.ts(361,40): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ id: string; type: FieldType; order: number; label: string; createdAt: Date; updatedAt: Date; formId: string; score: number | null; placeholder: string | null; required: boolean; ... 4 more ...; shrink: boolean; }'.
+  No index signature with a parameter of type 'string' was found on type '{ id: string; type: FieldType; order: number; label: string; createdAt: Date; updatedAt: Date; formId: string; score: number | null; placeholder: string | null; required: boolean; ... 4 more ...; shrink: boolean; }'.
+backend/src/forms/forms.service.ts(378,36): error TS18048: 'oldField' is possibly 'undefined'.
+backend/src/forms/forms.service.ts(410,33): error TS18048: 'oldField' is possibly 'undefined'.
+backend/src/forms/forms.service.ts(515,26): error TS7005: Variable 'fieldChanges' implicitly has an 'any[]' type.
+backend/src/forms/forms.service.ts(555,15): error TS18048: 'oldRule' is possibly 'undefined'.
+backend/src/forms/forms.service.ts(556,58): error TS18048: 'oldRule' is possibly 'undefined'.
+backend/src/forms/forms.service.ts(558,15): error TS18048: 'oldRule' is possibly 'undefined'.
+backend/src/forms/forms.service.ts(559,63): error TS18048: 'oldRule' is possibly 'undefined'.
+backend/src/forms/forms.service.ts(573,42): error TS18048: 'oldRule' is possibly 'undefined'.
+backend/src/forms/forms.service.ts(578,23): error TS18048: 'oldRule' is possibly 'undefined'.
+backend/src/forms/forms.service.ts(583,39): error TS18048: 'oldRule' is possibly 'undefined'.
+backend/src/forms/forms.service.ts(588,23): error TS18048: 'oldRule' is possibly 'undefined'.
+backend/src/forms/forms.service.ts(598,35): error TS18048: 'oldRule' is possibly 'undefined'.
+backend/src/forms/forms.service.ts(599,32): error TS18048: 'oldRule' is possibly 'undefined'.
+backend/src/forms/forms.service.ts(600,29): error TS18048: 'oldRule' is possibly 'undefined'.
+backend/src/forms/forms.service.ts(641,52): error TS7006: Parameter 'f' implicitly has an 'any' type.
+backend/src/forms/forms.service.ts(655,45): error TS7006: Parameter 'f' implicitly has an 'any' type.
+backend/src/forms/forms.service.ts(656,45): error TS7006: Parameter 'f' implicitly has an 'any' type.
+backend/src/forms/forms.service.ts(670,31): error TS7006: Parameter 'field' implicitly has an 'any' type.
+backend/src/forms/forms.service.ts(687,37): error TS7006: Parameter 'field' implicitly has an 'any' type.
+backend/src/forms/forms.service.ts(703,47): error TS7006: Parameter 'f' implicitly has an 'any' type.
+backend/src/forms/forms.service.ts(706,34): error TS7006: Parameter 'field' implicitly has an 'any' type.
+backend/src/forms/forms.service.ts(727,44): error TS7006: Parameter 'c' implicitly has an 'any' type.
+backend/src/forms/forms.service.ts(735,41): error TS7006: Parameter 'a' implicitly has an 'any' type.
+backend/src/forms/forms.service.ts(749,34): error TS7006: Parameter 'c' implicitly has an 'any' type.
+backend/src/forms/forms.service.ts(841,9): error TS2322: Type 'JsonValue' is not assignable to type 'InputJsonValue | NullableJsonNullValueInput | undefined'.
+  Type 'null' is not assignable to type 'InputJsonValue | NullableJsonNullValueInput | undefined'.
+backend/src/mail/mail.service.ts(8,11): error TS2564: Property 'transporter' has no initializer and is not definitely assigned in the constructor.
+backend/src/presets/bundles.controller.ts(24,3): error TS1241: Unable to resolve signature of method decorator when called as an expression.
+  The runtime will invoke the decorator with 2 arguments, but the decorator expects 3.
+backend/src/presets/bundles.controller.ts(24,4): error TS1270: Decorator function return type 'void | TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((user: any, createBundleDto: CreateBundleDto) => Promise<{ fields: { id: string; type: FieldType; order: number; label: string; createdAt: Date; updatedAt: Date; ... 5 more ...; bundleId: string; }[]; } & { ...; }>)'.
+  Type 'TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((user: any, createBundleDto: CreateBundleDto) => Promise<{ fields: { id: string; type: FieldType; order: number; label: string; createdAt: Date; updatedAt: Date; ... 5 more ...; bundleId: string; }[]; } & { ...; }>)'.
+backend/src/presets/bundles.controller.ts(26,10): error TS1206: Decorators are not valid here.
+backend/src/presets/bundles.controller.ts(26,36): error TS1206: Decorators are not valid here.
+backend/src/presets/bundles.controller.ts(30,3): error TS1241: Unable to resolve signature of method decorator when called as an expression.
+  The runtime will invoke the decorator with 2 arguments, but the decorator expects 3.
+backend/src/presets/bundles.controller.ts(30,4): error TS1270: Decorator function return type 'void | TypedPropertyDescriptor<unknown>' is not assignable to type 'void | (() => Promise<({ fields: { id: string; type: FieldType; order: number; label: string; createdAt: Date; updatedAt: Date; formId: string | null; placeholder: string | null; required: boolean; validation: JsonValue; options: JsonValue; bundleId: string; }[]; _count: { ...; }; } & { ...; })[]>)'.
+  Type 'TypedPropertyDescriptor<unknown>' is not assignable to type 'void | (() => Promise<({ fields: { id: string; type: FieldType; order: number; label: string; createdAt: Date; updatedAt: Date; formId: string | null; placeholder: string | null; required: boolean; validation: JsonValue; options: JsonValue; bundleId: string; }[]; _count: { ...; }; } & { ...; })[]>)'.
+backend/src/presets/bundles.controller.ts(35,3): error TS1241: Unable to resolve signature of method decorator when called as an expression.
+  The runtime will invoke the decorator with 2 arguments, but the decorator expects 3.
+backend/src/presets/bundles.controller.ts(35,4): error TS1270: Decorator function return type 'void | TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((id: string) => Promise<{ fields: { id: string; type: FieldType; order: number; label: string; createdAt: Date; updatedAt: Date; formId: string | null; placeholder: string | null; required: boolean; validation: JsonValue; options: JsonValue; bundleId: string; }[]; } & { ...; }>)'.
+  Type 'TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((id: string) => Promise<{ fields: { id: string; type: FieldType; order: number; label: string; createdAt: Date; updatedAt: Date; formId: string | null; placeholder: string | null; required: boolean; validation: JsonValue; options: JsonValue; bundleId: string; }[]; } & { ...; }>)'.
+backend/src/presets/bundles.controller.ts(36,11): error TS1206: Decorators are not valid here.
+backend/src/presets/bundles.controller.ts(40,3): error TS1241: Unable to resolve signature of method decorator when called as an expression.
+  The runtime will invoke the decorator with 2 arguments, but the decorator expects 3.
+backend/src/presets/bundles.controller.ts(40,4): error TS1270: Decorator function return type 'void | TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((bundleId: string, formId: string, user: any) => Promise<{ id: string; type: FieldType; order: number; label: string; createdAt: Date; updatedAt: Date; formId: string | null; ... 4 more ...; bundleId: string; }[]>)'.
+  Type 'TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((bundleId: string, formId: string, user: any) => Promise<{ id: string; type: FieldType; order: number; label: string; createdAt: Date; updatedAt: Date; formId: string | null; ... 4 more ...; bundleId: string; }[]>)'.
+backend/src/presets/bundles.controller.ts(43,5): error TS1206: Decorators are not valid here.
+backend/src/presets/bundles.controller.ts(44,5): error TS1206: Decorators are not valid here.
+backend/src/presets/bundles.controller.ts(45,5): error TS1206: Decorators are not valid here.
+backend/src/presets/bundles.controller.ts(55,3): error TS1241: Unable to resolve signature of method decorator when called as an expression.
+  The runtime will invoke the decorator with 2 arguments, but the decorator expects 3.
+backend/src/presets/bundles.controller.ts(55,4): error TS1270: Decorator function return type 'void | TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((id: string, user: any, updateData: Partial<CreateBundleDto>) => Promise<{ fields: { id: string; type: FieldType; order: number; label: string; ... 7 more ...; bundleId: string; }[]; } & { ...; }>)'.
+  Type 'TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((id: string, user: any, updateData: Partial<CreateBundleDto>) => Promise<{ fields: { id: string; type: FieldType; order: number; label: string; ... 7 more ...; bundleId: string; }[]; } & { ...; }>)'.
+backend/src/presets/bundles.controller.ts(58,5): error TS1206: Decorators are not valid here.
+backend/src/presets/bundles.controller.ts(59,5): error TS1206: Decorators are not valid here.
+backend/src/presets/bundles.controller.ts(60,5): error TS1206: Decorators are not valid here.
+backend/src/presets/bundles.controller.ts(65,3): error TS1241: Unable to resolve signature of method decorator when called as an expression.
+  The runtime will invoke the decorator with 2 arguments, but the decorator expects 3.
+backend/src/presets/bundles.controller.ts(65,4): error TS1270: Decorator function return type 'void | TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((id: string) => Promise<{ message: string; }>)'.
+  Type 'TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((id: string) => Promise<{ message: string; }>)'.
+backend/src/presets/bundles.controller.ts(67,10): error TS1206: Decorators are not valid here.
+backend/src/presets/bundles.service.ts(120,13): error TS2322: Type 'JsonValue' is not assignable to type 'InputJsonValue | NullableJsonNullValueInput | undefined'.
+  Type 'null' is not assignable to type 'InputJsonValue | NullableJsonNullValueInput | undefined'.
+backend/src/presets/bundles.service.ts(122,13): error TS2322: Type 'JsonValue' is not assignable to type 'InputJsonValue | NullableJsonNullValueInput | undefined'.
+  Type 'null' is not assignable to type 'InputJsonValue | NullableJsonNullValueInput | undefined'.
+backend/src/presets/dto/create-bundle.dto.ts(14,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-bundle.dto.ts(15,3): error TS2564: Property 'type' has no initializer and is not definitely assigned in the constructor.
+backend/src/presets/dto/create-bundle.dto.ts(17,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-bundle.dto.ts(18,3): error TS2564: Property 'label' has no initializer and is not definitely assigned in the constructor.
+backend/src/presets/dto/create-bundle.dto.ts(20,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-bundle.dto.ts(21,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-bundle.dto.ts(24,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-bundle.dto.ts(25,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-bundle.dto.ts(28,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-bundle.dto.ts(31,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-bundle.dto.ts(32,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-bundle.dto.ts(35,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-bundle.dto.ts(40,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-bundle.dto.ts(41,3): error TS2564: Property 'name' has no initializer and is not definitely assigned in the constructor.
+backend/src/presets/dto/create-bundle.dto.ts(43,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-bundle.dto.ts(44,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-bundle.dto.ts(47,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-bundle.dto.ts(48,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-bundle.dto.ts(51,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-bundle.dto.ts(52,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-bundle.dto.ts(55,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-bundle.dto.ts(56,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-bundle.dto.ts(57,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-bundle.dto.ts(58,3): error TS2564: Property 'fields' has no initializer and is not definitely assigned in the constructor.
+backend/src/presets/dto/create-preset.dto.ts(14,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-preset.dto.ts(15,3): error TS2564: Property 'type' has no initializer and is not definitely assigned in the constructor.
+backend/src/presets/dto/create-preset.dto.ts(17,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-preset.dto.ts(18,3): error TS2564: Property 'label' has no initializer and is not definitely assigned in the constructor.
+backend/src/presets/dto/create-preset.dto.ts(20,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-preset.dto.ts(21,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-preset.dto.ts(24,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-preset.dto.ts(25,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-preset.dto.ts(28,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-preset.dto.ts(31,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-preset.dto.ts(32,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-preset.dto.ts(35,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-preset.dto.ts(40,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-preset.dto.ts(41,3): error TS2564: Property 'name' has no initializer and is not definitely assigned in the constructor.
+backend/src/presets/dto/create-preset.dto.ts(43,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-preset.dto.ts(44,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-preset.dto.ts(47,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-preset.dto.ts(48,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-preset.dto.ts(51,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-preset.dto.ts(52,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-preset.dto.ts(55,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-preset.dto.ts(56,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-preset.dto.ts(57,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/presets/dto/create-preset.dto.ts(58,3): error TS2564: Property 'fields' has no initializer and is not definitely assigned in the constructor.
+backend/src/responses/dto/create-response.dto.ts(5,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/responses/dto/create-response.dto.ts(6,3): error TS2564: Property 'fieldId' has no initializer and is not definitely assigned in the constructor.
+backend/src/responses/dto/create-response.dto.ts(8,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/responses/dto/create-response.dto.ts(9,3): error TS2564: Property 'value' has no initializer and is not definitely assigned in the constructor.
+backend/src/responses/dto/create-response.dto.ts(13,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/responses/dto/create-response.dto.ts(14,3): error TS2564: Property 'formId' has no initializer and is not definitely assigned in the constructor.
+backend/src/responses/dto/create-response.dto.ts(16,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/responses/dto/create-response.dto.ts(17,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/responses/dto/create-response.dto.ts(20,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/responses/dto/create-response.dto.ts(21,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/responses/dto/create-response.dto.ts(24,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/responses/dto/create-response.dto.ts(25,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/responses/dto/create-response.dto.ts(28,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/responses/dto/create-response.dto.ts(29,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/responses/dto/create-response.dto.ts(30,4): error TS1240: Unable to resolve signature of property decorator when called as an expression.
+  Argument of type 'undefined' is not assignable to parameter of type 'Object'.
+backend/src/responses/dto/create-response.dto.ts(31,3): error TS2564: Property 'answers' has no initializer and is not definitely assigned in the constructor.
+backend/src/responses/responses.controller.ts(25,3): error TS1241: Unable to resolve signature of method decorator when called as an expression.
+  The runtime will invoke the decorator with 2 arguments, but the decorator expects 3.
+backend/src/responses/responses.controller.ts(25,4): error TS1270: Decorator function return type 'void | TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((createResponseDto: CreateResponseDto) => Promise<{ score: number | undefined; totalScore: number | undefined; quizReview: { answers: { fieldId: string | null; ... 4 more ...; score: number; }[]; showAnswer: any; showDetail: any; } | undefined; ... 9 more ...; submittedAt: Date; }>)'.
+  Type 'TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((createResponseDto: CreateResponseDto) => Promise<{ score: number | undefined; totalScore: number | undefined; quizReview: { answers: { fieldId: string | null; ... 4 more ...; score: number; }[]; showAnswer: any; showDetail: any; } | undefined; ... 9 more ...; submittedAt: Date; }>)'.
+backend/src/responses/responses.controller.ts(27,10): error TS1206: Decorators are not valid here.
+backend/src/responses/responses.controller.ts(31,3): error TS1241: Unable to resolve signature of method decorator when called as an expression.
+  The runtime will invoke the decorator with 2 arguments, but the decorator expects 3.
+backend/src/responses/responses.controller.ts(31,4): error TS1270: Decorator function return type 'void | TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((formId: string, userId?: string | undefined, respondentEmail?: string | undefined, fingerprint?: string | undefined) => Promise<{ hasSubmitted: boolean; }>)'.
+  Type 'TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((formId: string, userId?: string | undefined, respondentEmail?: string | undefined, fingerprint?: string | undefined) => Promise<{ hasSubmitted: boolean; }>)'.
+backend/src/responses/responses.controller.ts(34,5): error TS1206: Decorators are not valid here.
+backend/src/responses/responses.controller.ts(35,5): error TS1206: Decorators are not valid here.
+backend/src/responses/responses.controller.ts(36,5): error TS1206: Decorators are not valid here.
+backend/src/responses/responses.controller.ts(37,5): error TS1206: Decorators are not valid here.
+backend/src/responses/responses.controller.ts(47,3): error TS1241: Unable to resolve signature of method decorator when called as an expression.
+  The runtime will invoke the decorator with 2 arguments, but the decorator expects 3.
+backend/src/responses/responses.controller.ts(47,4): error TS1270: Decorator function return type 'void | TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((formId: string, user: any) => Promise<({ user: { id: string; email: string; firstName: string | null; lastName: string | null; } | null; answers: ({ field: { id: string; type: FieldType; ... 12 more ...; shrink: boolean; } | null; } & { ...; })[]; } & { ...; })[]>)'.
+  Type 'TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((formId: string, user: any) => Promise<({ user: { id: string; email: string; firstName: string | null; lastName: string | null; } | null; answers: ({ field: { id: string; type: FieldType; ... 12 more ...; shrink: boolean; } | null; } & { ...; })[]; } & { ...; })[]>)'.
+backend/src/responses/responses.controller.ts(51,5): error TS1206: Decorators are not valid here.
+backend/src/responses/responses.controller.ts(52,5): error TS1206: Decorators are not valid here.
+backend/src/responses/responses.controller.ts(57,3): error TS1241: Unable to resolve signature of method decorator when called as an expression.
+  The runtime will invoke the decorator with 2 arguments, but the decorator expects 3.
+backend/src/responses/responses.controller.ts(57,4): error TS1270: Decorator function return type 'void | TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((id: string, user: any) => Promise<{ form: { id: string; title: string; status: FormStatus; settings: JsonValue; description: string | null; createdAt: Date; ... 9 more ...; folderId: string | null; }; user: { ...; } | null; answers: ({ ...; } & { ...; })[]; } & { ...; }>)'.
+  Type 'TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((id: string, user: any) => Promise<{ form: { id: string; title: string; status: FormStatus; settings: JsonValue; description: string | null; createdAt: Date; ... 9 more ...; folderId: string | null; }; user: { ...; } | null; answers: ({ ...; } & { ...; })[]; } & { ...; }>)'.
+backend/src/responses/responses.controller.ts(61,5): error TS1206: Decorators are not valid here.
+backend/src/responses/responses.controller.ts(62,5): error TS1206: Decorators are not valid here.
+backend/src/responses/responses.controller.ts(67,3): error TS1241: Unable to resolve signature of method decorator when called as an expression.
+  The runtime will invoke the decorator with 2 arguments, but the decorator expects 3.
+backend/src/responses/responses.controller.ts(67,4): error TS1270: Decorator function return type 'void | TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((formId: string, user: any, res: Response<any, Record<string, any>>) => Promise<void>)'.
+  Type 'TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((formId: string, user: any, res: Response<any, Record<string, any>>) => Promise<void>)'.
+backend/src/responses/responses.controller.ts(71,5): error TS1206: Decorators are not valid here.
+backend/src/responses/responses.controller.ts(72,5): error TS1206: Decorators are not valid here.
+backend/src/responses/responses.controller.ts(73,5): error TS1206: Decorators are not valid here.
+backend/src/responses/responses.service.ts(170,27): error TS18047: 'ans.field' is possibly 'null'.
+backend/src/responses/responses.service.ts(172,71): error TS18047: 'ans.field' is possibly 'null'.
+backend/src/responses/responses.service.ts(174,22): error TS18047: 'ans.field' is possibly 'null'.
+backend/src/users/users.controller.ts(11,3): error TS1241: Unable to resolve signature of method decorator when called as an expression.
+  The runtime will invoke the decorator with 2 arguments, but the decorator expects 3.
+backend/src/users/users.controller.ts(11,4): error TS1270: Decorator function return type 'void | TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((user: any) => Promise<{ id: string; role: { id: string; name: RoleType; description: string | null; permissions: JsonValue; }; createdAt: Date; updatedAt: Date; email: string; firstName: string | null; lastName: string | null; }>)'.
+  Type 'TypedPropertyDescriptor<unknown>' is not assignable to type 'void | ((user: any) => Promise<{ id: string; role: { id: string; name: RoleType; description: string | null; permissions: JsonValue; }; createdAt: Date; updatedAt: Date; email: string; firstName: string | null; lastName: string | null; }>)'.
+backend/src/users/users.controller.ts(12,14): error TS1206: Decorators are not valid here.
+frontend/src/components/analytics/AnalysisRenderer.tsx(3,75): error TS2307: Cannot find module '@/components/ui/card' or its corresponding type declarations.
+frontend/src/components/analytics/AnalysisRenderer.tsx(4,23): error TS2307: Cannot find module '@/components/ui/badge' or its corresponding type declarations.
+frontend/src/components/analytics/AnalysisRenderer.tsx(5,24): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+frontend/src/components/analytics/FieldAnalyticsSelector.tsx(5,75): error TS2307: Cannot find module '@/components/ui/card' or its corresponding type declarations.
+frontend/src/components/analytics/FieldAnalyticsSelector.tsx(6,24): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+frontend/src/components/analytics/FieldAnalyticsSelector.tsx(7,79): error TS2307: Cannot find module '@/components/ui/select' or its corresponding type declarations.
+frontend/src/components/analytics/FieldAnalyticsSelector.tsx(8,23): error TS2307: Cannot find module '@/components/ui/label' or its corresponding type declarations.
+frontend/src/components/auth/LoginModal.tsx(4,30): error TS2307: Cannot find module '@/store/authStore' or its corresponding type declarations.
+frontend/src/components/auth/LoginModal.tsx(7,17): error TS2307: Cannot find module '@/lib/api' or its corresponding type declarations.
+frontend/src/components/auth/ProtectedRoute.tsx(2,30): error TS2307: Cannot find module '@/store/authStore' or its corresponding type declarations.
+frontend/src/components/auth/ProtectedRoute.tsx(3,24): error TS2307: Cannot find module '@/components/auth/LoginModal' or its corresponding type declarations.
+frontend/src/components/builder/ActivityLog.tsx(4,75): error TS2307: Cannot find module '@/components/ui/card' or its corresponding type declarations.
+frontend/src/components/builder/Canvas.tsx(6,30): error TS2307: Cannot find module '@/store/formStore' or its corresponding type declarations.
+frontend/src/components/builder/Canvas.tsx(150,34): error TS7006: Parameter 'el' implicitly has an 'any' type.
+frontend/src/components/builder/Canvas.tsx(153,28): error TS7006: Parameter 'element' implicitly has an 'any' type.
+frontend/src/components/builder/Canvas.tsx(153,37): error TS7006: Parameter 'index' implicitly has an 'any' type.
+frontend/src/components/builder/DesignerElementCard.tsx(3,38): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/builder/DesignerElementCard.tsx(4,24): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+frontend/src/components/builder/DesignerElementWrapper.tsx(5,38): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/builder/DesignerElementWrapper.tsx(6,30): error TS2307: Cannot find module '@/store/formStore' or its corresponding type declarations.
+frontend/src/components/builder/ElementsSidebar.tsx(6,46): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/builder/ElementsSidebar.tsx(7,30): error TS2307: Cannot find module '@/store/formStore' or its corresponding type declarations.
+frontend/src/components/builder/FormElementRenderer.tsx(3,34): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/builder/FormElementRenderer.tsx(4,23): error TS2307: Cannot find module '@/components/ui/input' or its corresponding type declarations.
+frontend/src/components/builder/FormElementRenderer.tsx(5,23): error TS2307: Cannot find module '@/components/ui/label' or its corresponding type declarations.
+frontend/src/components/builder/FormElementRenderer.tsx(6,26): error TS2307: Cannot find module '@/components/ui/textarea' or its corresponding type declarations.
+frontend/src/components/builder/FormElementRenderer.tsx(7,24): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+frontend/src/components/builder/FormElementRenderer.tsx(9,30): error TS2307: Cannot find module '@/store/formStore' or its corresponding type declarations.
+frontend/src/components/builder/FormElementRenderer.tsx(11,20): error TS2307: Cannot find module '@/lib/ui/utils' or its corresponding type declarations.
+frontend/src/components/builder/FormSettingsPanel.tsx(5,75): error TS2307: Cannot find module '@/components/ui/card' or its corresponding type declarations.
+frontend/src/components/builder/FormSettingsPanel.tsx(6,23): error TS2307: Cannot find module '@/components/ui/label' or its corresponding type declarations.
+frontend/src/components/builder/FormSettingsPanel.tsx(7,23): error TS2307: Cannot find module '@/components/ui/input' or its corresponding type declarations.
+frontend/src/components/builder/FormSettingsPanel.tsx(8,26): error TS2307: Cannot find module '@/components/ui/textarea' or its corresponding type declarations.
+frontend/src/components/builder/FormSettingsPanel.tsx(9,26): error TS2307: Cannot find module '@/components/ui/checkbox' or its corresponding type declarations.
+frontend/src/components/builder/FormSettingsPanel.tsx(11,24): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+frontend/src/components/builder/FormSettingsPanel.tsx(12,30): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/builder/FormSettingsPanel.tsx(77,26): error TS7006: Parameter 'e' implicitly has an 'any' type.
+frontend/src/components/builder/FormSettingsPanel.tsx(88,26): error TS7006: Parameter 'e' implicitly has an 'any' type.
+frontend/src/components/builder/FormSettingsPanel.tsx(105,26): error TS7006: Parameter 'e' implicitly has an 'any' type.
+frontend/src/components/builder/FormSettingsPanel.tsx(116,26): error TS7006: Parameter 'e' implicitly has an 'any' type.
+frontend/src/components/builder/FormSettingsPanel.tsx(129,24): error TS7006: Parameter 'e' implicitly has an 'any' type.
+frontend/src/components/builder/FormSettingsPanel.tsx(144,24): error TS7006: Parameter 'e' implicitly has an 'any' type.
+frontend/src/components/builder/FormSettingsPanel.tsx(158,26): error TS7006: Parameter 'e' implicitly has an 'any' type.
+frontend/src/components/builder/FormSettingsPanel.tsx(186,31): error TS7006: Parameter 'e' implicitly has an 'any' type.
+frontend/src/components/builder/FormThemePanel.tsx(5,75): error TS2307: Cannot find module '@/components/ui/card' or its corresponding type declarations.
+frontend/src/components/builder/FormThemePanel.tsx(6,23): error TS2307: Cannot find module '@/components/ui/label' or its corresponding type declarations.
+frontend/src/components/builder/FormThemePanel.tsx(7,23): error TS2307: Cannot find module '@/components/ui/input' or its corresponding type declarations.
+frontend/src/components/builder/FormThemePanel.tsx(8,79): error TS2307: Cannot find module '@/components/ui/select' or its corresponding type declarations.
+frontend/src/components/builder/FormThemePanel.tsx(9,24): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+frontend/src/components/builder/FormThemePanel.tsx(11,27): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/builder/FormThemePanel.tsx(139,26): error TS7006: Parameter 'e' implicitly has an 'any' type.
+frontend/src/components/builder/FormThemePanel.tsx(145,26): error TS7006: Parameter 'e' implicitly has an 'any' type.
+frontend/src/components/builder/FormThemePanel.tsx(156,29): error TS7006: Parameter 'value' implicitly has an 'any' type.
+frontend/src/components/builder/FormThemePanel.tsx(177,28): error TS7006: Parameter 'e' implicitly has an 'any' type.
+frontend/src/components/builder/FormThemePanel.tsx(183,28): error TS7006: Parameter 'e' implicitly has an 'any' type.
+frontend/src/components/builder/FormThemePanel.tsx(196,26): error TS7006: Parameter 'e' implicitly has an 'any' type.
+frontend/src/components/builder/FormThemePanel.tsx(215,32): error TS7006: Parameter 'e' implicitly has an 'any' type.
+frontend/src/components/builder/FormThemePanel.tsx(221,32): error TS7006: Parameter 'e' implicitly has an 'any' type.
+frontend/src/components/builder/FormThemePanel.tsx(232,32): error TS7006: Parameter 'e' implicitly has an 'any' type.
+frontend/src/components/builder/FormThemePanel.tsx(238,32): error TS7006: Parameter 'e' implicitly has an 'any' type.
+frontend/src/components/builder/FormThemePanel.tsx(254,26): error TS7006: Parameter 'e' implicitly has an 'any' type.
+frontend/src/components/builder/FormThemePanel.tsx(260,26): error TS7006: Parameter 'e' implicitly has an 'any' type.
+frontend/src/components/builder/FormThemePanel.tsx(271,29): error TS7006: Parameter 'value' implicitly has an 'any' type.
+frontend/src/components/builder/FormThemePanel.tsx(289,29): error TS7006: Parameter 'value' implicitly has an 'any' type.
+frontend/src/components/builder/FormThemePanel.tsx(308,29): error TS7006: Parameter 'value' implicitly has an 'any' type.
+frontend/src/components/builder/PropertiesPanel.tsx(3,30): error TS2307: Cannot find module '@/store/formStore' or its corresponding type declarations.
+frontend/src/components/builder/PropertiesPanel.tsx(4,23): error TS2307: Cannot find module '@/components/ui/input' or its corresponding type declarations.
+frontend/src/components/builder/PropertiesPanel.tsx(5,23): error TS2307: Cannot find module '@/components/ui/label' or its corresponding type declarations.
+frontend/src/components/builder/PropertiesPanel.tsx(6,26): error TS2307: Cannot find module '@/components/ui/textarea' or its corresponding type declarations.
+frontend/src/components/builder/PropertiesPanel.tsx(7,24): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+frontend/src/components/builder/PropertiesPanel.tsx(9,53): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/builder/PropertiesPanel.tsx(10,25): error TS2307: Cannot find module '@/components/ui/tooltip' or its corresponding type declarations.
+frontend/src/components/builder/PropertiesPanel.tsx(11,26): error TS2307: Cannot find module '@/components/ui/toaster' or its corresponding type declarations.
+frontend/src/components/builder/PropertiesPanel.tsx(12,58): error TS2307: Cannot find module '@/components/ui/tabs' or its corresponding type declarations.
+frontend/src/components/builder/PropertiesPanel.tsx(121,30): error TS7006: Parameter 'e' implicitly has an 'any' type.
+frontend/src/components/builder/PropertiesPanel.tsx(129,30): error TS7006: Parameter 'e' implicitly has an 'any' type.
+frontend/src/components/builder/PropertiesPanel.tsx(139,30): error TS7006: Parameter 'e' implicitly has an 'any' type.
+frontend/src/components/builder/PropertiesPanel.tsx(167,26): error TS7006: Parameter 'e' implicitly has an 'any' type.
+frontend/src/components/builder/PropertiesPanel.tsx(175,54): error TS7006: Parameter 'v' implicitly has an 'any' type.
+frontend/src/components/builder/PropertiesPanel.tsx(196,32): error TS7006: Parameter 'e' implicitly has an 'any' type.
+frontend/src/components/builder/PropertiesPanel.tsx(273,26): error TS7006: Parameter 'e' implicitly has an 'any' type.
+frontend/src/components/builder/PropertiesPanel.tsx(287,28): error TS7006: Parameter 'e' implicitly has an 'any' type.
+frontend/src/components/builder/PropertiesPanel.tsx(297,28): error TS7006: Parameter 'e' implicitly has an 'any' type.
+frontend/src/components/builder/PropertiesPanel.tsx(311,26): error TS7006: Parameter 'e' implicitly has an 'any' type.
+frontend/src/components/builder/PropertiesPanel.tsx(348,32): error TS7006: Parameter 'e' implicitly has an 'any' type.
+frontend/src/components/dashboard/CollaboratorListModal.tsx(4,24): error TS2307: Cannot find module '@/components/common/UserAvatar' or its corresponding type declarations.
+frontend/src/components/dashboard/CollaboratorListModal.tsx(5,17): error TS2307: Cannot find module '@/lib/api' or its corresponding type declarations.
+frontend/src/components/dashboard/CollaboratorListModal.tsx(6,30): error TS2307: Cannot find module '@/store/authStore' or its corresponding type declarations.
+frontend/src/components/dashboard/DashboardFormCard.tsx(3,24): error TS2307: Cannot find module '@/components/common/UserAvatar' or its corresponding type declarations.
+frontend/src/components/dashboard/DashboardFormCard.tsx(4,27): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/dashboard/DashboardHeader.tsx(5,24): error TS2307: Cannot find module '@/components/common/UserAvatar' or its corresponding type declarations.
+frontend/src/components/dashboard/DashboardHeader.tsx(6,30): error TS2307: Cannot find module '@/store/authStore' or its corresponding type declarations.
+frontend/src/components/dashboard/DashboardHeader.tsx(7,30): error TS2307: Cannot find module '@/components/common/LanguageSwitcher' or its corresponding type declarations.
+frontend/src/components/dashboard/FolderCard.tsx(4,29): error TS2307: Cannot find module '@/types/folder' or its corresponding type declarations.
+frontend/src/components/dashboard/FolderCard.tsx(5,27): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/dashboard/FolderFilters.tsx(3,24): error TS2307: Cannot find module '@/types/folder' or its corresponding type declarations.
+frontend/src/components/dashboard/FoldersSection.tsx(4,29): error TS2307: Cannot find module '@/types/folder' or its corresponding type declarations.
+frontend/src/components/dashboard/FoldersSection.tsx(5,27): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/dashboard/FormCard.tsx(2,24): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+frontend/src/components/dashboard/FormCard.tsx(3,36): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/dashboard/FormCard.tsx(24,8): error TS2307: Cannot find module '@/components/ui/dropdown-menu' or its corresponding type declarations.
+frontend/src/components/dashboard/FormCard.tsx(37,43): error TS2349: This expression is not callable.
+  Type 'ActiveEditor[]' has no call signatures.
+frontend/src/components/dashboard/FormDetailsModal.tsx(4,30): error TS2307: Cannot find module '@/store/authStore' or its corresponding type declarations.
+frontend/src/components/dashboard/FormDetailsModal.tsx(5,22): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/dashboard/FormDetailsModal.tsx(6,24): error TS2307: Cannot find module '@/components/common/UserAvatar' or its corresponding type declarations.
+frontend/src/components/demo/AnalyticsOverview.tsx(4,75): error TS2307: Cannot find module '@/components/ui/card' or its corresponding type declarations.
+frontend/src/components/demo/AnalyticsOverview.tsx(9,11): error TS2339: Property 'views' does not exist on type 'AnalyticsData'.
+frontend/src/components/demo/AnalyticsOverview.tsx(9,18): error TS2339: Property 'starts' does not exist on type 'AnalyticsData'.
+frontend/src/components/demo/AnalyticsOverview.tsx(9,26): error TS2339: Property 'completions' does not exist on type 'AnalyticsData'.
+frontend/src/components/demo/AnalyticsOverview.tsx(9,39): error TS2339: Property 'completionRate' does not exist on type 'AnalyticsData'.
+frontend/src/components/demo/AnalyticsOverview.tsx(9,55): error TS2339: Property 'avgTime' does not exist on type 'AnalyticsData'.
+frontend/src/components/demo/AnalyticsOverview.tsx(12,47): error TS2339: Property 'desktop' does not exist on type '{ device: string; count: number; percentage: number; }[]'.
+frontend/src/components/demo/AnalyticsOverview.tsx(13,46): error TS2339: Property 'mobile' does not exist on type '{ device: string; count: number; percentage: number; }[]'.
+frontend/src/components/demo/AnalyticsOverview.tsx(14,46): error TS2339: Property 'tablet' does not exist on type '{ device: string; count: number; percentage: number; }[]'.
+frontend/src/components/demo/DashboardGrid.tsx(4,24): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+frontend/src/components/demo/DashboardGrid.tsx(8,23): error TS2307: Cannot find module '@/components/ui/badge' or its corresponding type declarations.
+frontend/src/components/demo/DashboardGrid.tsx(16,8): error TS2307: Cannot find module '@/components/ui/card' or its corresponding type declarations.
+frontend/src/components/demo/FormPreview.tsx(4,27): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/demo/FormPreview.tsx(5,24): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+frontend/src/components/demo/FormPreview.tsx(6,23): error TS2307: Cannot find module '@/components/ui/input' or its corresponding type declarations.
+frontend/src/components/demo/FormPreview.tsx(7,26): error TS2307: Cannot find module '@/components/ui/textarea' or its corresponding type declarations.
+frontend/src/components/demo/FormPreview.tsx(8,23): error TS2307: Cannot find module '@/components/ui/label' or its corresponding type declarations.
+frontend/src/components/demo/FormPreview.tsx(9,44): error TS2307: Cannot find module '@/components/ui/radio-group' or its corresponding type declarations.
+frontend/src/components/demo/FormPreview.tsx(10,26): error TS2307: Cannot find module '@/components/ui/checkbox' or its corresponding type declarations.
+frontend/src/components/demo/FormPreview.tsx(11,79): error TS2307: Cannot find module '@/components/ui/select' or its corresponding type declarations.
+frontend/src/components/demo/FormPreview.tsx(12,35): error TS2307: Cannot find module '@/components/ui/card' or its corresponding type declarations.
+frontend/src/components/demo/SubmissionsTable.tsx(12,8): error TS2307: Cannot find module '@/components/ui/table' or its corresponding type declarations.
+frontend/src/components/demo/SubmissionsTable.tsx(13,23): error TS2307: Cannot find module '@/components/ui/badge' or its corresponding type declarations.
+frontend/src/components/demo/SubmissionsTable.tsx(14,24): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+frontend/src/components/field-properties/advanced/AddressProperties.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/field-properties/advanced/AddressProperties.tsx(4,27): error TS2307: Cannot find module '@/lib/ui/utils' or its corresponding type declarations.
+frontend/src/components/field-properties/advanced/DateProperties.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/field-properties/advanced/DateProperties.tsx(4,27): error TS2307: Cannot find module '@/lib/ui/utils' or its corresponding type declarations.
+frontend/src/components/field-properties/advanced/HeaderProperties.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/field-properties/advanced/MatrixProperties.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/field-properties/advanced/MatrixProperties.tsx(5,27): error TS2307: Cannot find module '@/lib/ui/utils' or its corresponding type declarations.
+frontend/src/components/field-properties/advanced/RateProperties.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/field-properties/advanced/RateProperties.tsx(4,27): error TS2307: Cannot find module '@/lib/ui/utils' or its corresponding type declarations.
+frontend/src/components/field-properties/advanced/SubmitProperties.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/field-properties/advanced/SubmitProperties.tsx(4,27): error TS2307: Cannot find module '@/lib/ui/utils' or its corresponding type declarations.
+frontend/src/components/field-properties/advanced/TableProperties.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/field-properties/advanced/TableProperties.tsx(5,27): error TS2307: Cannot find module '@/lib/ui/utils' or its corresponding type declarations.
+frontend/src/components/field-properties/advanced/TimeProperties.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/field-properties/advanced/TimeProperties.tsx(4,27): error TS2307: Cannot find module '@/lib/ui/utils' or its corresponding type declarations.
+frontend/src/components/field-properties/choice/CheckboxProperties.tsx(3,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/field-properties/choice/CheckboxProperties.tsx(5,105): error TS2307: Cannot find module '@/components/ui/custom-select' or its corresponding type declarations.
+frontend/src/components/field-properties/choice/CheckboxProperties.tsx(6,27): error TS2307: Cannot find module '@/lib/ui/utils' or its corresponding type declarations.
+frontend/src/components/field-properties/choice/CheckboxProperties.tsx(187,37): error TS7006: Parameter 'value' implicitly has an 'any' type.
+frontend/src/components/field-properties/choice/CheckboxProperties.tsx(406,37): error TS7006: Parameter 'val' implicitly has an 'any' type.
+frontend/src/components/field-properties/choice/DropdownProperties.tsx(3,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/field-properties/choice/DropdownProperties.tsx(5,105): error TS2307: Cannot find module '@/components/ui/custom-select' or its corresponding type declarations.
+frontend/src/components/field-properties/choice/DropdownProperties.tsx(6,27): error TS2307: Cannot find module '@/lib/ui/utils' or its corresponding type declarations.
+frontend/src/components/field-properties/choice/DropdownProperties.tsx(221,37): error TS7006: Parameter 'value' implicitly has an 'any' type.
+frontend/src/components/field-properties/choice/DropdownProperties.tsx(301,37): error TS7006: Parameter 'val' implicitly has an 'any' type.
+frontend/src/components/field-properties/choice/RadioProperties.tsx(4,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/field-properties/choice/RadioProperties.tsx(6,105): error TS2307: Cannot find module '@/components/ui/custom-select' or its corresponding type declarations.
+frontend/src/components/field-properties/choice/RadioProperties.tsx(7,27): error TS2307: Cannot find module '@/lib/ui/utils' or its corresponding type declarations.
+frontend/src/components/field-properties/choice/RadioProperties.tsx(193,37): error TS7006: Parameter 'value' implicitly has an 'any' type.
+frontend/src/components/field-properties/choice/RadioProperties.tsx(379,37): error TS7006: Parameter 'val' implicitly has an 'any' type.
+frontend/src/components/field-properties/text/EmailProperties.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/field-properties/text/EmailProperties.tsx(5,27): error TS2307: Cannot find module '@/lib/ui/utils' or its corresponding type declarations.
+frontend/src/components/field-properties/text/FullNameProperties.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/field-properties/text/FullNameProperties.tsx(5,27): error TS2307: Cannot find module '@/lib/ui/utils' or its corresponding type declarations.
+frontend/src/components/field-properties/text/LongTextProperties.tsx(4,27): error TS2307: Cannot find module '@/lib/ui/utils' or its corresponding type declarations.
+frontend/src/components/field-properties/text/LongTextProperties.tsx(5,79): error TS2307: Cannot find module '@/components/ui/custom-select' or its corresponding type declarations.
+frontend/src/components/field-properties/text/LongTextProperties.tsx(6,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/field-properties/text/LongTextProperties.tsx(274,33): error TS7006: Parameter 'val' implicitly has an 'any' type.
+frontend/src/components/field-properties/text/NumberProperties.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/field-properties/text/NumberProperties.tsx(5,27): error TS2307: Cannot find module '@/lib/ui/utils' or its corresponding type declarations.
+frontend/src/components/field-properties/text/ParagraphProperties.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/field-properties/text/PhoneProperties.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/field-properties/text/PhoneProperties.tsx(5,27): error TS2307: Cannot find module '@/lib/ui/utils' or its corresponding type declarations.
+frontend/src/components/field-properties/text/ShortTextProperties.tsx(3,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/field-properties/text/ShortTextProperties.tsx(5,79): error TS2307: Cannot find module '@/components/ui/custom-select' or its corresponding type declarations.
+frontend/src/components/field-properties/text/ShortTextProperties.tsx(6,27): error TS2307: Cannot find module '@/lib/ui/utils' or its corresponding type declarations.
+frontend/src/components/field-properties/text/ShortTextProperties.tsx(269,33): error TS7006: Parameter 'val' implicitly has an 'any' type.
+frontend/src/components/form-builder/CanvasArea.tsx(3,40): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/CanvasArea.tsx(4,23): error TS2307: Cannot find module '@/components/form-builder/FieldItem' or its corresponding type declarations.
+frontend/src/components/form-builder/CanvasArea.tsx(89,43): error TS7006: Parameter 'e' implicitly has an 'any' type.
+frontend/src/components/form-builder/FieldContextMenu.tsx(16,34): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/FieldContextMenu.tsx(17,30): error TS2307: Cannot find module '@/store/formStore' or its corresponding type declarations.
+frontend/src/components/form-builder/FieldContextMenu.tsx(27,37): error TS7006: Parameter 'state' implicitly has an 'any' type.
+frontend/src/components/form-builder/FieldContextMenu.tsx(28,40): error TS7006: Parameter 'state' implicitly has an 'any' type.
+frontend/src/components/form-builder/FieldContextMenu.tsx(29,37): error TS7006: Parameter 'state' implicitly has an 'any' type.
+frontend/src/components/form-builder/FieldContextMenu.tsx(30,35): error TS7006: Parameter 'state' implicitly has an 'any' type.
+frontend/src/components/form-builder/FieldContextMenu.tsx(31,45): error TS7006: Parameter 'state' implicitly has an 'any' type.
+frontend/src/components/form-builder/FieldContextMenu.tsx(32,37): error TS7006: Parameter 'state' implicitly has an 'any' type.
+frontend/src/components/form-builder/FieldContextMenu.tsx(33,37): error TS7006: Parameter 'state' implicitly has an 'any' type.
+frontend/src/components/form-builder/FieldContextMenu.tsx(34,36): error TS7006: Parameter 'state' implicitly has an 'any' type.
+frontend/src/components/form-builder/FieldContextMenu.tsx(35,41): error TS7006: Parameter 'state' implicitly has an 'any' type.
+frontend/src/components/form-builder/FieldContextMenu.tsx(36,47): error TS7006: Parameter 'state' implicitly has an 'any' type.
+frontend/src/components/form-builder/FieldContextMenu.tsx(72,17): error TS7006: Parameter 'f' implicitly has an 'any' type.
+frontend/src/components/form-builder/FieldContextMenu.tsx(73,16): error TS7006: Parameter 'a' implicitly has an 'any' type.
+frontend/src/components/form-builder/FieldContextMenu.tsx(73,19): error TS7006: Parameter 'b' implicitly has an 'any' type.
+frontend/src/components/form-builder/FieldContextMenu.tsx(92,46): error TS7006: Parameter 'f' implicitly has an 'any' type.
+frontend/src/components/form-builder/FieldContextMenu.tsx(109,24): error TS7006: Parameter 'f' implicitly has an 'any' type.
+frontend/src/components/form-builder/FieldContextMenu.tsx(109,27): error TS7006: Parameter 'i' implicitly has an 'any' type.
+frontend/src/components/form-builder/FieldContextMenu.tsx(154,59): error TS7006: Parameter 'f' implicitly has an 'any' type.
+frontend/src/components/form-builder/FieldContextMenu.tsx(165,59): error TS7006: Parameter 'f' implicitly has an 'any' type.
+frontend/src/components/form-builder/FieldContextMenu.tsx(176,63): error TS7006: Parameter 'f' implicitly has an 'any' type.
+frontend/src/components/form-builder/FieldContextMenu.tsx(187,63): error TS7006: Parameter 'f' implicitly has an 'any' type.
+frontend/src/components/form-builder/FieldItem.tsx(3,34): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/FieldItem.tsx(5,30): error TS2307: Cannot find module '@/store/formStore' or its corresponding type declarations.
+frontend/src/components/form-builder/FieldItem.tsx(27,32): error TS2307: Cannot find module '@/components/ui/RichTextEditor' or its corresponding type declarations.
+frontend/src/components/form-builder/FieldItem.tsx(28,33): error TS2307: Cannot find module '@/components/ui/RichTextToolbar' or its corresponding type declarations.
+frontend/src/components/form-builder/FieldItem.tsx(64,37): error TS7006: Parameter 'state' implicitly has an 'any' type.
+frontend/src/components/form-builder/FieldItem.tsx(65,37): error TS7006: Parameter 'state' implicitly has an 'any' type.
+frontend/src/components/form-builder/FieldItem.tsx(66,37): error TS7006: Parameter 'state' implicitly has an 'any' type.
+frontend/src/components/form-builder/FieldItem.tsx(428,56): error TS7006: Parameter 'value' implicitly has an 'any' type.
+frontend/src/components/form-builder/fields/address/AddressField.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/address/AddressField.tsx(3,30): error TS2307: Cannot find module '@/store/formStore' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/address/schema.ts(1,27): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/checkbox/CheckboxField.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/checkbox/CheckboxField.tsx(4,30): error TS2307: Cannot find module '@/store/formStore' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/checkbox/schema.ts(1,27): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/date/DateField.tsx(2,34): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/date/schema.ts(1,27): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/divider/DividerField.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/dropdown/DropdownField.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/dropdown/DropdownField.tsx(4,30): error TS2307: Cannot find module '@/store/formStore' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/dropdown/schema.ts(1,27): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/email/EmailField.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/email/schema.ts(1,27): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/full-name/FullNameField.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/full-name/FullNameField.tsx(3,30): error TS2307: Cannot find module '@/store/formStore' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/full-name/schema.ts(1,27): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/group/GroupField.tsx(1,34): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/group/GroupField.tsx(5,30): error TS2307: Cannot find module '@/store/formStore' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/group/GroupField.tsx(6,23): error TS2307: Cannot find module '@/components/form-builder/FieldItem' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/group/GroupField.tsx(28,37): error TS7006: Parameter 'state' implicitly has an 'any' type.
+frontend/src/components/form-builder/fields/group/GroupField.tsx(29,37): error TS7006: Parameter 'state' implicitly has an 'any' type.
+frontend/src/components/form-builder/fields/group/GroupField.tsx(30,46): error TS7006: Parameter 'state' implicitly has an 'any' type.
+frontend/src/components/form-builder/fields/group/GroupFieldPreview.tsx(1,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/header/HeaderField.tsx(2,34): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/header/HeaderField.tsx(3,30): error TS2307: Cannot find module '@/store/formStore' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/header/HeaderField.tsx(5,32): error TS2307: Cannot find module '@/components/ui/RichTextEditor' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/header/HeaderField.tsx(6,33): error TS2307: Cannot find module '@/components/ui/RichTextToolbar' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/header/HeaderField.tsx(27,37): error TS7006: Parameter 'state' implicitly has an 'any' type.
+frontend/src/components/form-builder/fields/header/HeaderField.tsx(174,28): error TS7006: Parameter 'value' implicitly has an 'any' type.
+frontend/src/components/form-builder/fields/header/HeaderField.tsx(195,31): error TS7006: Parameter 'value' implicitly has an 'any' type.
+frontend/src/components/form-builder/fields/header/schema.ts(1,27): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/long-text/LongTextField.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/long-text/schema.ts(1,27): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/matrix/MatrixField.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/number/NumberField.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/number/schema.ts(1,27): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/paragraph/ParagraphField.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/paragraph/ParagraphField.tsx(3,30): error TS2307: Cannot find module '@/store/formStore' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/paragraph/ParagraphField.tsx(4,32): error TS2307: Cannot find module '@/components/ui/RichTextEditor' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/paragraph/ParagraphField.tsx(5,33): error TS2307: Cannot find module '@/components/ui/RichTextToolbar' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/paragraph/ParagraphField.tsx(26,37): error TS7006: Parameter 'state' implicitly has an 'any' type.
+frontend/src/components/form-builder/fields/paragraph/ParagraphField.tsx(65,28): error TS7006: Parameter 'value' implicitly has an 'any' type.
+frontend/src/components/form-builder/fields/paragraph/schema.ts(1,27): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/phone/PhoneField.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/phone/schema.ts(1,27): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/radio/RadioField.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/radio/RadioField.tsx(4,30): error TS2307: Cannot find module '@/store/formStore' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/radio/schema.ts(1,27): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/rate/RateField.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/rate/schema.ts(1,27): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/short-text/schema.ts(1,27): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/short-text/ShortTextField.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/submit/schema.ts(1,27): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/submit/SubmitField.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/table/TableField.tsx(3,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/time/schema.ts(1,27): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/fields/time/TimeField.tsx(3,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/FieldSidebar.tsx(3,27): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/FieldSidebar.tsx(4,30): error TS2307: Cannot find module '@/store/formStore' or its corresponding type declarations.
+frontend/src/components/form-builder/FormBuilderHeader.tsx(4,34): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/FormBuilderHeader.tsx(5,30): error TS2307: Cannot find module '@/store/formStore' or its corresponding type declarations.
+frontend/src/components/form-builder/FormBuilderHeader.tsx(6,30): error TS2307: Cannot find module '@/store/authStore' or its corresponding type declarations.
+frontend/src/components/form-builder/FormBuilderHeader.tsx(7,85): error TS2307: Cannot find module '@/components/ui/dialog' or its corresponding type declarations.
+frontend/src/components/form-builder/FormBuilderHeader.tsx(8,35): error TS2307: Cannot find module '@/components/dashboard/CollaboratorListModal' or its corresponding type declarations.
+frontend/src/components/form-builder/FormBuilderHeader.tsx(9,79): error TS2307: Cannot find module '@/components/ui/custom-select' or its corresponding type declarations.
+frontend/src/components/form-builder/FormBuilderHeader.tsx(10,23): error TS2307: Cannot find module '@/components/ui/input' or its corresponding type declarations.
+frontend/src/components/form-builder/FormBuilderHeader.tsx(11,24): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+frontend/src/components/form-builder/FormBuilderHeader.tsx(14,24): error TS2307: Cannot find module '@/components/common/UserAvatar' or its corresponding type declarations.
+frontend/src/components/form-builder/InlineQuizBar.tsx(3,40): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/InlineQuizBar.tsx(80,46): error TS7006: Parameter 'a' implicitly has an 'any' type.
+frontend/src/components/form-builder/InlineQuizBar.tsx(225,74): error TS7006: Parameter 'answer' implicitly has an 'any' type.
+frontend/src/components/form-builder/InlineQuizBar.tsx(225,82): error TS7006: Parameter 'idx' implicitly has an 'any' type.
+frontend/src/components/form-builder/LogicCanvas.tsx(2,30): error TS2307: Cannot find module '@/store/formStore' or its corresponding type declarations.
+frontend/src/components/form-builder/LogicCanvas.tsx(3,24): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+frontend/src/components/form-builder/LogicCanvas.tsx(4,79): error TS2307: Cannot find module '@/components/ui/custom-select' or its corresponding type declarations.
+frontend/src/components/form-builder/LogicCanvas.tsx(6,23): error TS2307: Cannot find module '@/components/ui/input' or its corresponding type declarations.
+frontend/src/components/form-builder/LogicCanvas.tsx(95,41): error TS7006: Parameter 'f' implicitly has an 'any' type.
+frontend/src/components/form-builder/LogicCanvas.tsx(219,26): error TS7006: Parameter 'rule' implicitly has an 'any' type.
+frontend/src/components/form-builder/LogicCanvas.tsx(225,17): error TS2322: Type '(el: HTMLDivElement | null) => HTMLDivElement | null' is not assignable to type 'LegacyRef<HTMLDivElement> | undefined'.
+  Type '(el: HTMLDivElement | null) => HTMLDivElement | null' is not assignable to type '(instance: HTMLDivElement | null) => void | (() => VoidOrUndefinedOnly)'.
+    Type 'HTMLDivElement | null' is not assignable to type 'void | (() => VoidOrUndefinedOnly)'.
+      Type 'null' is not assignable to type 'void | (() => VoidOrUndefinedOnly)'.
+frontend/src/components/form-builder/LogicCanvas.tsx(237,36): error TS7006: Parameter 'e' implicitly has an 'any' type.
+frontend/src/components/form-builder/LogicCanvas.tsx(241,37): error TS7006: Parameter 'e' implicitly has an 'any' type.
+frontend/src/components/form-builder/LogicCanvas.tsx(317,39): error TS7006: Parameter 'condition' implicitly has an 'any' type.
+frontend/src/components/form-builder/LogicCanvas.tsx(332,45): error TS7006: Parameter 'value' implicitly has an 'any' type.
+frontend/src/components/form-builder/LogicCanvas.tsx(338,53): error TS7006: Parameter 'f' implicitly has an 'any' type.
+frontend/src/components/form-builder/LogicCanvas.tsx(356,45): error TS7006: Parameter 'value' implicitly has an 'any' type.
+frontend/src/components/form-builder/LogicCanvas.tsx(371,40): error TS7006: Parameter 'e' implicitly has an 'any' type.
+frontend/src/components/form-builder/LogicCanvas.tsx(406,38): error TS7006: Parameter 'action' implicitly has an 'any' type.
+frontend/src/components/form-builder/LogicCanvas.tsx(422,41): error TS7006: Parameter 'value' implicitly has an 'any' type.
+frontend/src/components/form-builder/LogicCanvas.tsx(429,37): error TS7006: Parameter 'f' implicitly has an 'any' type.
+frontend/src/components/form-builder/LogicCanvas.tsx(431,56): error TS7006: Parameter 'c' implicitly has an 'any' type.
+frontend/src/components/form-builder/LogicCanvas.tsx(434,72): error TS7006: Parameter 'a' implicitly has an 'any' type.
+frontend/src/components/form-builder/LogicCanvas.tsx(435,53): error TS7006: Parameter 'a' implicitly has an 'any' type.
+frontend/src/components/form-builder/LogicCanvas.tsx(439,35): error TS7006: Parameter 'f' implicitly has an 'any' type.
+frontend/src/components/form-builder/LogicSidebarList.tsx(2,30): error TS2307: Cannot find module '@/store/formStore' or its corresponding type declarations.
+frontend/src/components/form-builder/LogicSidebarList.tsx(4,23): error TS2307: Cannot find module '@/components/ui/input' or its corresponding type declarations.
+frontend/src/components/form-builder/LogicSidebarList.tsx(16,45): error TS7006: Parameter 'f' implicitly has an 'any' type.
+frontend/src/components/form-builder/LogicSidebarList.tsx(50,26): error TS7006: Parameter 'rule' implicitly has an 'any' type.
+frontend/src/components/form-builder/LogicSidebarList.tsx(74,36): error TS7006: Parameter 'e' implicitly has an 'any' type.
+frontend/src/components/form-builder/LogicSidebarList.tsx(78,37): error TS7006: Parameter 'e' implicitly has an 'any' type.
+frontend/src/components/form-builder/LogicSidebarList.tsx(148,51): error TS7006: Parameter 'cond' implicitly has an 'any' type.
+frontend/src/components/form-builder/LogicSidebarList.tsx(163,48): error TS7006: Parameter 'action' implicitly has an 'any' type.
+frontend/src/components/form-builder/PageNavigation.tsx(5,34): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/properties/CommonFieldProperties.tsx(1,40): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/properties/CommonFieldProperties.tsx(100,30): error TS7006: Parameter 'f' implicitly has an 'any' type.
+frontend/src/components/form-builder/properties/CommonFieldProperties.tsx(101,31): error TS7006: Parameter 'sum' implicitly has an 'any' type.
+frontend/src/components/form-builder/properties/CommonFieldProperties.tsx(101,36): error TS7006: Parameter 'f' implicitly has an 'any' type.
+frontend/src/components/form-builder/properties/CommonFieldProperties.tsx(173,70): error TS7006: Parameter 'a' implicitly has an 'any' type.
+frontend/src/components/form-builder/properties/FormSettingsProperties.tsx(1,22): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/properties/FormSettingsProperties.tsx(3,30): error TS2307: Cannot find module '@/store/formStore' or its corresponding type declarations.
+frontend/src/components/form-builder/properties/FormSettingsProperties.tsx(10,8): error TS2307: Cannot find module '@/components/ui/custom-select' or its corresponding type declarations.
+frontend/src/components/form-builder/properties/FormSettingsProperties.tsx(183,33): error TS7006: Parameter 'value' implicitly has an 'any' type.
+frontend/src/components/form-builder/properties/LogicProperties.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/properties/LogicProperties.tsx(3,30): error TS2307: Cannot find module '@/store/formStore' or its corresponding type declarations.
+frontend/src/components/form-builder/properties/LogicProperties.tsx(4,24): error TS2307: Cannot find module '@/components/ui/button' or its corresponding type declarations.
+frontend/src/components/form-builder/properties/LogicProperties.tsx(5,23): error TS2307: Cannot find module '@/components/ui/input' or its corresponding type declarations.
+frontend/src/components/form-builder/properties/LogicProperties.tsx(6,23): error TS2307: Cannot find module '@/components/ui/label' or its corresponding type declarations.
+frontend/src/components/form-builder/properties/LogicProperties.tsx(7,79): error TS2307: Cannot find module '@/components/ui/select' or its corresponding type declarations.
+frontend/src/components/form-builder/properties/LogicProperties.tsx(19,45): error TS7006: Parameter 'c' implicitly has an 'any' type.
+frontend/src/components/form-builder/properties/LogicProperties.tsx(22,52): error TS7006: Parameter 'f' implicitly has an 'any' type.
+frontend/src/components/form-builder/properties/LogicProperties.tsx(57,31): error TS7006: Parameter 'condition' implicitly has an 'any' type.
+frontend/src/components/form-builder/properties/LogicProperties.tsx(71,41): error TS7006: Parameter 'value' implicitly has an 'any' type.
+frontend/src/components/form-builder/properties/LogicProperties.tsx(95,45): error TS7006: Parameter 'value' implicitly has an 'any' type.
+frontend/src/components/form-builder/properties/LogicProperties.tsx(109,40): error TS7006: Parameter 'e' implicitly has an 'any' type.
+frontend/src/components/form-builder/properties/LogicProperties.tsx(127,41): error TS7006: Parameter 'value' implicitly has an 'any' type.
+frontend/src/components/form-builder/properties/LogicProperties.tsx(143,41): error TS7006: Parameter 'value' implicitly has an 'any' type.
+frontend/src/components/form-builder/properties/LogicProperties.tsx(149,48): error TS7006: Parameter 'f' implicitly has an 'any' type.
+frontend/src/components/form-builder/properties/SpecialPageProperties.tsx(3,22): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/properties/WelcomeScreenEditor.tsx(2,22): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/PropertiesPanel.tsx(2,30): error TS2307: Cannot find module '@/store/formStore' or its corresponding type declarations.
+frontend/src/components/form-builder/PropertiesPanel.tsx(3,27): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/PropertiesPanel.tsx(10,32): error TS2307: Cannot find module '@/components/field-properties/advanced/DateProperties' or its corresponding type declarations.
+frontend/src/components/form-builder/PropertiesPanel.tsx(11,36): error TS2307: Cannot find module '@/components/field-properties/text/FullNameProperties' or its corresponding type declarations.
+frontend/src/components/form-builder/PropertiesPanel.tsx(12,33): error TS2307: Cannot find module '@/components/field-properties/text/EmailProperties' or its corresponding type declarations.
+frontend/src/components/form-builder/PropertiesPanel.tsx(13,35): error TS2307: Cannot find module '@/components/field-properties/advanced/AddressProperties' or its corresponding type declarations.
+frontend/src/components/form-builder/PropertiesPanel.tsx(14,33): error TS2307: Cannot find module '@/components/field-properties/text/PhoneProperties' or its corresponding type declarations.
+frontend/src/components/form-builder/PropertiesPanel.tsx(15,37): error TS2307: Cannot find module '@/components/field-properties/text/ShortTextProperties' or its corresponding type declarations.
+frontend/src/components/form-builder/PropertiesPanel.tsx(16,36): error TS2307: Cannot find module '@/components/field-properties/text/LongTextProperties' or its corresponding type declarations.
+frontend/src/components/form-builder/PropertiesPanel.tsx(17,37): error TS2307: Cannot find module '@/components/field-properties/text/ParagraphProperties' or its corresponding type declarations.
+frontend/src/components/form-builder/PropertiesPanel.tsx(18,36): error TS2307: Cannot find module '@/components/field-properties/choice/DropdownProperties' or its corresponding type declarations.
+frontend/src/components/form-builder/PropertiesPanel.tsx(19,33): error TS2307: Cannot find module '@/components/field-properties/choice/RadioProperties' or its corresponding type declarations.
+frontend/src/components/form-builder/PropertiesPanel.tsx(20,36): error TS2307: Cannot find module '@/components/field-properties/choice/CheckboxProperties' or its corresponding type declarations.
+frontend/src/components/form-builder/PropertiesPanel.tsx(21,34): error TS2307: Cannot find module '@/components/field-properties/text/NumberProperties' or its corresponding type declarations.
+frontend/src/components/form-builder/PropertiesPanel.tsx(22,32): error TS2307: Cannot find module '@/components/field-properties/advanced/TimeProperties' or its corresponding type declarations.
+frontend/src/components/form-builder/PropertiesPanel.tsx(23,34): error TS2307: Cannot find module '@/components/field-properties/advanced/SubmitProperties' or its corresponding type declarations.
+frontend/src/components/form-builder/PropertiesPanel.tsx(24,34): error TS2307: Cannot find module '@/components/field-properties/advanced/HeaderProperties' or its corresponding type declarations.
+frontend/src/components/form-builder/PropertiesPanel.tsx(25,32): error TS2307: Cannot find module '@/components/field-properties/advanced/RateProperties' or its corresponding type declarations.
+frontend/src/components/form-builder/PropertiesPanel.tsx(26,34): error TS2307: Cannot find module '@/components/field-properties/advanced/MatrixProperties' or its corresponding type declarations.
+frontend/src/components/form-builder/PropertiesPanel.tsx(27,33): error TS2307: Cannot find module '@/components/field-properties/advanced/TableProperties' or its corresponding type declarations.
+frontend/src/components/form-builder/PropertiesPanel.tsx(42,52): error TS7006: Parameter 'f' implicitly has an 'any' type.
+frontend/src/components/form-builder/QuizAnswerPopup.tsx(3,40): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/QuizModeBanner.tsx(4,22): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/QuizModeBanner.tsx(5,30): error TS2307: Cannot find module '@/store/formStore' or its corresponding type declarations.
+frontend/src/components/form-builder/QuizModeBanner.tsx(16,42): error TS7006: Parameter 'sum' implicitly has an 'any' type.
+frontend/src/components/form-builder/QuizModeBanner.tsx(16,47): error TS7006: Parameter 'f' implicitly has an 'any' type.
+frontend/src/components/form-builder/ThankYouScreenEditor.tsx(2,22): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-builder/ThankYouScreenEditor.tsx(111,54): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{ green: string; blue: string; purple: string; orange: string; pink: string; red: string; yellow: string; gray: string; white: string; }'.
+frontend/src/components/form-preview/fields/EmailPreview.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-preview/fields/NumberPreview.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-preview/fields/PreviewAddressField.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-preview/fields/PreviewDateField.tsx(2,34): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-preview/fields/PreviewFullNameField.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-preview/fields/PreviewFullNameField.tsx(5,30): error TS2307: Cannot find module '@/store/formStore' or its corresponding type declarations.
+frontend/src/components/form-preview/fields/PreviewGroupField.tsx(1,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-preview/fields/PreviewHeaderField.tsx(2,34): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-preview/fields/PreviewMatrixField.tsx(3,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-preview/fields/PreviewParagraphField.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-preview/fields/PreviewPhoneField.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-preview/fields/PreviewRateField.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-preview/fields/PreviewSelectField.tsx(2,34): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-preview/fields/PreviewSelectField.tsx(5,79): error TS2307: Cannot find module '@/components/ui/custom-select' or its corresponding type declarations.
+frontend/src/components/form-preview/fields/PreviewSelectField.tsx(109,45): error TS7006: Parameter 'val' implicitly has an 'any' type.
+frontend/src/components/form-preview/fields/PreviewSubmitField.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-preview/fields/PreviewTableField.tsx(3,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-preview/fields/PreviewTextAreaField.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-preview/fields/PreviewTimeField.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-preview/fields/TextPreview.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-preview/FormFieldRenderer.tsx(1,34): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-preview/PreviewLabel.tsx(2,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-preview/ThankYouScreen.tsx(5,54): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/form-preview/ThankYouScreen.tsx(224,51): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{ green: string; blue: string; purple: string; orange: string; pink: string; red: string; yellow: string; gray: string; white: string; }'.
+frontend/src/components/form-preview/WelcomeScreen.tsx(2,39): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/layout/Header.tsx(4,30): error TS2307: Cannot find module '@/store/authStore' or its corresponding type declarations.
+frontend/src/components/layout/Header.tsx(5,24): error TS2307: Cannot find module '@/components/auth/LoginModal' or its corresponding type declarations.
+frontend/src/components/layout/Header.tsx(6,24): error TS2307: Cannot find module '@/components/common/UserAvatar' or its corresponding type declarations.
+frontend/src/components/layout/Header.tsx(7,30): error TS2307: Cannot find module '@/components/common/LanguageSwitcher' or its corresponding type declarations.
+frontend/src/components/mobile/MobileFormCard.tsx(2,27): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/mobile/MobileFormsSection.tsx(6,22): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/mobile/MobileMoveFolderSheet.tsx(4,24): error TS2307: Cannot find module '@/types/folder' or its corresponding type declarations.
+frontend/src/components/mobile/MobileProfileSheet.tsx(4,30): error TS2307: Cannot find module '@/store/authStore' or its corresponding type declarations.
+frontend/src/components/mobile/MobileSearchFilters.tsx(3,24): error TS2307: Cannot find module '@/types/folder' or its corresponding type declarations.
+frontend/src/components/public-form/CardLayout.tsx(2,31): error TS2307: Cannot find module '@/components/form-preview/FormFieldRenderer' or its corresponding type declarations.
+frontend/src/components/public-form/CardLayout.tsx(3,22): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/public-form/ClassicLayout.tsx(2,31): error TS2307: Cannot find module '@/components/form-preview/FormFieldRenderer' or its corresponding type declarations.
+frontend/src/components/public-form/ClassicLayout.tsx(3,22): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/public-form/FormNavigation.tsx(3,20): error TS2307: Cannot find module '@/components/common/Loader' or its corresponding type declarations.
+frontend/src/components/public-form/FormProgressBar.tsx(2,27): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/public-form/hooks/useFormNavigation.ts(2,34): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/public-form/hooks/useQuizFeatures.ts(2,17): error TS2307: Cannot find module '@/lib/api' or its corresponding type declarations.
+frontend/src/components/public-form/hooks/useQuizFeatures.ts(3,39): error TS2307: Cannot find module '@/utils/fingerprint' or its corresponding type declarations.
+frontend/src/components/public-form/PublicFormRenderer.tsx(4,34): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/public-form/PublicFormRenderer.tsx(7,20): error TS2307: Cannot find module '@/components/common/Loader' or its corresponding type declarations.
+frontend/src/components/public-form/PublicFormRenderer.tsx(8,28): error TS2307: Cannot find module '@/components/form-preview/ThankYouScreen' or its corresponding type declarations.
+frontend/src/components/public-form/PublicFormRenderer.tsx(9,27): error TS2307: Cannot find module '@/components/form-preview/WelcomeScreen' or its corresponding type declarations.
+frontend/src/components/public-form/PublicFormRenderer.tsx(10,30): error TS2307: Cannot find module '@/hooks/form/useFormLogic' or its corresponding type declarations.
+frontend/src/components/public-form/PublicFormRenderer.tsx(11,35): error TS2307: Cannot find module '@/hooks/form/useFormSubmission' or its corresponding type declarations.
+frontend/src/components/public-form/utils/formFieldUtils.ts(1,23): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/components/ToasterWrapper.tsx(3,33): error TS2307: Cannot find module '@/components/ui/toaster' or its corresponding type declarations.
+frontend/src/components/ui/badge.tsx(3,20): error TS2307: Cannot find module '@/lib/ui/utils' or its corresponding type declarations.
+frontend/src/components/ui/button.tsx(4,20): error TS2307: Cannot find module '@/lib/ui/utils' or its corresponding type declarations.
+frontend/src/components/ui/card.tsx(2,20): error TS2307: Cannot find module '@/lib/ui/utils' or its corresponding type declarations.
+frontend/src/components/ui/checkbox.tsx(2,20): error TS2307: Cannot find module '@/lib/ui/utils' or its corresponding type declarations.
+frontend/src/components/ui/custom-select.tsx(4,20): error TS2307: Cannot find module '@/lib/ui/utils' or its corresponding type declarations.
+frontend/src/components/ui/dialog.tsx(2,20): error TS2307: Cannot find module '@/lib/ui/utils' or its corresponding type declarations.
+frontend/src/components/ui/input.tsx(2,20): error TS2307: Cannot find module '@/lib/ui/utils' or its corresponding type declarations.
+frontend/src/components/ui/label.tsx(2,20): error TS2307: Cannot find module '@/lib/ui/utils' or its corresponding type declarations.
+frontend/src/components/ui/radio-group.tsx(2,20): error TS2307: Cannot find module '@/lib/ui/utils' or its corresponding type declarations.
+frontend/src/components/ui/skeleton.tsx(1,20): error TS2307: Cannot find module '@/lib/ui/utils' or its corresponding type declarations.
+frontend/src/components/ui/table.tsx(2,20): error TS2307: Cannot find module '@/lib/ui/utils' or its corresponding type declarations.
+frontend/src/components/ui/tabs.tsx(2,20): error TS2307: Cannot find module '@/lib/ui/utils' or its corresponding type declarations.
+frontend/src/components/ui/textarea.tsx(2,20): error TS2307: Cannot find module '@/lib/ui/utils' or its corresponding type declarations.
+frontend/src/components/ui/toast.tsx(5,20): error TS2307: Cannot find module '@/lib/ui/utils' or its corresponding type declarations.
+frontend/src/components/ui/tooltip.tsx(4,20): error TS2307: Cannot find module '@/lib/ui/utils' or its corresponding type declarations.
+frontend/src/hooks/form/useDragAndDrop.ts(3,40): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/hooks/form/useDragAndDrop.ts(4,30): error TS2307: Cannot find module '@/utils/uuid' or its corresponding type declarations.
+frontend/src/hooks/form/useFormLogic.ts(2,34): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/hooks/form/useFormLogic.ts(22,28): error TS7006: Parameter 'action' implicitly has an 'any' type.
+frontend/src/hooks/form/useFormLogic.ts(34,52): error TS7006: Parameter 'c' implicitly has an 'any' type.
+frontend/src/hooks/form/useFormLogic.ts(108,43): error TS7006: Parameter 'r' implicitly has an 'any' type.
+frontend/src/hooks/form/useFormLogic.ts(111,44): error TS7006: Parameter 'r' implicitly has an 'any' type.
+frontend/src/hooks/form/useFormLogic.ts(116,30): error TS7006: Parameter 'action' implicitly has an 'any' type.
+frontend/src/hooks/form/useFormShortcuts.ts(2,30): error TS2307: Cannot find module '@/store/formStore' or its corresponding type declarations.
+frontend/src/hooks/form/useFormSubmission.ts(2,17): error TS2307: Cannot find module '@/lib/api' or its corresponding type declarations.
+frontend/src/hooks/form/useFormSubmission.ts(3,22): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/hooks/form/useFormSubmission.ts(4,39): error TS2307: Cannot find module '@/utils/fingerprint' or its corresponding type declarations.
+frontend/src/hooks/form/useFormSubmission.ts(5,26): error TS2307: Cannot find module '@/components/ui/toaster' or its corresponding type declarations.
+frontend/src/hooks/form/useFormSubmission.ts(41,41): error TS7006: Parameter 'field' implicitly has an 'any' type.
+frontend/src/hooks/form/usePageManagement.ts(3,54): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/hooks/form/usePageManagement.ts(6,30): error TS2307: Cannot find module '@/store/formStore' or its corresponding type declarations.
+frontend/src/hooks/form/usePageManagement.ts(7,30): error TS2307: Cannot find module '@/utils/uuid' or its corresponding type declarations.
+frontend/src/hooks/useFolders.ts(2,17): error TS2307: Cannot find module '@/lib/api' or its corresponding type declarations.
+frontend/src/hooks/useFolders.ts(3,29): error TS2307: Cannot find module '@/types/folder' or its corresponding type declarations.
+frontend/src/hooks/useFolders.ts(4,30): error TS2307: Cannot find module '@/store/authStore' or its corresponding type declarations.
+frontend/src/hooks/useInactivityLogout.ts(2,30): error TS2307: Cannot find module '@/store/authStore' or its corresponding type declarations.
+frontend/src/hooks/useSocketLogout.ts(3,30): error TS2307: Cannot find module '@/store/authStore' or its corresponding type declarations.
+frontend/src/lib/api.ts(2,30): error TS2307: Cannot find module '@/store/authStore' or its corresponding type declarations.
+frontend/src/lib/mock-data.ts(1,46): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/main.tsx(3,17): error TS5097: An import path can only end with a '.tsx' extension when 'allowImportingTsExtensions' is enabled.
+frontend/src/pages/ActivityPage.tsx(4,27): error TS2307: Cannot find module '@/lib/ui/utils' or its corresponding type declarations.
+frontend/src/pages/ActivityPage.tsx(6,17): error TS2307: Cannot find module '@/lib/api' or its corresponding type declarations.
+frontend/src/pages/ActivityPage.tsx(8,20): error TS2307: Cannot find module '@/components/common/Loader' or its corresponding type declarations.
+frontend/src/pages/ActivityPage.tsx(9,24): error TS2307: Cannot find module '@/components/common/UserAvatar' or its corresponding type declarations.
+frontend/src/pages/AnalyticsPage.tsx(41,8): error TS2307: Cannot find module '@/components/ui/custom-select' or its corresponding type declarations.
+frontend/src/pages/AnalyticsPage.tsx(42,20): error TS2307: Cannot find module '@/components/common/Loader' or its corresponding type declarations.
+frontend/src/pages/AnalyticsPage.tsx(43,17): error TS2307: Cannot find module '@/lib/api' or its corresponding type declarations.
+frontend/src/pages/AnalyticsPage.tsx(44,36): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/pages/AnalyticsPage.tsx(68,28): error TS2307: Cannot find module '@/components/ui/toaster' or its corresponding type declarations.
+frontend/src/pages/AnalyticsPage.tsx(179,31): error TS7006: Parameter 'field' implicitly has an 'any' type.
+frontend/src/pages/AnalyticsPage.tsx(194,46): error TS7006: Parameter 'a' implicitly has an 'any' type.
+frontend/src/pages/AnalyticsPage.tsx(265,49): error TS7006: Parameter 'a' implicitly has an 'any' type.
+frontend/src/pages/AnalyticsPage.tsx(325,35): error TS7006: Parameter 'a' implicitly has an 'any' type.
+frontend/src/pages/AnalyticsPage.tsx(325,70): error TS7006: Parameter 'a' implicitly has an 'any' type.
+frontend/src/pages/AnalyticsPage.tsx(466,31): error TS7006: Parameter 'field' implicitly has an 'any' type.
+frontend/src/pages/AnalyticsPage.tsx(473,41): error TS7006: Parameter 'a' implicitly has an 'any' type.
+frontend/src/pages/AnalyticsPage.tsx(1121,58): error TS7006: Parameter 'f' implicitly has an 'any' type.
+frontend/src/pages/AnalyticsPage.tsx(1122,59): error TS7006: Parameter 'f' implicitly has an 'any' type.
+frontend/src/pages/AnalyticsPage.tsx(1124,74): error TS7006: Parameter 'a' implicitly has an 'any' type.
+frontend/src/pages/AnalyticsPage.tsx(1126,114): error TS7006: Parameter 'a' implicitly has an 'any' type.
+frontend/src/pages/AnalyticsPage.tsx(1182,53): error TS7006: Parameter 'field' implicitly has an 'any' type.
+frontend/src/pages/AnalyticsPage.tsx(1185,73): error TS7006: Parameter 'a' implicitly has an 'any' type.
+frontend/src/pages/Dashboard.tsx(4,17): error TS2307: Cannot find module '@/lib/api' or its corresponding type declarations.
+frontend/src/pages/Dashboard.tsx(5,22): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/pages/Dashboard.tsx(6,30): error TS2307: Cannot find module '@/store/authStore' or its corresponding type declarations.
+frontend/src/pages/Dashboard.tsx(7,24): error TS2307: Cannot find module '@/components/auth/LoginModal' or its corresponding type declarations.
+frontend/src/pages/Dashboard.tsx(9,30): error TS2307: Cannot find module '@/components/dashboard/FormDetailsModal' or its corresponding type declarations.
+frontend/src/pages/Dashboard.tsx(10,35): error TS2307: Cannot find module '@/components/dashboard/CollaboratorListModal' or its corresponding type declarations.
+frontend/src/pages/Dashboard.tsx(11,38): error TS2307: Cannot find module '@/components/dashboard/DashboardContextMenu' or its corresponding type declarations.
+frontend/src/pages/Dashboard.tsx(12,27): error TS2307: Cannot find module '@/components/ui/ConfirmDialog' or its corresponding type declarations.
+frontend/src/pages/Dashboard.tsx(14,20): error TS2307: Cannot find module '@/components/common/Loader' or its corresponding type declarations.
+frontend/src/pages/Dashboard.tsx(16,28): error TS2307: Cannot find module '@/hooks/useFolders' or its corresponding type declarations.
+frontend/src/pages/Dashboard.tsx(17,29): error TS2307: Cannot find module '@/components/dashboard/DashboardHeader' or its corresponding type declarations.
+frontend/src/pages/Dashboard.tsx(18,27): error TS2307: Cannot find module '@/components/dashboard/SearchFilters' or its corresponding type declarations.
+frontend/src/pages/Dashboard.tsx(19,27): error TS2307: Cannot find module '@/components/dashboard/FolderFilters' or its corresponding type declarations.
+frontend/src/pages/Dashboard.tsx(20,24): error TS2307: Cannot find module '@/components/dashboard/EmptyState' or its corresponding type declarations.
+frontend/src/pages/Dashboard.tsx(21,31): error TS2307: Cannot find module '@/components/dashboard/DashboardFormCard' or its corresponding type declarations.
+frontend/src/pages/Dashboard.tsx(22,28): error TS2307: Cannot find module '@/components/dashboard/FoldersSection' or its corresponding type declarations.
+frontend/src/pages/Dashboard.tsx(23,31): error TS2307: Cannot find module '@/components/dashboard/CreateFolderModal' or its corresponding type declarations.
+frontend/src/pages/Dashboard.tsx(24,26): error TS2307: Cannot find module '@/components/ui/toaster' or its corresponding type declarations.
+frontend/src/pages/Dashboard.tsx(26,35): error TS2307: Cannot find module '@/components/dashboard/UngroupedFormsSection' or its corresponding type declarations.
+frontend/src/pages/Dashboard.tsx(27,32): error TS2307: Cannot find module '@/components/mobile/MobileFormsSection' or its corresponding type declarations.
+frontend/src/pages/Dashboard.tsx(28,33): error TS2307: Cannot find module '@/components/mobile/MobileSearchFilters' or its corresponding type declarations.
+frontend/src/pages/Dashboard.tsx(29,35): error TS2307: Cannot find module '@/components/mobile/MobileMoveFolderSheet' or its corresponding type declarations.
+frontend/src/pages/Dashboard.tsx(30,31): error TS2307: Cannot find module '@/components/mobile/MobileFilterSheet' or its corresponding type declarations.
+frontend/src/pages/Dashboard.tsx(31,32): error TS2307: Cannot find module '@/components/mobile/MobileProfileSheet' or its corresponding type declarations.
+frontend/src/pages/Dashboard.tsx(69,40): error TS2339: Property 'id' does not exist on type 'FormWithStats'.
+frontend/src/pages/Dashboard.tsx(276,32): error TS2339: Property 'title' does not exist on type 'FormWithStats'.
+frontend/src/pages/Dashboard.tsx(278,64): error TS2339: Property 'status' does not exist on type 'FormWithStats'.
+frontend/src/pages/Dashboard.tsx(279,60): error TS2339: Property 'status' does not exist on type 'FormWithStats'.
+frontend/src/pages/Dashboard.tsx(280,63): error TS2339: Property 'status' does not exist on type 'FormWithStats'.
+frontend/src/pages/Dashboard.tsx(286,21): error TS2339: Property 'folderId' does not exist on type 'FormWithStats'.
+frontend/src/pages/Dashboard.tsx(287,20): error TS2339: Property 'folderId' does not exist on type 'FormWithStats'.
+frontend/src/pages/Dashboard.tsx(292,25): error TS2339: Property 'createdAt' does not exist on type 'FormWithStats'.
+frontend/src/pages/Dashboard.tsx(292,59): error TS2339: Property 'createdAt' does not exist on type 'FormWithStats'.
+frontend/src/pages/Dashboard.tsx(294,25): error TS2339: Property 'createdAt' does not exist on type 'FormWithStats'.
+frontend/src/pages/Dashboard.tsx(294,59): error TS2339: Property 'createdAt' does not exist on type 'FormWithStats'.
+frontend/src/pages/Dashboard.tsx(296,16): error TS2339: Property 'title' does not exist on type 'FormWithStats'.
+frontend/src/pages/Dashboard.tsx(296,38): error TS2339: Property 'title' does not exist on type 'FormWithStats'.
+frontend/src/pages/Dashboard.tsx(342,55): error TS2339: Property 'folderId' does not exist on type 'FormWithStats'.
+frontend/src/pages/Dashboard.tsx(409,22): error TS7006: Parameter 'id' implicitly has an 'any' type.
+frontend/src/pages/Dashboard.tsx(410,20): error TS7006: Parameter 'id' implicitly has an 'any' type.
+frontend/src/pages/Dashboard.tsx(423,36): error TS7006: Parameter 'folderId' implicitly has an 'any' type.
+frontend/src/pages/Dashboard.tsx(485,33): error TS7006: Parameter 'formId' implicitly has an 'any' type.
+frontend/src/pages/Dashboard.tsx(489,35): error TS7006: Parameter 'e' implicitly has an 'any' type.
+frontend/src/pages/Dashboard.tsx(489,38): error TS7006: Parameter 'form' implicitly has an 'any' type.
+frontend/src/pages/Dashboard.tsx(494,42): error TS7006: Parameter 'e' implicitly has an 'any' type.
+frontend/src/pages/Dashboard.tsx(494,45): error TS7006: Parameter 'collaborators' implicitly has an 'any' type.
+frontend/src/pages/Dashboard.tsx(494,60): error TS7006: Parameter 'title' implicitly has an 'any' type.
+frontend/src/pages/Dashboard.tsx(494,67): error TS7006: Parameter 'formId' implicitly has an 'any' type.
+frontend/src/pages/Dashboard.tsx(524,40): error TS7006: Parameter 'f' implicitly has an 'any' type.
+frontend/src/pages/Dashboard.tsx(563,26): error TS7006: Parameter 'name' implicitly has an 'any' type.
+frontend/src/pages/Dashboard.tsx(563,32): error TS7006: Parameter 'color' implicitly has an 'any' type.
+frontend/src/pages/Dashboard.tsx(587,46): error TS2339: Property 'createdBy' does not exist on type 'FormWithStats'.
+frontend/src/pages/Dashboard.tsx(587,74): error TS2339: Property 'collaborators' does not exist on type 'FormWithStats'.
+frontend/src/pages/Dashboard.tsx(591,39): error TS2339: Property 'title' does not exist on type 'FormWithStats'.
+frontend/src/pages/Dashboard.tsx(592,36): error TS2339: Property 'id' does not exist on type 'FormWithStats'.
+frontend/src/pages/Dashboard.tsx(620,45): error TS2339: Property 'id' does not exist on type 'FormWithStats'.
+frontend/src/pages/Dashboard.tsx(622,42): error TS2339: Property 'createdBy' does not exist on type 'FormWithStats'.
+frontend/src/pages/Dashboard.tsx(622,62): error TS2339: Property 'collaborators' does not exist on type 'FormWithStats'.
+frontend/src/pages/Dashboard.tsx(626,37): error TS2339: Property 'title' does not exist on type 'FormWithStats'.
+frontend/src/pages/Dashboard.tsx(627,34): error TS2339: Property 'id' does not exist on type 'FormWithStats'.
+frontend/src/pages/FormEdit.tsx(4,30): error TS2307: Cannot find module '@/utils/uuid' or its corresponding type declarations.
+frontend/src/pages/FormEdit.tsx(6,30): error TS2307: Cannot find module '@/store/formStore' or its corresponding type declarations.
+frontend/src/pages/FormEdit.tsx(7,46): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/pages/FormEdit.tsx(8,26): error TS2307: Cannot find module '@/components/form-builder/FieldSidebar' or its corresponding type declarations.
+frontend/src/pages/FormEdit.tsx(9,29): error TS2307: Cannot find module '@/components/form-builder/PropertiesPanel' or its corresponding type declarations.
+frontend/src/pages/FormEdit.tsx(10,28): error TS2307: Cannot find module '@/components/form-builder/PageNavigation' or its corresponding type declarations.
+frontend/src/pages/FormEdit.tsx(12,31): error TS2307: Cannot find module '@/components/form-builder/FormBuilderHeader' or its corresponding type declarations.
+frontend/src/pages/FormEdit.tsx(13,24): error TS2307: Cannot find module '@/components/form-builder/CanvasArea' or its corresponding type declarations.
+frontend/src/pages/FormEdit.tsx(14,33): error TS2307: Cannot find module '@/components/form-builder/properties/WelcomeScreenEditor' or its corresponding type declarations.
+frontend/src/pages/FormEdit.tsx(15,34): error TS2307: Cannot find module '@/components/form-builder/ThankYouScreenEditor' or its corresponding type declarations.
+frontend/src/pages/FormEdit.tsx(16,25): error TS2307: Cannot find module '@/components/form-builder/LogicCanvas' or its corresponding type declarations.
+frontend/src/pages/FormEdit.tsx(17,28): error TS2307: Cannot find module '@/components/form-builder/QuizModeBanner' or its corresponding type declarations.
+frontend/src/pages/FormEdit.tsx(20,35): error TS2307: Cannot find module '@/hooks/form/usePageManagement' or its corresponding type declarations.
+frontend/src/pages/FormEdit.tsx(21,36): error TS2307: Cannot find module '@/hooks/form/useDragAndDrop' or its corresponding type declarations.
+frontend/src/pages/FormEdit.tsx(23,34): error TS2307: Cannot find module '@/hooks/form/useFormShortcuts' or its corresponding type declarations.
+frontend/src/pages/FormEdit.tsx(24,27): error TS2307: Cannot find module '@/components/ui/LiquidFab' or its corresponding type declarations.
+frontend/src/pages/FormEdit.tsx(408,28): error TS7006: Parameter 'field' implicitly has an 'any' type.
+frontend/src/pages/FormPreview.tsx(2,30): error TS2307: Cannot find module '@/store/formStore' or its corresponding type declarations.
+frontend/src/pages/FormPreview.tsx(3,25): error TS2307: Cannot find module '@/components/form-preview/DeviceFrame' or its corresponding type declarations.
+frontend/src/pages/FormPreview.tsx(5,32): error TS2307: Cannot find module '@/components/public-form/PublicFormRenderer' or its corresponding type declarations.
+frontend/src/pages/PublicForm.tsx(5,17): error TS2307: Cannot find module '@/lib/api' or its corresponding type declarations.
+frontend/src/pages/PublicForm.tsx(6,22): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/pages/PublicForm.tsx(8,32): error TS2307: Cannot find module '@/components/public-form/PublicFormRenderer' or its corresponding type declarations.
+frontend/src/pages/PublicForm.tsx(9,20): error TS2307: Cannot find module '@/components/common/Loader' or its corresponding type declarations.
+frontend/src/store/formStore.ts(4,96): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/store/formStore.ts(5,17): error TS2307: Cannot find module '@/lib/api' or its corresponding type declarations.
+frontend/src/store/formStore.ts(6,39): error TS2307: Cannot find module '@/utils/form-templates' or its corresponding type declarations.
+frontend/src/store/formStore.ts(7,30): error TS2307: Cannot find module '@/utils/uuid' or its corresponding type declarations.
+frontend/src/store/formStore.ts(168,47): error TS7006: Parameter 'f' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(197,56): error TS7006: Parameter 'f' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(201,63): error TS7006: Parameter 'f' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(215,48): error TS7006: Parameter 'f' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(297,35): error TS7006: Parameter 'f' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(322,49): error TS7006: Parameter 'f' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(325,46): error TS7006: Parameter 'f' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(340,46): error TS7006: Parameter 'c' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(355,46): error TS7006: Parameter 'f' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(391,7): error TS18046: 'field' is of type 'unknown'.
+frontend/src/store/formStore.ts(416,36): error TS7006: Parameter 'f' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(427,46): error TS7006: Parameter 'id' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(489,44): error TS7006: Parameter 'f' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(490,26): error TS7006: Parameter 'f' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(490,29): error TS7006: Parameter 'i' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(493,42): error TS7006: Parameter 'f' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(519,52): error TS7006: Parameter 'f' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(521,24): error TS7006: Parameter 'a' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(521,27): error TS7006: Parameter 'b' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(535,44): error TS7006: Parameter 'f' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(538,26): error TS7006: Parameter 'f' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(538,29): error TS7006: Parameter 'i' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(557,57): error TS7006: Parameter 'f' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(609,41): error TS7006: Parameter 'c' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(625,44): error TS7006: Parameter 'c' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(737,35): error TS7006: Parameter 'f' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(751,45): error TS7006: Parameter 'c' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(753,56): error TS7006: Parameter 'f' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(755,17): error TS7006: Parameter 'c' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(762,42): error TS7006: Parameter 'rule' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(766,43): error TS7006: Parameter 'c' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(772,37): error TS7006: Parameter 'a' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(847,48): error TS7006: Parameter 'rule' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(862,51): error TS7006: Parameter 'rule' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(882,48): error TS7006: Parameter 'rule' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(899,48): error TS7006: Parameter 'rule' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(901,61): error TS7006: Parameter 'c' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(922,48): error TS7006: Parameter 'rule' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(939,48): error TS7006: Parameter 'rule' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(941,55): error TS7006: Parameter 'a' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(956,48): error TS7006: Parameter 'rule' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(960,49): error TS7006: Parameter 'c' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(978,48): error TS7006: Parameter 'rule' implicitly has an 'any' type.
+frontend/src/store/formStore.ts(982,43): error TS7006: Parameter 'a' implicitly has an 'any' type.
+frontend/src/utils/form-templates.ts(1,34): error TS2307: Cannot find module '@/types' or its corresponding type declarations.
+frontend/src/utils/form-templates.ts(2,30): error TS2307: Cannot find module '@/utils/uuid' or its corresponding type declarations.

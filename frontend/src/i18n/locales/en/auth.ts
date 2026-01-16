@@ -14,5 +14,6 @@ export default {
   "auth.google_failed": "Google Login Failed",
   "auth.google_error": "Could not sign in with Google.",
   "auth.error": "Error",
-  "auth.error_message": "Something went wrong. Please try again."
+  "auth.error_message": "Something went wrong. Please try again.",
+  "auth.logout": "Log Out"
 };

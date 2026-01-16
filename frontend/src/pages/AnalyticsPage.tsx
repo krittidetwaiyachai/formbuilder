@@ -545,58 +545,86 @@ export default function AnalyticsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white pb-12">
-      {/* Clean White Header */}
-      <div className="relative bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-6">
+    <div className="min-h-screen bg-white pb-32 md:pb-12">
+      <div className="relative bg-white md:border-b md:border-gray-200">
+        {/* Mobile iOS Header */}
+        <div className="md:hidden px-5 pt-12 pb-4 safe-area-pt border-b border-gray-100">
+          <div className="flex items-center gap-3 mb-4">
+            <Link
+              to={`/forms/${id}/builder`}
+              className="p-2 rounded-xl bg-gray-100 active:bg-gray-200 transition-colors"
+            >
+              <ArrowLeft className="w-5 h-5 text-gray-700" />
+            </Link>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setShowResponseViewer(true)}
+                className="p-2.5 bg-gray-100 rounded-xl active:bg-gray-200 transition-colors"
+              >
+                <List className="w-5 h-5 text-gray-700" />
+              </button>
+              <button
+                onClick={handleExport}
+                className="p-2.5 bg-black rounded-xl active:bg-gray-800 transition-colors"
+              >
+                <Download className="w-5 h-5 text-white" />
+              </button>
+            </div>
+          </div>
+          <h1 className="text-[28px] font-bold text-black tracking-tight">{t('analytics.title')}</h1>
+          <p className="text-sm text-gray-500 truncate">{form?.title}</p>
+        </div>
+
+        {/* Desktop Header */}
+        <div className="hidden md:block max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex items-center gap-4 md:gap-6">
               <Link
                 to={`/forms/${id}/builder`}
-                className="group p-3 rounded-xl bg-gray-100 hover:bg-gray-200 transition-all duration-300"
+                className="group p-2 md:p-3 rounded-xl bg-gray-100 hover:bg-gray-200 transition-all duration-300"
               >
                 <ArrowLeft className="w-5 h-5 text-gray-700 group-hover:-translate-x-1 transition-transform" />
               </Link>
               <div>
-                <div className="flex items-center gap-3 mb-2">
-                  <h1 className="text-3xl font-bold text-gray-900">{form?.title || t('analytics.title')}</h1>
-                  <span className="px-3 py-1 bg-gray-100 rounded-full text-xs font-semibold uppercase tracking-wide text-gray-700 border border-gray-200">
+                <div className="flex items-center gap-2 md:gap-3 mb-1 md:mb-2">
+                  <h1 className="text-xl md:text-3xl font-bold text-gray-900 truncate max-w-[150px] sm:max-w-none">{form?.title || t('analytics.title')}</h1>
+                  <span className="hidden sm:inline px-3 py-1 bg-gray-100 rounded-full text-xs font-semibold uppercase tracking-wide text-gray-700 border border-gray-200">
                     {form?.status === 'PUBLISHED' ? t('analytics.status.published') : t('analytics.status.draft')}
                   </span>
                 </div>
-                <p className="text-gray-600 text-sm flex items-center gap-2">
+                <p className="text-gray-600 text-sm hidden sm:flex items-center gap-2">
                   <BarChart3 className="w-4 h-4" />
                   {t('analytics.subtitle')}
                 </p>
               </div>
             </div>
-            <div className="flex gap-3">
+            <div className="flex gap-2 md:gap-3 self-end sm:self-center">
               <button
                 onClick={() => setShowResponseViewer(true)}
-                className="group inline-flex items-center px-5 py-2.5 bg-white border-2 border-gray-200 text-gray-700 rounded-xl hover:border-gray-300 hover:bg-gray-50 transition-all duration-300"
+                className="group inline-flex items-center px-3 md:px-5 py-2 md:py-2.5 bg-white border-2 border-gray-200 text-gray-700 rounded-xl hover:border-gray-300 hover:bg-gray-50 transition-all duration-300"
               >
-                <List className="w-4 h-4 mr-2 group-hover:rotate-12 transition-transform" />
-                <span className="font-medium">{t('analytics.view_responses')}</span>
+                <List className="w-4 h-4 md:mr-2 group-hover:rotate-12 transition-transform" />
+                <span className="hidden md:inline font-medium">{t('analytics.view_responses')}</span>
               </button>
               <button
                 onClick={handleExport}
-                className="group inline-flex items-center px-5 py-2.5 bg-black text-white rounded-xl hover:bg-gray-800 transition-all duration-300 shadow-lg font-medium"
+                className="group inline-flex items-center px-3 md:px-5 py-2 md:py-2.5 bg-black text-white rounded-xl hover:bg-gray-800 transition-all duration-300 shadow-lg font-medium"
               >
-                <Download className="w-4 h-4 mr-2 group-hover:translate-y-0.5 transition-transform" />
-                {t('analytics.export')}
+                <Download className="w-4 h-4 md:mr-2 group-hover:translate-y-0.5 transition-transform" />
+                <span className="hidden md:inline">{t('analytics.export')}</span>
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
-        {/* Glassmorphism Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 md:mt-8">
+        {/* Summary Cards - Horizontal scroll on mobile */}
+        <div className="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8 overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="group relative overflow-hidden bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
+            className="flex-shrink-0 min-w-[200px] md:min-w-0 group relative overflow-hidden bg-white/80 backdrop-blur-sm rounded-2xl p-5 md:p-6 border border-gray-100 md:border-white shadow-lg md:shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-indigo-500/10 group-hover:from-blue-500/10 group-hover:to-indigo-500/20 transition-all"></div>
             <div className="relative">
@@ -622,7 +650,7 @@ export default function AnalyticsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="group relative overflow-hidden bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
+            className="flex-shrink-0 min-w-[200px] md:min-w-0 group relative overflow-hidden bg-white/80 backdrop-blur-sm rounded-2xl p-5 md:p-6 border border-gray-100 md:border-white shadow-lg md:shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-green-500/10 group-hover:from-emerald-500/10 group-hover:to-green-500/20 transition-all"></div>
             <div className="relative">
@@ -648,7 +676,7 @@ export default function AnalyticsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="group relative overflow-hidden bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
+            className="flex-shrink-0 min-w-[200px] md:min-w-0 group relative overflow-hidden bg-white/80 backdrop-blur-sm rounded-2xl p-5 md:p-6 border border-gray-100 md:border-white shadow-lg md:shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/10 group-hover:from-purple-500/10 group-hover:to-pink-500/20 transition-all"></div>
             <div className="relative">

@@ -2,11 +2,11 @@ import { useDroppable } from '@dnd-kit/core';
 import { motion, AnimatePresence } from 'framer-motion';
 import DraggableFormCard from './DraggableFormCard';
 import DashboardFormCard from './DashboardFormCard';
-import { Form } from '@/types';
+
 import { useTranslation } from 'react-i18next';
 
 interface UngroupedFormsSectionProps {
-  forms: any[]; // Using any to avoid type complexity with FormWithStats for now, or import properly
+  forms: any[]; 
   foldersCount: number;
   user: any;
   navigate: (path: string) => void;
@@ -15,6 +15,8 @@ interface UngroupedFormsSectionProps {
   handleDeleteForm: (formId: string, e: React.MouseEvent) => void;
   setCollaboratorModalData: (data: any) => void;
   formatDate: (date: string) => string;
+  droppableId?: string;
+  title?: string;
 }
 
 export default function UngroupedFormsSection({
@@ -26,11 +28,13 @@ export default function UngroupedFormsSection({
   setSelectedForm,
   handleDeleteForm,
   setCollaboratorModalData,
-  formatDate
+  formatDate,
+  droppableId = 'ungrouped',
+  title
 }: UngroupedFormsSectionProps) {
   const { t } = useTranslation();
   const { setNodeRef, isOver } = useDroppable({
-    id: 'ungrouped',
+    id: droppableId,
   });
 
   return (
@@ -40,7 +44,11 @@ export default function UngroupedFormsSection({
         isOver ? 'bg-indigo-50/50 ring-2 ring-indigo-200 ring-dashed' : ''
       }`}
     >
-      {foldersCount > 0 && <h2 className="text-xl font-bold text-gray-900 mb-4 px-2 pt-2">{t('dashboard.all_forms')}</h2>}
+      {(title || foldersCount > 0) && (
+        <h2 className="text-xl font-bold text-gray-900 mb-4 px-2 pt-2">
+          {title || t('dashboard.all_forms')}
+        </h2>
+      )}
       
       <div 
         className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-2"

@@ -14,7 +14,7 @@ interface FormNavigationProps {
 }
 
 export function FormNavigation({
-  isCardLayout,
+
   isFirstPage,
   isLastPage,
   handlePrevious,

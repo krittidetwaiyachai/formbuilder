@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useDroppable } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { useBuilderStore } from "@/hooks/useBuilderStore";
+import { useFormStore } from "@/store/formStore";
 import DesignerElementWrapper from "./DesignerElementWrapper";
 import { cn } from "@/lib/utils";
 
@@ -12,7 +12,9 @@ interface CanvasProps {
 }
 
 export default function Canvas({ activeId }: CanvasProps) {
-  const { elements, theme } = useBuilderStore();
+  const { currentForm } = useFormStore();
+  const elements = currentForm?.fields || [];
+  const theme = currentForm?.settings;
   const canvasRef = React.useRef<HTMLDivElement>(null);
   const scrollPositionRef = React.useRef<{ x: number; y: number } | null>(null);
   const isDragging = activeId !== null;
@@ -115,7 +117,8 @@ export default function Canvas({ activeId }: CanvasProps) {
       medium: "rounded-lg",
       large: "rounded-xl",
     };
-    return radiusMap[theme.borderRadius] || "rounded-lg";
+    const radius = theme.borderRadius || "medium";
+    return radiusMap[radius] || "rounded-lg";
   };
 
 

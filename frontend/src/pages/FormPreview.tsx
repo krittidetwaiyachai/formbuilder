@@ -66,10 +66,10 @@ export default function FormPreviewPage() {
       {/* Preview Content */}
       <div className={device === 'desktop' ? 'h-[calc(100vh-80px)] overflow-y-auto' : 'h-[calc(100vh-80px)] overflow-hidden flex items-center justify-center bg-gray-50'}>
         {device === 'desktop' ? (
-           <PublicFormRenderer form={currentForm} isPreview={true} />
+           <PublicFormRenderer form={currentForm} isPreview={true} viewMode="desktop" />
         ) : (
           <DeviceFrame device={device}>
-             <PublicFormRenderer form={currentForm} isPreview={true} />
+             <PublicFormRenderer form={currentForm} isPreview={true} viewMode={device} />
           </DeviceFrame>
         )}
       </div>

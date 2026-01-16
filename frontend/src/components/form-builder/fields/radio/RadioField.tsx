@@ -18,8 +18,8 @@ interface RadioFieldProps {
 
 export const RadioField: React.FC<RadioFieldProps> = ({ 
   field, 
-  fieldStyle, 
-  disabledClass = "opacity-60 cursor-pointer",
+ 
+
   updateField: propUpdateField,
   isSelected: propIsSelected
 }) => {
@@ -195,7 +195,7 @@ export const RadioField: React.FC<RadioFieldProps> = ({
     return { transform: 'translateY(0px)', transition: 'transform 150ms ease' };
   };
 
-  if (isSelected && updateField) {
+  if (isSelected) {
     return (
       <div className="w-full space-y-2" onClick={(e) => e.stopPropagation()}>
         <div 

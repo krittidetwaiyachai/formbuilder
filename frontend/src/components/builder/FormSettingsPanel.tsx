@@ -8,7 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Settings, Mail, Lock, Link as LinkIcon } from "lucide-react";
-import { FormSettings } from "@/types/form";
+import { Button } from "@/components/ui/button";
+import { FormSettings } from "@/types";
 
 interface FormSettingsPanelProps {
   settings: FormSettings;
@@ -51,7 +52,7 @@ export default function FormSettingsPanel({ settings, onSettingsChange }: FormSe
 
   const handleEmailRemove = (email: string) => {
     handleChange({
-      notificationEmails: localSettings.notificationEmails?.filter((e) => e !== email),
+      notificationEmails: localSettings.notificationEmails?.filter((e: string) => e !== email),
     });
   };
 
@@ -166,7 +167,7 @@ export default function FormSettingsPanel({ settings, onSettingsChange }: FormSe
             <div className="space-y-2 ml-6">
               <Label className="text-xs">Notification Emails</Label>
               <div className="space-y-2">
-                {localSettings.notificationEmails?.map((email) => (
+                {localSettings.notificationEmails?.map((email: string) => (
                   <div key={email} className="flex items-center gap-2">
                     <Input value={email} readOnly className="flex-1" />
                     <Button

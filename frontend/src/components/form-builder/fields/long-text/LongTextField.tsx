@@ -1,6 +1,7 @@
 import React from 'react';
 import { Field } from '@/types';
 import { FileText, Bold, Italic, Underline, Link as LinkIcon, List, ListOrdered, AlignLeft, AlignCenter, AlignRight, AlignJustify } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface LongTextFieldProps {
   field: Field;
@@ -14,11 +15,13 @@ interface LongTextFieldProps {
 }
 
 export const LongTextField: React.FC<LongTextFieldProps> = ({ field, fieldStyle, disabledClass = "opacity-60 cursor-pointer" }) => {
+  const { t } = useTranslation();
   const options = field.options || {};
   const validation = field.validation || {};
   const { width, customWidth, hoverText, rows = 4, editorMode } = options;
   const { maxLength, hasMaxLength } = validation;
   const isRichText = editorMode === 'RICH_TEXT';
+  const defaultPlaceholder = t('builder.placeholder.long_text');
 
   if (isRichText) {
     return (
@@ -56,7 +59,7 @@ export const LongTextField: React.FC<LongTextFieldProps> = ({ field, fieldStyle,
            </div>
            {/* Content */}
            <div className="p-4 min-h-[100px] text-slate-400 text-base">
-              {field.placeholder || 'Enter text...'}
+              {field.placeholder || defaultPlaceholder}
            </div>
         </div>
       </div>
@@ -69,7 +72,7 @@ export const LongTextField: React.FC<LongTextFieldProps> = ({ field, fieldStyle,
          <FileText className={`h-5 w-5 ${fieldStyle.iconColor} opacity-70 group-hover/field:opacity-100`} />
       </div>
       <textarea
-        placeholder={field.placeholder || 'Enter text...'}
+        placeholder={field.placeholder || defaultPlaceholder}
         readOnly
         tabIndex={-1}
         rows={rows}

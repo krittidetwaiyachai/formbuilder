@@ -4,6 +4,7 @@ import { io, Socket } from 'socket.io-client';
 import { Form, Field, FieldType, FieldCondition, LogicRule, LogicCondition, LogicAction } from '@/types';
 import api from '@/lib/api';
 import { generateGroupTemplate } from '@/utils/form-templates';
+import { generateUUID } from '@/utils/uuid';
 
 interface HistoryState {
   form: Form;
@@ -54,8 +55,8 @@ interface FormBuilderState {
   removeActionFromRule: (ruleId: string, actionId: string) => void;
   updateRuleCondition: (ruleId: string, conditionId: string, updates: Partial<LogicCondition>) => void;
   updateRuleAction: (ruleId: string, actionId: string, updates: Partial<LogicAction>) => void;
-  activeSidebarTab: 'properties' | 'theme' | 'settings' | 'logic';
-  setActiveSidebarTab: (tab: 'properties' | 'theme' | 'settings' | 'logic') => void;
+  activeSidebarTab: 'properties' | 'theme' | 'settings' | 'logic' | 'builder';
+  setActiveSidebarTab: (tab: 'properties' | 'theme' | 'settings' | 'logic' | 'builder') => void;
   shouldScrollToQuizSettings: boolean;
   setShouldScrollToQuizSettings: (shouldScroll: boolean) => void;
   focusedLogicRuleId: string | null;
@@ -231,7 +232,7 @@ export const useFormStore = create<FormBuilderState>()(persist((set, get) => {
   },
   
   addBundle: (bundle: { title: string, fields: any[] }) => {
-      const { currentForm, selectedFieldId } = get();
+      const { currentForm } = get();
       if (!currentForm) return;
 
       const insertIndex = currentForm.fields?.length || 0;
@@ -329,7 +330,7 @@ export const useFormStore = create<FormBuilderState>()(persist((set, get) => {
     }
     // Ensure we have enough (just in case, though delete usually reduces)
     while (newPageSettings.length < pageCount) {
-        newPageSettings.push({ id: crypto.randomUUID(), title: `Page ${newPageSettings.length + 1}` });
+        newPageSettings.push({ id: generateUUID(), title: `Page ${newPageSettings.length + 1}` });
     }
 
     const newForm = {
@@ -496,7 +497,7 @@ export const useFormStore = create<FormBuilderState>()(persist((set, get) => {
           newPageSettings = newPageSettings.slice(0, pageCount);
       }
       while (newPageSettings.length < pageCount) {
-          newPageSettings.push({ id: crypto.randomUUID(), title: `Page ${newPageSettings.length + 1}` });
+          newPageSettings.push({ id: generateUUID(), title: `Page ${newPageSettings.length + 1}` });
       }
 
       set({ 
@@ -638,9 +639,23 @@ export const useFormStore = create<FormBuilderState>()(persist((set, get) => {
     // If socket exists but disconnected, or connected to wrong form (hypothetically), or not existing
     let socket = existingSocket;
     if (!socket) {
-        // Assume backend is on same host port 3000, or use ENV. 
-        // For dev: http://localhost:3000
-        socket = io('http://localhost:3000/forms'); 
+        // Determine socket URL for forms namespace
+        // In production: use VITE_API_URL (without /api)
+        // In development: use localhost:3000 or let proxy handle it
+        const socketUrl = import.meta.env.VITE_API_URL;
+        let baseUrl: string;
+        
+        if (socketUrl) {
+          baseUrl = socketUrl.replace('/api', '');
+        } else {
+          baseUrl = import.meta.env.VITE_SOCKET_URL || window.location.origin;
+        }
+        
+        socket = io(`${baseUrl}/forms`, {
+          transports: ['websocket', 'polling'],
+          path: '/socket.io',
+          autoConnect: true,
+        }); 
         set({ socket });
 
         socket.on('connect', () => {

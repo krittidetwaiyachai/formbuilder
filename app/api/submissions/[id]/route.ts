@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { dataStore } from "@/lib/data-store";
+import { FormResponse } from "@/types";
 
-// GET /api/submissions/[id] - Get a specific submission
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const submission = dataStore.getSubmission(params.id);
+    const submission = dataStore.submissions.find((s: FormResponse) => s.id === params.id);
     
     if (!submission) {
       return NextResponse.json(
@@ -26,20 +26,21 @@ export async function GET(
   }
 }
 
-// DELETE /api/submissions/[id] - Delete a submission
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const deleted = dataStore.deleteSubmission(params.id);
+    const submissionIndex = dataStore.submissions.findIndex((s: FormResponse) => s.id === params.id);
     
-    if (!deleted) {
+    if (submissionIndex === -1) {
       return NextResponse.json(
         { error: "Submission not found" },
         { status: 404 }
       );
     }
+    
+    dataStore.submissions.splice(submissionIndex, 1);
     
     return NextResponse.json(
       { message: "Submission deleted successfully" },
@@ -53,4 +54,3 @@ export async function DELETE(
     );
   }
 }
-

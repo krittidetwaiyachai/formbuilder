@@ -1,11 +1,9 @@
-import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Form, FormStatus, FieldType } from '@/types';
+import { Form, FormStatus } from '@/types';
 import { Lock, FileQuestion, CheckCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import api from '@/lib/api';
-import { getBrowserFingerprint } from '@/utils/fingerprint';
 import Loader from '@/components/common/Loader';
 import ThankYouScreen from '@/components/form-preview/ThankYouScreen';
 import WelcomeScreen from '@/components/form-preview/WelcomeScreen';
@@ -16,42 +14,38 @@ import { CardLayout } from './CardLayout';
 import { FormProgressBar } from './FormProgressBar';
 import { FormNavigation } from './FormNavigation';
 import QuizTimer from './QuizTimer';
+import { useFormNavigation } from './hooks/useFormNavigation';
+import { useFormProgress } from './hooks/useFormProgress';
+import { useQuizTimer, useSubmissionCheck } from './hooks/useQuizFeatures';
+import { splitIntoPages, flattenFields } from './utils/formFieldUtils';
 
 interface PublicFormRendererProps {
   form: Form | null;
   loading?: boolean;
   isPreview?: boolean;
+  viewMode?: 'desktop' | 'tablet' | 'mobile';
 }
 
-export default function PublicFormRenderer({ form, loading = false, isPreview = false }: PublicFormRendererProps) {
+export default function PublicFormRenderer({ form, loading = false, isPreview = false, viewMode = 'desktop' }: PublicFormRendererProps) {
   const { t } = useTranslation();
   const [showWelcome, setShowWelcome] = useState(true);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [currentPageIndex, setCurrentPageIndex] = useState(0);
-  const [hasAlreadySubmitted, setHasAlreadySubmitted] = useState(false);
-  const [checkingSubmission, setCheckingSubmission] = useState(true);
-  const [quizStartTime, setQuizStartTime] = useState<Date | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
   const {
     submitting,
     submitted,
-    score,
-    quizReview,
     submitForm,
+    score,
+    quizReview
   } = useFormSubmission({ form: form as Form, isPreview });
 
-  // Load saved progress before initializing form
-  const getDefaultValues = () => {
-    if (!form?.id || isPreview) return {};
-    try {
-      const savedData = localStorage.getItem(`form_progress_${form.id}`);
-      return savedData ? JSON.parse(savedData) : {};
-    } catch (e) {
-      console.error('Failed to load saved progress', e);
-      return {};
-    }
-  };
+  const { checkingSubmission, hasAlreadySubmitted } = useSubmissionCheck({
+    formId: form?.id,
+    isPreview,
+    loading
+  });
 
   const {
     register,
@@ -60,13 +54,14 @@ export default function PublicFormRenderer({ form, loading = false, isPreview = 
     watch,
     setValue,
     trigger,
-    control
+    control,
+    getValues,
   } = useForm({
     shouldUnregister: false,
-    defaultValues: getDefaultValues()
   });
 
   const watchedValues = watch();
+  
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const logicValues = useMemo(() => {
      const values: Record<string, any> = {};
@@ -80,56 +75,28 @@ export default function PublicFormRenderer({ form, loading = false, isPreview = 
      return values;
   }, [watchedValues]);
 
-  // Check if user has already submitted
-  useEffect(() => {
-    const checkSubmissionStatus = async () => {
-      if (!form?.id || isPreview || loading) {
-        setCheckingSubmission(false);
-        return;
-      }
-
-      try {
-        const fingerprint = await getBrowserFingerprint();
-        const response = await api.get(`/responses/check/${form.id}`, {
-          params: { fingerprint },
-        });
-
-        if (response.data.hasSubmitted) {
-          setHasAlreadySubmitted(true);
-        }
-      } catch (error) {
-        console.error('Failed to check submission status:', error);
-      } finally {
-        setCheckingSubmission(false);
-      }
-    };
-
-    checkSubmissionStatus();
-  }, [form?.id, isPreview, loading]);
-
   const { hiddenFieldIds } = useFormLogic({
       fields: form?.fields || [],
       logicRules: form?.logicRules || [],
       formValues: logicValues
   });
 
-  // Save progress to localStorage on change
-  useEffect(() => {
-    if (!form?.id || submitted || isPreview || !watchedValues) return;
-    
-    const timeoutId = setTimeout(() => {
-        localStorage.setItem(`form_progress_${form.id}`, JSON.stringify(watchedValues));
-    }, 500); // Debounce save
+  const { getDefaultValues } = useFormProgress({
+    formId: form?.id,
+    isPreview,
+    submitted,
+    watchedValues
+  });
 
-    return () => clearTimeout(timeoutId);
-  }, [watchedValues, form?.id, submitted, isPreview]);
-  
-  // Clear progress on successful submission
+  // Load default values once
   useEffect(() => {
-    if (submitted && form?.id && !isPreview) {
-        localStorage.removeItem(`form_progress_${form.id}`);
+    const defaults = getDefaultValues();
+    if (Object.keys(defaults).length > 0) {
+      Object.entries(defaults).forEach(([key, value]) => {
+        setValue(key, value);
+      });
     }
-  }, [submitted, form?.id, isPreview]);
+  }, [getDefaultValues, setValue]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -150,31 +117,7 @@ export default function PublicFormRenderer({ form, loading = false, isPreview = 
     };
   }, []);
 
-  // Initialize quiz start time when form is displayed (after welcome screen or if no welcome screen)
-  useEffect(() => {
-    const isWelcomeActive = form?.welcomeSettings && form.welcomeSettings.isActive !== false;
-    const isShowingWelcome = showWelcome && isWelcomeActive;
-
-    if (form?.isQuiz && !isShowingWelcome && !quizStartTime && !isPreview && !submitted) {
-      const savedStartTime = localStorage.getItem(`quiz_start_time_${form.id}`);
-      if (savedStartTime) {
-        setQuizStartTime(new Date(savedStartTime));
-      } else {
-        const startTime = new Date();
-        setQuizStartTime(startTime);
-        localStorage.setItem(`quiz_start_time_${form.id}`, startTime.toISOString());
-      }
-    }
-  }, [form?.id, form?.isQuiz, showWelcome, form?.welcomeSettings, quizStartTime, isPreview, submitted]);
-
-  // Clear quiz start time on submission
-  useEffect(() => {
-    if (submitted && form?.id) {
-      localStorage.removeItem(`quiz_start_time_${form.id}`);
-    }
-  }, [submitted, form?.id]);
-
-  const handleTimeUp = useCallback(async () => {
+  const handleTimeUp = async () => {
     if (!submitting && !submitted && form) {
       try {
         const currentValues = watchedValues || {};
@@ -183,100 +126,25 @@ export default function PublicFormRenderer({ form, loading = false, isPreview = 
         console.error('Force submit error:', error);
       }
     }
-  }, [submitForm, submitting, submitted, form, watchedValues]);
-
-  const autoSubmitAttempted = useRef(false);
-
-  useEffect(() => {
-    if (!form?.isQuiz || isPreview || submitted || submitting || !form.quizSettings?.endTime) {
-      return;
-    }
-
-    const endTime = new Date(form.quizSettings.endTime);
-    const now = new Date();
-    
-    // If end time has passed, auto-submit immediately
-    if (now >= endTime) {
-      if (!autoSubmitAttempted.current) {
-         autoSubmitAttempted.current = true;
-         handleTimeUp();
-      }
-      return;
-    }
-
-    // Schedule auto-submit when end time is reached
-    const timeUntilEnd = endTime.getTime() - now.getTime();
-    const timeoutId = setTimeout(() => {
-      if (!autoSubmitAttempted.current) {
-        autoSubmitAttempted.current = true;
-        handleTimeUp();
-      }
-    }, timeUntilEnd);
-
-    return () => clearTimeout(timeoutId);
-  }, [form?.isQuiz, form?.quizSettings?.endTime, isPreview, submitted, submitting, handleTimeUp]);
-
-
-
-  // Split fields into pages based on PAGE_BREAK
-  const splitIntoPages = (fields: any[]) => {
-    const pages: any[][] = [];
-    let currentPage: any[] = [];
-    
-    fields.forEach(field => {
-      if (field.type === 'PAGE_BREAK') {
-        if (currentPage.length > 0) {
-          pages.push(currentPage);
-          currentPage = [];
-        }
-      } else {
-        currentPage.push(field);
-      }
-    });
-    
-    if (currentPage.length > 0) {
-      pages.push(currentPage);
-    }
-    
-    return pages.length > 0 ? pages : [fields];
   };
 
-  const isCardLayout = form?.settings?.formLayout === 'card';
-  /* 
-    Logic to flatten fields recursively:
-    1. Group fields by ID for children lookup.
-    2. Sort roots and children by 'order'.
-    3. Recursively expand GROUP fields to their children, effectively removing the GROUP container 
-       and placing children in the correct sorted position.
-  */
+  const { quizStartTime } = useQuizTimer({
+    formId: form?.id,
+    isQuiz: !!form?.isQuiz,
+    isPreview,
+    submitted,
+    submitting,
+    showWelcome,
+    welcomeIsActive: form?.welcomeSettings?.isActive !== false,
+    endTime: form?.quizSettings?.endTime,
+    onTimeUp: handleTimeUp
+  });
+
   const visibleFields = useMemo(() => {
     if (!form?.fields) return [];
-
-    const allFields = form.fields;
-    const childrenMap = new Map<string, FieldType[]>(); 
     
-    // Index children
-    allFields.forEach(f => {
-      if (f.groupId) {
-        if (!childrenMap.has(f.groupId)) childrenMap.set(f.groupId, []);
-        childrenMap.get(f.groupId)?.push(f as any);
-      }
-    });
-
-    // Sort children
-    childrenMap.forEach(list => list.sort((a: any, b: any) => a.order - b.order));
-
-    const visit = (field: any): any[] => {
-      // If it's a group, don't return the group itself, just its children recursively
-      if (field.type === FieldType.GROUP) {
-        const children = childrenMap.get(field.id) || [];
-        return children.flatMap(visit);
-      }
-      return [field];
-    };
-
-    const roots = allFields.filter(f => !f.groupId).sort((a, b) => a.order - b.order);
-    const ordered = roots.flatMap(visit);
+    // Use utility to flatten fields (handle groups)
+    const ordered = flattenFields(form.fields);
 
     return ordered.filter((field) => 
         !field.validation?.hidden && 
@@ -288,90 +156,34 @@ export default function PublicFormRenderer({ form, loading = false, isPreview = 
   const pages = splitIntoPages(visibleFields);
   const totalPages = pages.length;
   const currentPageFields = pages[currentPageIndex] || [];
-  const inputFieldTypes = [
-    FieldType.TEXT, FieldType.EMAIL, FieldType.PHONE, FieldType.NUMBER, 
-    FieldType.TEXTAREA, FieldType.DROPDOWN, FieldType.RADIO, FieldType.CHECKBOX, 
-    FieldType.DATE, FieldType.TIME, FieldType.RATE, FieldType.FULLNAME, 
-    FieldType.ADDRESS
-  ];
-
-  const totalQuestions = visibleFields.filter(f => inputFieldTypes.includes(f.type)).length;
+  const isCardLayout = form?.settings?.formLayout === 'card';
   const currentField = isCardLayout ? currentPageFields[currentCardIndex] : null;
 
-  // Validate current field before moving next in card layout
-  const validateCurrentField = async () => {
-    if (isCardLayout && currentField) {
-      const fieldName = `field_${currentField.id}`;
-      // Verify if field is required
-      if (currentField.validation?.required) {
-         const result = await trigger(fieldName);
-         return result;
-      }
-    }
-    return true;
+  const {
+    handleNext,
+    handlePrevious,
+    handlePreviousPage
+  } = useFormNavigation({
+    currentPageIndex,
+    setCurrentPageIndex,
+    currentCardIndex,
+    setCurrentCardIndex,
+    totalPages,
+    currentPageFields,
+    currentField,
+    isCardLayout,
+    trigger,
+    getValues
+  });
+
+  // Scroll to top on page change or card change
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [currentPageIndex, currentCardIndex]);
+
+  const onSubmit = async (data: any) => {
+    await submitForm(data);
   };
-
-  // Validate all fields on current page (Classic Layout)
-  const validateCurrentPage = async () => {
-    const fieldsToValidate = currentPageFields
-        .filter(f => inputFieldTypes.includes(f.type))
-        .map(f => `field_${f.id}`);
-    
-    if (fieldsToValidate.length === 0) return true;
-    
-    const result = await trigger(fieldsToValidate);
-    return result;
-  };
-
-  const handleNextPage = async () => {
-    if (currentPageIndex < totalPages - 1) {
-      setCurrentPageIndex(prev => prev + 1);
-      setCurrentCardIndex(0);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  };
-
-  const handlePreviousPage = () => {
-    if (currentPageIndex > 0) {
-      setCurrentPageIndex(prev => prev - 1);
-      setCurrentCardIndex(0);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  };
-
-  const handleNext = async () => {
-    if (isCardLayout) {
-        const isValid = await validateCurrentField();
-        if (!isValid) return;
-
-        if (currentCardIndex < currentPageFields.length - 1) {
-            setCurrentCardIndex(prev => prev + 1);
-        } else if (currentPageIndex < totalPages - 1) {
-             // Card layout transitions pages automatically when last card done?
-             // Usually yes, but let's stick to explicit next button logic handling it.
-             handleNextPage();
-        }
-    } else {
-        // Classic Layout
-        const isValid = await validateCurrentPage();
-        if (!isValid) return;
-        
-        handleNextPage();
-    }
-  };
-
-  const handlePrevious = () => {
-    if (currentCardIndex > 0) {
-      setCurrentCardIndex(prev => prev - 1);
-    } else if (currentPageIndex > 0) {
-        // Go to last card of previous page? 
-        // For simplicity, just go to previous page start (or we'd need to calc last index)
-        setCurrentPageIndex(prev => prev - 1);
-        // We'd ideally find the last index of that page, but 0 is safe
-        setCurrentCardIndex(0); 
-    }
-  };
-
 
   if (checkingSubmission || loading) {
     return (
@@ -491,128 +303,147 @@ export default function PublicFormRenderer({ form, loading = false, isPreview = 
     );
   }
 
-  const BackgroundWrapper = ({ children }: { children: React.ReactNode }) => (
-    <div className={`h-full w-full bg-white overflow-y-auto relative flex ${form?.isQuiz ? 'items-start pt-4 pb-0 px-4 sm:px-6 lg:px-8' : 'items-center p-4 sm:p-6 lg:p-8'} justify-center`}>
-      <div className="w-full max-w-4xl flex items-center justify-center">
-         {children}
-      </div>
-    </div>
-  );
-
-  // Welcome Screen
-  // Show welcome screen if settings exist and isActive is not explicitly false
-  if (showWelcome && form.welcomeSettings && form.welcomeSettings.isActive !== false) {
+  /* Fix Thank You Screen Props */
+  if (submitted) {
+    const showScore = form.isQuiz && form.quizSettings?.showScore && form.quizSettings?.releaseScoreMode !== 'manual' && score;
     return (
-      <BackgroundWrapper>
-        <WelcomeScreen 
-            settings={form.welcomeSettings} 
-            onStart={() => setShowWelcome(false)} 
-        />
-      </BackgroundWrapper>
+      <ThankYouScreen 
+        settings={form.thankYouSettings} 
+        globalSettings={form.settings} 
+        score={score}
+        showScore={!!showScore}
+        quizReview={quizReview}
+        isQuiz={form.isQuiz}
+      />
     );
   }
 
-  // Thank You Screen
-  if (submitted) {
-    // if (!form) return null; // Already checked
-    const showScore = form.isQuiz && form.quizSettings?.showScore && form.quizSettings?.releaseScoreMode !== 'manual' && score;
+  const isWelcomeActive = form.welcomeSettings && form.welcomeSettings.isActive !== false;
+  
+  if (showWelcome && isWelcomeActive) {
     return (
-      <BackgroundWrapper>
-        <ThankYouScreen 
-          settings={form.thankYouSettings} 
-          globalSettings={form.settings}
-          score={score}
-          showScore={!!showScore}
-          quizReview={quizReview}
-          isQuiz={form.isQuiz}
-        />
-      </BackgroundWrapper>
+      <WelcomeScreen 
+        settings={form.welcomeSettings}
+        onStart={() => setShowWelcome(false)} 
+        viewMode={viewMode}
+      />
     );
   }
 
   return (
-    <div className="h-full w-full bg-white flex flex-col items-center overflow-y-auto py-6 px-0 sm:px-6 scrollbar-hide">
-      
+    <div className={`min-h-screen bg-gray-50 ${isCardLayout ? 'h-screen overflow-hidden' : ''}`}>
+      {/* Background */}
+      {form.settings?.backgroundImage && (
+         <div 
+           className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-50 pointer-events-none"
+           style={{ backgroundImage: `url(${form.settings.backgroundImage})` }}
+         />
+      )}
+
+      {/* Quiz Timer */}
+      {form.isQuiz && quizStartTime && !submitted && (
+         <QuizTimer 
+           startTime={quizStartTime} 
+           timeLimitMinutes={form.quizSettings?.timeLimit || 0} 
+           onTimeUp={handleTimeUp}
+         />
+      )}
+
+       {/* Progress Bar */}
+      {!submitted && form.settings?.showProgressBar && (
+        <div className="fixed top-0 left-0 right-0 z-30">
+           {/* Revert to using the existing FormProgressBar interface if possible, or update it. 
+               The existing one needs: visibleFields, watchedValues, isCardLayout, currentCardIndex, totalQuestions
+           */}
+           <FormProgressBar 
+              visibleFields={visibleFields}
+              watchedValues={watchedValues}
+              isCardLayout={!!isCardLayout}
+              currentCardIndex={currentCardIndex}
+              totalQuestions={visibleFields.length}
+           />
+        </div>
+      )}
+
       <motion.div 
+        className={`relative z-10 w-full max-w-3xl mx-auto ${isCardLayout ? 'h-full flex flex-col justify-center' : 'pt-20 pb-12 px-4'}`}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-3xl"
+        transition={{ duration: 0.5 }}
       >
-        {/* Progress Bar (Sticky Top) */}
-        {form.settings?.showProgressBar && totalQuestions > 0 && (
-          <FormProgressBar 
-            visibleFields={visibleFields}
-            watchedValues={watchedValues}
-            isCardLayout={!!isCardLayout}
-            currentCardIndex={currentCardIndex}
-            totalQuestions={totalQuestions}
-          />
-        )}
-
-        {/* Quiz Timer */}
-        {form.isQuiz && form.quizSettings?.timeLimit && quizStartTime && !submitted && (
-          <div className="fixed top-16 right-4 z-40 md:top-24 md:right-8 lg:right-12 flex justify-end pointer-events-none">
-            <div className="pointer-events-auto">
-              <QuizTimer 
-                timeLimitMinutes={form.quizSettings.timeLimit}
-                onTimeUp={handleTimeUp}
-                startTime={quizStartTime}
-              />
-            </div>
-          </div>
-        )}
-
-        <form ref={formRef} onSubmit={handleSubmit(submitForm)} className="w-full">
-           <AnimatePresence mode='wait'>
+        <form ref={formRef} onSubmit={handleSubmit(onSubmit)} className={isCardLayout ? 'h-full' : ''}>
+           <AnimatePresence mode="wait">
              <motion.div
-               key={isCardLayout ? currentCardIndex : currentPageIndex}
-               initial={{ opacity: 0, y: 20, scale: 0.98 }}
-               animate={{ opacity: 1, y: 0, scale: 1 }}
-               exit={{ opacity: 0, y: -20, scale: 0.98 }}
-               transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-               className="bg-white rounded-none md:rounded-2xl shadow-none md:shadow-2xl border-0 md:border border-gray-100 p-1 md:p-12"
+                key={isCardLayout ? currentCardIndex : currentPageIndex}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.3 }}
+                className={isCardLayout ? "bg-white shadow-2xl rounded-2xl overflow-hidden flex flex-col h-[85vh] md:h-[80vh] mx-4 md:mx-0 border border-gray-100/50" : "space-y-6"}
              >
-                {/* Header */}
-                <div className="mb-8 pb-6 border-b border-gray-100">
-                    <h1 className="text-2xl font-bold text-gray-900">{form.title}</h1>
-                    {form.description && (
-                       <p className="mt-2 text-gray-500 text-sm leading-relaxed">{form.description}</p>
-                    )}
-                    
-                    {/* Collect Email Field */}
-                    {form.settings?.collectEmail && (
-                      <div className="mt-6 p-4 bg-blue-50 border border-blue-100 rounded-lg">
-                        <label className="block text-sm font-medium text-blue-900 mb-1">
-                          {t('public.email_label')} <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          type="email"
-                          {...register('respondentEmail', { 
-                            required: t('public.email_required'),
-                            pattern: {
-                              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                              message: t('public.email_invalid')
-                            }
-                          })}
-                          className={`w-full px-4 py-2 bg-white border rounded-md focus:ring-2 focus:ring-blue-500 outline-none transition-all ${
-                            errors.respondentEmail ? 'border-red-500' : 'border-blue-200'
-                          }`}
-                          placeholder="name@example.com"
-                        />
-                        {errors.respondentEmail && (
-                          <p className="mt-1 text-xs text-red-500 font-medium">
-                            {errors.respondentEmail.message as string}
-                          </p>
+                 {/* Card Header Effect */}
+                <div className={`
+                    ${isCardLayout 
+                       ? 'relative bg-white/80 backdrop-blur-sm border-b border-gray-100 flex-shrink-0 z-20' 
+                       : 'bg-white rounded-xl shadow-sm border border-gray-100 p-6 md:p-8 mb-6'
+                    }
+                `}>
+                   {isCardLayout && <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-purple-600" />}
+
+                   {/* Form Header Content */}
+                   {((!isCardLayout && currentPageIndex === 0) || (isCardLayout)) && (
+                      <div className={isCardLayout ? "p-6 md:p-8 space-y-2" : "space-y-2"}>
+                        {form.logoUrl && (
+                           <div className="flex justify-center mb-6">
+                              <img src={form.logoUrl} alt="Logo" className="h-16 object-contain" />
+                           </div>
                         )}
-                        <p className="mt-2 text-xs text-blue-600 flex items-center gap-1">
-                          <Lock className="w-3 h-3" />
-                          {t('public.email_collecting_notice')}
-                        </p>
+                        <h1 className={`font-bold text-gray-900 ${isCardLayout ? 'text-2xl md:text-3xl' : 'text-3xl'}`}>
+                           {form.title}
+                        </h1>
+                        {form.description && (
+                           <div 
+                             className="text-gray-600 prose prose-sm max-w-none mt-2"
+                             dangerouslySetInnerHTML={{ __html: form.description }} 
+                           />
+                        )}
+
+                        {/* Collect Email Field */}
+                        {form.settings?.collectEmail && !isCardLayout && (
+                          <div className="mt-6 p-4 bg-blue-50 border border-blue-100 rounded-lg">
+                            <label className="block text-sm font-medium text-blue-900 mb-1">
+                              {t('public.email_label')} <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                              type="email"
+                              {...register('respondentEmail', { 
+                                required: t('public.email_required'),
+                                pattern: {
+                                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                  message: t('public.email_invalid')
+                                }
+                              })}
+                              className={`w-full px-4 py-2 bg-white border rounded-md focus:ring-2 focus:ring-blue-500 outline-none transition-all ${
+                                errors.respondentEmail ? 'border-red-500' : 'border-blue-200'
+                              }`}
+                              placeholder="name@example.com"
+                            />
+                            {errors.respondentEmail && (
+                              <p className="mt-1 text-xs text-red-500 font-medium">
+                                {errors.respondentEmail.message as string}
+                              </p>
+                            )}
+                            <p className="mt-2 text-xs text-blue-600 flex items-center gap-1">
+                              <Lock className="w-3 h-3" />
+                              {t('public.email_collecting_notice')}
+                            </p>
+                          </div>
+                        )}
                       </div>
                     )}
                 </div>
 
-                  <div className="flex flex-wrap gap-x-6 gap-y-6 md:gap-y-10 min-h-[200px] md:min-h-[300px]">
+                  <div className="flex flex-wrap gap-x-6 gap-y-0 min-h-[200px] md:min-h-[300px]">
                     {isCardLayout ? (
                       // Card Layout
                       <CardLayout 
@@ -645,7 +476,7 @@ export default function PublicFormRenderer({ form, loading = false, isPreview = 
                     isFirstPage={(isCardLayout ? currentCardIndex === 0 : currentPageIndex === 0) && currentPageIndex === 0}
                     isLastPage={!((isCardLayout && currentCardIndex < currentPageFields.length - 1) || currentPageIndex < totalPages - 1)}
                     handlePrevious={isCardLayout ? handlePrevious : handlePreviousPage}
-                    handleNext={isCardLayout ? handleNext : handleNextPage}
+                    handleNext={handleNext}
                     submitting={submitting}
                     submitButtonText={form.settings?.submitButtonText || 'Submit'}
                 />

@@ -4,7 +4,7 @@ import { useState } from "react";
 import * as React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Select } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import {
   BarChart3,
@@ -160,13 +160,18 @@ export default function FieldAnalyticsSelector({
           <Label>{t('analytics.select_field')}</Label>
           <Select
             value={selectedField}
-            onChange={(e) => handleFieldChange(e.target.value)}
+            onValueChange={handleFieldChange}
           >
-            {availableFields.map((field) => (
-              <option key={field} value={field}>
-                {field.replace(/([A-Z])/g, " $1").trim()}
-              </option>
-            ))}
+            <SelectTrigger>
+              <SelectValue placeholder="Select field" />
+            </SelectTrigger>
+            <SelectContent>
+              {availableFields.map((field) => (
+                <SelectItem key={field} value={field}>
+                  {field.replace(/([A-Z])/g, " $1").trim()}
+                </SelectItem>
+              ))}
+            </SelectContent>
           </Select>
         </div>
 

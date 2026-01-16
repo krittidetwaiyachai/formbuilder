@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { Field, FieldType } from '@/types';
 import { useForm } from 'react-hook-form';
 import { ChevronDown } from 'lucide-react';
@@ -18,12 +18,6 @@ interface PreviewFieldProps {
 export const PreviewSelectField: React.FC<PreviewFieldProps> = ({ field, register, errors, watch, questionNumber, isPublic, setValue }) => {
   const fieldName = `field_${field.id}`;
   const fieldError = errors[fieldName];
-  
-  // Debug logging for dropdown value
-  const currentValue = watch ? watch(fieldName) : undefined;
-  React.useEffect(() => {
-    console.log(`[Dropdown Debug] Field: ${field.label}, Name: ${fieldName}, Value:`, currentValue);
-  }, [currentValue, fieldName, field.label]);
 
   const validation = field.validation || {};
   const optionsSettings = (field.options && !Array.isArray(field.options)) ? field.options : {};

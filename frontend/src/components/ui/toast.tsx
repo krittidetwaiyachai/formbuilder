@@ -14,14 +14,22 @@ export interface ToastProps {
 }
 
 const Toast = React.forwardRef<HTMLDivElement, ToastProps>(
-  ({ id, title, description, variant = "default", duration = 3000, onClose }, ref) => {
+  ({ title, description, variant = "default", duration = 3000, onClose }, ref) => {
     const [isVisible, setIsVisible] = React.useState(true);
     const [progress, setProgress] = React.useState(100);
+
+    const onCloseRef = React.useRef(onClose);
+
+    React.useLayoutEffect(() => {
+      onCloseRef.current = onClose;
+    });
 
     React.useEffect(() => {
       const timer = setTimeout(() => {
         setIsVisible(false);
-        setTimeout(() => onClose?.(), 300);
+        setTimeout(() => {
+          onCloseRef.current?.();
+        }, 300);
       }, duration);
 
       // Start progress animation
@@ -33,7 +41,7 @@ const Toast = React.forwardRef<HTMLDivElement, ToastProps>(
         clearTimeout(timer);
         clearTimeout(progressTimer);
       };
-    }, [duration, onClose]);
+    }, [duration]);
 
     const handleClose = () => {
       setIsVisible(false);

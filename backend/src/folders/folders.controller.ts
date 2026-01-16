@@ -30,6 +30,15 @@ export class FoldersController {
     return this.foldersService.findAll(req.user.id);
   }
 
+  @Put('move-form/:formId')
+  moveForm(
+    @Param('formId') formId: string,
+    @Body('folderId') folderId: string | null,
+    @Request() req,
+  ) {
+    return this.foldersService.moveFormToFolder(formId, folderId, req.user.id);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string, @Request() req) {
     return this.foldersService.findOne(id, req.user.id);
@@ -48,13 +57,5 @@ export class FoldersController {
   remove(@Param('id') id: string, @Request() req) {
     return this.foldersService.remove(id, req.user.id);
   }
-
-  @Put('move-form/:formId')
-  moveForm(
-    @Param('formId') formId: string,
-    @Body('folderId') folderId: string | null,
-    @Request() req,
-  ) {
-    return this.foldersService.moveFormToFolder(formId, folderId, req.user.id);
-  }
 }
+

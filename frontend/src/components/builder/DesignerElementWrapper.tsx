@@ -1,9 +1,9 @@
 "use client";
 
 import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { FormElement } from "@/types/form";
-import { useBuilderStore } from "@/hooks/useBuilderStore";
+
+import { Field as FormElement } from "@/types";
+import { useFormStore } from "@/store/formStore";
 import DesignerElementCard from "./DesignerElementCard";
 import { cn } from "@/lib/utils";
 import * as React from "react";
@@ -17,9 +17,9 @@ export default function DesignerElementWrapper({
   element,
   index,
 }: DesignerElementWrapperProps) {
-  const { selectedElementId, setSelectedElement, removeElement } =
-    useBuilderStore();
-  const isSelected = selectedElementId === element.id;
+  const { selectedFieldId, selectField, deleteField } =
+    useFormStore();
+  const isSelected = selectedFieldId === element.id;
 
   const {
     attributes,
@@ -145,11 +145,11 @@ export default function DesignerElementWrapper({
             return;
           }
           e.stopPropagation();
-          setSelectedElement(element.id);
+          selectField(element.id);
         }}
         onDelete={(e) => {
           e.stopPropagation();
-          removeElement(element.id);
+          deleteField(element.id);
         }}
       />
     </div>

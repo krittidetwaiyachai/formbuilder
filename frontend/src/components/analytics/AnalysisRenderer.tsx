@@ -31,19 +31,6 @@ interface AnalysisRendererProps {
   analysisType: string;
 }
 
-type AnalysisType =
-  | "ranking"
-  | "statistics"
-  | "barChart"
-  | "pieChart"
-  | "export"
-  | "filter"
-  | "compare"
-  | "count"
-  | "timeline"
-  | "percentage"
-  | "topValues"
-  | "allResponses";
 
 export default function AnalysisRenderer({
   fieldName,
@@ -231,7 +218,7 @@ export default function AnalysisRenderer({
                 fill="#8884d8"
                 dataKey="value"
               >
-                {pieData.map((entry, index) => (
+                {pieData.map((_, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>

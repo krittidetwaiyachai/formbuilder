@@ -137,7 +137,8 @@ export default function ActivityPage() {
   };
 
   const getFieldTypeName = (type: string) => {
-    return t(`activity.field_type.${type.toLowerCase()}`) || type.replace(/_/g, ' ');
+    const key = `activity.field_type.${type.toLowerCase()}`;
+    return i18n.exists(key) ? t(key) : type.replace(/_/g, ' ');
   };
 
   const getPropertyLabel = (property: string) => {
@@ -145,11 +146,13 @@ export default function ActivityPage() {
     if (property.includes('.')) {
       const parts = property.split('.');
       return parts.map(p => {
-        return t(`activity.property.${p}`) || p.charAt(0).toUpperCase() + p.slice(1);
+        const key = `activity.property.${p}`;
+        return i18n.exists(key) ? t(key) : p.charAt(0).toUpperCase() + p.slice(1);
       }).join(': ');
     }
     
-    return t(`activity.property.${property}`) || property.charAt(0).toUpperCase() + property.slice(1).replace(/([A-Z])/g, ' $1');
+    const key = `activity.property.${property}`;
+    return i18n.exists(key) ? t(key) : property.charAt(0).toUpperCase() + property.slice(1).replace(/([A-Z])/g, ' $1');
   };
 
   const formatTime = (dateString: string) => {
@@ -234,11 +237,13 @@ export default function ActivityPage() {
   };
 
   const getOperatorLabel = (operator: string) => {
-    return t(`activity.operator.${operator}`) || operator.replace(/_/g, ' ');
+    const key = `activity.operator.${operator}`;
+    return i18n.exists(key) ? t(key) : operator.replace(/_/g, ' ');
   };
 
   const getActionLabelType = (type: string) => {
-    return t(`activity.action.${type.toLowerCase()}`) || type;
+    const key = `activity.action.${type.toLowerCase()}`;
+    return i18n.exists(key) ? t(key) : type;
   };
 
   const renderRuleContent = (rule: any, isDeleted: boolean = false) => {
@@ -300,7 +305,7 @@ export default function ActivityPage() {
                 <span className="font-semibold text-gray-900">{fieldLabels[a.fieldId] || 'none'}</span>
               </div>
             ))}
-            {actions.length === 0 && <span className="text-[11px] text-gray-400 italic">No actions defined</span>}
+            {actions.length === 0 && <span className="text-[11px] text-gray-400 italic">{t('activity.logic.no_actions')}</span>}
           </div>
         </div>
       </div>
@@ -648,13 +653,13 @@ export default function ActivityPage() {
                            ) : isStringToggle(c.property, beforeValue, c.after) ? (
                              // String/Enum toggle display (FIXED/AUTO, LEFT/CENTER/RIGHT, etc.)
                              <>
-                               <div className="px-2 py-1 bg-gray-100 text-gray-600 rounded border border-gray-200 whitespace-nowrap">
-                                 {typeof beforeValue === 'string' || typeof beforeValue === 'number' ? beforeValue : (c.property.toLowerCase().includes('editormode') ? 'PLAIN_TEXT' : 'Auto')}
-                               </div>
-                               <ArrowRight className="w-3 h-3 text-gray-300 flex-shrink-0" />
-                               <div className="px-2 py-1 bg-indigo-50 text-indigo-700 rounded border border-indigo-200 font-medium">
-                                 {typeof c.after === 'string' || typeof c.after === 'number' ? c.after : (c.property.toLowerCase().includes('editormode') ? 'PLAIN_TEXT' : 'Auto')}
-                               </div>
+                                <div className="px-2 py-1 bg-gray-100 text-gray-600 rounded border border-gray-200 whitespace-nowrap">
+                                  {typeof beforeValue === 'string' || typeof beforeValue === 'number' ? beforeValue : (c.property.toLowerCase().includes('editormode') ? t('activity.values.plain_text') : t('activity.values.auto'))}
+                                </div>
+                                <ArrowRight className="w-3 h-3 text-gray-300 flex-shrink-0" />
+                                <div className="px-2 py-1 bg-indigo-50 text-indigo-700 rounded border border-indigo-200 font-medium">
+                                  {typeof c.after === 'string' || typeof c.after === 'number' ? c.after : (c.property.toLowerCase().includes('editormode') ? t('activity.values.plain_text') : t('activity.values.auto'))}
+                                </div>
                              </>
                            ) : (
                              // Normal before/after display
@@ -785,15 +790,15 @@ export default function ActivityPage() {
                         </div>
                       </>
                    ) : isStringToggle(change.property, change.before, change.after) ? (
-                      <>
-                        <div className="px-2 py-1 bg-gray-100 text-gray-600 rounded border border-gray-200 break-words min-w-0">
-                            {typeof change.before === 'string' || typeof change.before === 'number' ? change.before : 'Auto'}
-                        </div>
-                        <ArrowRight className="w-3 h-3 text-gray-300 flex-shrink-0" />
-                        <div className="px-2 py-1 bg-indigo-50 text-indigo-700 rounded border border-indigo-200 font-medium break-words min-w-0">
-                            {typeof change.after === 'string' || typeof change.after === 'number' ? change.after : 'Auto'}
-                        </div>
-                      </>
+                       <>
+                         <div className="px-2 py-1 bg-gray-100 text-gray-600 rounded border border-gray-200 break-words min-w-0">
+                             {typeof change.before === 'string' || typeof change.before === 'number' ? change.before : t('activity.values.auto')}
+                         </div>
+                         <ArrowRight className="w-3 h-3 text-gray-300 flex-shrink-0" />
+                         <div className="px-2 py-1 bg-indigo-50 text-indigo-700 rounded border border-indigo-200 font-medium break-words min-w-0">
+                             {typeof change.after === 'string' || typeof change.after === 'number' ? change.after : t('activity.values.auto')}
+                         </div>
+                       </>
                    ) : (
                      <>
                        <div className="bg-red-50 text-red-700 px-2 py-1 rounded border border-red-100 line-through opacity-75 break-words min-w-0" title={String(change.before)}>
@@ -850,9 +855,112 @@ export default function ActivityPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50/50">
-        {/* Fixed Header */}
-        <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm transition-all duration-200">
+    <div className="min-h-screen bg-gray-50/50 pb-32 md:pb-0">
+        {/* Mobile iOS Header */}
+        <header className="md:hidden sticky top-0 z-40 bg-white border-b border-gray-100">
+          <div className="px-5 pt-12 pb-4 safe-area-pt">
+            <div className="flex items-center justify-between mb-3">
+              <button 
+                onClick={() => navigate('/')}
+                className="p-2 bg-gray-100 rounded-xl active:bg-gray-200 transition-colors"
+              >
+                <ArrowLeft className="w-5 h-5 text-gray-700" />
+              </button>
+              <div className="flex gap-2">
+                {/* User Filter Mobile */}
+                <div className="relative">
+                    <button
+                        onClick={() => { setIsUserFilterOpen(!isUserFilterOpen); setIsFilterOpen(false); }}
+                        className={`p-2.5 rounded-xl active:bg-gray-200 transition-colors ${userFilter ? 'bg-indigo-50 text-indigo-600' : 'bg-gray-100 text-gray-700'}`}
+                    >
+                        <User className="w-5 h-5" />
+                    </button>
+                    {isUserFilterOpen && (
+                        <div className="absolute right-0 top-full mt-2 w-64 bg-white border border-gray-200 rounded-xl shadow-xl z-50 py-1 max-h-[60vh] overflow-y-auto">
+                            <button
+                                onClick={() => { setUserFilter(null); setIsUserFilterOpen(false); setPage(1); }}
+                                className={`w-full text-left px-4 py-3 text-sm transition-colors flex items-center gap-2 ${!userFilter ? 'bg-indigo-50 text-indigo-700 font-medium' : 'text-gray-600 hover:bg-gray-50'}`}
+                            >
+                                <div className="p-1 bg-gray-200 rounded-full"><User className="w-4 h-4 text-gray-500" /></div>
+                                <span>{t('activity.filter.all_users')}</span>
+                            </button>
+                            {editors.map((editor) => (
+                                <button
+                                    key={editor.id}
+                                    onClick={() => {
+                                        setUserFilter(editor.id);
+                                        setIsUserFilterOpen(false);
+                                        setPage(1);
+                                    }}
+                                    className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-50 transition-colors flex items-center gap-2 ${userFilter === editor.id ? 'bg-indigo-50 text-indigo-600 font-medium' : 'text-gray-700'}`}
+                                >
+                                    {editor.photoUrl ? (
+                                        <img src={editor.photoUrl} alt="" className="w-6 h-6 rounded-full" />
+                                    ) : (
+                                        <div className="w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center text-xs font-bold text-indigo-600">
+                                            {editor.firstName?.charAt(0)}
+                                        </div>
+                                    )}
+                                    <span className="truncate">{editor.firstName} {editor.lastName}</span>
+                                </button>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                {/* Sort Button Mobile */}
+                <button
+                  onClick={() => setSort(sort === 'desc' ? 'asc' : 'desc')}
+                  className="p-2.5 bg-gray-100 rounded-xl active:bg-gray-200 transition-colors flex items-center gap-1.5"
+                >
+                  <ArrowDownUp className="w-5 h-5 text-gray-700" />
+                  <span className="text-[10px] font-medium text-gray-600 min-w-[30px]">{sort === 'desc' ? t('activity.filter.newest') : t('activity.filter.oldest')}</span>
+                </button>
+
+                {/* Filter Button Mobile */}
+                <div className="relative">
+                    <button
+                      onClick={() => { setIsFilterOpen(!isFilterOpen); setIsUserFilterOpen(false); }}
+                      className={`p-2.5 rounded-xl active:bg-gray-200 transition-colors ${actionFilter !== 'ALL' ? 'bg-indigo-50 text-indigo-600' : 'bg-gray-100 text-gray-700'}`}
+                    >
+                      <Filter className="w-5 h-5" />
+                    </button>
+                    {isFilterOpen && (
+                      <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-xl ring-1 ring-black/5 border border-gray-100 overflow-hidden z-50">
+                         <div className="py-1">
+                           {[
+                             { value: 'ALL', label: t('activity.filter.all'), icon: Activity },
+                             { value: 'CREATED', label: t('activity.filter.created'), icon: Plus },
+                             { value: 'UPDATED', label: t('activity.filter.updated'), icon: Edit3 },
+                             { value: 'DELETED', label: t('activity.filter.deleted'), icon: Trash2 },
+                           ].map((f) => (
+                              <button
+                                key={f.value}
+                                onClick={() => {
+                                  setActionFilter(f.value);
+                                  setPage(1);
+                                  setIsFilterOpen(false);
+                                }}
+                                className={`w-full text-left px-4 py-3 text-sm flex items-center gap-3 transition-colors ${actionFilter === f.value ? 'bg-indigo-50 text-indigo-700 font-medium' : 'text-gray-600 hover:bg-gray-50'}`}
+                              >
+                                <f.icon className={`w-4 h-4 ${actionFilter === f.value ? 'text-indigo-600' : 'text-gray-400'}`} />
+                                {f.label}
+                                {actionFilter === f.value && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-indigo-600" />}
+                              </button>
+                           ))}
+                         </div>
+                      </div>
+                    )}
+                </div>
+              </div>
+            </div>
+            <h1 className="text-[28px] font-bold text-black tracking-tight">{t('activity.title')}</h1>
+            <p className="text-sm text-gray-500 truncate">{formTitle}</p>
+          </div>
+        </header>
+
+        {/* Desktop Header */}
+        <header className="hidden md:block sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm transition-all duration-200">
             <div className="max-w-4xl mx-auto px-6 py-3 min-h-[64px] flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
                 <button 

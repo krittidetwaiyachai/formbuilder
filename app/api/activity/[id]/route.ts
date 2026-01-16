@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { dataStore } from "@/lib/data-store";
+import { Form } from "@/types";
 import { ActivityLog } from "@/types/collaboration";
 
-// GET /api/activity/[id] - Get activity logs for a form
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const form = dataStore.getForm(params.id);
+    const form = dataStore.forms.find((f: Form) => f.id === params.id);
     
     if (!form) {
       return NextResponse.json(
@@ -17,7 +17,7 @@ export async function GET(
       );
     }
     
-    const logs = dataStore.getActivityLogs(params.id);
+    const logs = dataStore.activityLogs.filter((log: ActivityLog) => log.formId === params.id);
     
     return NextResponse.json({ logs }, { status: 200 });
   } catch (error) {
@@ -29,7 +29,6 @@ export async function GET(
   }
 }
 
-// POST /api/activity/[id] - Create a new activity log
 export async function POST(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -37,7 +36,7 @@ export async function POST(
   try {
     const body = await request.json();
     
-    const form = dataStore.getForm(params.id);
+    const form = dataStore.forms.find((f: Form) => f.id === params.id);
     if (!form) {
       return NextResponse.json(
         { error: "Form not found" },
@@ -50,18 +49,15 @@ export async function POST(
       formId: params.id,
       userId: body.userId,
       userName: body.userName,
-      userAvatar: body.userAvatar,
       action: body.action,
       target: body.target,
-      targetId: body.targetId,
-      targetName: body.targetName,
       description: body.description || "",
       timestamp: body.timestamp || new Date().toISOString(),
     };
     
-    const log = dataStore.createActivityLog(activityLog);
+    dataStore.activityLogs.push(activityLog);
     
-    return NextResponse.json({ log }, { status: 201 });
+    return NextResponse.json({ log: activityLog }, { status: 201 });
   } catch (error) {
     console.error("Error creating activity log:", error);
     return NextResponse.json(
@@ -70,4 +66,3 @@ export async function POST(
     );
   }
 }
-

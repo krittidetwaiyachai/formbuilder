@@ -3,6 +3,7 @@ import { ArrowLeft, Check, X, Edit2, Undo2, Redo2, Eye, Share2, Copy, ExternalLi
 import { useNavigate } from 'react-router-dom';
 import { Form, FormStatus } from '@/types';
 import { useFormStore } from '@/store/formStore';
+import { useAuthStore } from '@/store/authStore';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import CollaboratorListModal from '@/components/dashboard/CollaboratorListModal';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/custom-select';
@@ -10,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import QRCode from 'react-qr-code';
 import { useTranslation } from 'react-i18next';
+import UserAvatar from '@/components/common/UserAvatar';
 
 interface FormBuilderHeaderProps {
   currentForm: Form | null;
@@ -24,12 +26,13 @@ export default function FormBuilderHeader({
   currentForm,
   saving,
   lastSaved,
-  message,
+
   handleSave,
   updateForm
 }: FormBuilderHeaderProps) {
   const navigate = useNavigate();
   const { undo, redo, historyIndex, history } = useFormStore();
+  const { user: currentUser } = useAuthStore();
   const { t } = useTranslation();
   
   const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -83,20 +86,25 @@ export default function FormBuilderHeader({
   };
 
   return (
-    <div className="bg-white px-6 py-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
+    <div className="bg-white border-b border-gray-200">
+      
+      {/* Main Action Bar (Row 2 on Mobile, Single Row on Desktop) */}
+      <div className="px-4 py-3 md:px-6 md:py-4 flex items-center justify-between gap-3">
+        
+        {/* Left: Back + Title */}
+        <div className="flex items-center gap-3 md:gap-4 flex-1 min-w-0">
           <button
             onClick={() => navigate('/dashboard')}
-            className="text-gray-600 hover:text-gray-900"
+            className="text-gray-500 hover:text-black transition-colors"
           >
             <ArrowLeft className="h-5 w-5" />
           </button>
-          <div className="flex items-center gap-2">
+          
+          <div className="flex items-center gap-2 min-w-0 flex-1">
             {isEditingTitle ? (
               <div 
                   ref={titleEditRef}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 w-full max-w-[300px]"
               >
                 <input
                   type="text"
@@ -109,206 +117,156 @@ export default function FormBuilderHeader({
                       e.stopPropagation();
                     }
                   }}
-                  className="text-xl font-bold text-black border border-gray-400 px-2 py-1 rounded focus:outline-none focus:ring-2 focus:ring-black select-text"
+                  className="text-lg md:text-xl font-bold text-black border-b-2 border-black px-1 py-0.5 w-full bg-transparent focus:outline-none rounded-none"
                   autoFocus
                 />
-                <button
-                  onClick={handleTitleSave}
-                  className="text-black hover:text-gray-700 p-1"
-                >
-                  <Check className="h-4 w-4" />
-                </button>
-                <button
-                  onClick={handleTitleCancel}
-                  className="text-black hover:text-gray-700 p-1"
-                >
-                  <X className="h-4 w-4" />
-                </button>
+                <button onClick={handleTitleSave} className="text-green-600 p-1"><Check className="h-4 w-4" /></button>
+                <button onClick={handleTitleCancel} className="text-red-500 p-1"><X className="h-4 w-4" /></button>
               </div>
             ) : (
-              <div className="flex items-center gap-2">
-                <h1 
-                  onClick={handleTitleEdit}
-                  className="text-xl font-bold text-black cursor-pointer hover:text-gray-700"
-                  title="Click to edit title"
-                >
-                  {currentForm?.title || 'Loading...'}
+              <div className="flex items-center gap-2 min-w-0 group cursor-pointer" onClick={handleTitleEdit}>
+                <h1 className="text-lg md:text-xl font-bold text-black truncate" >
+                  {currentForm?.title || 'Untitled Form'}
                 </h1>
-                <button
-                  onClick={handleTitleEdit}
-                  className="text-gray-500 hover:text-black p-1"
-                  title="Edit title"
-                  disabled={!currentForm}
-                >
-                  <Edit2 className="h-4 w-4" />
-                </button>
+                <Edit2 className="h-3.5 w-3.5 text-gray-400 group-hover:text-black opacity-0 group-hover:opacity-100 transition-all" />
               </div>
             )}
           </div>
         </div>
-        <div className="flex items-center gap-3">
-          {message && (
-            <div
-              className={`px-4 py-2 rounded-md text-sm ${
-                message.type === 'success'
-                  ? 'bg-gray-200 text-black'
-                  : 'bg-gray-100 text-black'
-              }`}
-            >
-              {message.text}
-            </div>
-          )}
-          <div className="flex items-center text-sm mr-2">
-            {saving ? (
-              <span className="text-gray-500 flex items-center gap-2">
-                <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-gray-500"></div>
-                {t('builder_header.saving')}
-              </span>
-            ) : !currentForm ? (
-              <span className="text-gray-500 flex items-center gap-2">
-                 <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-gray-500"></div>
-                 {t('builder_header.loading')}
-              </span>
-            ) : lastSaved ? (
-              <span className="text-gray-500 flex items-center">
-                {t('builder_header.all_saved')} {lastSaved.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: false })}
-                <div className="ml-1.5 p-0.5 rounded-full bg-green-100">
-                   <Check className="h-3 w-3 text-green-600" />
-                </div>
-              </span>
-            ) : currentForm?.updatedAt ? (
-              <span className="text-gray-500 flex items-center">
-                {t('builder_header.last_saved')} {new Date(currentForm.updatedAt).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: false })}
-                <div className="ml-1.5 p-0.5 rounded-full bg-green-100">
-                   <Check className="h-3 w-3 text-green-600" />
-                </div>
-              </span>
-            ) : (
-              <span className="text-gray-400 flex items-center">
-                {t('builder_header.not_saved')}
-              </span>
-            )}
-          </div>
 
-          <div className="w-px h-4 bg-gray-300 mx-1" />
+        {/* Right: Actions */}
+        <div className="flex items-center gap-2 md:gap-3">
+            
+           {/* Status Indicator (Mobile: Simple Check, Desktop: Detailed) */}
+           <div className="flex items-center">
+             {saving ? (
+                 <div className="w-8 h-8 flex items-center justify-center">
+                     <div className="animate-spin rounded-full h-4 w-4 border-2 border-gray-300 border-t-black"></div>
+                 </div>
+             ) : (
+                 <div className="w-8 h-8 flex items-center justify-center rounded-full bg-green-50 text-green-600">
+                     <Check className="h-4 w-4" />
+                 </div>
+             )}
+             <span className="hidden md:inline text-xs text-gray-400 ml-2">
+                 {saving ? t('builder_header.saving') : (
+                    <span>
+                       {t('builder_header.all_saved')}
+                       {lastSaved && ` ${lastSaved.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`}
+                    </span>
+                 )}
+             </span>
+           </div>
 
-          {/* Status Dropdown */}
-          <div className="mr-2 w-32">
-            <Select 
-                value={currentForm?.status || 'DRAFT'} 
-                onValueChange={(value) => updateForm({ status: value as FormStatus })}
-            >
-                <SelectTrigger className="h-8 text-xs font-semibold bg-gray-100 border-none hover:bg-gray-200 focus:ring-0 focus:ring-offset-0">
-                    <SelectValue placeholder={t('dashboard.filters.all')} />
-                </SelectTrigger>
-                <SelectContent>
-                    {[
-                        { label: t('dashboard.filters.draft'), value: FormStatus.DRAFT },
-                        { label: t('dashboard.filters.published'), value: FormStatus.PUBLISHED },
-                        { label: t('dashboard.filters.archived'), value: FormStatus.ARCHIVED }
-                    ].map((status) => (
-                        <SelectItem key={status.value} value={status.value} className="text-xs font-medium">
-                            {status.label}
-                        </SelectItem>
-                    ))}
-                </SelectContent>
-            </Select>
-          </div>
+           <div className="h-6 w-px bg-gray-200 mx-1 hidden md:block" />
 
-          <div className="w-px h-4 bg-gray-300 mx-1" />
+           {/* Desktop Only Controls */}
+           <div className="hidden md:flex items-center gap-2 group">
+               {/* Undo/Redo */}
+               <div className="flex items-center gap-1">
+                    <button onClick={undo} disabled={historyIndex <= 0} className="p-1.5 text-gray-500 hover:text-black disabled:opacity-30 transition-colors">
+                        <Undo2 className="h-4 w-4"/>
+                    </button>
+                    <button onClick={redo} disabled={historyIndex >= history.length - 1} className="p-1.5 text-gray-500 hover:text-black disabled:opacity-30 transition-colors">
+                        <Redo2 className="h-4 w-4"/>
+                    </button>
+               </div>
+               
+               <div className="h-6 w-px bg-gray-200 mx-1" />
+               
+               {/* Collaborators Avatars */}
+               {currentUser && (
+                   (() => {
+                       const collaborators = currentForm?.collaborators || [];
+                       const allUsers = [currentUser, ...collaborators];
+                       const visibleUsers = allUsers.slice(0, 3);
+                       
+                       return (
+                           <div className="flex items-center">
+                               <div 
+                                   className="flex -space-x-3 overflow-hidden items-center cursor-pointer"
+                                   onClick={() => setIsCollaboratorModalOpen(true)}
+                                   title="Manage access"
+                               >
+                                   {visibleUsers.map((user, index) => (
+                                       <div key={user?.id || index} className="relative transition-transform hover:scale-110 hover:z-20" style={{ zIndex: index }}>
+                                           <UserAvatar 
+                                               user={user} 
+                                               className="h-8 w-8 ring-2 ring-white shadow-sm"
+                                               title={user?.email || 'User'}
+                                           />
+                                       </div>
+                                   ))}
+                                   <div className="relative z-10 flex items-center justify-center h-8 w-8 rounded-full bg-gray-100 ring-2 ring-white shadow-sm text-gray-500 hover:bg-gray-200 transition-colors">
+                                       <Plus className="w-4 h-4" />
+                                   </div>
+                               </div>
+                           </div>
+                       );
+                   })()
+               )}
+           </div>
 
-          {/* Collaborators Section */}
-          <div className="flex items-center gap-2 mr-2">
-            <div className="flex items-center -space-x-2">
-              {/* Owner Avatar */}
-              {currentForm?.createdBy && (
-                <div 
-                  className="relative w-8 h-8 rounded-full border-2 border-white bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-xs font-semibold shadow-sm hover:z-10 transition-all hover:scale-110"
-                  title={`${currentForm.createdBy.firstName || ''} ${currentForm.createdBy.lastName || ''} (Owner)`.trim() || currentForm.createdBy.email}
-                >
-                  {currentForm.createdBy.photoUrl ? (
-                    <img src={currentForm.createdBy.photoUrl} alt="" className="w-full h-full rounded-full object-cover" />
-                  ) : (
-                    <span>{(currentForm.createdBy.firstName?.[0] || currentForm.createdBy.email?.[0] || '?').toUpperCase()}</span>
-                  )}
-                </div>
-              )}
-              
-              {/* Collaborator Avatars (max 3) */}
-              {(currentForm?.collaborators || []).slice(0, 3).map((collaborator: any) => (
-                <div 
-                  key={collaborator.id}
-                  className="relative w-8 h-8 rounded-full border-2 border-white bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white text-xs font-semibold shadow-sm hover:z-10 transition-all hover:scale-110"
-                  title={`${collaborator.firstName || ''} ${collaborator.lastName || ''}`.trim() || collaborator.email}
-                >
-                  {collaborator.photoUrl ? (
-                    <img src={collaborator.photoUrl} alt="" className="w-full h-full rounded-full object-cover" />
-                  ) : (
-                    <span>{(collaborator.firstName?.[0] || collaborator.email?.[0] || '?').toUpperCase()}</span>
-                  )}
-                </div>
-              ))}
+           {/* Primary Actions */}
+           <div className="flex items-center gap-2">
+               {/* Status Dropdown */}
+               {currentForm && (
+                   <Select
+                       value={currentForm.status}
+                       onValueChange={(value: FormStatus) => updateForm({ status: value })}
+                   >
+                       <SelectTrigger className="h-9 w-[110px] md:w-[130px] bg-white border-gray-200">
+                           <SelectValue />
+                       </SelectTrigger>
+                       <SelectContent>
+                           <SelectItem value={FormStatus.DRAFT}>
+                               <div className="flex items-center gap-2">
+                                   <div className="w-2 h-2 rounded-full bg-yellow-500" />
+                                   <span>Draft</span>
+                               </div>
+                           </SelectItem>
+                           <SelectItem value={FormStatus.PUBLISHED}>
+                               <div className="flex items-center gap-2">
+                                   <div className="w-2 h-2 rounded-full bg-green-500" />
+                                   <span>Published</span>
+                               </div>
+                           </SelectItem>
+                           <SelectItem value={FormStatus.ARCHIVED}>
+                               <div className="flex items-center gap-2">
+                                   <div className="w-2 h-2 rounded-full bg-gray-500" />
+                                   <span>Archived</span>
+                               </div>
+                           </SelectItem>
+                       </SelectContent>
+                   </Select>
+               )}
+               
+               <button
+                  onClick={() => window.open(`/forms/${currentForm?.id}/preview`, '_blank')}
+                  className="h-9 w-9 md:w-auto md:px-4 md:py-2 flex items-center justify-center gap-2 rounded-lg border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-all bg-white text-gray-700 font-medium"
+                  title={t('builder_header.preview')}
+               >
+                  <Eye className="h-4 w-4" />
+                  <span className="hidden md:inline">{t('builder_header.preview')}</span>
+               </button>
 
-              {/* More Collaborators Count Badge */}
-              {(currentForm?.collaborators || []).length > 3 && (
-                <div 
-                  className="relative w-8 h-8 rounded-full border-2 border-white bg-gray-300 flex items-center justify-center text-gray-700 text-xs font-bold shadow-sm"
-                  title={`+${(currentForm?.collaborators || []).length - 3} more`}
-                >
-                  +{(currentForm?.collaborators || []).length - 3}
-                </div>
-              )}
-            </div>
+               <button
+                  onClick={() => {
+                    handleSave(true);
+                    setIsShareOpen(true);
+                  }}
+                  className="h-9 w-9 md:w-auto md:px-4 md:py-2 flex items-center justify-center gap-2 rounded-lg bg-black hover:bg-zinc-800 text-white font-medium shadow-sm transition-all"
+                  title={t('builder_header.share')}
+               >
+                  <Share2 className="h-4 w-4" />
+                  <span className="hidden md:inline">{t('builder_header.share')}</span>
+               </button>
+           </div>
 
-            {/* Add Collaborator Button */}
-            <button
-              onClick={() => setIsCollaboratorModalOpen(true)}
-              className="w-8 h-8 rounded-full border-2 border-dashed border-gray-300 hover:border-black flex items-center justify-center text-gray-400 hover:text-black transition-all hover:bg-gray-50"
-              title={t('builder_header.invite_collaborators')}
-            >
-              <Plus className="h-4 w-4" />
-            </button>
-          </div>
+        </div>
 
-          <div className="w-px h-4 bg-gray-300 mx-1" />
-
-          <div className="flex items-center gap-1">
-            <button
-              onClick={undo}
-              disabled={historyIndex <= 0}
-              className="p-1.5 text-gray-400 hover:text-black rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-              title={t('builder_header.undo')}
-            >
-              <Undo2 className="h-4 w-4" />
-            </button>
-            <button
-              onClick={redo}
-              disabled={historyIndex >= history.length - 1}
-              className="p-1.5 text-gray-400 hover:text-black rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-              title={t('builder_header.redo')}
-            >
-              <Redo2 className="h-4 w-4" />
-            </button>
-          </div>
-          <button
-            onClick={() => window.open(`/forms/${currentForm?.id}/preview`, '_blank')}
-            className="inline-flex items-center px-3 py-1.5 border border-gray-400 text-sm font-medium rounded-md text-black bg-white hover:bg-gray-100"
-          >
-            <Eye className="h-3.5 w-3.5 mr-1.5" />
-            {t('builder_header.preview')}
-          </button>
-          <button
-            onClick={() => {
-                handleSave(true);
-                setIsShareOpen(true);
-            }}
-            className="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800"
-          >
-            <Share2 className="h-3.5 w-3.5 mr-1.5" />
-            {t('builder_header.share')}
-          </button>
-
-          <Dialog open={isShareOpen} onOpenChange={setIsShareOpen}>
+        {/* Modals & Dialogs (Unchanged) */}
+        <Dialog open={isShareOpen} onOpenChange={setIsShareOpen}>
             <DialogContent className="sm:max-w-md bg-white">
               <button
                 className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
@@ -347,7 +305,6 @@ export default function FormBuilderHeader({
                     className="px-3" 
                     onClick={() => {
                         navigator.clipboard.writeText(`${window.location.origin}/forms/${currentForm?.id}/view`);
-                        // Could add toast here
                     }}
                 >
                   <span className="sr-only">Copy</span>
@@ -367,7 +324,6 @@ export default function FormBuilderHeader({
             </DialogContent>
           </Dialog>
 
-          {/* Collaborator Modal */}
           {currentForm && (
             <CollaboratorListModal
               isOpen={isCollaboratorModalOpen}
@@ -378,13 +334,10 @@ export default function FormBuilderHeader({
                 ...(currentForm.createdBy ? [currentForm.createdBy] : []),
                 ...(currentForm.collaborators || [])
               ]}
-              onUpdate={() => {
-                // Optionally trigger a refresh of form data here
-                // For now, collaborators will be updated on next page load
-              }}
+              onUpdate={() => {}}
             />
           )}
-        </div>
+
       </div>
     </div>
   );

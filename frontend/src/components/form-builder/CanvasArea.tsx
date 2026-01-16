@@ -3,6 +3,7 @@ import { Droppable, Draggable } from '@hello-pangea/dnd';
 import { Field, Form, FieldType } from '@/types';
 import FieldItem from '@/components/form-builder/FieldItem';
 import { FieldContextMenu } from './FieldContextMenu';
+import { useTranslation } from 'react-i18next';
 
 interface CanvasAreaProps {
   visibleFields: Field[];
@@ -11,6 +12,7 @@ interface CanvasAreaProps {
   onSelectField: (id: string, autoFocus?: boolean) => void;
   onDeselect?: () => void;
   onToggleSelect?: (id: string) => void;
+  onOpenProperties?: () => void;
   additionalSelectedIds?: string[];
 }
 
@@ -21,9 +23,11 @@ export default function CanvasArea({
   onSelectField,
   onDeselect,
   onToggleSelect,
+  onOpenProperties,
   additionalSelectedIds = [],
 }: CanvasAreaProps) {
   
+  const { t } = useTranslation();
   const [activeContextMenu, setActiveContextMenu] = React.useState<{ fieldId: string; x: number; y: number } | null>(null);
 
   if (!currentForm) {
@@ -49,7 +53,11 @@ export default function CanvasArea({
         <div 
            ref={provided.innerRef} 
            {...provided.droppableProps}
-           className="min-h-[200px] transition-colors pt-10 pb-20 relative" 
+           className={`min-h-full flex-1 transition-all duration-200 pt-10 pb-32 relative rounded-xl bg-gray-50/80 border border-gray-100 ${
+             snapshot.isDraggingOver 
+               ? 'ring-2 ring-indigo-300 ring-dashed border-transparent' 
+               : ''
+           }`}
            onClick={(e) => {
              if (e.target === e.currentTarget) {
                  onDeselect?.();
@@ -57,6 +65,17 @@ export default function CanvasArea({
              }
            }}
         >
+          {/* Drop zone indicator when dragging */}
+          {snapshot.isDraggingOver && (
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+              <div className="bg-indigo-500/10 backdrop-blur-sm rounded-lg px-6 py-3 border border-indigo-200 shadow-lg">
+                <p className="text-indigo-600 font-medium text-sm flex items-center gap-2">
+                  <span className="w-2 h-2 bg-indigo-500 rounded-full animate-pulse" />
+                  {t('builder.drop_here')}
+                </p>
+              </div>
+            </div>
+          )}
           {topLevelFields.length > 0 ? (
             <div className="flex flex-row flex-wrap content-start gap-3 w-full">
               {topLevelFields.map((field, index) => (
@@ -68,6 +87,7 @@ export default function CanvasArea({
                       onSelect={onSelectField}
                       onToggle={onToggleSelect}
                       onOpenContextMenu={(e) => handleContextMenu(e, field.id)}
+                      onOpenProperties={onOpenProperties}
                       provided={provided}
                       isDragging={draggableSnapshot.isDragging}
                       disableHover={snapshot.isDraggingOver}
@@ -80,8 +100,8 @@ export default function CanvasArea({
             </div>
           ) : (
             <>
-                <div className="flex flex-col items-center justify-center py-12 text-gray-400 border-2 border-dashed border-gray-200 rounded-lg bg-gray-50/50">
-                <p className="text-sm font-medium">Drag fields here or select from sidebar</p>
+                <div className="flex flex-col items-center justify-center py-32 text-gray-400">
+                <p className="text-sm font-medium">{t('builder.drag_drop_instructions')}</p>
                 </div>
                 {provided.placeholder}
             </>

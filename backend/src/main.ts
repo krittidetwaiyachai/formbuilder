@@ -3,6 +3,8 @@ import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 
 
+
+
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 
@@ -15,10 +17,12 @@ async function bootstrap() {
     prefix: '/', 
   });
   
-  // Enable CORS
+  // Enable CORS - allow all origins in development
   app.enableCors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+    origin: true,
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   });
 
   // Global validation pipe
@@ -29,6 +33,8 @@ async function bootstrap() {
       transform: true,
     }),
   );
+
+  app.setGlobalPrefix('api');
 
   const port = process.env.PORT || 3000;
   await app.listen(port);

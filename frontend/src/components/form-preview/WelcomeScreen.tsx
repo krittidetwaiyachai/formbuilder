@@ -28,9 +28,11 @@ const iconGlowClasses: Record<string, string> = {
 interface WelcomeScreenProps {
   settings?: WelcomeScreenSettings;
   onStart: () => void;
+  viewMode?: 'desktop' | 'tablet' | 'mobile';
 }
 
-export default function WelcomeScreen({ settings, onStart }: WelcomeScreenProps) {
+export default function WelcomeScreen({ settings, onStart, viewMode = 'desktop' }: WelcomeScreenProps) {
+  const isMobile = viewMode === 'mobile';
   const layout = settings?.layout || 'simple';
   const bgImage = settings?.backgroundImage;
   const iconColor = (settings as any)?.iconColor || 'blue'; // Default to blue
@@ -41,7 +43,7 @@ export default function WelcomeScreen({ settings, onStart }: WelcomeScreenProps)
   const showButton = settings?.showStartButton !== false; // Default true
 
   const renderContent = (isCover = false) => (
-    <div className="flex flex-col items-center justify-center p-6 md:p-12 w-full h-full text-center space-y-8">
+    <div className={`flex flex-col items-center justify-center ${isMobile ? 'px-0 py-8' : 'p-6 md:p-12'} w-full h-full text-center space-y-6`}>
       
        {/* Icon */}
        {layout === 'simple' && (
@@ -54,14 +56,14 @@ export default function WelcomeScreen({ settings, onStart }: WelcomeScreenProps)
 
       {/* Title */}
       {title && (
-          <h1 className={`text-3xl md:text-5xl font-extrabold tracking-tight ${isCover ? 'text-white' : 'text-gray-900'}`}>
+          <h1 className={`${isMobile ? 'text-2xl' : 'text-3xl md:text-5xl'} font-extrabold tracking-tight ${isCover ? 'text-white' : 'text-gray-900'}`}>
             {title}
           </h1>
       )}
 
       {/* Description */}
       {description && (
-        <p className={`text-xl whitespace-pre-wrap leading-relaxed max-w-2xl ${isCover ? 'text-white/90' : 'text-gray-500'}`}>
+        <p className={`${isMobile ? 'text-base' : 'text-xl'} whitespace-pre-wrap leading-relaxed max-w-2xl ${isCover ? 'text-white/90' : 'text-gray-500'}`}>
             {description}
         </p>
       )}

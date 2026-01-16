@@ -1,6 +1,6 @@
 import React from 'react';
 import { Field } from '@/types';
-import { Send, RotateCcw, Printer, Save } from 'lucide-react';
+import { Send, RotateCcw, Printer } from 'lucide-react';
 
 interface SubmitFieldProps {
   field: Field;
@@ -13,7 +13,7 @@ interface SubmitFieldProps {
   disabledClass?: string;
 }
 
-export const SubmitField: React.FC<SubmitFieldProps> = ({ field, fieldStyle, disabledClass = "opacity-60 cursor-pointer" }) => {
+export const SubmitField: React.FC<SubmitFieldProps> = ({ field, disabledClass = "opacity-60 cursor-pointer" }) => {
   const options = field.options || {};
   const buttonAlign = options.buttonAlign || 'AUTO'; // 'AUTO' | 'LEFT' | 'CENTER' | 'RIGHT'
   const resetButton = options.resetButton || false;

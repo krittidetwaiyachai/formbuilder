@@ -1,6 +1,6 @@
 "use client";
 
-import { FormElement } from "@/types/form";
+import { Field as FormElement } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 import FormElementRenderer from "./FormElementRenderer";
@@ -51,8 +51,8 @@ export default function DesignerElementCard({
       <div
         className={cn(
           "relative border rounded-lg bg-white cursor-pointer transition-all duration-200",
-          !isSelected && "hover:border-primary pt-6 pb-4 px-4",
-          isSelected && "border-black border-[3px] shadow-2xl scale-[1.03] ring-4 ring-black/5 z-20 pt-10 pb-4 px-4"
+          !isSelected && "hover:border-primary pt-3 pb-2 px-3",
+          isSelected && "border-black border-[3px] shadow-xl scale-[1.01] ring-2 ring-black/5 z-20 pt-4 pb-2 px-3"
         )}
         onMouseDown={(e) => {
           // Don't trigger onClick if clicking on a contenteditable element
@@ -73,8 +73,8 @@ export default function DesignerElementCard({
           onClick?.(e);
         }}
       >
-        <div className="absolute top-2 left-1/2 -translate-x-1/2 z-[50] cursor-grab active:cursor-grabbing w-full flex justify-center h-6" title="Drag to move">
-          <div className="w-12 h-1.5 bg-gray-400 rounded-full" />
+        <div className="absolute top-1 left-1/2 -translate-x-1/2 z-[50] cursor-grab active:cursor-grabbing w-full flex justify-center h-4" title="Drag to move">
+          <div className="w-10 h-1 bg-gray-300 rounded-full" />
         </div>
         <div className="flex items-start gap-2">
           <div className="flex-1">

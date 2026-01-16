@@ -1,17 +1,17 @@
 "use client";
 
-import { FormElement } from "@/types/form";
+import { Field, FieldType } from "@/types";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Star } from "lucide-react";
-import { useBuilderStore } from "@/hooks/useBuilderStore";
+import { useFormStore } from "@/store/formStore";
 import { useRef, useEffect, useLayoutEffect, useState } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/ui/utils";
 
 interface FormElementRendererProps {
-  element: FormElement;
+  element: Field;
   isDesigner?: boolean;
 }
 
@@ -19,26 +19,26 @@ export default function FormElementRenderer({
   element,
   isDesigner = false,
 }: FormElementRendererProps) {
-  const { selectedElementId, updateElement, setSelectedElement } = useBuilderStore();
-  const isSelected = selectedElementId === element.id;
+  const { selectedFieldId, updateField, selectField } = useFormStore();
+  const isSelected = selectedFieldId === element.id;
   const headingRef = useRef<HTMLHeadingElement | null>(null);
   const paragraphRef = useRef<HTMLParagraphElement | null>(null);
   const labelRef = useRef<HTMLDivElement | null>(null);
   const isEditingRef = useRef(false);
-  const lastContentRef = useRef<string>("");
 
-  const renderEditableLabel = (label: string, required: boolean = false) => {
+
+  const renderEditableLabel = (_label: string, required: boolean = false) => {
     const handleLabelBlur = (e: React.FocusEvent<HTMLDivElement>) => {
       isEditingRef.current = false;
       const newContent = e.currentTarget.textContent || "";
       if (newContent !== element.label) {
-        updateElement(element.id, { label: newContent });
+        updateField(element.id, { label: newContent });
       }
     };
 
-    const handleLabelFocus = (e: React.FocusEvent<HTMLDivElement>) => {
+    const handleLabelFocus = (_e: React.FocusEvent<HTMLDivElement>) => {
       if (isDesigner) {
-        setSelectedElement(element.id);
+        selectField(element.id);
       }
       isEditingRef.current = true;
     };
@@ -51,9 +51,7 @@ export default function FormElementRenderer({
       e.stopPropagation();
     };
 
-    const handleLabelClick = (e: React.MouseEvent<HTMLDivElement>) => {
-      e.stopPropagation();
-    };
+
 
     const handleLabelMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
       e.stopPropagation();
@@ -129,9 +127,9 @@ export default function FormElementRenderer({
 
   const renderElement = () => {
     switch (element.type) {
-      case "text":
-      case "email":
-      case "number":
+      case FieldType.TEXT:
+      case FieldType.EMAIL:
+      case FieldType.NUMBER:
         return (
           <div className="space-y-2">
             {renderEditableLabel(element.label, element.required)}
@@ -149,7 +147,7 @@ export default function FormElementRenderer({
           </div>
         );
 
-      case "textarea":
+      case FieldType.TEXTAREA:
         return (
           <div className="space-y-2">
             {renderEditableLabel(element.label, element.required)}
@@ -167,7 +165,7 @@ export default function FormElementRenderer({
           </div>
         );
 
-      case "select":
+      case FieldType.DROPDOWN:
         return (
           <div className="space-y-2">
             {renderEditableLabel(element.label, element.required)}
@@ -176,7 +174,7 @@ export default function FormElementRenderer({
               disabled={isDesigner}
             >
               <option value="">Select an option</option>
-              {element.options?.map((opt) => (
+              {element.options?.map((opt: any) => (
                 <option key={opt.id} value={opt.value}>
                   {opt.label}
                 </option>
@@ -190,12 +188,12 @@ export default function FormElementRenderer({
           </div>
         );
 
-      case "checkbox":
+      case FieldType.CHECKBOX:
         return (
           <div className="space-y-3">
             {renderEditableLabel(element.label, element.required)}
             <div className="space-y-2">
-              {element.options?.map((opt) => (
+              {element.options?.map((opt: any) => (
                 <div key={opt.id} className="flex items-center space-x-2">
                   <input
                     type="checkbox"
@@ -217,12 +215,12 @@ export default function FormElementRenderer({
           </div>
         );
 
-      case "radio":
+      case FieldType.RADIO:
         return (
           <div className="space-y-3">
             {renderEditableLabel(element.label, element.required)}
             <div className="space-y-2">
-              {element.options?.map((opt) => (
+              {element.options?.map((opt: any) => (
                 <div key={opt.id} className="flex items-center space-x-2">
                   <input
                     type="radio"
@@ -245,7 +243,7 @@ export default function FormElementRenderer({
           </div>
         );
 
-      case "date":
+      case FieldType.DATE:
         return (
           <div className="space-y-2">
             {renderEditableLabel(element.label, element.required)}
@@ -262,24 +260,12 @@ export default function FormElementRenderer({
           </div>
         );
 
-      case "file":
-        return (
-          <div className="space-y-2">
-            {renderEditableLabel(element.label, element.required)}
-            <Input
-              type="file"
-              accept={element.accept}
-              disabled={isDesigner}
-            />
-            {element.helperText && (
-              <p className="text-xs text-muted-foreground">
-                {element.helperText}
-              </p>
-            )}
-          </div>
-        );
+      /* File type not supported yet */
 
-      case "rating":
+
+
+      /* Removed file block */
+      case FieldType.RATE:
         return (
           <div className="space-y-2">
             {renderEditableLabel(element.label, element.required)}
@@ -304,19 +290,19 @@ export default function FormElementRenderer({
           </div>
         );
 
-      case "heading":
+      case FieldType.HEADER:
         const handleHeadingBlur = (e: React.FocusEvent<HTMLHeadingElement>) => {
           isEditingRef.current = false;
           const newContent = e.currentTarget.textContent || "";
           headingContentRef.current = newContent;
-          if (newContent !== element.content) {
-            updateElement(element.id, { content: newContent });
+          if (newContent !== element.label) {
+            updateField(element.id, { label: newContent });
           }
         };
 
-        const handleHeadingFocus = (e: React.FocusEvent<HTMLHeadingElement>) => {
+        const handleHeadingFocus = (_e: React.FocusEvent<HTMLHeadingElement>) => {
           if (isDesigner) {
-            setSelectedElement(element.id);
+            selectField(element.id);
           }
           isEditingRef.current = true;
         };
@@ -331,10 +317,7 @@ export default function FormElementRenderer({
           e.stopPropagation();
         };
 
-        const handleHeadingClick = (e: React.MouseEvent<HTMLHeadingElement>) => {
-          // Stop propagation to prevent card onClick
-          e.stopPropagation();
-        };
+
 
         const handleHeadingMouseDown = (e: React.MouseEvent<HTMLHeadingElement>) => {
           // Stop propagation to prevent card onClick
@@ -349,13 +332,13 @@ export default function FormElementRenderer({
           isEditingRef.current = true;
         };
 
-        const handleHeadingBeforeInput = (e: React.FormEvent<HTMLHeadingElement>) => {
+        const handleHeadingBeforeInput = (_e: React.FormEvent<HTMLHeadingElement>) => {
           // Mark as editing to prevent React from interfering
           isEditingRef.current = true;
         };
 
         // Store content in ref to track what we set vs what React might try to set
-        const headingContentRef = useRef<string>(element.content || "Heading");
+        const headingContentRef = useRef<string>(element.label || "Heading");
         const headingInitializedRef = useRef(false);
         
         // Reset initialization flag when selection changes
@@ -366,24 +349,7 @@ export default function FormElementRenderer({
         }, [isSelected]);
         
         // Set content via ref callback - this runs synchronously during render
-        const setHeadingRef = (node: HTMLHeadingElement | null) => {
-          if (headingRef.current === node) return; // Already set
-          
-          headingRef.current = node;
-          if (node && isDesigner && isSelected) {
-            const elementContent = element.content || "Heading";
-            
-            // Only set content if element is empty or not initialized
-            if (!headingInitializedRef.current || !node.textContent || node.textContent.trim() === "") {
-              headingContentRef.current = elementContent;
-              node.textContent = elementContent;
-              headingInitializedRef.current = true;
-            } else {
-              // Preserve existing content if element already has content
-              headingContentRef.current = node.textContent;
-            }
-          }
-        };
+
 
         // Auto-focus when selected and enforce it
         useEffect(() => {
@@ -422,7 +388,7 @@ export default function FormElementRenderer({
         // We use useState to keep the dangerouslySetInnerHTML prop stable across renders
         // This prevents React from updating the DOM on every keystroke (which kills cursor)
         const [headingMarkup] = useState(() => {
-          const content = element.content || "Heading";
+          const content = element.label || "Heading";
           return {
             __html: content
               .replace(/&/g, "&amp;")
@@ -436,12 +402,12 @@ export default function FormElementRenderer({
         // Sync content changes from outside (e.g. undo/redo)
         useEffect(() => {
           if (headingRef.current && document.activeElement !== headingRef.current) {
-             const currentContent = element.content || "Heading";
+             const currentContent = element.label || "Heading";
              if (headingRef.current.textContent !== currentContent) {
                 headingRef.current.textContent = currentContent;
              }
           }
-        }, [element.content]);
+        }, [element.label]);
 
         // Force focus on selection change
         useEffect(() => {
@@ -497,19 +463,19 @@ export default function FormElementRenderer({
           </div>
         );
 
-      case "paragraph":
+      case FieldType.PARAGRAPH:
         const handleParagraphBlur = (e: React.FocusEvent<HTMLParagraphElement>) => {
           isEditingRef.current = false;
           const newContent = e.currentTarget.textContent || "";
           paragraphContentRef.current = newContent;
-          if (newContent !== element.content) {
-            updateElement(element.id, { content: newContent });
+          if (newContent !== element.label) {
+            updateField(element.id, { label: newContent });
           }
         };
 
-        const handleParagraphFocus = (e: React.FocusEvent<HTMLParagraphElement>) => {
+        const handleParagraphFocus = (_e: React.FocusEvent<HTMLParagraphElement>) => {
           if (isDesigner) {
-            setSelectedElement(element.id);
+            selectField(element.id);
           }
           isEditingRef.current = true;
         };
@@ -519,10 +485,7 @@ export default function FormElementRenderer({
           e.stopPropagation();
         };
 
-        const handleParagraphClick = (e: React.MouseEvent<HTMLParagraphElement>) => {
-          // Stop propagation to prevent card onClick
-          e.stopPropagation();
-        };
+
 
         const handleParagraphMouseDown = (e: React.MouseEvent<HTMLParagraphElement>) => {
           // Stop propagation to prevent card onClick
@@ -537,13 +500,13 @@ export default function FormElementRenderer({
           isEditingRef.current = true;
         };
 
-        const handleParagraphBeforeInput = (e: React.FormEvent<HTMLParagraphElement>) => {
+        const handleParagraphBeforeInput = (_e: React.FormEvent<HTMLParagraphElement>) => {
           // Mark as editing to prevent React from interfering
           isEditingRef.current = true;
         };
 
         // Store content in ref to track what we set vs what React might try to set
-        const paragraphContentRef = useRef<string>(element.content || "Paragraph");
+        const paragraphContentRef = useRef<string>(element.label || "Paragraph");
         const paragraphInitializedRef = useRef(false);
         
         // Reset initialization flag when selection changes
@@ -554,24 +517,7 @@ export default function FormElementRenderer({
         }, [isSelected]);
         
         // Set content via ref callback - this runs synchronously during render
-        const setParagraphRef = (node: HTMLParagraphElement | null) => {
-          if (paragraphRef.current === node) return; // Already set
-          
-          paragraphRef.current = node;
-          if (node && isDesigner && isSelected) {
-            const elementContent = element.content || "Paragraph";
-            
-            // Only set content if element is empty or not initialized
-            if (!paragraphInitializedRef.current || !node.textContent || node.textContent.trim() === "") {
-              paragraphContentRef.current = elementContent;
-              node.textContent = elementContent;
-              paragraphInitializedRef.current = true;
-            } else {
-              // Preserve existing content if element already has content
-              paragraphContentRef.current = node.textContent;
-            }
-          }
-        };
+
 
         // Auto-focus when selected and enforce it
         useEffect(() => {
@@ -609,7 +555,7 @@ export default function FormElementRenderer({
         // Helper variables
         // Stable markup state to prevent React re-renders on typing
         const [paragraphMarkup] = useState(() => {
-          const content = element.content || "Paragraph";
+          const content = element.label || "Paragraph";
           return {
             __html: content
               .replace(/&/g, "&amp;")
@@ -623,12 +569,12 @@ export default function FormElementRenderer({
         // Sync content changes from outside (e.g. undo/redo)
         useEffect(() => {
           if (paragraphRef.current && document.activeElement !== paragraphRef.current) {
-             const currentContent = element.content || "Paragraph";
+             const currentContent = element.label || "Paragraph";
              if (paragraphRef.current.textContent !== currentContent) {
                 paragraphRef.current.textContent = currentContent;
              }
           }
-        }, [element.content]);
+        }, [element.label]);
 
         // Force focus on selection change
         useEffect(() => {

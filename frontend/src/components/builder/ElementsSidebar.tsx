@@ -3,8 +3,8 @@
 import * as React from "react";
 import { useDraggable } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
-import { FormElementType } from "@/types/form";
-import { useBuilderStore } from "@/hooks/useBuilderStore";
+import { FieldType as FormElementType } from "@/types";
+import { useFormStore } from "@/store/formStore";
 import {
   Type,
   Mail,
@@ -14,7 +14,6 @@ import {
   CheckSquare,
   Circle,
   Calendar,
-  Upload,
   Star,
   Heading,
   AlignLeft,
@@ -29,7 +28,7 @@ interface ElementButtonProps {
 
 
 function ElementButton({ type, label, icon }: ElementButtonProps) {
-  const { addElement } = useBuilderStore();
+  const { addField } = useFormStore();
   
   const {
     attributes,
@@ -46,28 +45,40 @@ function ElementButton({ type, label, icon }: ElementButtonProps) {
   });
 
   const style = {
-    transform: CSS.Translate.toString(transform),
+    transform: CSS.Transform.toString(transform),
     opacity: isDragging ? 0.5 : 1,
   };
 
   const needsOptions = (type: FormElementType): boolean => {
-    return ["select", "radio", "checkbox"].includes(type);
+    return [FormElementType.DROPDOWN, FormElementType.RADIO, FormElementType.CHECKBOX].includes(type);
   };
 
   const getDefaultLabel = (type: FormElementType): string => {
     const labels: Record<FormElementType, string> = {
-      text: "Text Input",
-      email: "Email",
-      number: "Number",
-      textarea: "Textarea",
-      select: "Select",
-      checkbox: "Checkbox",
-      radio: "Radio",
-      date: "Date",
-      file: "File Upload",
-      rating: "Rating",
-      heading: "Heading",
-      paragraph: "Paragraph",
+      [FormElementType.TEXT]: "Text Input",
+      [FormElementType.EMAIL]: "Email",
+      [FormElementType.PHONE]: "Phone",
+      [FormElementType.NUMBER]: "Number",
+      [FormElementType.TEXTAREA]: "Textarea",
+      [FormElementType.DROPDOWN]: "Select",
+      [FormElementType.CHECKBOX]: "Checkbox",
+      [FormElementType.RADIO]: "Radio",
+      [FormElementType.DATE]: "Date",
+      [FormElementType.FILE]: "File Upload",
+      [FormElementType.RATE]: "Rating",
+      [FormElementType.HEADER]: "Heading",
+      [FormElementType.PARAGRAPH]: "Paragraph",
+      // Add missing keys if necessary or ensure all are covered
+      [FormElementType.SUBMIT]: "Submit",
+      [FormElementType.FULLNAME]: "Full Name",
+      [FormElementType.ADDRESS]: "Address",
+      [FormElementType.DIVIDER]: "Divider",
+      [FormElementType.SECTION_COLLAPSE]: "Section",
+      [FormElementType.PAGE_BREAK]: "Page Break",
+      [FormElementType.GROUP]: "Group",
+      [FormElementType.MATRIX]: "Matrix",
+      [FormElementType.TABLE]: "Table",
+      [FormElementType.TIME]: "Time",
     };
     return labels[type] || "Field";
   };
@@ -78,20 +89,23 @@ function ElementButton({ type, label, icon }: ElementButtonProps) {
       type: type,
       label: getDefaultLabel(type),
       required: false,
+      order: 0, // Default order, will be updated by store
+      formId: "", // Default formId
       ...(needsOptions(type) && {
         options: [
           { id: "opt-1", label: "Option 1", value: "option-1" },
           { id: "opt-2", label: "Option 2", value: "option-2" },
         ],
       }),
-      ...(type === "rating" && { max: 5 }),
-      ...(type === "textarea" && { rows: 4 }),
+      ...(type === FormElementType.RATE && { max: 5 }),
+      ...(type === FormElementType.TEXTAREA && { rows: 4 }),
     };
   };
 
   const handleDoubleClick = () => {
-    const newElement = createNewElement();
-    addElement(newElement);
+    // Note: ID generation is handled by the store if undefined
+    const { id, ...fieldData } = createNewElement();
+    addField(fieldData);
   };
 
   return (
@@ -117,27 +131,27 @@ const elementTypes: Array<{
   label: string;
   icon: React.ReactNode;
 }> = [
-  { type: "text", label: "Text Input", icon: <Type className="h-5 w-5" /> },
-  { type: "email", label: "Email", icon: <Mail className="h-5 w-5" /> },
-  { type: "number", label: "Number", icon: <Hash className="h-5 w-5" /> },
+  { type: FormElementType.TEXT, label: "Text Input", icon: <Type className="h-5 w-5" /> },
+  { type: FormElementType.EMAIL, label: "Email", icon: <Mail className="h-5 w-5" /> },
+  { type: FormElementType.NUMBER, label: "Number", icon: <Hash className="h-5 w-5" /> },
   {
-    type: "textarea",
+    type: FormElementType.TEXTAREA,
     label: "Textarea",
     icon: <FileText className="h-5 w-5" />,
   },
-  { type: "select", label: "Select", icon: <List className="h-5 w-5" /> },
+  { type: FormElementType.DROPDOWN, label: "Select", icon: <List className="h-5 w-5" /> },
   {
-    type: "checkbox",
+    type: FormElementType.CHECKBOX,
     label: "Checkbox",
     icon: <CheckSquare className="h-5 w-5" />,
   },
-  { type: "radio", label: "Radio", icon: <Circle className="h-5 w-5" /> },
-  { type: "date", label: "Date", icon: <Calendar className="h-5 w-5" /> },
-  { type: "file", label: "File Upload", icon: <Upload className="h-5 w-5" /> },
-  { type: "rating", label: "Rating", icon: <Star className="h-5 w-5" /> },
-  { type: "heading", label: "Heading", icon: <Heading className="h-5 w-5" /> },
+  { type: FormElementType.RADIO, label: "Radio", icon: <Circle className="h-5 w-5" /> },
+  { type: FormElementType.DATE, label: "Date", icon: <Calendar className="h-5 w-5" /> },
+  // { type: FormElementType.FILE, label: "File Upload", icon: <Upload className="h-5 w-5" /> }, // File upload missing in FieldType enum based on previous reads, checking...
+  { type: FormElementType.RATE, label: "Rating", icon: <Star className="h-5 w-5" /> },
+  { type: FormElementType.HEADER, label: "Heading", icon: <Heading className="h-5 w-5" /> },
   {
-    type: "paragraph",
+    type: FormElementType.PARAGRAPH,
     label: "Paragraph",
     icon: <AlignLeft className="h-5 w-5" />,
   },

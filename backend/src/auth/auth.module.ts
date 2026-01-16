@@ -8,8 +8,11 @@ import { JwtStrategy } from './jwt.strategy';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { RolesGuard } from './roles.guard';
 
+import { EventsModule } from '../events/events.module';
+
 @Module({
   imports: [
+    EventsModule,
     PassportModule,
     JwtModule.registerAsync({
       inject: [ConfigService],

@@ -1,7 +1,7 @@
 "use client";
 
 import { MOCK_SUBMISSIONS } from "@/lib/mock-data";
-import { FormSubmission } from "@/types/form";
+
 import {
   Table,
   TableBody,
@@ -12,6 +12,13 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+
+interface MockSubmission {
+  id: string;
+  submittedAt: string;
+  device: string;
+  data: Record<string, string>;
+}
 import { Eye } from "lucide-react";
 
 export default function SubmissionsTable() {
@@ -27,7 +34,7 @@ export default function SubmissionsTable() {
   };
 
   // Get all unique keys from submission data to create dynamic columns
-  const getAllDataKeys = (submissions: FormSubmission[]): string[] => {
+  const getAllDataKeys = (submissions: MockSubmission[]): string[] => {
     const keysSet = new Set<string>();
     submissions.forEach((submission) => {
       Object.keys(submission.data).forEach((key) => keysSet.add(key));
@@ -35,7 +42,7 @@ export default function SubmissionsTable() {
     return Array.from(keysSet).sort();
   };
 
-  const dataKeys = getAllDataKeys(MOCK_SUBMISSIONS);
+  const dataKeys = getAllDataKeys(MOCK_SUBMISSIONS as unknown as MockSubmission[]);
 
   // Format key for display (capitalize, add spaces)
   const formatKey = (key: string): string => {
@@ -60,7 +67,7 @@ export default function SubmissionsTable() {
         </TableHeader>
         <TableBody>
           {MOCK_SUBMISSIONS.length > 0 ? (
-            MOCK_SUBMISSIONS.map((submission: FormSubmission) => (
+            (MOCK_SUBMISSIONS as unknown as MockSubmission[]).map((submission: MockSubmission) => (
               <TableRow key={submission.id}>
                 <TableCell className="font-medium">
                   {formatDate(submission.submittedAt)}

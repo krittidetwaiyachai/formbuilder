@@ -1,6 +1,7 @@
 export default {
   "dashboard.welcome": "Welcome back, {{username}}",
   "dashboard.welcome_default": "Welcome back, Creator",
+  "dashboard.welcome_back": "Welcome back",
   "dashboard.create_form": "Create New Form",
   "dashboard.search_placeholder": "Search forms...",
   "dashboard.loading": "Loading your dashboard...",
@@ -11,6 +12,9 @@ export default {
   "dashboard.filters.archived": "ARCHIVED",
   
   "dashboard.folders": "Folders",
+  "dashboard.move_to_folder": "Move to Folder",
+  "dashboard.folder.all": "All",
+  "dashboard.folder.ungrouped": "Ungrouped",
   "dashboard.new_folder": "New Folder",
   "dashboard.all_forms": "All Forms",
   "dashboard.ungrouped_forms": "Forms",
@@ -19,6 +23,7 @@ export default {
   "dashboard.empty.no_search": "We couldn't find any forms matching your search.",
   "dashboard.empty.no_forms": "You haven't created any forms yet. Start your journey now!",
   "dashboard.empty.create_first": "Create your first form",
+  "dashboard.empty.description": "Click the button above to create your first form.",
   
   "dashboard.form.responses": "response",
   "dashboard.form.responses_plural": "responses",
@@ -59,6 +64,8 @@ export default {
   "dashboard.toast.link_copied": "Link copied to clipboard!",
   "dashboard.toast.folder_created": "Folder created successfully.",
   "dashboard.toast.folder_deleted": "Folder deleted successfully.",
+  "dashboard.toast.moved": "Form moved successfully.",
+  "dashboard.toast.moved_desc": "The form has been moved to the new folder.",
   "dashboard.toast.error": "Error",
   "dashboard.toast.error_create": "Cannot create form at this moment.",
   "dashboard.toast.error_delete": "Failed to delete form. Please try again.",
@@ -95,5 +102,23 @@ export default {
   "dashboard.form.statistics": "Statistics",
   "dashboard.form.timeline": "Timeline",
   "dashboard.form.created": "Created",
-  "dashboard.form.last_updated": "Last Updated"
+  "dashboard.form.last_updated": "Last Updated",
+  
+  "dashboard.filters.title": "Filter & Sort",
+  "dashboard.filters.status": "Status",
+  "dashboard.filters.apply": "Show Results",
+  "dashboard.sort.title": "Sort By",
+  "dashboard.sort.newest": "Newest",
+  "dashboard.sort.oldest": "Oldest",
+  "dashboard.sort.alphabetical": "A-Z",
+  
+  "dashboard.folder.expand": "Expand",
+  "dashboard.folder.collapse": "Collapse",
+  "dashboard.folder.actions": "Actions",
+  "dashboard.folder.empty": "This folder is empty",
+  "dashboard.folder.count": "folder",
+  "dashboard.folder.count_plural": "folders",
+  "dashboard.modal.close": "Close",
+  "dashboard.modal.creating": "Creating...",
+  "dashboard.toast.error_folder_create": "Failed to create folder. Please try again."
 };

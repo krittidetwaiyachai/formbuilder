@@ -1,11 +1,19 @@
 "use client";
 
 import { MOCK_USER_FORMS } from "@/lib/mock-data";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Pencil, BarChart3, Plus } from "lucide-react";
-import { FormSchema } from "@/types/form";
+import { Plus, Pencil, BarChart3 } from "lucide-react";
+// import { useRouter } from "next/navigation"; // Unused
+
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export default function DashboardGrid() {
   const formatDate = (dateString: string) => {
@@ -37,7 +45,7 @@ export default function DashboardGrid() {
       </Card>
 
       {/* Form Cards */}
-      {MOCK_USER_FORMS.map((form: FormSchema) => (
+      {MOCK_USER_FORMS.map((form: any) => (
         <Card
           key={form.id}
           className="hover:shadow-lg transition-shadow flex flex-col"
@@ -57,14 +65,14 @@ export default function DashboardGrid() {
           <CardContent className="flex-1">
             <div className="flex items-center gap-2 mb-4">
               <Badge
-                variant={form.status === "published" ? "default" : "secondary"}
+                variant={form.status === "PUBLISHED" ? "default" : "secondary"}
                 className={
-                  form.status === "published"
+                  form.status === "PUBLISHED"
                     ? "bg-green-500 hover:bg-green-600"
                     : ""
                 }
               >
-                {form.status === "published" ? "Published" : "Draft"}
+                {form.status === "PUBLISHED" ? "Published" : "Draft"}
               </Badge>
             </div>
             <div className="space-y-2 text-sm">

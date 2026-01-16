@@ -2,6 +2,7 @@ import React, { useState, useRef, useCallback } from 'react';
 import { Field } from '@/types';
 import { ChevronDown, Plus, X, GripVertical } from 'lucide-react';
 import { useFormStore } from '@/store/formStore';
+import { useTranslation } from 'react-i18next';
 
 interface DropdownFieldProps {
   field: Field;
@@ -18,11 +19,12 @@ interface DropdownFieldProps {
 
 export const DropdownField: React.FC<DropdownFieldProps> = ({ 
   field, 
-  fieldStyle, 
+  fieldStyle,
   disabledClass = "opacity-60 cursor-pointer",
   updateField: propUpdateField,
   isSelected: propIsSelected
 }) => {
+  const { t } = useTranslation();
   const { updateField: storeUpdateField, selectedFieldId } = useFormStore();
   const updateField = propUpdateField || storeUpdateField;
   const isSelected = propIsSelected !== undefined ? propIsSelected : (selectedFieldId === field.id);
@@ -192,7 +194,7 @@ export const DropdownField: React.FC<DropdownFieldProps> = ({
   const rows = field.validation?.rows;
   const showAsList = isMultiple || (rows && rows > 1);
 
-  if (isSelected && updateField) {
+  if (isSelected) {
     return (
       <div className="w-full space-y-2" onClick={(e) => e.stopPropagation()}>
         <div 
@@ -304,7 +306,7 @@ export const DropdownField: React.FC<DropdownFieldProps> = ({
         <ChevronDown className={`h-5 w-5 ${fieldStyle.iconColor} opacity-80`} />
       </div>
       <div className={`w-full px-4 py-3.5 border ${fieldStyle.inputBorder} rounded-xl bg-pink-50/30 text-black text-base shadow-sm transition-all duration-300 ${disabledClass} pointer-events-none group-hover/field:bg-white group-hover/field:shadow-md flex items-center justify-between`}>
-        <span className="text-gray-500">{field.placeholder || 'Select an option...'}</span>
+        <span className="text-gray-500">{field.placeholder || t('builder.placeholder.dropdown')}</span>
         {options.length > 0 && (
           <span className="text-xs text-gray-400 mr-6">{options.length} options</span>
         )}

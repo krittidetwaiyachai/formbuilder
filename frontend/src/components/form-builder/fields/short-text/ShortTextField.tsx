@@ -1,6 +1,7 @@
 import React from 'react';
 import { Field } from '@/types';
 import { Type } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface ShortTextFieldProps {
   field: Field;
@@ -14,6 +15,7 @@ interface ShortTextFieldProps {
 }
 
 export const ShortTextField: React.FC<ShortTextFieldProps> = ({ field, fieldStyle, disabledClass = "opacity-60 cursor-pointer" }) => {
+  const { t } = useTranslation();
   const { hoverText, width, customWidth } = field.options || {};
 
   return (
@@ -23,7 +25,7 @@ export const ShortTextField: React.FC<ShortTextFieldProps> = ({ field, fieldStyl
       </div>
       <input
         type="text"
-        placeholder={field.placeholder || 'Enter text...'}
+        placeholder={field.placeholder || t('builder.placeholder.short_text')}
         readOnly
         tabIndex={-1}
         style={width === 'FIXED' && customWidth ? { maxWidth: `${customWidth}px` } : {}}

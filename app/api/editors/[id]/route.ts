@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { dataStore } from "@/lib/data-store";
+import { Form } from "@/types";
 import { ActiveEditor } from "@/types/collaboration";
 
-// GET /api/editors/[id] - Get active editors for a form
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const form = dataStore.getForm(params.id);
+    const form = dataStore.forms.find((f: Form) => f.id === params.id);
     
     if (!form) {
       return NextResponse.json(
@@ -17,7 +17,7 @@ export async function GET(
       );
     }
     
-    const editors = dataStore.getActiveEditors(params.id);
+    const editors = dataStore.activeEditors.filter((e: ActiveEditor) => (e as any).formId === params.id);
     
     return NextResponse.json({ editors }, { status: 200 });
   } catch (error) {
@@ -29,7 +29,6 @@ export async function GET(
   }
 }
 
-// POST /api/editors/[id] - Update or add an active editor
 export async function POST(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -37,7 +36,7 @@ export async function POST(
   try {
     const body = await request.json();
     
-    const form = dataStore.getForm(params.id);
+    const form = dataStore.forms.find((f: Form) => f.id === params.id);
     if (!form) {
       return NextResponse.json(
         { error: "Form not found" },
@@ -45,16 +44,24 @@ export async function POST(
       );
     }
     
-    const editor: ActiveEditor = {
+    const editor: ActiveEditor & { formId: string } = {
+      formId: params.id,
       userId: body.userId,
       userName: body.userName,
-      userAvatar: body.userAvatar,
       userColor: body.userColor || `#${Math.floor(Math.random()*16777215).toString(16)}`,
       isActive: true,
       lastSeen: new Date().toISOString(),
     };
     
-    dataStore.updateActiveEditor(params.id, editor);
+    const existingIndex = dataStore.activeEditors.findIndex(
+      (e: ActiveEditor) => (e as any).formId === params.id && e.userId === body.userId
+    );
+    
+    if (existingIndex >= 0) {
+      dataStore.activeEditors[existingIndex] = editor;
+    } else {
+      dataStore.activeEditors.push(editor as any);
+    }
     
     return NextResponse.json({ editor }, { status: 200 });
   } catch (error) {
@@ -66,7 +73,6 @@ export async function POST(
   }
 }
 
-// DELETE /api/editors/[id] - Remove an active editor
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -82,7 +88,7 @@ export async function DELETE(
       );
     }
     
-    const form = dataStore.getForm(params.id);
+    const form = dataStore.forms.find((f: Form) => f.id === params.id);
     if (!form) {
       return NextResponse.json(
         { error: "Form not found" },
@@ -90,7 +96,13 @@ export async function DELETE(
       );
     }
     
-    dataStore.removeActiveEditor(params.id, userId);
+    const editorIndex = dataStore.activeEditors.findIndex(
+      (e: ActiveEditor) => (e as any).formId === params.id && e.userId === userId
+    );
+    
+    if (editorIndex >= 0) {
+      dataStore.activeEditors.splice(editorIndex, 1);
+    }
     
     return NextResponse.json(
       { message: "Editor removed successfully" },
@@ -104,4 +116,3 @@ export async function DELETE(
     );
   }
 }
-

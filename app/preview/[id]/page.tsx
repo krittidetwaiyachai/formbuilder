@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import DeviceFrame from "@/components/preview/DeviceFrame";
+import DeviceFrame from "@/components/form-preview/DeviceFrame";
 import FormElementRenderer from "@/components/builder/FormElementRenderer";
 import { useBuilderStore } from "@/hooks/useBuilderStore";
 import { Monitor, Tablet, Smartphone, ArrowLeft } from "lucide-react";
@@ -47,7 +47,28 @@ export default function PreviewPage({ params }: { params: { id: string } }) {
   const [device, setDevice] = useState<"desktop" | "tablet" | "mobile">(
     "desktop"
   );
-  const { elements, theme } = useBuilderStore();
+  const { currentForm } = useBuilderStore();
+  const elements = currentForm?.fields || [];
+  
+  const theme: {
+    primaryColor: string;
+    backgroundColor: string;
+    backgroundType: 'color' | 'image' | 'gradient';
+    textColor: string;
+    buttonStyle: 'filled' | 'outlined' | 'ghost';
+    borderRadius: string;
+    fontFamily: string;
+    backgroundImage?: string;
+  } | undefined = currentForm?.settings ? {
+    primaryColor: currentForm.settings.primaryColor || '#0f172a',
+    backgroundColor: currentForm.settings.backgroundColor || '#ffffff',
+    backgroundType: currentForm.settings.backgroundType || 'color',
+    textColor: currentForm.settings.textColor || '#0f172a',
+    buttonStyle: 'filled',
+    borderRadius: currentForm.settings.borderRadius || 'medium',
+    fontFamily: currentForm.settings.fontFamily || 'Inter',
+    backgroundImage: currentForm.settings.backgroundImage,
+  } : undefined;
   
   // In a real app, you'd fetch the form schema from an API
   // For now, we'll use the store or mock data
@@ -57,6 +78,8 @@ export default function PreviewPage({ params }: { params: { id: string } }) {
   const previewElements = elements.length > 0 ? elements : [
     {
       id: "1",
+      formId: params.id,
+      order: 0,
       type: "heading" as const,
       label: "",
       required: false,
@@ -64,6 +87,8 @@ export default function PreviewPage({ params }: { params: { id: string } }) {
     },
     {
       id: "2",
+      formId: params.id,
+      order: 1,
       type: "text" as const,
       label: "Full Name",
       placeholder: "Enter your full name",
@@ -72,6 +97,8 @@ export default function PreviewPage({ params }: { params: { id: string } }) {
     },
     {
       id: "3",
+      formId: params.id,
+      order: 2,
       type: "email" as const,
       label: "Email Address",
       placeholder: "your.email@example.com",
@@ -79,6 +106,8 @@ export default function PreviewPage({ params }: { params: { id: string } }) {
     },
     {
       id: "4",
+      formId: params.id,
+      order: 3,
       type: "textarea" as const,
       label: "Message",
       placeholder: "Enter your message here...",
@@ -87,6 +116,8 @@ export default function PreviewPage({ params }: { params: { id: string } }) {
     },
     {
       id: "5",
+      formId: params.id,
+      order: 4,
       type: "select" as const,
       label: "Country",
       required: true,
@@ -161,7 +192,7 @@ export default function PreviewPage({ params }: { params: { id: string } }) {
           }}
         >
           {previewElements.map((element) => (
-            <FormElementRenderer key={element.id} element={element} />
+            <FormElementRenderer key={element.id} element={element as any} />
           ))}
           <div className="pt-4">
             <button

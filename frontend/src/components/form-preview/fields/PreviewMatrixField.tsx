@@ -28,10 +28,10 @@ export const PreviewMatrixField: React.FC<PreviewMatrixFieldProps> = ({
   const inputType = field.options?.inputType || 'radio';
   
   // Watch the entire field value
-  const currentValue = watch(field.id) || {};
-  const fieldName = `field_${field.id}`; // Consistent naming convention if needed, though we use field.id directly for matrix object
+  const fieldName = `field_${field.id}`; 
+  const currentValue = watch(fieldName) || {};
 
-  const handleCellChange = (rowId: string, colId: string, colLabel: string) => {
+  const handleCellChange = (rowId: string, colLabel: string) => {
     const newValue = { ...currentValue };
 
     if (inputType === 'checkbox') {
@@ -51,7 +51,7 @@ export const PreviewMatrixField: React.FC<PreviewMatrixFieldProps> = ({
       newValue[rowId] = colLabel;
     }
 
-    setValue(field.id, newValue, { shouldValidate: true, shouldDirty: true });
+    setValue(fieldName, newValue, { shouldValidate: true, shouldDirty: true });
   };
 
   const isChecked = (rowId: string, colLabel: string) => {
@@ -113,13 +113,12 @@ export const PreviewMatrixField: React.FC<PreviewMatrixFieldProps> = ({
                     </td>
                     {columns.map((col: any) => (
                       <td key={col.id} className="px-4 py-3.5 whitespace-nowrap text-center">
-                      <td key={col.id} className="px-4 py-3.5 whitespace-nowrap text-center">
                         <div className="relative inline-flex items-center justify-center cursor-pointer p-1">
                           <input
                             type={inputType}
                             name={`${field.id}_${row.id}`}
                             checked={isChecked(row.id, col.label)}
-                            onChange={() => handleCellChange(row.id, col.id, col.label)}
+                            onChange={() => handleCellChange(row.id, col.label)}
                             className={`
                               w-5 h-5 
                               border-2 border-gray-300 
@@ -140,7 +139,7 @@ export const PreviewMatrixField: React.FC<PreviewMatrixFieldProps> = ({
                           )}
                         </div>
                       </td>
-                      </td>
+
                     ))}
                   </tr>
                 ))}
@@ -152,7 +151,7 @@ export const PreviewMatrixField: React.FC<PreviewMatrixFieldProps> = ({
         {/* Hidden input to register with react-hook-form validation */}
         <input 
           type="hidden" 
-          {...register(field.id, { 
+          {...register(`field_${field.id}`, { 
             required: field.required,
             validate: (value) => {
               if (!field.required) return true;
@@ -175,12 +174,12 @@ export const PreviewMatrixField: React.FC<PreviewMatrixFieldProps> = ({
           })} 
         />
 
-        {errors[field.id] && (
+        {errors[fieldName] && (
           <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
               <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
             </svg>
-            {errors[field.id].message}
+            {errors[fieldName].message}
           </p>
         )}
       </div>

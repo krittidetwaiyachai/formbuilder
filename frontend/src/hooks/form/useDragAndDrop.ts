@@ -1,23 +1,26 @@
 import React, { useState } from 'react';
 import { DropResult, DragStart } from '@hello-pangea/dnd';
 import { Field, FieldType, Form } from '@/types';
+import { generateUUID } from '@/utils/uuid';
 
 interface UseFormDragAndDropProps {
   id: string;
   activeFields: Field[];
   setActiveFields: React.Dispatch<React.SetStateAction<Field[]>>;
-  currentForm: Form | null;
+
   updateForm: (updates: Partial<Form>) => void;
   selectField: (fieldId: string) => void;
+  currentPage: number;
 }
 
 export function useFormDragAndDrop({
   id,
   activeFields,
   setActiveFields,
-  currentForm,
+
   updateForm,
   selectField,
+  currentPage,
 }: UseFormDragAndDropProps) {
 
   const [isDragging, setIsDragging] = useState(false);
@@ -29,7 +32,7 @@ export function useFormDragAndDrop({
     activeFieldsRef.current = activeFields;
   }, [activeFields]);
 
-  const onDragStart = (start: DragStart) => {
+  const onDragStart = (_start: DragStart) => {
     setIsDragging(true);
   };
 
@@ -49,7 +52,7 @@ export function useFormDragAndDrop({
              if (type === FieldType.GROUP) return;
 
              const newField: Field = {
-                id: crypto.randomUUID(),
+                id: generateUUID(),
                 formId: id,
                 type: type,
                 label: getLabelForType(type),
@@ -63,9 +66,9 @@ export function useFormDragAndDrop({
                 newField.options = {
                     subLabel: 'Sublabel',
                     options: [
-                        { id: crypto.randomUUID(), label: 'Option 1', value: 'Option 1' },
-                        { id: crypto.randomUUID(), label: 'Option 2', value: 'Option 2' },
-                        { id: crypto.randomUUID(), label: 'Option 3', value: 'Option 3' },
+                        { id: generateUUID(), label: 'Option 1', value: 'Option 1' },
+                        { id: generateUUID(), label: 'Option 2', value: 'Option 2' },
+                        { id: generateUUID(), label: 'Option 3', value: 'Option 3' },
                     ]
                 };
              } else if (
@@ -140,10 +143,36 @@ export function useFormDragAndDrop({
     const isFromGroup = source.droppableId.startsWith('GROUP-');
     const isFromCanvas = source.droppableId === 'CANVAS';
 
+    // Helper to get global index offset based on current Page
+    const getPageOffset = () => {
+        if (currentPage <= 0) return 0;
+        
+        // Find index after the (currentPage)-th PAGE_BREAK
+        // e.g. Page 1 (index 1) starts after 1st PAGE_BREAK
+        let foundBreaks = 0;
+        for (let i = 0; i < currentFields.length; i++) {
+            if (currentFields[i].type === FieldType.PAGE_BREAK) {
+                foundBreaks++;
+                if (foundBreaks === currentPage) {
+                    return i + 1;
+                }
+            }
+        }
+        return currentFields.length; // Fallback (append to end if not found)
+    };
+
     if (isFromCanvas && isToCanvas) {
+      const pageOffset = getPageOffset();
       const newFields = Array.from(currentFields);
-      const [movedField] = newFields.splice(source.index, 1);
-      newFields.splice(destination.index, 0, movedField);
+      
+      // Source Index Logic:
+      // If we are dragging from CANVAS on Page X, the source.index is also relative to Page X!
+      // So we need to convert source.index to global index as well.
+      const globalSourceIndex = pageOffset + source.index;
+      const globalDestinationIndex = pageOffset + destination.index;
+
+      const [movedField] = newFields.splice(globalSourceIndex, 1);
+      newFields.splice(globalDestinationIndex, 0, movedField);
       
       const ordered = newFields.map((f, i) => ({ ...f, order: i }));
       
@@ -156,7 +185,7 @@ export function useFormDragAndDrop({
        const type = draggableId.replace('sidebar-', '') as FieldType;
        
        const newField: Field = {
-           id: crypto.randomUUID(),
+           id: generateUUID(),
            formId: id,
            type: type,
            label: getLabelForType(type),
@@ -169,9 +198,9 @@ export function useFormDragAndDrop({
             newField.options = {
                 subLabel: '',
                 options: [
-                    { id: crypto.randomUUID(), label: 'Option 1', value: 'Option 1' },
-                    { id: crypto.randomUUID(), label: 'Option 2', value: 'Option 2' },
-                    { id: crypto.randomUUID(), label: 'Option 3', value: 'Option 3' },
+                    { id: generateUUID(), label: 'Option 1', value: 'Option 1' },
+                    { id: generateUUID(), label: 'Option 2', value: 'Option 2' },
+                    { id: generateUUID(), label: 'Option 3', value: 'Option 3' },
                 ]
             };
        } else if (
@@ -188,8 +217,14 @@ export function useFormDragAndDrop({
        }
 
        // Insert Standard Field
+       const pageOffset = getPageOffset();
+       const globalDestinationIndex = pageOffset + destination.index;
+       
+       newField.order = globalDestinationIndex; // Temporarily assign
+
        const newFields = Array.from(currentFields);
-       newFields.splice(destination.index, 0, newField);
+       // Ensure insertion index is within bounds (should be ok with splice)
+       newFields.splice(globalDestinationIndex, 0, newField);
        
        const ordered = newFields.map((f, i) => ({ ...f, order: i }));
        
@@ -208,7 +243,7 @@ export function useFormDragAndDrop({
       }
 
       const newField: Field = {
-        id: crypto.randomUUID(),
+        id: generateUUID(),
         formId: id,
         type: type,
         label: getLabelForType(type),
@@ -223,9 +258,9 @@ export function useFormDragAndDrop({
         newField.options = {
           subLabel: 'Sublabel',
           options: [
-            { id: crypto.randomUUID(), label: 'Option 1', value: 'Option 1' },
-            { id: crypto.randomUUID(), label: 'Option 2', value: 'Option 2' },
-            { id: crypto.randomUUID(), label: 'Option 3', value: 'Option 3' },
+            { id: generateUUID(), label: 'Option 1', value: 'Option 1' },
+            { id: generateUUID(), label: 'Option 2', value: 'Option 2' },
+            { id: generateUUID(), label: 'Option 3', value: 'Option 3' },
           ]
         };
       } else if (
@@ -241,10 +276,7 @@ export function useFormDragAndDrop({
         newField.options = { subLabel: 'Sublabel' };
       }
 
-      // 1. Get existing children of the group
-      const existingGroupChildren = currentFields
-          .filter(f => f.groupId === groupId)
-          .sort((a, b) => a.order - b.order);
+
 
       // 1. Find the exact global insertion index
       const groupChildren = currentFields

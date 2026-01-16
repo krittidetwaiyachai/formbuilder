@@ -1,14 +1,16 @@
 import {
   Injectable,
   UnauthorizedException,
-  ConflictException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
 import { PrismaService } from '../prisma/prisma.service';
 import { LoginDto } from './dto/login.dto';
 
 import { ConfigService } from '@nestjs/config';
+
+import { EventsGateway } from '../events/events.gateway';
 
 @Injectable()
 export class AuthService {
@@ -19,12 +21,17 @@ export class AuthService {
     private prisma: PrismaService,
     private jwtService: JwtService,
     private configService: ConfigService,
+    private eventsGateway: EventsGateway,
   ) {
     const clientId = this.configService.get<string>('GOOGLE_CLIENT_ID');
     if (clientId) {
       const { OAuth2Client } = require('google-auth-library');
       this.googleClient = new OAuth2Client(clientId);
     }
+  }
+
+  private generateSessionToken(): string {
+    return crypto.randomBytes(32).toString('hex');
   }
 
   async loginWithGoogle(token: string) {
@@ -50,16 +57,22 @@ export class AuthService {
     });
 
     if (user) {
-      // Update googleId if not set
-      if (!user.googleId) {
-        user = await this.prisma.user.update({
-          where: { id: user.id },
-          data: { googleId, photoUrl, provider: 'google' },
-          include: { role: true },
-        });
-      }
+      // Kick existing sessions
+      this.eventsGateway.server.to(`user_${user.id}`).emit('force_logout');
+    
+      const sessionToken = this.generateSessionToken();
+      user = await this.prisma.user.update({
+        where: { id: user.id },
+        data: { 
+          googleId: user.googleId || googleId, 
+          photoUrl, 
+          provider: 'google',
+          sessionToken,
+          lastActiveAt: new Date(),
+        },
+        include: { role: true },
+      });
     } else {
-      // Create new user
       const defaultRole = await this.prisma.role.findUnique({
         where: { name: 'EDITOR' },
       });
@@ -67,6 +80,8 @@ export class AuthService {
       if (!defaultRole) {
         throw new Error('Default role not found');
       }
+
+      const sessionToken = this.generateSessionToken();
 
       user = await this.prisma.user.create({
         data: {
@@ -77,6 +92,8 @@ export class AuthService {
           photoUrl,
           provider: 'google',
           roleId: defaultRole.id,
+          sessionToken,
+          lastActiveAt: new Date(),
         },
         include: { role: true },
       });
@@ -86,6 +103,7 @@ export class AuthService {
       sub: user.id,
       email: user.email,
       role: user.role.name,
+      sessionToken: user.sessionToken,
     };
 
     return {
@@ -101,12 +119,9 @@ export class AuthService {
     };
   }
 
-
-
   async login(loginDto: LoginDto) {
     const { email, password } = loginDto;
 
-    // Find user
     const user = await this.prisma.user.findUnique({
       where: { email },
       include: { role: true },
@@ -116,18 +131,27 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    // Verify password
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    // Generate token
+    // Kick existing sessions
+    this.eventsGateway.server.to(`user_${user.id}`).emit('force_logout');
+
+    const sessionToken = this.generateSessionToken();
+
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: { sessionToken, lastActiveAt: new Date() },
+    });
+
     const payload = {
       sub: user.id,
       email: user.email,
       role: user.role.name,
+      sessionToken,
     };
 
     return {
@@ -140,6 +164,15 @@ export class AuthService {
         role: user.role.name,
       },
     };
+  }
+
+  async validateSession(userId: string, sessionToken: string): Promise<boolean> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { sessionToken: true },
+    });
+
+    return user?.sessionToken === sessionToken;
   }
 
   async validateUser(userId: string) {
@@ -161,4 +194,5 @@ export class AuthService {
     };
   }
 }
+
 

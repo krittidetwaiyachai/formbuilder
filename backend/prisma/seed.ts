@@ -103,6 +103,126 @@ async function main() {
     },
   });
 
+  const editor1 = await prisma.user.upsert({
+    where: { email: 'editor1@example.com' },
+    update: {},
+    create: {
+      email: 'editor1@example.com',
+      password: hashedPassword,
+      firstName: 'Alice',
+      lastName: 'Johnson',
+      roleId: editorRole.id,
+    },
+  });
+
+  const editor2 = await prisma.user.upsert({
+    where: { email: 'editor2@example.com' },
+    update: {},
+    create: {
+      email: 'editor2@example.com',
+      password: hashedPassword,
+      firstName: 'Bob',
+      lastName: 'Smith',
+      roleId: editorRole.id,
+    },
+  });
+
+  const editor3 = await prisma.user.upsert({
+    where: { email: 'editor3@example.com' },
+    update: {},
+    create: {
+      email: 'editor3@example.com',
+      password: hashedPassword,
+      firstName: 'Charlie',
+      lastName: 'Brown',
+      roleId: editorRole.id,
+    },
+  });
+
+  const editor4 = await prisma.user.upsert({
+    where: { email: 'editor4@example.com' },
+    update: {},
+    create: {
+      email: 'editor4@example.com',
+      password: hashedPassword,
+      firstName: 'Diana',
+      lastName: 'Prince',
+      roleId: editorRole.id,
+    },
+  });
+
+  const editor5 = await prisma.user.upsert({
+    where: { email: 'editor5@example.com' },
+    update: {},
+    create: {
+      email: 'editor5@example.com',
+      password: hashedPassword,
+      firstName: 'Edward',
+      lastName: 'Norton',
+      roleId: editorRole.id,
+    },
+  });
+
+  const editor6 = await prisma.user.upsert({
+    where: { email: 'editor6@example.com' },
+    update: {},
+    create: {
+      email: 'editor6@example.com',
+      password: hashedPassword,
+      firstName: 'Fiona',
+      lastName: 'Green',
+      roleId: editorRole.id,
+    },
+  });
+
+  const editor7 = await prisma.user.upsert({
+    where: { email: 'editor7@example.com' },
+    update: {},
+    create: {
+      email: 'editor7@example.com',
+      password: hashedPassword,
+      firstName: 'George',
+      lastName: 'Miller',
+      roleId: editorRole.id,
+    },
+  });
+
+  const editor8 = await prisma.user.upsert({
+    where: { email: 'editor8@example.com' },
+    update: {},
+    create: {
+      email: 'editor8@example.com',
+      password: hashedPassword,
+      firstName: 'Helen',
+      lastName: 'Davis',
+      roleId: editorRole.id,
+    },
+  });
+
+  const editor9 = await prisma.user.upsert({
+    where: { email: 'editor9@example.com' },
+    update: {},
+    create: {
+      email: 'editor9@example.com',
+      password: hashedPassword,
+      firstName: 'Ivan',
+      lastName: 'Rodriguez',
+      roleId: editorRole.id,
+    },
+  });
+
+  const editor10 = await prisma.user.upsert({
+    where: { email: 'editor10@example.com' },
+    update: {},
+    create: {
+      email: 'editor10@example.com',
+      password: hashedPassword,
+      firstName: 'Julia',
+      lastName: 'Wilson',
+      roleId: editorRole.id,
+    },
+  });
+
   // ========================================
   // TEST FORMS FOR EDITOR@EXAMPLE.COM
   // ========================================
@@ -1498,11 +1618,77 @@ async function main() {
     },
   });
 
+  // ========================================
+  // COLLABORATION DEMO FORM WITH 10 EDITORS
+  // ========================================
+  console.log('Creating collaboration demo form with 10 collaborators...');
+
+  const collaborationForm = await prisma.form.create({
+    data: {
+      title: '[TEST] Collaboration Demo - 10 Editors',
+      description: 'ฟอร์มตัวอย่างที่มี 10 คนแก้ไขร่วมกัน',
+      status: FormStatus.PUBLISHED,
+      isQuiz: false,
+      createdById: editor.id,
+      collaborators: {
+        connect: [
+          { id: editor1.id },
+          { id: editor2.id },
+          { id: editor3.id },
+          { id: editor4.id },
+          { id: editor5.id },
+          { id: editor6.id },
+          { id: editor7.id },
+          { id: editor8.id },
+          { id: editor9.id },
+          { id: editor10.id },
+        ],
+      },
+      fields: {
+        create: [
+          {
+            type: FieldType.HEADER,
+            label: 'ทีมงาน 10 คน',
+            required: false,
+            order: 0,
+          },
+          {
+            type: FieldType.PARAGRAPH,
+            label: 'ฟอร์มนี้แก้ไขโดยทีมงาน 10 คน: Alice, Bob, Charlie, Diana, Edward, Fiona, George, Helen, Ivan, และ Julia',
+            required: false,
+            order: 1,
+          },
+          {
+            type: FieldType.TEXT,
+            label: 'ชื่อ',
+            required: true,
+            order: 2,
+          },
+          {
+            type: FieldType.EMAIL,
+            label: 'อีเมล',
+            required: true,
+            order: 3,
+          },
+          {
+            type: FieldType.TEXTAREA,
+            label: 'ข้อเสนอแนะ',
+            required: false,
+            order: 4,
+          },
+        ],
+      },
+    },
+  });
+
+  console.log(`   ✅ Created collaboration form with 10 collaborators`);
+
   console.log('Seeding completed!');
   console.log('Login credentials:');
   console.log('   SuperAdmin: superadmin@example.com / password123');
   console.log('   Admin: admin@example.com / password123');
   console.log('   Editor: editor@example.com / password123');
+  console.log('   Editor1-10: editor1@example.com - editor10@example.com / password123');
 }
 
 main()
