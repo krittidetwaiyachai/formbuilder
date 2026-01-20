@@ -7,12 +7,15 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { BundlesService } from './bundles.service';
 import { CreateBundleDto } from './dto/create-bundle.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
+import { PermissionsGuard } from '../auth/permissions.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { Permissions } from '../auth/decorators/permissions.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { RoleType } from '@prisma/client';
 
@@ -22,14 +25,16 @@ export class BundlesController {
   constructor(private readonly bundlesService: BundlesService) {}
 
   @Post()
-  @Roles(RoleType.SUPER_ADMIN)
+  @UseGuards(PermissionsGuard)
+  @Permissions('MANAGE_BUNDLES')
   create(@CurrentUser() user: any, @Body() createBundleDto: CreateBundleDto) {
     return this.bundlesService.create(user.id, createBundleDto);
   }
 
   @Get()
-  findAll() {
-    return this.bundlesService.findAll();
+  findAll(@Query('isActive') isActive?: string) {
+    const isActiveBool = isActive === 'true' ? true : isActive === 'false' ? false : undefined;
+    return this.bundlesService.findAll(isActiveBool);
   }
 
   @Get(':id')
@@ -53,7 +58,8 @@ export class BundlesController {
   }
 
   @Patch(':id')
-  @Roles(RoleType.SUPER_ADMIN)
+  @UseGuards(PermissionsGuard)
+  @Permissions('MANAGE_BUNDLES')
   update(
     @Param('id') id: string,
     @CurrentUser() user: any,
@@ -63,7 +69,8 @@ export class BundlesController {
   }
 
   @Delete(':id')
-  @Roles(RoleType.SUPER_ADMIN)
+  @UseGuards(PermissionsGuard)
+  @Permissions('MANAGE_BUNDLES')
   remove(@Param('id') id: string) {
     return this.bundlesService.remove(id);
   }

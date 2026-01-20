@@ -107,6 +107,14 @@ export class AuthService {
       sessionToken: user.sessionToken,
     };
 
+    const rolePermissions = Array.isArray(user.role.permissions) 
+      ? user.role.permissions as string[]
+      : [];
+    const userOverrides = Array.isArray(user.permissionOverrides)
+      ? user.permissionOverrides as string[]
+      : null;
+    const effectivePermissions = userOverrides || rolePermissions;
+
     return {
       access_token: this.jwtService.sign(jwtPayload),
       user: {
@@ -116,6 +124,7 @@ export class AuthService {
         lastName: user.lastName,
         photoUrl: user.photoUrl,
         role: user.role.name,
+        permissions: effectivePermissions,
       },
     };
   }
@@ -155,6 +164,14 @@ export class AuthService {
       sessionToken,
     };
 
+    const rolePermissions = Array.isArray(user.role.permissions) 
+      ? user.role.permissions as string[]
+      : [];
+    const userOverrides = Array.isArray(user.permissionOverrides)
+      ? user.permissionOverrides as string[]
+      : null;
+    const effectivePermissions = userOverrides || rolePermissions;
+
     return {
       access_token: this.jwtService.sign(payload),
       user: {
@@ -163,6 +180,7 @@ export class AuthService {
         firstName: user.firstName,
         lastName: user.lastName,
         role: user.role.name,
+        permissions: effectivePermissions,
       },
     };
   }
@@ -186,12 +204,19 @@ export class AuthService {
       return null;
     }
 
+    const rolePermissions = Array.isArray(user.role.permissions) 
+      ? user.role.permissions 
+      : [];
+
     return {
       id: user.id,
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
       role: user.role.name,
+      isActive: user.isActive,
+      rolePermissions,
+      permissionOverrides: user.permissionOverrides,
     };
   }
 }

@@ -445,7 +445,7 @@ function FieldItem({
                                 </div>
                               </div>
                           
-                          <div className="flex-1 min-w-0 w-full max-w-full overflow-x-auto pb-3 scrollbar-visible">
+                          <div className={`flex-1 min-w-0 w-full max-w-full pb-3 scrollbar-visible ${field.type === FieldType.GROUP ? 'overflow-visible' : 'overflow-x-auto'}`}>
                             {(isOverlay || isDragging) ? (
                                 <div className="h-10 bg-gray-50 rounded border border-gray-100 flex items-center px-3 text-xs text-gray-400 font-medium select-none">
                                     {field.type === FieldType.TEXTAREA ? t('common.long_text') : field.type === FieldType.ADDRESS ? t('common.address') : `${field.type} ${t('common.field')}`}

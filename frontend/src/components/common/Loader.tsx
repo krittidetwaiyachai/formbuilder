@@ -1,13 +1,19 @@
-export default function Loader({ className = '' }: { className?: string }) {
+export default function Loader({ className = '', size = 48 }: { className?: string; size?: number | string }) {
+  const sizeStyle = typeof size === 'number' ? `${size}px` : size;
+  // Reduce font-size to scale the em-based shadows correctly. 
+  // Original was 48px size with ~16px font-size (ratio ~3).
+  // Let's use size/4 to keep it thin and elegant.
+  const fontStyle = typeof size === 'number' ? `${size / 4}px` : '12px';
+  
   return (
-    <div className={`relative inline-block ${className}`} style={{ width: '48px', height: '48px' }}>
+    <div className={`relative inline-block ${className}`} style={{ width: sizeStyle, height: sizeStyle, fontSize: fontStyle }}>
       <div 
         style={{
           transform: 'rotateZ(45deg)',
           perspective: '1000px',
           borderRadius: '50%',
-          width: '48px',
-          height: '48px',
+          width: '100%',
+          height: '100%',
           color: '#000',
           position: 'relative',
         }}
@@ -30,8 +36,8 @@ export default function Loader({ className = '' }: { className?: string }) {
           position: 'absolute',
           top: 0,
           left: 0,
-          width: '48px',
-          height: '48px',
+          width: '100%',
+          height: '100%',
           borderRadius: '50%',
           transform: 'rotateX(70deg)',
           animation: '1s loader-spin linear infinite',
@@ -42,8 +48,8 @@ export default function Loader({ className = '' }: { className?: string }) {
           position: 'absolute',
           top: 0,
           left: 0,
-          width: '48px',
-          height: '48px',
+          width: '100%',
+          height: '100%',
           borderRadius: '50%',
           color: '#6366f1',
           transform: 'rotateY(70deg)',

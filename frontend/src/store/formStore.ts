@@ -262,7 +262,11 @@ export const useFormStore = create<FormBuilderState>()(persist((set, get) => {
           // Children usually have `groupId` set.
           groupId: groupId,
           options: f.options,
-          required: false
+          validation: f.validation,
+          required: f.required ?? false,
+          placeholder: f.placeholder,
+          isPII: f.isPII ?? false,
+          shrink: f.shrink
       }));
       
       // Update orders

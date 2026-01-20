@@ -187,7 +187,7 @@ export default function PublicFormRenderer({ form, loading = false, isPreview = 
 
   if (checkingSubmission || loading) {
     return (
-      <div className="flex items-center justify-center h-full bg-gray-50">
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
         <motion.div 
           initial={{ opacity: 0 }} 
           animate={{ opacity: 1 }}

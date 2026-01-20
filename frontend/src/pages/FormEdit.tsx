@@ -815,7 +815,7 @@ export default function FormBuilderPage() {
 
               <div className="z-10">
                    <PageNavigation 
-                      fields={activeFields}
+                      fields={fieldsToRender}
                       currentPage={currentPage}
                       onPageChange={setCurrentPage}
                       onAddPage={handleAddPage}

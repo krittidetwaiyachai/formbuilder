@@ -18,6 +18,8 @@ model User {
   photoUrl     String?
   provider     String         @default("local")
   sessionToken String?
+  isActive     Boolean        @default(true)
+  permissionOverrides Json?
   lastActiveAt DateTime?
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
@@ -189,8 +191,9 @@ model Bundle {
   id               String           @id @default(uuid())
   name             String
   description      String?
+  options          Json?
   isPII            Boolean          @default(false)
-  sensitivityLevel SensitivityLevel @default(LOW)
+
   version          Int              @default(1)
   isActive         Boolean          @default(true)
   createdById      String
@@ -214,6 +217,7 @@ model BundleField {
   validation  Json?
   order       Int       @default(0)
   options     Json?
+  isPII       Boolean   @default(false)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   form        Form?     @relation(fields: [formId], references: [id], onDelete: Cascade)
@@ -272,6 +276,7 @@ enum RoleType {
   ADMIN
   EDITOR
   VIEWER
+  USER
 }
 
 enum FieldType {
@@ -299,11 +304,7 @@ enum FieldType {
   TABLE
 }
 
-enum SensitivityLevel {
-  LOW
-  MEDIUM
-  HIGH
-}
+
 
 enum FormStatus {
   DRAFT

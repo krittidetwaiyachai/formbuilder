@@ -20,6 +20,11 @@ i18n
   .init({
     resources,
     fallbackLng: 'en',
+    load: 'languageOnly',
+    detection: {
+      order: ['localStorage', 'cookie'],
+      caches: ['localStorage', 'cookie'],
+    },
     interpolation: {
       escapeValue: false
     }

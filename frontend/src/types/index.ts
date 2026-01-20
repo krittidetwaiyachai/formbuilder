@@ -37,11 +37,7 @@ export enum FormStatus {
   ARCHIVED = 'ARCHIVED',
 }
 
-export enum SensitivityLevel {
-  LOW = 'LOW',
-  MEDIUM = 'MEDIUM',
-  HIGH = 'HIGH',
-}
+
 
 export interface User {
   id: string;
@@ -242,7 +238,7 @@ export interface Bundle {
   name: string;
   description?: string;
   isPII: boolean;
-  sensitivityLevel: SensitivityLevel;
+
   version: number;
   isActive: boolean;
   fields?: BundleField[];

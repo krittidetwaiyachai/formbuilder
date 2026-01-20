@@ -11,6 +11,15 @@ import ErrorPage from './pages/ErrorPage';
 import { useInactivityLogout } from './hooks/useInactivityLogout';
 import { useSocketLogout } from './hooks/useSocketLogout';
 
+import AdminLayout from './components/layout/AdminLayout';
+import AdminProtectedRoute from './components/auth/AdminProtectedRoute';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminUsers from './pages/admin/AdminUsers';
+import AdminBundles from './pages/admin/AdminBundles';
+import AdminSettings from './pages/admin/AdminSettings';
+import BundleEditor from './pages/admin/BundleEditor';
+import RoleEditor from './pages/admin/RoleEditor';
+
 function AppContent() {
   useInactivityLogout();
   useSocketLogout();
@@ -28,6 +37,22 @@ function AppContent() {
            <Route path="forms/:id/analytics" element={<AnalyticsPage />} />
         </Route>
       </Route>
+
+      <Route path="/admin" element={<AdminLayout />}>
+        <Route element={<AdminProtectedRoute />}>
+          <Route index element={<Navigate to="/admin/dashboard" />} />
+          <Route path="dashboard" element={<AdminDashboard />} />
+          <Route path="users" element={<AdminUsers />} />
+          <Route path="bundles" element={<AdminBundles />} />
+          <Route path="settings" element={<AdminSettings />} />
+        </Route>
+      </Route>
+
+      <Route element={<AdminProtectedRoute />}>
+        <Route path="/admin/bundles/:id" element={<BundleEditor />} />
+        <Route path="/admin/roles/:id" element={<RoleEditor />} />
+      </Route>
+
       <Route path="forms/:id/preview" element={<FormPreview />} />
       <Route path="*" element={<ErrorPage code={404} />} />
     </Routes>
@@ -48,5 +73,6 @@ function App() {
 }
 
 export default App;
+
 
 

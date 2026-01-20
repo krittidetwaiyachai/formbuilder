@@ -30,6 +30,7 @@ import {
   X,
   ChevronDown,
   ChevronUp,
+  Trash2,
 } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 import {
@@ -42,6 +43,7 @@ import {
 import Loader from '@/components/common/Loader';
 import api from '@/lib/api';
 import { Form, FormResponse } from '@/types';
+import { useHasPermission } from '@/hooks/usePermissions';
 
 const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16'];
 
@@ -81,6 +83,40 @@ export default function AnalyticsPage() {
   const [selectedResponse, setSelectedResponse] = useState<FormResponse | null>(null);
   const [copySuccess, setCopySuccess] = useState<string | null>(null);
   const { toast } = useToast();
+  const hasDeleteResponses = useHasPermission('DELETE_RESPONSES');
+
+  const handleDeleteResponse = async (responseId: string) => {
+    if (!hasDeleteResponses) {
+      toast({
+        title: 'ไม่มีสิทธิ์',
+        description: 'คุณไม่มีสิทธิ์ DELETE_RESPONSES ในการลบ Response',
+        variant: 'error',
+      });
+      return;
+    }
+
+    if (!confirm('ต้องการลบ Response นี้หรือไม่? การลบจะไม่สามารถกู้คืนได้')) {
+      return;
+    }
+
+    try {
+      await api.delete(`/responses/${responseId}`);
+      setResponses((prev) => prev.filter((r) => r.id !== responseId));
+      setSelectedResponse(null);
+      toast({
+        title: 'ลบสำเร็จ',
+        description: 'Response ถูกลบแล้ว',
+        variant: 'success',
+      });
+    } catch (error) {
+      console.error('Failed to delete response:', error);
+      toast({
+        title: 'เกิดข้อผิดพลาด',
+        description: 'ไม่สามารถลบ Response ได้',
+        variant: 'error',
+      });
+    }
+  };
 
   const copyChartToClipboard = async (chartId: string) => {
     try {
@@ -1162,11 +1198,23 @@ export default function AnalyticsPage() {
                             </div>
                           </div>
                         </div>
-                        {selectedResponse?.id === response.id ? (
-                          <ChevronUp className="w-5 h-5 text-gray-400" />
-                        ) : (
-                          <ChevronDown className="w-5 h-5 text-gray-400" />
-                        )}
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteResponse(response.id);
+                            }}
+                            className="p-2 rounded-lg text-red-500 hover:bg-red-50 transition-colors"
+                            title="ลบ Response"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                          {selectedResponse?.id === response.id ? (
+                            <ChevronUp className="w-5 h-5 text-gray-400" />
+                          ) : (
+                            <ChevronDown className="w-5 h-5 text-gray-400" />
+                          )}
+                        </div>
                       </button>
 
                       <AnimatePresence>

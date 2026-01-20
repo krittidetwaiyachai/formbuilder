@@ -80,8 +80,8 @@ export class FormsService {
   async findAll(userId: string, userRole: RoleType) {
     const where: any = {};
 
-    // ADMIN sees all forms
-    if (userRole === RoleType.ADMIN) {
+    // SUPER_ADMIN sees all forms
+    if (userRole === RoleType.SUPER_ADMIN) {
       // no filter
     } else {
         // EDITOR sees only their own forms AND forms shared with them

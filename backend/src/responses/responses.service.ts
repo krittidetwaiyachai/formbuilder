@@ -461,4 +461,24 @@ export class ResponsesService {
         throw error;
     }
   }
+
+  async remove(id: string) {
+    const response = await this.prisma.formResponse.findUnique({
+      where: { id },
+    });
+
+    if (!response) {
+      throw new NotFoundException('Response not found');
+    }
+
+    await this.prisma.responseAnswer.deleteMany({
+      where: { responseId: id },
+    });
+
+    await this.prisma.formResponse.delete({
+      where: { id },
+    });
+
+    return { success: true, message: 'Response deleted successfully' };
+  }
 }

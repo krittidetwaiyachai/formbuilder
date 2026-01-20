@@ -9,11 +9,11 @@ import { FormsModule } from './forms/forms.module';
 import { BundlesModule } from './presets/bundles.module';
 import { ResponsesModule } from './responses/responses.module';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
-
 import { ActivityLogModule } from './activity-log/activity-log.module';
 import { FoldersModule } from './folders/folders.module';
 import { EventsModule } from './events/events.module';
 import { CommonModule } from './common/common.module';
+import { AdminModule } from './admin/admin.module';
 
 
 @Module({
@@ -31,11 +31,11 @@ import { CommonModule } from './common/common.module';
     FormsModule,
     BundlesModule,
     ResponsesModule,
-
     ActivityLogModule,
     FoldersModule,
     EventsModule,
     CommonModule,
+    AdminModule,
   ],
   providers: [
     {

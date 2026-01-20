@@ -113,7 +113,7 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
               </label>
               <input
                 type="text"
-                value={options.subLabel || ''}
+                value={stripHtml(options.subLabel || '')}
                 onChange={(e) => handleOptionUpdate('subLabel', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
               />

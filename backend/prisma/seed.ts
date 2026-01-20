@@ -1,4 +1,4 @@
-import { PrismaClient, RoleType, FieldType, SensitivityLevel, FormStatus } from '@prisma/client';
+import { PrismaClient, RoleType, FieldType, FormStatus } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
@@ -9,58 +9,65 @@ async function main() {
   // Create Roles
   const superAdminRole = await prisma.role.upsert({
     where: { name: RoleType.SUPER_ADMIN },
-    update: {},
+    update: {
+      permissions: [
+        'MANAGE_USERS', 'MANAGE_BUNDLES', 'MANAGE_ROLES', 'MANAGE_FORMS', 
+        'MANAGE_TEMPLATES', 'MANAGE_SETTINGS', 'VIEW_SYSTEM_LOGS', 'VIEW_ANALYTICS',
+        'VIEW_RESPONSES', 'VIEW_USER_DATA', 'VIEW_AUDIT_LOG', 'EXPORT_DATA',
+        'DELETE_RESPONSES', 'BYPASS_PDPA'
+      ],
+    },
     create: {
       name: RoleType.SUPER_ADMIN,
       description: 'Full system access',
-      permissions: {
-        presets: ['create', 'read', 'update', 'delete'],
-        forms: ['create', 'read', 'update', 'delete'],
-        responses: ['read', 'export'],
-        users: ['create', 'read', 'update', 'delete'],
-      },
+      permissions: [
+        'MANAGE_USERS', 'MANAGE_BUNDLES', 'MANAGE_ROLES', 'MANAGE_FORMS', 
+        'MANAGE_TEMPLATES', 'MANAGE_SETTINGS', 'VIEW_SYSTEM_LOGS', 'VIEW_ANALYTICS',
+        'VIEW_RESPONSES', 'VIEW_USER_DATA', 'VIEW_AUDIT_LOG', 'EXPORT_DATA',
+        'DELETE_RESPONSES', 'BYPASS_PDPA'
+      ],
     },
   });
 
   const adminRole = await prisma.role.upsert({
     where: { name: RoleType.ADMIN },
-    update: {},
+    update: {
+      permissions: [
+        'MANAGE_BUNDLES', 'MANAGE_FORMS', 'VIEW_ANALYTICS', 
+        'VIEW_RESPONSES', 'EXPORT_DATA', 'DELETE_RESPONSES'
+      ],
+    },
     create: {
       name: RoleType.ADMIN,
       description: 'Can create forms and manage responses',
-      permissions: {
-        presets: ['read', 'apply'],
-        forms: ['create', 'read', 'update', 'delete'],
-        responses: ['read', 'export'],
-      },
+      permissions: [
+        'MANAGE_BUNDLES', 'MANAGE_FORMS', 'VIEW_ANALYTICS', 
+        'VIEW_RESPONSES', 'EXPORT_DATA', 'DELETE_RESPONSES'
+      ],
     },
   });
 
   const editorRole = await prisma.role.upsert({
     where: { name: RoleType.EDITOR },
-    update: {},
+    update: {
+      permissions: ['VIEW_ANALYTICS', 'VIEW_RESPONSES'],
+    },
     create: {
       name: RoleType.EDITOR,
       description: 'Can edit forms',
-      permissions: {
-        presets: ['read', 'apply'],
-        forms: ['read', 'update'],
-        responses: ['read'],
-      },
+      permissions: ['VIEW_ANALYTICS', 'VIEW_RESPONSES'],
     },
   });
 
   const viewerRole = await prisma.role.upsert({
     where: { name: RoleType.VIEWER },
-    update: {},
+    update: {
+      permissions: ['VIEW_RESPONSES'],
+    },
     create: {
       name: RoleType.VIEWER,
       description: 'Can only view responses',
-      permissions: {
-        presets: ['read'],
-        forms: ['read'],
-        responses: ['read'],
-      },
+      permissions: ['VIEW_RESPONSES'],
     },
   });
 
@@ -68,10 +75,10 @@ async function main() {
   const hashedPassword = await bcrypt.hash('password123', 10);
 
   const superAdmin = await prisma.user.upsert({
-    where: { email: 'superadmin@example.com' },
+    where: { email: 'super@app.com' },
     update: {},
     create: {
-      email: 'superadmin@example.com',
+      email: 'super@app.com',
       password: hashedPassword,
       firstName: 'Super',
       lastName: 'Admin',
@@ -80,10 +87,10 @@ async function main() {
   });
 
   const admin = await prisma.user.upsert({
-    where: { email: 'admin@example.com' },
+    where: { email: 'admin@app.com' },
     update: {},
     create: {
-      email: 'admin@example.com',
+      email: 'admin@app.com',
       password: hashedPassword,
       firstName: 'Admin',
       lastName: 'User',
@@ -92,133 +99,133 @@ async function main() {
   });
 
   const editor = await prisma.user.upsert({
-    where: { email: 'editor@example.com' },
+    where: { email: 'editor@app.com' },
     update: {},
     create: {
-      email: 'editor@example.com',
+      email: 'editor@app.com',
       password: hashedPassword,
       firstName: 'Editor',
-      lastName: 'User',
+      lastName: 'Main',
       roleId: editorRole.id,
     },
   });
 
   const editor1 = await prisma.user.upsert({
-    where: { email: 'editor1@example.com' },
+    where: { email: 'ed1@app.com' },
     update: {},
     create: {
-      email: 'editor1@example.com',
+      email: 'ed1@app.com',
       password: hashedPassword,
-      firstName: 'Alice',
-      lastName: 'Johnson',
+      firstName: 'Ed',
+      lastName: 'One',
       roleId: editorRole.id,
     },
   });
 
   const editor2 = await prisma.user.upsert({
-    where: { email: 'editor2@example.com' },
+    where: { email: 'ed2@app.com' },
     update: {},
     create: {
-      email: 'editor2@example.com',
+      email: 'ed2@app.com',
       password: hashedPassword,
-      firstName: 'Bob',
-      lastName: 'Smith',
+      firstName: 'Ed',
+      lastName: 'Two',
       roleId: editorRole.id,
     },
   });
 
   const editor3 = await prisma.user.upsert({
-    where: { email: 'editor3@example.com' },
+    where: { email: 'ed3@app.com' },
     update: {},
     create: {
-      email: 'editor3@example.com',
+      email: 'ed3@app.com',
       password: hashedPassword,
-      firstName: 'Charlie',
-      lastName: 'Brown',
+      firstName: 'Ed',
+      lastName: 'Three',
       roleId: editorRole.id,
     },
   });
 
   const editor4 = await prisma.user.upsert({
-    where: { email: 'editor4@example.com' },
+    where: { email: 'ed4@app.com' },
     update: {},
     create: {
-      email: 'editor4@example.com',
+      email: 'ed4@app.com',
       password: hashedPassword,
-      firstName: 'Diana',
-      lastName: 'Prince',
+      firstName: 'Ed',
+      lastName: 'Four',
       roleId: editorRole.id,
     },
   });
 
   const editor5 = await prisma.user.upsert({
-    where: { email: 'editor5@example.com' },
+    where: { email: 'ed5@app.com' },
     update: {},
     create: {
-      email: 'editor5@example.com',
+      email: 'ed5@app.com',
       password: hashedPassword,
-      firstName: 'Edward',
-      lastName: 'Norton',
+      firstName: 'Ed',
+      lastName: 'Five',
       roleId: editorRole.id,
     },
   });
 
   const editor6 = await prisma.user.upsert({
-    where: { email: 'editor6@example.com' },
+    where: { email: 'ed6@app.com' },
     update: {},
     create: {
-      email: 'editor6@example.com',
+      email: 'ed6@app.com',
       password: hashedPassword,
-      firstName: 'Fiona',
-      lastName: 'Green',
+      firstName: 'Ed',
+      lastName: 'Six',
       roleId: editorRole.id,
     },
   });
 
   const editor7 = await prisma.user.upsert({
-    where: { email: 'editor7@example.com' },
+    where: { email: 'ed7@app.com' },
     update: {},
     create: {
-      email: 'editor7@example.com',
+      email: 'ed7@app.com',
       password: hashedPassword,
-      firstName: 'George',
-      lastName: 'Miller',
+      firstName: 'Ed',
+      lastName: 'Seven',
       roleId: editorRole.id,
     },
   });
 
   const editor8 = await prisma.user.upsert({
-    where: { email: 'editor8@example.com' },
+    where: { email: 'ed8@app.com' },
     update: {},
     create: {
-      email: 'editor8@example.com',
+      email: 'ed8@app.com',
       password: hashedPassword,
-      firstName: 'Helen',
-      lastName: 'Davis',
+      firstName: 'Ed',
+      lastName: 'Eight',
       roleId: editorRole.id,
     },
   });
 
   const editor9 = await prisma.user.upsert({
-    where: { email: 'editor9@example.com' },
+    where: { email: 'ed9@app.com' },
     update: {},
     create: {
-      email: 'editor9@example.com',
+      email: 'ed9@app.com',
       password: hashedPassword,
-      firstName: 'Ivan',
-      lastName: 'Rodriguez',
+      firstName: 'Ed',
+      lastName: 'Nine',
       roleId: editorRole.id,
     },
   });
 
   const editor10 = await prisma.user.upsert({
-    where: { email: 'editor10@example.com' },
+    where: { email: 'ed10@app.com' },
     update: {},
     create: {
-      email: 'editor10@example.com',
+      email: 'ed10@app.com',
       password: hashedPassword,
-      firstName: 'Julia',
-      lastName: 'Wilson',
+      firstName: 'Ed',
+      lastName: 'Ten',
       roleId: editorRole.id,
     },
   });
@@ -235,7 +242,6 @@ async function main() {
   const deletedAllResponses = await prisma.formResponse.deleteMany({
     where: {
       form: {
-        createdById: editor.id,
         title: {
           contains: '[TEST]'
         }
@@ -247,7 +253,6 @@ async function main() {
   // Then delete the forms
   const deletedForms = await prisma.form.deleteMany({
     where: {
-      createdById: editor.id,
       title: {
         contains: '[TEST]',
       },
@@ -556,6 +561,140 @@ async function main() {
       },
     });
   }
+
+  // --- Seed Bundles ---
+  console.log('Seeding bundles...');
+  const bundlesData = [
+    {
+      name: 'Contact Information',
+      description: 'Capture lead details including Name, Email, and Phone.',
+      options: { icon: 'User', color: 'text-blue-600', bg: 'bg-blue-50' },
+      fields: [
+        { type: FieldType.FULLNAME, label: 'Full Name', required: true, placeholder: 'John Doe', options: { subLabel: 'First and Last Name' } },
+        { type: FieldType.EMAIL, label: 'Email Address', required: true, placeholder: 'name@example.com' },
+        { type: FieldType.PHONE, label: 'Phone Number', placeholder: '(555) 000-0000' }
+      ]
+    },
+    {
+      name: 'Shipping Address',
+      description: 'Complete address block with Street, City, State, and Zip.',
+      options: { icon: 'MapPin', color: 'text-emerald-600', bg: 'bg-emerald-50' },
+      fields: [
+        { type: FieldType.ADDRESS, label: 'Street Address', required: true, placeholder: '123 Main St' },
+        { type: FieldType.TEXT, label: 'City', required: true, options: { width: '50%' }, placeholder: 'New York' },
+        { type: FieldType.TEXT, label: 'State / Province', required: true, options: { width: '50%' }, placeholder: 'NY' },
+        { type: FieldType.NUMBER, label: 'Zip / Postal Code', required: true, placeholder: '10001', options: { width: '50%' } },
+        { type: FieldType.TEXT, label: 'Country', required: true, placeholder: 'United States', options: { width: '50%' } }
+      ]
+    },
+    {
+      name: 'Job Application',
+      description: 'Essential fields for recruitment and hiring forms.',
+      options: { icon: 'Briefcase', color: 'text-slate-600', bg: 'bg-slate-50' },
+      fields: [
+        { type: FieldType.FULLNAME, label: 'Applicant Name', required: true, placeholder: 'Jane Smith' },
+        { type: FieldType.EMAIL, label: 'Email Address', required: true, placeholder: 'jane@example.com' },
+        { type: FieldType.TEXT, label: 'LinkedIn Profile', placeholder: 'https://linkedin.com/in/janesmith', options: { prefixIcon: 'link' } },
+        { type: FieldType.TEXTAREA, label: 'Why do you want to join us?', required: true, placeholder: 'Tell us about your motivation...', options: { rows: 4 } }
+      ]
+    },
+    {
+      name: 'Event Booking',
+      description: 'Registration details with date, time, and preferences.',
+      options: { icon: 'CalendarCheck', color: 'text-rose-600', bg: 'bg-rose-50' },
+      fields: [
+        { type: FieldType.FULLNAME, label: 'Attendee Name', required: true },
+        { type: FieldType.DATE, label: 'Preferred Date', required: true },
+        { type: FieldType.DROPDOWN, label: 'Ticket Type', required: true, options: { items: ['General Admission', 'VIP Access', 'Student Pass'], placeholder: 'Select a ticket type' } },
+        { type: FieldType.CHECKBOX, label: 'Dietary Requirements', options: { items: ['Vegetarian', 'Vegan', 'Gluten-Free', 'Halal', 'Nut Allergy'] } }
+      ]
+    },
+    {
+      name: 'Product Survey',
+      description: 'Gather insights on product usage and satisfaction.',
+      options: { icon: 'MessageSquare', color: 'text-cyan-600', bg: 'bg-cyan-50' },
+      fields: [
+        { type: FieldType.DROPDOWN, label: 'Which product do you use?', required: true, options: { items: ['Basic Plan', 'Pro Plan', 'Enterprise Suite'], placeholder: 'Select product' } },
+        { type: FieldType.RATE, label: 'Overall Satisfaction', required: true, options: { maxRating: 5 } },
+        { type: FieldType.TEXTAREA, label: 'Share your experience', placeholder: 'What do you like most? What can we improve?', options: { rows: 3 } }
+      ]
+    },
+    {
+      name: 'Social Profile',
+      description: 'Collect social media handles and preferences.',
+      options: { icon: 'Share2', color: 'text-indigo-600', bg: 'bg-indigo-50' },
+      fields: [
+        { type: FieldType.CHECKBOX, label: 'Preferred Platforms', options: { items: ['Twitter / X', 'LinkedIn', 'Instagram', 'TikTok', 'YouTube'] } },
+        { type: FieldType.TEXT, label: 'Main Handle/Username', required: true, placeholder: '@username', options: { prefix: '@' } },
+        { type: FieldType.RADIO, label: 'Content Type', options: { items: ['Creator', 'Consumer', 'Business Account'] } }
+      ]
+    },
+    {
+      name: 'Education History',
+      description: 'Academic background and qualifications.',
+      options: { icon: 'GraduationCap', color: 'text-orange-600', bg: 'bg-orange-50' },
+      fields: [
+        { type: FieldType.TEXT, label: 'University / Institution', required: true, placeholder: 'Harvard University' },
+        { type: FieldType.TEXT, label: 'Degree / Major', required: true, placeholder: 'Computer Science', options: { width: '70%' } },
+        { type: FieldType.NUMBER, label: 'Grad Year', required: true, placeholder: '2024', options: { width: '30%' } }
+      ]
+    },
+    {
+      name: 'Customer Feedback',
+      description: 'Rating and comments to gather user sentiment.',
+      options: { icon: 'Star', color: 'text-amber-500', bg: 'bg-amber-50' },
+      fields: [
+        { type: FieldType.RATE, label: 'How would you rate us?', required: true },
+        { type: FieldType.TEXTAREA, label: 'What can we improve?', placeholder: 'We value your feedback...' },
+        { type: FieldType.RADIO, label: 'Would you recommend us?', options: { items: ['Yes, definitely', 'Maybe', 'No, not likely'] } }
+      ]
+    },
+    {
+      name: 'Account Cleanup',
+      description: 'Standard fields for account management forms.',
+      options: { icon: 'Lock', color: 'text-purple-600', bg: 'bg-purple-50' },
+      fields: [
+        { type: FieldType.EMAIL, label: 'Email Address', required: true, placeholder: 'user@example.com' },
+        { type: FieldType.TEXT, label: 'Username', required: true, placeholder: 'username' }
+      ]
+    }
+  ];
+
+  for (const bundle of bundlesData) {
+    const { fields, ...bundleData } = bundle;
+    
+    // Check if bundle exists
+    const existing = await prisma.bundle.findUnique({
+      where: { name_version: { name: bundle.name, version: 1 } }
+    });
+
+    if (!existing) {
+      await prisma.bundle.create({
+        data: {
+          ...bundleData,
+          version: 1,
+          createdById: superAdmin.id,
+          isActive: true,
+          fields: {
+            create: fields.map((f, index) => ({
+              ...f,
+              order: index
+            }))
+          }
+        }
+      });
+    } else {
+        // Update options if needed
+        await prisma.bundle.update({
+            where: { id: existing.id },
+            data: { 
+                options: bundleData.options,
+                isActive: true
+            }
+        });
+    }
+  }
+
   console.log(`   Created Customer Feedback form with ${feedbackResponses.length} responses`);
 
   // Analytics Demo 2: IT Knowledge Quiz
@@ -1685,10 +1824,10 @@ async function main() {
 
   console.log('Seeding completed!');
   console.log('Login credentials:');
-  console.log('   SuperAdmin: superadmin@example.com / password123');
-  console.log('   Admin: admin@example.com / password123');
-  console.log('   Editor: editor@example.com / password123');
-  console.log('   Editor1-10: editor1@example.com - editor10@example.com / password123');
+  console.log('   SuperAdmin: super@app.com / password123');
+  console.log('   Admin: admin@app.com / password123');
+  console.log('   Editor: editor@app.com / password123');
+  console.log('   Editor1-10: ed1@app.com - ed10@app.com / password123');
 }
 
 main()

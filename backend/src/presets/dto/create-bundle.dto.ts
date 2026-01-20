@@ -6,9 +6,10 @@ import {
   IsArray,
   ValidateNested,
   IsNumber,
+  Allow,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { FieldType, SensitivityLevel } from '@prisma/client';
+import { FieldType } from '@prisma/client';
 
 export class CreateBundleFieldDto {
   @IsEnum(FieldType)
@@ -26,6 +27,7 @@ export class CreateBundleFieldDto {
   required?: boolean;
 
   @IsOptional()
+  @Allow()
   validation?: any;
 
   @IsOptional()
@@ -33,7 +35,12 @@ export class CreateBundleFieldDto {
   order?: number;
 
   @IsOptional()
+  @Allow()
   options?: any;
+
+  @IsOptional()
+  @IsBoolean()
+  isPII?: boolean;
 }
 
 export class CreateBundleDto {
@@ -49,8 +56,11 @@ export class CreateBundleDto {
   isPII?: boolean;
 
   @IsOptional()
-  @IsEnum(SensitivityLevel)
-  sensitivityLevel?: SensitivityLevel;
+  @IsBoolean()
+  isActive?: boolean;
+
+  @IsOptional()
+  options?: any;
 
   @IsArray()
   @ValidateNested({ each: true })

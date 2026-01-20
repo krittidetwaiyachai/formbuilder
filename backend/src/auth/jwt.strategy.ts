@@ -23,6 +23,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       throw new UnauthorizedException();
     }
 
+    if (user.isActive === false) {
+      throw new UnauthorizedException({ message: 'Account is disabled', code: 'ACCOUNT_DISABLED' });
+    }
+
     if (payload.sessionToken) {
       const isValidSession = await this.authService.validateSession(payload.sub, payload.sessionToken);
       if (!isValidSession) {

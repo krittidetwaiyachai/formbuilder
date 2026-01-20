@@ -66,16 +66,6 @@ export default function CanvasArea({
            }}
         >
           {/* Drop zone indicator when dragging */}
-          {snapshot.isDraggingOver && (
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-              <div className="bg-indigo-500/10 backdrop-blur-sm rounded-lg px-6 py-3 border border-indigo-200 shadow-lg">
-                <p className="text-indigo-600 font-medium text-sm flex items-center gap-2">
-                  <span className="w-2 h-2 bg-indigo-500 rounded-full animate-pulse" />
-                  {t('builder.drop_here')}
-                </p>
-              </div>
-            </div>
-          )}
           {topLevelFields.length > 0 ? (
             <div className="flex flex-row flex-wrap content-start gap-3 w-full">
               {topLevelFields.map((field, index) => (

@@ -8,7 +8,7 @@ import {
   IsNumber,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { FieldType, SensitivityLevel } from '@prisma/client';
+import { FieldType } from '@prisma/client';
 
 export class CreatePresetFieldDto {
   @IsEnum(FieldType)
@@ -49,8 +49,7 @@ export class CreatePresetDto {
   isPII?: boolean;
 
   @IsOptional()
-  @IsEnum(SensitivityLevel)
-  sensitivityLevel?: SensitivityLevel;
+
 
   @IsArray()
   @ValidateNested({ each: true })

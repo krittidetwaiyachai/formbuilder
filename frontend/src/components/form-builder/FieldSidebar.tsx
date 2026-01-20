@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import api from '@/lib/api';
 import { createPortal } from 'react-dom';
 import { FieldType } from '@/types';
 import { useFormStore } from '@/store/formStore';
@@ -434,136 +435,46 @@ function FieldTypeButton({ fieldType, isCollapsed, onFieldAdd, variant }: { fiel
 }
 
 // --- SAMPLE BUNDLES DATA ---
-const sampleBundles = [
-  {
-    id: 'contact',
-    title: 'Contact Information',
-    description: 'Capture lead details including Name, Email, and Phone.',
-    icon: User,
-    color: 'text-blue-600',
-    bg: 'bg-blue-50',
-    fields: [
-      { type: FieldType.FULLNAME, label: 'Full Name', required: true, placeholder: 'John Doe', options: { subLabel: 'First and Last Name' } },
-      { type: FieldType.EMAIL, label: 'Email Address', required: true, placeholder: 'name@example.com' },
-      { type: FieldType.PHONE, label: 'Phone Number', placeholder: '(555) 000-0000' }
-    ]
-  },
-  {
-    id: 'address',
-    title: 'Shipping Address',
-    description: 'Complete address block with Street, City, State, and Zip.',
-    icon: MapPin,
-    color: 'text-emerald-600',
-    bg: 'bg-emerald-50',
-    fields: [
-      { type: FieldType.ADDRESS, label: 'Street Address', required: true, placeholder: '123 Main St' },
-      { type: FieldType.TEXT, label: 'City', required: true, options: { width: '50%' }, placeholder: 'New York' },
-      { type: FieldType.TEXT, label: 'State / Province', required: true, options: { width: '50%' }, placeholder: 'NY' },
-      { type: FieldType.NUMBER, label: 'Zip / Postal Code', required: true, placeholder: '10001', options: { width: '50%' } },
-       { type: FieldType.TEXT, label: 'Country', required: true, placeholder: 'United States', options: { width: '50%' } }
-    ]
-  },
-  {
-    id: 'job-application',
-    title: 'Job Application',
-    description: 'Essential fields for recruitment and hiring forms.',
-    icon: Briefcase,
-    color: 'text-slate-600',
-    bg: 'bg-slate-50',
-    fields: [
-        { type: FieldType.FULLNAME, label: 'Applicant Name', required: true, placeholder: 'Jane Smith' },
-        { type: FieldType.EMAIL, label: 'Email Address', required: true, placeholder: 'jane@example.com' },
-        { type: FieldType.TEXT, label: 'LinkedIn Profile', placeholder: 'https://linkedin.com/in/janesmith', options: { prefixIcon: 'link' } },
-        { type: FieldType.TEXTAREA, label: 'Why do you want to join us?', required: true, placeholder: 'Tell us about your motivation...', options: { rows: 4 } }
-    ]
-  },
-  {
-    id: 'event-booking',
-    title: 'Event Booking',
-    description: 'Registration details with date, time, and preferences.',
-    icon: CalendarCheck,
-    color: 'text-rose-600',
-    bg: 'bg-rose-50',
-    fields: [
-        { type: FieldType.FULLNAME, label: 'Attendee Name', required: true },
-        { type: FieldType.DATE, label: 'Preferred Date', required: true },
-        { type: FieldType.DROPDOWN, label: 'Ticket Type', required: true, options: { items: ['General Admission', 'VIP Access', 'Student Pass'], placeholder: 'Select a ticket type' } },
-        { type: FieldType.CHECKBOX, label: 'Dietary Requirements', options: { items: ['Vegetarian', 'Vegan', 'Gluten-Free', 'Halal', 'Nut Allergy'] } }
-    ]
-  },
-  {
-    id: 'product-survey',
-    title: 'Product Survey',
-    description: 'Gather insights on product usage and satisfaction.',
-    icon: MessageSquare,
-    color: 'text-cyan-600',
-    bg: 'bg-cyan-50',
-    fields: [
-        { type: FieldType.DROPDOWN, label: 'Which product do you use?', required: true, options: { items: ['Basic Plan', 'Pro Plan', 'Enterprise Suite'], placeholder: 'Select product' } },
-        { type: FieldType.RATE, label: 'Overall Satisfaction', required: true, options: { maxRating: 5 } },
-        { type: FieldType.TEXTAREA, label: 'Share your experience', placeholder: 'What do you like most? What can we improve?', options: { rows: 3 } }
-    ]
-  },
-  {
-    id: 'social-media',
-    title: 'Social Profile',
-    description: 'Collect social media handles and preferences.',
-    icon: Share2,
-    color: 'text-indigo-600',
-    bg: 'bg-indigo-50',
-    fields: [
-        { type: FieldType.CHECKBOX, label: 'Preferred Platforms', options: { items: ['Twitter / X', 'LinkedIn', 'Instagram', 'TikTok', 'YouTube'] } },
-        { type: FieldType.TEXT, label: 'Main Handle/Username', required: true, placeholder: '@username', options: { prefix: '@' } },
-        { type: FieldType.RADIO, label: 'Content Type', options: { items: ['Creator', 'Consumer', 'Business Account'] } }
-    ]
-  },
-  {
-    id: 'education',
-    title: 'Education History',
-    description: 'Academic background and qualifications.',
-    icon: GraduationCap,
-    color: 'text-orange-600',
-    bg: 'bg-orange-50',
-    fields: [
-        { type: FieldType.TEXT, label: 'University / Institution', required: true, placeholder: 'Harvard University' },
-        { type: FieldType.TEXT, label: 'Degree / Major', required: true, placeholder: 'Computer Science', options: { width: '70%' } },
-        { type: FieldType.NUMBER, label: 'Grad Year', required: true, placeholder: '2024', options: { width: '30%' } }
-    ]
-  },
-  {
-    id: 'feedback',
-    title: 'Customer Feedback',
-    description: 'Rating and comments to gather user sentiment.',
-    icon: Star,
-    color: 'text-amber-500',
-    bg: 'bg-amber-50',
-    fields: [
-      { type: FieldType.RATE, label: 'How would you rate us?', required: true },
-      { type: FieldType.TEXTAREA, label: 'What can we improve?', placeholder: 'We value your feedback...' },
-      { type: FieldType.RADIO, label: 'Would you recommend us?', options: { items: ['Yes, definitely', 'Maybe', 'No, not likely'] } }
-    ]
-  },
-  {
-    id: 'login',
-    title: 'Account Cleanup',
-    description: 'Standard fields for account management forms.',
-    icon: Lock,
-    color: 'text-purple-600',
-    bg: 'bg-purple-50',
-    fields: [
-        { type: FieldType.EMAIL, label: 'Email Address', required: true, placeholder: 'user@example.com' },
-        { type: FieldType.TEXT, label: 'Username', required: true, placeholder: 'username' }
-    ]
-  }
-];
+// --- ICONS ---
+const IconMap: Record<string, any> = {
+  User, MapPin, Briefcase, CalendarCheck, MessageSquare, Share2, GraduationCap, Star, Lock
+};
 
 const TemplatePopup = ({ onClose }: { onClose: () => void }) => {
   if (typeof document === 'undefined') return null;
 
   const { addBundle } = useFormStore();
+  const [bundles, setBundles] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchBundles = async () => {
+      try {
+        const response = await api.get('/bundles', { params: { isActive: true } });
+        // Only update state if data physically changes to prevent UI flickering/re-renders if strict check exists
+        // But for now, direct set is fine as React batches.
+        setBundles(response.data);
+      } catch (error) {
+        console.error('Failed to fetch bundles:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBundles(); // Initial fetch
+
+    // Auto-refresh every 2 seconds
+    const interval = setInterval(fetchBundles, 2000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleAddBundle = (bundle: any) => {
-    addBundle(bundle);
+    // Map API 'name' to 'title' for store compatibility
+    const mappedBundle = {
+        title: bundle.name,
+        fields: bundle.fields
+    };
+    addBundle(mappedBundle);
     onClose();
   };
   
@@ -589,8 +500,18 @@ const TemplatePopup = ({ onClose }: { onClose: () => void }) => {
 
           {/* Body: Grid of Cards */}
           <div className="p-6 overflow-y-auto flex-1">
+             {loading ? (
+                <div className="flex justify-center items-center h-48">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+                </div>
+             ) : (
              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {sampleBundles.map((bundle) => (
+                {bundles.map((bundle) => {
+                    const IconComponent = bundle.options?.icon ? IconMap[bundle.options.icon] : Layers;
+                    const bundleColor = bundle.options?.color || 'text-gray-600';
+                    const bundleBg = bundle.options?.bg || 'bg-gray-50';
+
+                    return (
                     <button
                         key={bundle.id}
                         onClick={() => handleAddBundle(bundle)}
@@ -598,7 +519,7 @@ const TemplatePopup = ({ onClose }: { onClose: () => void }) => {
                     >
                         {/* Title */}
                         <h4 className="text-base font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors">
-                            {bundle.title}
+                            {bundle.name}
                         </h4>
                         
                         {/* Description - hide on hover */}
@@ -609,12 +530,12 @@ const TemplatePopup = ({ onClose }: { onClose: () => void }) => {
                         {/* Fields Preview - show on hover */}
                         <div className="hidden group-hover:block mt-2">
                             <div className="flex flex-wrap gap-1">
-                                {bundle.fields.slice(0, 4).map((f, i) => (
+                                {bundle.fields?.slice(0, 4).map((f: any, i: number) => (
                                     <span key={i} className="px-1.5 py-0.5 bg-indigo-50 text-indigo-600 rounded text-[9px] font-medium">
-                                        {f.label}
+                                        {f.label ? f.label.replace(/<[^>]*>/g, '') : ''}
                                     </span>
                                 ))}
-                                {bundle.fields.length > 4 && (
+                                {bundle.fields?.length > 4 && (
                                     <span className="px-1.5 py-0.5 text-[9px] text-gray-400">
                                         +{bundle.fields.length - 4} more
                                     </span>
@@ -625,7 +546,7 @@ const TemplatePopup = ({ onClose }: { onClose: () => void }) => {
                         {/* Field Count Badge */}
                         <div className="mt-3 flex items-center gap-2 group-hover:hidden">
                             <span className="px-2 py-0.5 bg-gray-100 rounded text-[10px] font-medium text-gray-500">
-                                {bundle.fields.length} fields
+                                {bundle.fields?.length || 0} fields
                             </span>
                         </div>
                         
@@ -635,9 +556,16 @@ const TemplatePopup = ({ onClose }: { onClose: () => void }) => {
                                 <Plus className="w-3.5 h-3.5 text-white" strokeWidth={3} />
                             </div>
                         </div>
+
+                        {/* Icon */}
+                        <div className={`absolute top-5 right-5 w-8 h-8 rounded-lg ${bundleBg} flex items-center justify-center group-hover:opacity-0 transition-opacity`}>
+                            <IconComponent className={`w-4 h-4 ${bundleColor}`} />
+                        </div>
                     </button>
-                ))}
+                    );
+                })}
              </div>
+             )}
           </div>
           
           {/* Footer */}

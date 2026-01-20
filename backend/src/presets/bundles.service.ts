@@ -15,7 +15,7 @@ export class BundlesService {
     const { fields, ...bundleData } = createBundleDto;
 
     const latestBundle = await this.prisma.bundle.findFirst({
-      where: { name: bundleData.name, isActive: true },
+      where: { name: bundleData.name },
       orderBy: { version: 'desc' },
     });
 
@@ -43,9 +43,8 @@ export class BundlesService {
     return bundle;
   }
 
-  async findAll() {
-    return this.prisma.bundle.findMany({
-      where: { isActive: true },
+  async findAll(isActive?: boolean) {
+    const bundles = await this.prisma.bundle.findMany({
       include: {
         fields: {
           orderBy: { order: 'asc' },
@@ -61,6 +60,30 @@ export class BundlesService {
         { version: 'desc' },
       ],
     });
+
+    // Soft delete filter and Get Latest Versions only
+    let allBundles = bundles.filter(b => !(b.options as any)?.deleted);
+    
+    // Group by name and pick the one with highest version
+    const latestBundlesMap = new Map<string, typeof bundles[0]>();
+    
+    allBundles.forEach(bundle => {
+      const existing = latestBundlesMap.get(bundle.name);
+      if (!existing || bundle.version > existing.version) {
+        latestBundlesMap.set(bundle.name, bundle);
+      }
+    });
+
+    const finalBundles = Array.from(latestBundlesMap.values()).sort((a, b) => {
+        // Sort by updated at desc (most recent first)
+        return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+    });
+
+    if (isActive !== undefined) {
+        return finalBundles.filter(b => b.isActive === isActive);
+    }
+
+    return finalBundles;
   }
 
   async findOne(id: string) {
@@ -120,6 +143,7 @@ export class BundlesService {
             validation: field.validation,
             order: field.order,
             options: field.options,
+            isPII: field.isPII ?? false, // PDPA flag
           },
         }),
       ),
@@ -134,23 +158,31 @@ export class BundlesService {
     const { fields, ...bundleData } = updateData;
 
     const latestBundle = await this.prisma.bundle.findFirst({
-      where: { name: bundle.name, isActive: true },
+      where: { name: bundleData.name },
       orderBy: { version: 'desc' },
     });
 
     const version = latestBundle ? latestBundle.version + 1 : bundle.version + 1;
 
+    const nameChanged = bundleData.name && bundleData.name !== bundle.name;
+    const currentOptions = (bundle.options as any) || {};
+
     await this.prisma.bundle.update({
       where: { id },
-      data: { isActive: false },
+      data: { 
+        isActive: false,
+        options: nameChanged ? { ...currentOptions, deleted: true } : currentOptions,
+      },
     });
 
     const newBundle = await this.prisma.bundle.create({
       data: {
-        name: bundle.name,
+        name: bundleData.name ?? bundle.name,
         description: bundleData.description ?? bundle.description,
         isPII: bundleData.isPII ?? bundle.isPII,
-        sensitivityLevel: bundleData.sensitivityLevel ?? bundle.sensitivityLevel,
+        isActive: bundleData.isActive ?? bundle.isActive,
+        options: (bundleData.options as any) ?? bundle.options,
+
         version,
         createdById: userId,
         fields: {
@@ -162,6 +194,7 @@ export class BundlesService {
             validation: field.validation,
             order: field.order ?? 0,
             options: field.options,
+            isPII: field.isPII ?? false,
           })),
         },
       },
@@ -177,10 +210,14 @@ export class BundlesService {
 
   async remove(id: string) {
     const bundle = await this.findOne(id);
+    const currentOptions = (bundle.options as any) || {};
     
     await this.prisma.bundle.update({
       where: { id },
-      data: { isActive: false },
+      data: { 
+        isActive: false,
+        options: { ...currentOptions, deleted: true } 
+      },
     });
 
     return { message: 'Bundle deactivated successfully' };
