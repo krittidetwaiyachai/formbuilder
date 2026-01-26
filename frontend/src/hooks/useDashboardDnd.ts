@@ -21,7 +21,7 @@ export function useDashboardDnd({ onRefresh }: UseDashboardDndOptions) {
     useSensor(TouchSensor, {
       activationConstraint: {
         delay: 250,
-        tolerance: 5,
+        tolerance: 15,
       },
     })
   );

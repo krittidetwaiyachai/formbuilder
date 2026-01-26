@@ -35,26 +35,26 @@ export function SpecialPageProperties({ currentPage, currentForm, handleFormUpda
   };
 
   const availableIcons = [
-    { id: 'rocket', label: 'Rocket', icon: Rocket },
-    { id: 'sparkles', label: 'Sparkles', icon: Sparkles },
-    { id: 'check', label: 'Check', icon: Check },
-    { id: 'thumbsUp', label: 'Thumbs Up', icon: ThumbsUp },
-    { id: 'heart', label: 'Heart', icon: Heart },
-    { id: 'star', label: 'Star', icon: Star },
-    { id: 'trophy', label: 'Trophy', icon: Trophy },
-    { id: 'party', label: 'Party', icon: PartyPopper },
+    { id: 'rocket', label: t('builder.special.icon.rocket'), icon: Rocket },
+    { id: 'sparkles', label: t('builder.special.icon.sparkles'), icon: Sparkles },
+    { id: 'check', label: t('builder.special.icon.check'), icon: Check },
+    { id: 'thumbsUp', label: t('builder.special.icon.thumbs_up'), icon: ThumbsUp },
+    { id: 'heart', label: t('builder.special.icon.heart'), icon: Heart },
+    { id: 'star', label: t('builder.special.icon.star'), icon: Star },
+    { id: 'trophy', label: t('builder.special.icon.trophy'), icon: Trophy },
+    { id: 'party', label: t('builder.special.icon.party'), icon: PartyPopper },
   ] as const;
 
   const iconColors = [
-    { id: 'green', label: 'Green', color: 'bg-gradient-to-br from-emerald-400 to-green-500' },
-    { id: 'blue', label: 'Blue', color: 'bg-gradient-to-br from-blue-400 to-blue-500' },
-    { id: 'purple', label: 'Purple', color: 'bg-gradient-to-br from-purple-400 to-purple-500' },
-    { id: 'orange', label: 'Orange', color: 'bg-gradient-to-br from-orange-400 to-orange-500' },
-    { id: 'pink', label: 'Pink', color: 'bg-gradient-to-br from-pink-400 to-pink-500' },
-    { id: 'red', label: 'Red', color: 'bg-gradient-to-br from-red-400 to-red-500' },
-    { id: 'yellow', label: 'Yellow', color: 'bg-gradient-to-br from-yellow-400 to-yellow-500' },
-    { id: 'gray', label: 'Gray', color: 'bg-gradient-to-br from-gray-600 to-gray-800' },
-    { id: 'white', label: 'White', color: 'bg-white border border-gray-200 shadow-sm' },
+    { id: 'green', label: t('builder.special.color.green'), color: 'bg-gradient-to-br from-emerald-400 to-green-500' },
+    { id: 'blue', label: t('builder.special.color.blue'), color: 'bg-gradient-to-br from-blue-400 to-blue-500' },
+    { id: 'purple', label: t('builder.special.color.purple'), color: 'bg-gradient-to-br from-purple-400 to-purple-500' },
+    { id: 'orange', label: t('builder.special.color.orange'), color: 'bg-gradient-to-br from-orange-400 to-orange-500' },
+    { id: 'pink', label: t('builder.special.color.pink'), color: 'bg-gradient-to-br from-pink-400 to-pink-500' },
+    { id: 'red', label: t('builder.special.color.red'), color: 'bg-gradient-to-br from-red-400 to-red-500' },
+    { id: 'yellow', label: t('builder.special.color.yellow'), color: 'bg-gradient-to-br from-yellow-400 to-yellow-500' },
+    { id: 'gray', label: t('builder.special.color.gray'), color: 'bg-gradient-to-br from-gray-600 to-gray-800' },
+    { id: 'white', label: t('builder.special.color.white'), color: 'bg-white border border-gray-200 shadow-sm' },
   ];
 
   const activeSettings = isWelcome ? currentForm.welcomeSettings : currentForm.thankYouSettings;
@@ -80,13 +80,13 @@ export function SpecialPageProperties({ currentPage, currentForm, handleFormUpda
 
   return (
     <div className="space-y-4">
-      {/* STYLE SECTION (Merged with Icon selection) */}
+      { }
         <div className="border-b border-gray-100 pb-4">
           <SectionHeader title={t('builder.special_page.appearance')} section="style" icon={Palette} />
           {expandedSections.style && (
             <div className="mt-3 space-y-4 animate-in fade-in slide-in-from-top-1 duration-200">
               
-              {/* Icon Selection */}
+              { }
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-2">{t('builder.special_page.icon')}</label>
                 <div className="grid grid-cols-6 gap-2">
@@ -108,7 +108,7 @@ export function SpecialPageProperties({ currentPage, currentForm, handleFormUpda
                 </div>
               </div>
 
-              {/* Icon Color */}
+              { }
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-2">{t('builder.special_page.icon_color')}</label>
                 <div className="flex gap-2">
@@ -136,13 +136,13 @@ export function SpecialPageProperties({ currentPage, currentForm, handleFormUpda
         </div>
 
 
-      {/* ACTIONS SECTION */}
+      { }
       {!isWelcome && (
         <div className="border-b border-gray-100 pb-4">
           <SectionHeader title={t('builder.special_page.actions')} section="actions" icon={ExternalLink} />
           {expandedSections.actions && (
             <div className="mt-3 space-y-4 animate-in fade-in slide-in-from-top-1 duration-200">
-              {/* Auto Redirect */}
+              { }
               <div className="space-y-3">
                 <label className="flex items-center justify-between cursor-pointer">
                   <span className="text-sm font-medium text-gray-600">{t('builder.special_page.auto_redirect')}</span>
@@ -164,7 +164,7 @@ export function SpecialPageProperties({ currentPage, currentForm, handleFormUpda
                       <input
                         type="url"
                         className="w-full px-3 py-2 border border-gray-200 rounded-md text-sm focus:border-black focus:ring-1 focus:ring-black outline-none transition-all"
-                        placeholder="https://google.com"
+                        placeholder={t('builder.special_page.redirect_url_placeholder')}
                         value={currentForm.thankYouSettings?.redirectUrl || ''}
                         onChange={(e) => updateSetting('redirectUrl', e.target.value)}
                         onKeyDown={(e) => e.stopPropagation()}
@@ -177,7 +177,7 @@ export function SpecialPageProperties({ currentPage, currentForm, handleFormUpda
                         min={0}
                         max={30}
                         className="w-full px-3 py-2 border border-gray-200 rounded-md text-sm focus:border-black focus:ring-1 focus:ring-black outline-none transition-all"
-                        placeholder="3"
+                        placeholder={t('builder.special_page.delay_placeholder')}
                         value={currentForm.thankYouSettings?.redirectDelay || 3}
                         onChange={(e) => updateSetting('redirectDelay', parseInt(e.target.value) || 0)}
                         onKeyDown={(e) => e.stopPropagation()}
@@ -187,7 +187,7 @@ export function SpecialPageProperties({ currentPage, currentForm, handleFormUpda
                 )}
               </div>
 
-              {/* Confetti Toggle */}
+              { }
               <div className="space-y-3 pt-2 border-t border-gray-100">
                 <label className="flex items-center justify-between cursor-pointer">
                   <span className="text-sm font-medium text-gray-600">{t('builder.special_page.confetti_effect')}</span>
@@ -203,7 +203,7 @@ export function SpecialPageProperties({ currentPage, currentForm, handleFormUpda
                 </label>
               </div>
 
-              {/* Show Button */}
+              { }
               <div className="space-y-3 pt-2 border-t border-gray-100">
                 <label className="flex items-center justify-between cursor-pointer">
                   <span className="text-sm font-medium text-gray-600">{t('builder.special_page.show_button')}</span>
@@ -225,7 +225,7 @@ export function SpecialPageProperties({ currentPage, currentForm, handleFormUpda
                       <input
                         type="text"
                         className="w-full px-3 py-2 border border-gray-200 rounded-md text-sm focus:border-black focus:ring-1 focus:ring-black outline-none transition-all"
-                        placeholder="Back to Home"
+                        placeholder={t('builder.special_page.back_to_home')}
                         value={currentForm.thankYouSettings?.buttonText || ''}
                         onChange={(e) => updateSetting('buttonText', e.target.value)}
                         onKeyDown={(e) => e.stopPropagation()}
@@ -236,7 +236,7 @@ export function SpecialPageProperties({ currentPage, currentForm, handleFormUpda
                       <input
                         type="url"
                         className="w-full px-3 py-2 border border-gray-200 rounded-md text-sm focus:border-black focus:ring-1 focus:ring-black outline-none transition-all"
-                        placeholder="https://yourwebsite.com"
+                        placeholder={t('builder.special_page.button_link_placeholder')}
                         value={currentForm.thankYouSettings?.buttonLink || ''}
                         onChange={(e) => updateSetting('buttonLink', e.target.value)}
                         onKeyDown={(e) => e.stopPropagation()}
@@ -250,7 +250,7 @@ export function SpecialPageProperties({ currentPage, currentForm, handleFormUpda
         </div>
       )}
 
-      {/* WELCOME PAGE OPTIONS */}
+      { }
       {isWelcome && (
         <div className="pt-4 border-t border-gray-100 space-y-3">
           <label className="flex items-center justify-between cursor-pointer">

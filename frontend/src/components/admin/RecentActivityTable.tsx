@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 import { adminApi, StatsResponse } from '@/lib/adminApi';
 import { formatDistanceToNow } from 'date-fns';
 import { th } from 'date-fns/locale';
+import { useTranslation } from 'react-i18next';
 
 export default function RecentActivityTable() {
   const [stats, setStats] = useState<StatsResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -24,13 +26,13 @@ export default function RecentActivityTable() {
 
   const getActionLabel = (action: string) => {
     const labels: Record<string, string> = {
-      form_created: 'สร้างฟอร์มใหม่',
-      form_updated: 'แก้ไขฟอร์ม',
-      form_published: 'เผยแพร่ฟอร์ม',
-      form_deleted: 'ลบฟอร์ม',
-      field_added: 'เพิ่มฟิลด์',
-      field_updated: 'แก้ไขฟิลด์',
-      field_deleted: 'ลบฟิลด์',
+      form_created: t('admin.activity.form_created'),
+      form_updated: t('admin.activity.form_updated'),
+      form_published: t('admin.activity.form_published'),
+      form_deleted: t('admin.activity.form_deleted'),
+      field_added: t('admin.activity.field_added'),
+      field_updated: t('admin.activity.field_updated'),
+      field_deleted: t('admin.activity.field_deleted'),
     };
     return labels[action] || action;
   };
@@ -45,7 +47,7 @@ export default function RecentActivityTable() {
   if (loading) {
     return (
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">กิจกรรมล่าสุด</h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('admin.activity.title')}</h3>
         <div className="space-y-4">
           {[1, 2, 3, 4, 5].map((i) => (
             <div key={i} className="flex items-center gap-4 animate-pulse">
@@ -63,10 +65,10 @@ export default function RecentActivityTable() {
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">กิจกรรมล่าสุด</h3>
+      <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('admin.activity.title')}</h3>
       
       {stats?.recentActivity?.length === 0 ? (
-        <p className="text-gray-400 text-center py-8">ยังไม่มีกิจกรรม</p>
+        <p className="text-gray-400 text-center py-8">{t('admin.activity.no_activity')}</p>
       ) : (
         <div className="space-y-4">
           {stats?.recentActivity?.map((activity) => (
@@ -93,7 +95,7 @@ export default function RecentActivityTable() {
                   </span>
                 </div>
                 <p className="text-sm text-gray-500 truncate">
-                  {activity.form?.title || 'ฟอร์มที่ถูกลบ'}
+                  {activity.form?.title || t('admin.activity.deleted_form')}
                 </p>
                 <p className="text-xs text-gray-400 mt-1">
                   {formatDistanceToNow(new Date(activity.createdAt), { addSuffix: true, locale: th })}

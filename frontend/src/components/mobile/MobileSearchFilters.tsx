@@ -53,7 +53,7 @@ export default function MobileSearchFilters({
         </button>
       </div>
 
-      {/* Folder Scroll */}
+      { }
       <div className="flex items-center gap-2 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-hide">
         {onCreateFolder && (
           <button

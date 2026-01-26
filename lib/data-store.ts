@@ -1,17 +1,17 @@
 import { FormSchema, FormSubmission } from "@/types/form";
 import { ActivityLog, ActiveEditor } from "@/types/collaboration";
 
-// In-memory data store
-// In production, this would be replaced with a database
+
+
 
 class DataStore {
   private forms: Map<string, FormSchema> = new Map();
   private submissions: Map<string, FormSubmission> = new Map();
   private activityLogs: Map<string, ActivityLog> = new Map();
-  private activeEditors: Map<string, Map<string, ActiveEditor>> = new Map(); // formId -> userId -> ActiveEditor
-  private formViews: Map<string, Set<string>> = new Map(); // formId -> Set of view IDs (for tracking unique views)
+  private activeEditors: Map<string, Map<string, ActiveEditor>> = new Map(); 
+  private formViews: Map<string, Set<string>> = new Map(); 
 
-  // Forms
+  
   getAllForms(): FormSchema[] {
     return Array.from(this.forms.values());
   }
@@ -32,7 +32,7 @@ class DataStore {
     const updated = {
       ...existing,
       ...updates,
-      id, // Ensure ID doesn't change
+      id, 
       updatedAt: new Date().toISOString(),
     };
     this.forms.set(id, updated);
@@ -40,7 +40,7 @@ class DataStore {
   }
 
   deleteForm(id: string): boolean {
-    // Also delete related submissions and activity logs
+    
     const submissionsToDelete = Array.from(this.submissions.values())
       .filter(s => s.formId === id)
       .map(s => s.id);
@@ -73,7 +73,7 @@ class DataStore {
     }
   }
 
-  // Submissions
+  
   getAllSubmissions(formId?: string): FormSubmission[] {
     const all = Array.from(this.submissions.values());
     if (formId) {
@@ -89,7 +89,7 @@ class DataStore {
   createSubmission(submission: FormSubmission): FormSubmission {
     this.submissions.set(submission.id, submission);
     
-    // Update form response count
+    
     const form = this.forms.get(submission.formId);
     if (form) {
       const existingSubmissions = this.getAllSubmissions(submission.formId);
@@ -107,7 +107,7 @@ class DataStore {
     
     const deleted = this.submissions.delete(id);
     
-    // Update form response count
+    
     const form = this.forms.get(submission.formId);
     if (form) {
       const existingSubmissions = this.getAllSubmissions(submission.formId);
@@ -119,7 +119,7 @@ class DataStore {
     return deleted;
   }
 
-  // Activity Logs
+  
   getActivityLogs(formId: string): ActivityLog[] {
     return Array.from(this.activityLogs.values())
       .filter(log => log.formId === formId)
@@ -131,18 +131,18 @@ class DataStore {
     return log;
   }
 
-  // Active Editors
+  
   getActiveEditors(formId: string): ActiveEditor[] {
     const editors = this.activeEditors.get(formId);
     if (!editors) return [];
     
-    // Filter out inactive editors (not seen in last 30 seconds)
+    
     const now = Date.now();
     const active: ActiveEditor[] = [];
     
     editors.forEach(editor => {
       const lastSeen = new Date(editor.lastSeen).getTime();
-      if (now - lastSeen < 30000) { // 30 seconds
+      if (now - lastSeen < 30000) { 
         active.push(editor);
       }
     });
@@ -166,7 +166,7 @@ class DataStore {
     }
   }
 
-  // Analytics helpers
+  
   getAnalyticsData(formId: string) {
     const form = this.forms.get(formId);
     if (!form) return null;
@@ -178,25 +178,25 @@ class DataStore {
     const totalSubmissions = submissions.length;
     const submissionRate = totalViews > 0 ? (totalSubmissions / totalViews) * 100 : 0;
     
-    // Calculate bounce rate (views without submissions within 5 seconds)
-    // For simplicity, we'll use a mock bounce rate
+    
+    
     const bounceRate = totalViews > 0 ? ((totalViews - totalSubmissions) / totalViews) * 100 : 0;
     
-    // Daily visits (last 7 days)
+    
     const dailyVisits: Array<{ date: string; views: number; submissions: number }> = [];
     const now = Date.now();
     for (let i = 6; i >= 0; i--) {
       const date = new Date(now - i * 24 * 60 * 60 * 1000);
       const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
       
-      // Count submissions for this day
+      
       const daySubmissions = submissions.filter(s => {
         const subDate = new Date(s.submittedAt);
         return subDate.toDateString() === date.toDateString();
       }).length;
       
-      // For views, we'll estimate based on submissions (in real app, track views separately)
-      const dayViews = Math.max(daySubmissions * 3, 0); // Rough estimate
+      
+      const dayViews = Math.max(daySubmissions * 3, 0); 
       
       dailyVisits.push({
         date: dateStr,
@@ -205,7 +205,7 @@ class DataStore {
       });
     }
     
-    // Device breakdown
+    
     const deviceCounts: Record<string, number> = {};
     submissions.forEach(sub => {
       const device = sub.device || 'desktop';
@@ -230,11 +230,11 @@ class DataStore {
   }
 }
 
-// Singleton instance
+
 export const dataStore = new DataStore();
 
-// Initialize with mock data if needed
+
 export function initializeDataStore() {
-  // You can seed initial data here if needed
+  
 }
 

@@ -3,6 +3,7 @@ import { Field } from '@/types';
 import { useForm } from 'react-hook-form';
 import { Star, Heart, Shield, Zap, Flag, ThumbsUp, Smile } from 'lucide-react';
 import { PreviewLabel } from '../PreviewLabel';
+import { stripHtml } from '@/lib/ui/utils';
 
 interface PreviewFieldProps {
   field: Field;
@@ -14,7 +15,10 @@ interface PreviewFieldProps {
   isPublic?: boolean;
 }
 
+import { useTranslation } from 'react-i18next';
+
 export const PreviewRateField: React.FC<PreviewFieldProps> = ({ field, register, errors, watch, setValue, questionNumber, isPublic }) => {
+  const { t } = useTranslation();
   const fieldName = `field_${field.id}`;
   const fieldError = errors[fieldName];
   
@@ -56,7 +60,7 @@ export const PreviewRateField: React.FC<PreviewFieldProps> = ({ field, register,
 
   const Icon = getIcon();
     
-  // Color mapping
+  
   const getColorClass = (active: boolean) => {
       if (!active) return 'text-gray-300 fill-gray-100';
       if (iconType === 'heart') return 'text-red-400 fill-red-400';
@@ -85,7 +89,7 @@ export const PreviewRateField: React.FC<PreviewFieldProps> = ({ field, register,
        <div className={`${isRowLayout ? 'w-40 flex-shrink-0 pt-2' : 'mb-2'} ${labelAlignment === 'RIGHT' ? 'text-right' : ''}`}>
         <PreviewLabel field={field} questionNumber={questionNumber} isPublic={isPublic} htmlFor={fieldName} />
         {options.subLabel && options.subLabel !== 'Sublabel' && (
-            <p className="mt-1 text-xs text-gray-500">{options.subLabel}</p>
+            <p className="mt-1 text-xs text-gray-500">{stripHtml(options.subLabel)}</p>
         )}
       </div>
 
@@ -102,7 +106,7 @@ export const PreviewRateField: React.FC<PreviewFieldProps> = ({ field, register,
                 onClick={() => handleStarClick(star)}
                 className="group focus:outline-none transition-transform hover:scale-110 p-1"
                 onMouseEnter={() => {
-                   // Optional: Add hover preview logic if complex hover needed
+                   
                 }}
               >
                <Icon
@@ -114,7 +118,13 @@ export const PreviewRateField: React.FC<PreviewFieldProps> = ({ field, register,
           <input
             type="hidden"
             {...register(fieldName, {
-              required: field.required ? `This field is required` : false,
+              required: field.required ? t('public.validation.required_field', { label: stripHtml(field.label) }) : false,
+              validate: (value) => {
+                if (field.required && (!value || parseInt(value, 10) < 1)) {
+                  return t('public.validation.rate_min', "Please select at least 1 star");
+                }
+                return true;
+              }
             })}
             value={rating || ''}
           />

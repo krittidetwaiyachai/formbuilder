@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import * as React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -16,28 +15,23 @@ interface FormThemePanelProps {
 }
 
 const defaultTheme: FormTheme = {
-  primaryColor: "#3B82F6",
+  primaryColor: "#000000",
   backgroundColor: "#FFFFFF",
   backgroundType: "color",
-  textColor: "#1F2937",
+  textColor: "#000000",
   buttonStyle: "filled",
   borderRadius: "medium",
   fontFamily: "Inter",
 };
 
+import { useTranslation } from "react-i18next";
+
 export default function FormThemePanel({ theme, onThemeChange }: FormThemePanelProps) {
-  const [localTheme, setLocalTheme] = useState<FormTheme>(theme || defaultTheme);
-
-  // Sync with prop changes
-  React.useEffect(() => {
-    if (theme) {
-      setLocalTheme(theme);
-    }
-  }, [theme]);
-
+  const { t } = useTranslation();
   const handleChange = (updates: Partial<FormTheme>) => {
-    const newTheme = { ...localTheme, ...updates };
-    setLocalTheme(newTheme);
+    console.log('Theme update:', updates);
+    const newTheme = { ...theme, ...updates };
+    console.log('New theme:', newTheme);
     onThemeChange(newTheme);
   };
 
@@ -92,7 +86,6 @@ export default function FormThemePanel({ theme, onThemeChange }: FormThemePanelP
   const applyPreset = (presetName: string) => {
     const preset = presetThemes[presetName];
     if (preset) {
-      setLocalTheme(preset);
       onThemeChange(preset);
     }
   };
@@ -102,16 +95,16 @@ export default function FormThemePanel({ theme, onThemeChange }: FormThemePanelP
       <CardHeader>
         <CardTitle className="text-lg flex items-center gap-2">
           <Palette className="h-5 w-5" />
-          Form Theme
+          {t('builder.theme.title', 'Form Theme')}
         </CardTitle>
-        <CardDescription>Customize the appearance of your form</CardDescription>
+        <CardDescription>{t('builder.theme.description', 'Customize the appearance of your form')}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* Preset Themes */}
+        { }
         <div className="space-y-2">
           <Label className="flex items-center gap-2">
             <Sparkles className="h-4 w-4" />
-            Preset Themes
+            {t('builder.theme.presets', 'Preset Themes')}
           </Label>
           <div className="grid grid-cols-2 gap-2">
             {Object.entries(presetThemes).map(([name]) => (
@@ -129,57 +122,58 @@ export default function FormThemePanel({ theme, onThemeChange }: FormThemePanelP
         </div>
 
         <div className="border-t pt-4" />
-        {/* Primary Color */}
+        { }
         <div className="space-y-2">
-          <Label>Primary Color</Label>
+          <Label>{t('builder.theme.primary_color', 'Primary Color')}</Label>
           <div className="flex gap-2">
             <Input
               type="color"
-              value={localTheme.primaryColor}
+              value={theme.primaryColor}
               onChange={(e) => handleChange({ primaryColor: e.target.value })}
               className="w-16 h-10 p-1 cursor-pointer"
             />
             <Input
               type="text"
-              value={localTheme.primaryColor}
+              value={theme.primaryColor}
               onChange={(e) => handleChange({ primaryColor: e.target.value })}
               placeholder="#3B82F6"
             />
           </div>
         </div>
 
-        {/* Background Type */}
+        { }
         <div className="space-y-2">
-          <Label>Background Type</Label>
+          <Label>{t('builder.theme.background_type', 'Background Type')}</Label>
           <Select
-            value={localTheme.backgroundType}
+            key={`bg-type-${theme.backgroundType}`}
+            value={theme.backgroundType}
             onValueChange={(value) => handleChange({ backgroundType: value as "color" | "image" | "gradient" })}
           >
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="color">Solid Color</SelectItem>
-              <SelectItem value="gradient">Gradient</SelectItem>
-              <SelectItem value="image">Image</SelectItem>
+              <SelectItem value="color">{t('builder.theme.type_color', 'Solid Color')}</SelectItem>
+              <SelectItem value="gradient">{t('builder.theme.type_gradient', 'Gradient')}</SelectItem>
+              <SelectItem value="image">{t('builder.theme.type_image', 'Image')}</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
-        {/* Background Color/Image */}
-        {localTheme.backgroundType === "color" && (
+        { }
+        {theme.backgroundType === "color" && (
           <div className="space-y-2">
-            <Label>Background Color</Label>
+            <Label>{t('builder.theme.bg_color', 'Background Color')}</Label>
             <div className="flex gap-2">
               <Input
                 type="color"
-                value={localTheme.backgroundColor}
+                value={theme.backgroundColor}
                 onChange={(e) => handleChange({ backgroundColor: e.target.value })}
                 className="w-16 h-10 p-1 cursor-pointer"
               />
               <Input
                 type="text"
-                value={localTheme.backgroundColor}
+                value={theme.backgroundColor}
                 onChange={(e) => handleChange({ backgroundColor: e.target.value })}
                 placeholder="#FFFFFF"
               />
@@ -187,12 +181,12 @@ export default function FormThemePanel({ theme, onThemeChange }: FormThemePanelP
           </div>
         )}
 
-        {localTheme.backgroundType === "image" && (
+        {theme.backgroundType === "image" && (
           <div className="space-y-2">
-            <Label>Background Image URL</Label>
+            <Label>{t('builder.theme.bg_image', 'Background Image URL')}</Label>
             <Input
               type="url"
-              value={localTheme.backgroundImage || ""}
+              value={theme.backgroundImage || ""}
               onChange={(e) => handleChange({ backgroundImage: e.target.value })}
               placeholder="https://example.com/image.jpg"
             />
@@ -202,22 +196,22 @@ export default function FormThemePanel({ theme, onThemeChange }: FormThemePanelP
           </div>
         )}
 
-        {localTheme.backgroundType === "gradient" && (
+        {theme.backgroundType === "gradient" && (
           <div className="space-y-2">
-            <Label>Gradient Colors</Label>
+            <Label>{t('builder.theme.bg_gradient', 'Gradient Colors')}</Label>
             <div className="flex gap-2">
               <div className="flex-1">
                 <Label className="text-xs">From</Label>
                 <div className="flex gap-2">
                   <Input
                     type="color"
-                    value={localTheme.backgroundColor}
+                    value={theme.backgroundColor}
                     onChange={(e) => handleChange({ backgroundColor: e.target.value })}
                     className="w-12 h-10 p-1 cursor-pointer"
                   />
                   <Input
                     type="text"
-                    value={localTheme.backgroundColor}
+                    value={theme.backgroundColor}
                     onChange={(e) => handleChange({ backgroundColor: e.target.value })}
                     className="flex-1"
                   />
@@ -228,13 +222,13 @@ export default function FormThemePanel({ theme, onThemeChange }: FormThemePanelP
                 <div className="flex gap-2">
                   <Input
                     type="color"
-                    value={localTheme.primaryColor}
+                    value={theme.primaryColor}
                     onChange={(e) => handleChange({ primaryColor: e.target.value })}
                     className="w-12 h-10 p-1 cursor-pointer"
                   />
                   <Input
                     type="text"
-                    value={localTheme.primaryColor}
+                    value={theme.primaryColor}
                     onChange={(e) => handleChange({ primaryColor: e.target.value })}
                     className="flex-1"
                   />
@@ -244,67 +238,70 @@ export default function FormThemePanel({ theme, onThemeChange }: FormThemePanelP
           </div>
         )}
 
-        {/* Text Color */}
+        { }
         <div className="space-y-2">
-          <Label>Text Color</Label>
+          <Label>{t('builder.theme.text_color', 'Text Color')}</Label>
           <div className="flex gap-2">
             <Input
               type="color"
-              value={localTheme.textColor}
+              value={theme.textColor}
               onChange={(e) => handleChange({ textColor: e.target.value })}
               className="w-16 h-10 p-1 cursor-pointer"
             />
             <Input
               type="text"
-              value={localTheme.textColor}
+              value={theme.textColor}
               onChange={(e) => handleChange({ textColor: e.target.value })}
               placeholder="#1F2937"
             />
           </div>
         </div>
 
-        {/* Button Style */}
+        { }
         <div className="space-y-2">
-          <Label>Button Style</Label>
+          <Label>{t('builder.theme.btn_style', 'Button Style')}</Label>
           <Select
-            value={localTheme.buttonStyle}
+            key={`btn-style-${theme.buttonStyle}`}
+            value={theme.buttonStyle}
             onValueChange={(value) => handleChange({ buttonStyle: value as "filled" | "outlined" | "ghost" })}
           >
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="filled">Filled</SelectItem>
-              <SelectItem value="outlined">Outlined</SelectItem>
-              <SelectItem value="ghost">Ghost</SelectItem>
+              <SelectItem value="filled">{t('builder.theme.btn_filled', 'Filled')}</SelectItem>
+              <SelectItem value="outlined">{t('builder.theme.btn_outlined', 'Outlined')}</SelectItem>
+              <SelectItem value="ghost">{t('builder.theme.btn_ghost', 'Ghost')}</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
-        {/* Border Radius */}
+        { }
         <div className="space-y-2">
-          <Label>Border Radius</Label>
+          <Label>{t('builder.theme.border_radius', 'Border Radius')}</Label>
           <Select
-            value={localTheme.borderRadius}
+            key={`border-${theme.borderRadius}`}
+            value={theme.borderRadius}
             onValueChange={(value) => handleChange({ borderRadius: value as "none" | "small" | "medium" | "large" })}
           >
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="none">None</SelectItem>
-              <SelectItem value="small">Small</SelectItem>
-              <SelectItem value="medium">Medium</SelectItem>
-              <SelectItem value="large">Large</SelectItem>
+              <SelectItem value="none">{t('builder.theme.radius_none', 'None')}</SelectItem>
+              <SelectItem value="small">{t('builder.theme.radius_small', 'Small')}</SelectItem>
+              <SelectItem value="medium">{t('builder.theme.radius_medium', 'Medium')}</SelectItem>
+              <SelectItem value="large">{t('builder.theme.radius_large', 'Large')}</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
-        {/* Font Family */}
+        { }
         <div className="space-y-2">
-          <Label>Font Family</Label>
+          <Label>{t('builder.theme.font_family', 'Font Family')}</Label>
           <Select
-            value={localTheme.fontFamily}
+            key={`font-${theme.fontFamily}`}
+            value={theme.fontFamily}
             onValueChange={(value) => handleChange({ fontFamily: value })}
           >
             <SelectTrigger>

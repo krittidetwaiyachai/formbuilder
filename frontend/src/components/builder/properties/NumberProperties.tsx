@@ -9,11 +9,14 @@ interface NumberPropertiesProps {
   onUpdate: (updates: Partial<Field>) => void;
 }
 
+import { useTranslation } from "react-i18next";
+
 export default function NumberProperties({ element, onUpdate }: NumberPropertiesProps) {
+  const { t } = useTranslation();
   return (
     <>
       <div className="space-y-2">
-        <Label>Min</Label>
+        <Label>{t('builder.properties.min_value', 'Min')}</Label>
         <Input
           type="number"
           value={element.min || ""}
@@ -21,7 +24,7 @@ export default function NumberProperties({ element, onUpdate }: NumberProperties
         />
       </div>
       <div className="space-y-2">
-        <Label>Max</Label>
+        <Label>{t('builder.properties.max_value', 'Max')}</Label>
         <Input
           type="number"
           value={element.max || ""}

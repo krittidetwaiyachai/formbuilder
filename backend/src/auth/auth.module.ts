@@ -16,12 +16,21 @@ import { EventsModule } from '../events/events.module';
     PassportModule,
     JwtModule.registerAsync({
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET') || 'secret',
-        signOptions: {
-          expiresIn: configService.get<string>('JWT_EXPIRES_IN') || '7d',
-        },
-      }),
+      useFactory: (configService: ConfigService) => {
+        const secret = configService.get<string>('JWT_SECRET');
+        if (!secret) {
+          if (process.env.NODE_ENV === 'production') {
+            throw new Error('JWT_SECRET environment variable is not defined!');
+          }
+          console.warn('WARNING: JWT_SECRET is not defined, using default insecure secret');
+        }
+        return {
+          secret: secret || 'secret',
+          signOptions: {
+            expiresIn: configService.get<string>('JWT_EXPIRES_IN') || '7d',
+          },
+        };
+      },
     }),
   ],
   controllers: [AuthController],

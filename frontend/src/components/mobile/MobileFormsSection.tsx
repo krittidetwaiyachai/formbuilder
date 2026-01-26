@@ -30,14 +30,14 @@ export default function MobileFormsSection({
   const navigate = useNavigate();
   const [selectedForm, setSelectedForm] = useState<{ id: string; title: string } | null>(null);
   
-  // Pull to Refresh State
+  
   const [startY, setStartY] = useState(0);
   const [pullDistance, setPullDistance] = useState(0);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    // Check if we are at the top of the container
+    
     if (containerRef.current && containerRef.current.scrollTop <= 0) {
       setStartY(e.touches[0].clientY);
     }
@@ -48,9 +48,9 @@ export default function MobileFormsSection({
       const currentY = e.touches[0].clientY;
       const diff = currentY - startY;
       if (diff > 0) {
-        // Prevent default only if we are actually pulling to refresh to avoid interfering with normal scroll interactively?
-        // Actually, just capturing the pull distance is enough usually.
-        setPullDistance(Math.min(diff * 0.4, 80)); // Resistance
+        
+        
+        setPullDistance(Math.min(diff * 0.4, 80)); 
       }
     }
   };
@@ -58,7 +58,7 @@ export default function MobileFormsSection({
   const handleTouchEnd = async () => {
     if (pullDistance > 60 && onRefresh) {
       setIsRefreshing(true);
-      setPullDistance(0); // Snap back or keep slightly visible?
+      setPullDistance(0); 
       try {
         await onRefresh();
       } finally {
@@ -79,7 +79,7 @@ export default function MobileFormsSection({
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
-      {/* Pull Indicator */}
+      { }
       <div 
         className="flex justify-center items-center overflow-hidden transition-all duration-200"
         style={{ height: isRefreshing ? 50 : pullDistance, opacity: pullDistance / 60 }}

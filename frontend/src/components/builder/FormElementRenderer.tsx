@@ -81,7 +81,7 @@ export default function FormElementRenderer({
     }, [isDesigner, isSelected]);
     const [labelMarkup] = useState({ __html: element.label || "Label" });
 
-    // Sync content changes from outside (e.g. undo/redo)
+    
     useEffect(() => {
       if (labelRef.current && document.activeElement !== labelRef.current) {
         if (labelRef.current.textContent !== element.label) {
@@ -260,11 +260,11 @@ export default function FormElementRenderer({
           </div>
         );
 
-      /* File type not supported yet */
+       
 
 
 
-      /* Removed file block */
+       
       case FieldType.RATE:
         return (
           <div className="space-y-2">
@@ -308,58 +308,58 @@ export default function FormElementRenderer({
         };
 
         const handleHeadingKeyDown = (e: React.KeyboardEvent<HTMLHeadingElement>) => {
-          // Prevent Enter from creating a new line, just blur instead
+          
           if (e.key === "Enter") {
             e.preventDefault();
             e.currentTarget.blur();
           }
-          // Stop propagation to prevent card onClick
+          
           e.stopPropagation();
         };
 
 
 
         const handleHeadingMouseDown = (e: React.MouseEvent<HTMLHeadingElement>) => {
-          // Stop propagation to prevent card onClick
+          
           e.stopPropagation();
-          // Don't preventDefault - let browser handle focus naturally
+          
         };
 
         const handleHeadingInput = (e: React.FormEvent<HTMLHeadingElement>) => {
-          // Stop propagation to prevent any parent handlers
+          
           e.stopPropagation();
-          // Prevent React from updating the content
+          
           isEditingRef.current = true;
         };
 
         const handleHeadingBeforeInput = (_e: React.FormEvent<HTMLHeadingElement>) => {
-          // Mark as editing to prevent React from interfering
+          
           isEditingRef.current = true;
         };
 
-        // Store content in ref to track what we set vs what React might try to set
+        
         const headingContentRef = useRef<string>(element.label || "Heading");
         const headingInitializedRef = useRef(false);
         
-        // Reset initialization flag when selection changes
+        
         useEffect(() => {
           if (!isSelected) {
             headingInitializedRef.current = false;
           }
         }, [isSelected]);
         
-        // Set content via ref callback - this runs synchronously during render
+        
 
 
-        // Auto-focus when selected and enforce it
+        
         useEffect(() => {
           if (headingRef.current && isDesigner && isSelected && !isEditingRef.current) {
              const element = headingRef.current;
              
-             // Initial focus
+             
              element.focus();
              
-             // Ensure cursor at end
+             
              const setCursorToEnd = () => {
                 const range = document.createRange();
                 const sel = window.getSelection();
@@ -372,7 +372,7 @@ export default function FormElementRenderer({
              };
              setCursorToEnd();
 
-             // Re-focus helper if lost immediately (e.g. by dnd-kit or other handlers)
+             
              const checkFocus = setTimeout(() => {
                 if (document.activeElement !== element) {
                    element.focus();
@@ -384,9 +384,9 @@ export default function FormElementRenderer({
           }
         }, [isDesigner, isSelected]);
 
-        // Helper variables
-        // We use useState to keep the dangerouslySetInnerHTML prop stable across renders
-        // This prevents React from updating the DOM on every keystroke (which kills cursor)
+        
+        
+        
         const [headingMarkup] = useState(() => {
           const content = element.label || "Heading";
           return {
@@ -566,7 +566,7 @@ export default function FormElementRenderer({
           };
         });
 
-        // Sync content changes from outside (e.g. undo/redo)
+        
         useEffect(() => {
           if (paragraphRef.current && document.activeElement !== paragraphRef.current) {
              const currentContent = element.label || "Paragraph";
@@ -576,13 +576,13 @@ export default function FormElementRenderer({
           }
         }, [element.label]);
 
-        // Force focus on selection change
+        
         useEffect(() => {
           if (paragraphRef.current && isDesigner && isSelected) {
              const element = paragraphRef.current;
              if (document.activeElement !== element) {
                 element.focus({ preventScroll: true });
-                // Ensure cursor at end
+                
                 const selection = window.getSelection();
                 const range = document.createRange();
                 range.selectNodeContents(element);

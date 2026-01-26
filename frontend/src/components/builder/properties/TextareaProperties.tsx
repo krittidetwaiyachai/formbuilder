@@ -9,10 +9,13 @@ interface TextareaPropertiesProps {
   onUpdate: (updates: Partial<Field>) => void;
 }
 
+import { useTranslation } from "react-i18next";
+
 export default function TextareaProperties({ element, onUpdate }: TextareaPropertiesProps) {
+  const { t } = useTranslation();
   return (
     <div className="space-y-2">
-      <Label>Rows</Label>
+      <Label>{t('builder.properties.rows', 'Rows')}</Label>
       <Input
         type="number"
         value={element.rows || 4}

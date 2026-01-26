@@ -62,7 +62,7 @@ export default function SubmissionDetailPage({ params }: { params: { id: string 
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main Content */}
+        { }
         <div className="lg:col-span-2 space-y-6">
           <Card>
             <CardHeader>
@@ -98,7 +98,7 @@ export default function SubmissionDetailPage({ params }: { params: { id: string 
           </Card>
         </div>
 
-        {/* Sidebar */}
+        { }
         <div className="space-y-6">
           <Card>
             <CardHeader>

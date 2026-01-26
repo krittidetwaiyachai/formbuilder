@@ -3,7 +3,7 @@ export interface User {
   name: string;
   email: string;
   avatar?: string;
-  color: string; // For avatar background
+  color: string; 
 }
 
 export interface ActivityLog {

@@ -10,10 +10,12 @@ interface QuizAnswerPopupProps {
   onClose: () => void;
 }
 
+import { useTranslation } from 'react-i18next';
 export default function QuizAnswerPopup({ field, currentForm, allFields, onUpdate, onClose }: QuizAnswerPopupProps) {
+  const { t } = useTranslation();
   const popupRef = useRef<HTMLDivElement>(null);
 
-  // Calculate remaining score
+  
   const totalScore = currentForm?.quizSettings?.totalScore || 100;
   const usedScore = allFields
     .filter(f => f.id !== field.id)
@@ -62,19 +64,19 @@ export default function QuizAnswerPopup({ field, currentForm, allFields, onUpdat
     if (field.type === FieldType.RADIO || field.type === FieldType.DROPDOWN) {
       if (!field.options || field.options.length === 0) {
         return (
-          <p className="text-sm text-gray-600">No options available. Add options first.</p>
+          <p className="text-sm text-gray-600">{t('builder.quiz.no_options')}</p>
         );
       }
 
       return (
         <div>
-          <p className="text-sm font-medium text-gray-900 mb-2">Select correct option:</p>
+          <p className="text-sm font-medium text-gray-900 mb-2">{t('builder.quiz.select_correct_option')}</p>
           <select
             value={field.correctAnswer || ''}
             onChange={(e) => onUpdate(field.id, { correctAnswer: e.target.value })}
             className="w-full px-3 py-2 border border-gray-800 rounded-lg bg-white focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
           >
-            <option value="">-- Select correct option --</option>
+            <option value="">{t('builder.quiz.select_option_placeholder')}</option>
             {field.options.map((opt: any, idx: number) => (
               <option key={idx} value={opt.value}>
                 {opt.label}
@@ -88,7 +90,7 @@ export default function QuizAnswerPopup({ field, currentForm, allFields, onUpdat
     if (field.type === FieldType.CHECKBOX) {
       if (!field.options || field.options.length === 0) {
         return (
-          <p className="text-sm text-gray-600">No options available. Add options first.</p>
+          <p className="text-sm text-gray-600">{t('builder.quiz.no_options')}</p>
         );
       }
 
@@ -96,7 +98,7 @@ export default function QuizAnswerPopup({ field, currentForm, allFields, onUpdat
 
       return (
         <div>
-          <p className="text-sm font-medium text-gray-900 mb-2">Select all correct options:</p>
+          <p className="text-sm font-medium text-gray-900 mb-2">{t('builder.quiz.select_all_correct')}</p>
           <div className="space-y-2 max-h-48 overflow-y-auto">
             {field.options.map((opt: any, idx: number) => {
               const isChecked = correctAnswers.includes(opt.value);
@@ -120,22 +122,22 @@ export default function QuizAnswerPopup({ field, currentForm, allFields, onUpdat
       );
     }
 
-    // Text / Long Text / Number fields
+    
     return (
       <div>
-        <p className="text-sm font-medium text-gray-900 mb-2">Enter correct answer(s):</p>
+        <p className="text-sm font-medium text-gray-900 mb-2">{t('builder.quiz.enter_correct')}</p>
         <input
           type="text"
           value={field.correctAnswer || ''}
           onChange={(e) => onUpdate(field.id, { correctAnswer: e.target.value })}
-          placeholder="e.g., Bangkok, กรุงเทพ, กรุงเทพมหานคร"
+          placeholder={t('builder.quiz.text_placeholder')}
           className="w-full px-3 py-2 border border-gray-800 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
           onKeyDown={(e) => {
             e.stopPropagation();
           }}
         />
         <p className="text-xs text-gray-700 mt-2">
-          💡 Separate multiple acceptable answers with commas. Any of these will be marked as correct.
+          {t('builder.quiz.text_hint')}
         </p>
       </div>
     );
@@ -150,21 +152,21 @@ export default function QuizAnswerPopup({ field, currentForm, allFields, onUpdat
       <div className="flex items-center justify-between mb-3">
         <h3 className="font-bold text-gray-900 flex items-center gap-2">
           <span className="text-lg">🎯</span>
-          Quiz Settings
+          {t('builder.quiz.settings_title')}
         </h3>
         <button
           onClick={onClose}
           className="p-1 hover:bg-yellow-400 rounded transition-colors"
-          title="Close (Esc)"
+          title={t('builder.quiz.close')}
         >
           <X className="w-5 h-5 text-gray-900" />
         </button>
       </div>
 
-      {/* Score Input */}
+      { }
       <div className="mb-4 pb-4 border-b border-yellow-500">
         <label className="block text-sm font-medium text-gray-900 mb-2">
-          Score
+          {t('builder.quiz.score_label')}
         </label>
         <input
           type="number"
@@ -181,15 +183,15 @@ export default function QuizAnswerPopup({ field, currentForm, allFields, onUpdat
         />
         <div className="mt-2 flex items-center justify-between text-xs">
           <span className="text-gray-900 font-medium">
-            Remaining: <span className="font-bold">{remainingScore}</span> / {totalScore}
+            {t('builder.quiz.remaining_score')} <span className="font-bold">{remainingScore}</span> / {totalScore}
           </span>
           {remainingScore < 0 && (
-            <span className="text-red-700 font-semibold">⚠️ Exceeded!</span>
+            <span className="text-red-700 font-semibold">{t('builder.quiz.exceeded_warning')}</span>
           )}
         </div>
       </div>
 
-      {/* Correct Answer Section */}
+      { }
       {renderAnswerSelector()}
     </div>
   );

@@ -1,5 +1,5 @@
-// Run this script to unregister all service workers
-// Open browser console and paste this code, or add to your app
+
+
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.getRegistrations().then(function(registrations) {
@@ -14,7 +14,7 @@ if ('serviceWorker' in navigator) {
     }
   });
   
-  // Also clear all caches
+  
   caches.keys().then(function(cacheNames) {
     return Promise.all(
       cacheNames.map(function(cacheName) {

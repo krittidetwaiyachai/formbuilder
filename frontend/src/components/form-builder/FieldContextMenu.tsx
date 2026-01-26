@@ -13,6 +13,7 @@ import {
   Trash2,
   Layers
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Field, FieldType } from '@/types';
 import { useFormStore } from '@/store/formStore';
 
@@ -20,9 +21,11 @@ interface FieldContextMenuProps {
   field: Field;
   position: { x: number; y: number };
   onClose: () => void;
+  onDelete: () => void;
 }
 
-export function FieldContextMenu({ field, position, onClose }: FieldContextMenuProps) {
+export function FieldContextMenu({ field, position, onClose, onDelete }: FieldContextMenuProps) {
+  const { t } = useTranslation();
   const menuRef = useRef<HTMLDivElement>(null);
   const updateField = useFormStore((state) => state.updateField);
   const duplicateField = useFormStore((state) => state.duplicateField);
@@ -38,7 +41,7 @@ export function FieldContextMenu({ field, position, onClose }: FieldContextMenuP
   const isMultiSelect = additionalSelectedIds.length > 0 && 
                         (selectedFieldId === field.id || additionalSelectedIds.includes(field.id));
 
-  // Close on click outside
+  
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -49,7 +52,7 @@ export function FieldContextMenu({ field, position, onClose }: FieldContextMenuP
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [onClose]);
 
-  // Adjust position to stay within viewport
+  
   const style: React.CSSProperties = {
     top: position.y,
     left: position.x,
@@ -64,10 +67,10 @@ export function FieldContextMenu({ field, position, onClose }: FieldContextMenuP
     if (!currentForm?.fields) return;
 
     const idsToGroup = [selectedFieldId, ...additionalSelectedIds].filter(Boolean) as string[];
-    // Ensure the clicked field is included if somehow not selected (though handled by CanvasArea)
+    
     if (!idsToGroup.includes(field.id)) idsToGroup.push(field.id);
 
-    // Get actual field objects sorted by current order
+    
     const fieldsToGroup = currentForm.fields
         .filter(f => idsToGroup.includes(f.id))
         .sort((a, b) => a.order - b.order);
@@ -76,7 +79,7 @@ export function FieldContextMenu({ field, position, onClose }: FieldContextMenuP
 
     const minOrder = fieldsToGroup[0].order;
 
-    // Create new Group Field
+    
     const newGroupId = crypto.randomUUID();
     const groupField: Field = {
         id: newGroupId,
@@ -88,67 +91,67 @@ export function FieldContextMenu({ field, position, onClose }: FieldContextMenuP
         options: { collapsible: true }
     };
 
-    // Update existing fields (modify groupId) and Insert Group Field
+    
     const newFields = currentForm.fields.map(f => {
         if (idsToGroup.includes(f.id)) {
             return { ...f, groupId: newGroupId };
         }
-        // Shift fields that were below group (if any) - simplified, 
-        // actually inserting at minOrder merely pushes indices?
-        // Let's insert the group and update valid fields.
+        
+        
+        
         return f;
     });
 
-    // Insert Group Field at minOrder
-    // Careful: if we just insert, we shift indices.
-    // The previous fields still exist but are now children (hidden from top level).
-    // So inserting at minOrder works fine visually.
+    
+    
+    
+    
     newFields.splice(minOrder, 0, groupField);
 
-    // Re-index all (cleanest approach)
+    
     newFields.forEach((f, i) => f.order = i);
 
     updateForm({ fields: newFields });
-    selectField(newGroupId); // Select the new group
+    selectField(newGroupId); 
   };
 
   const menuItems = [
     ...(isMultiSelect ? [
       {
           icon: <Layers className="w-4 h-4 text-gray-700" />,
-          label: 'Group',
+          label: t('builder.context.group'),
           onClick: handleGroupFields,
       }
     ] : []),
     {
       icon: <Asterisk className="w-4 h-4 text-gray-700" />,
-      label: field.required ? 'Optional' : 'Require',
+      label: field.required ? t('builder.context.optional') : t('builder.context.require'),
       onClick: () => updateField(field.id, { required: !field.required }),
     },
     {
       icon: <Copy className="w-4 h-4 text-gray-700" />,
-      label: 'Duplicate',
+      label: t('builder.context.duplicate'),
       onClick: () => duplicateField(field.id),
     },
     {
       icon: field.shrink ? <ArrowRightFromLine className="w-4 h-4 text-gray-700" /> : <ArrowLeftFromLine className="w-4 h-4 text-gray-700" />,
-      label: field.shrink ? 'Unshrink' : 'Shrink',
+      label: field.shrink ? t('builder.context.unshrink') : t('builder.context.shrink'),
       onClick: () => updateField(field.id, { shrink: !field.shrink }),
     },
     {
       icon: <EyeOff className="w-4 h-4 text-gray-700" />,
-      label: (field.options?.hidden) ? 'Unhide' : 'Hide',
+      label: (field.options?.hidden) ? t('builder.context.unhide') : t('builder.context.hide'),
       onClick: () => {
         updateField(field.id, { 
             options: { ...field.options, hidden: !field.options?.hidden } 
         });
       },
     },
-    /* Divider */
+     
     { type: 'divider' },
     {
       icon: <ArrowUp className="w-4 h-4 text-gray-700" />,
-      label: 'Move Up',
+      label: t('builder.context.move_up'),
       onClick: () => {
         if (!currentForm?.fields) return;
         const currentIndex = currentForm.fields.findIndex(f => f.id === field.id);
@@ -159,7 +162,7 @@ export function FieldContextMenu({ field, position, onClose }: FieldContextMenuP
     },
     {
       icon: <ArrowDown className="w-4 h-4 text-gray-700" />,
-      label: 'Move Down',
+      label: t('builder.context.move_down'),
       onClick: () => {
         if (!currentForm?.fields) return;
         const currentIndex = currentForm.fields.findIndex(f => f.id === field.id);
@@ -170,7 +173,7 @@ export function FieldContextMenu({ field, position, onClose }: FieldContextMenuP
     },
     {
         icon: <ArrowUpToLine className="w-4 h-4 text-gray-700" />,
-        label: 'Move to Start',
+        label: t('builder.context.move_start'),
         onClick: () => {
             if (!currentForm?.fields) return;
             const currentIndex = currentForm.fields.findIndex(f => f.id === field.id);
@@ -181,7 +184,7 @@ export function FieldContextMenu({ field, position, onClose }: FieldContextMenuP
     },
     {
         icon: <ArrowDownToLine className="w-4 h-4 text-gray-700" />,
-        label: 'Move to End',
+        label: t('builder.context.move_end'),
         onClick: () => {
             if (!currentForm?.fields) return;
             const currentIndex = currentForm.fields.findIndex(f => f.id === field.id);
@@ -190,26 +193,24 @@ export function FieldContextMenu({ field, position, onClose }: FieldContextMenuP
             }
         },
     },
-    /* Divider */
+     
     { type: 'divider' },
-    // Show Logic only if NOT Multi-select
+    
     ...(!isMultiSelect ? [{
       icon: <GitFork className="w-4 h-4 text-gray-700" />,
-      label: 'Conditional logic',
+      label: t('builder.context.logic'),
       onClick: () => {
           selectField(field.id);
           setActiveSidebarTab('logic');
       },
     }] : []),
-    /* Divider */
+     
     { type: 'divider' },
     {
       icon: <Trash2 className="w-4 h-4 text-red-500" />,
-      label: 'Delete',
+      label: t('builder.context.delete'),
       onClick: () => {
-        if (confirm('Are you sure you want to delete this field?')) {
-             deleteField(field.id);
-        }
+        onDelete();
       },
     },
   ];

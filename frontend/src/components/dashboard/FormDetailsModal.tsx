@@ -49,7 +49,7 @@ export default function FormDetailsModal({ form, onClose, onRequestLogin, onOpen
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               className="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden pointer-events-auto flex flex-col max-h-[90vh]"
             >
-              {/* Header */}
+              { }
               <div className="flex items-start justify-between p-6 border-b border-gray-100 bg-gray-50/50">
                 <div className="pr-8">
                   <div className="flex items-center gap-2 mb-2">
@@ -80,7 +80,7 @@ export default function FormDetailsModal({ form, onClose, onRequestLogin, onOpen
                 </button>
               </div>
 
-              {/* Scrollable Content */}
+              { }
               <div className="p-6 overflow-y-auto custom-scrollbar">
                 <div className="prose prose-sm max-w-none text-gray-600 mb-8 break-words whitespace-pre-wrap">
                   {form.description || <span className="italic text-gray-400">{t('dashboard.form.no_description')}</span>}
@@ -129,9 +129,9 @@ export default function FormDetailsModal({ form, onClose, onRequestLogin, onOpen
                 </div>
               </div>
 
-              {/* Footer */}
+              { }
               <div className="p-4 border-t border-gray-100 bg-gray-50/50 flex flex-col sm:flex-row items-center justify-between gap-4">
-                {/* Collaborators */}
+                { }
                 <div 
                   className="flex items-center gap-2 cursor-pointer hover:opacity-75 transition-opacity"
                   onClick={onOpenCollaborators}
@@ -154,7 +154,7 @@ export default function FormDetailsModal({ form, onClose, onRequestLogin, onOpen
                     )}
                 </div>
 
-                {/* Actions */}
+                { }
                 <div className="flex items-center gap-2 w-full sm:w-auto">
                     <button
                         onClick={() => {

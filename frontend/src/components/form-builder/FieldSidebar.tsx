@@ -36,8 +36,8 @@ import {
 } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import Loader from '@/components/common/Loader';
 
-// --- CONFIGURATION ---
 interface SidebarFieldConfig {
   type: FieldType;
   label: string;
@@ -50,11 +50,11 @@ const fieldCategories: { name: string; fields: SidebarFieldConfig[] }[] = [
   {
     name: 'Text Fields',
     fields: [
-      { type: FieldType.TEXT, label: 'Short Text', icon: Type, options: { subLabel: 'Sublabel' } },
+      { type: FieldType.TEXT, label: 'Short Text', icon: Type },
       { type: FieldType.EMAIL, label: 'Email', icon: Mail },
       { type: FieldType.PHONE, label: 'Phone', icon: Phone },
       { type: FieldType.NUMBER, label: 'Number', icon: Hash },
-      { type: FieldType.TEXTAREA, label: 'Long Text', icon: FileText, options: { subLabel: 'Sublabel' } },
+      { type: FieldType.TEXTAREA, label: 'Long Text', icon: FileText },
       { type: FieldType.FULLNAME, label: 'Full Name', icon: User },
       { type: FieldType.ADDRESS, label: 'Address', icon: MapPin, options: { stateInputType: 'text' } },
     ],
@@ -104,12 +104,10 @@ const fieldCategories: { name: string; fields: SidebarFieldConfig[] }[] = [
       { type: FieldType.GROUP, label: 'Field Group', icon: Layers },
     ],
   },
-  // Template Popup Button implemented separately below
 ];
 
 const allFields = fieldCategories.flatMap(c => c.fields);
 
-// Hook for translations
 const useFieldLabels = () => {
   const { t } = useTranslation();
   return {
@@ -138,12 +136,34 @@ const useFieldLabels = () => {
     'Separator': t('builder.fields.separator'),
     'Page Break': t('builder.fields.page_break'),
     'Field Group': t('builder.fields.group'),
+    
+    'Type here...': t('builder.sidebar.type_here'),
+    'Select option': t('builder.sidebar.select_option'),
+    'Pick a date': t('builder.sidebar.pick_date'),
+    'Pick a time': t('builder.sidebar.pick_time'),
+    'Option 1': t('builder.sidebar.option_1'),
+    'Submit': t('builder.sidebar.submit'),
+    'PAGE BREAK': t('builder.sidebar.page_break'),
+    'Column': t('builder.sidebar.column'),
   };
 };
 
-// --- COMPONENTS ---
+const useIsTouchDevice = () => {
+    const [isTouch, setIsTouch] = React.useState(false);
+    React.useEffect(() => {
+        if (typeof window === 'undefined') return;
+        const checkTouch = () => {
+            return (
+                ('ontouchstart' in window) ||
+                (navigator.maxTouchPoints > 0) ||
+                (window.matchMedia('(hover: none) and (pointer: coarse)').matches)
+            );
+        };
+        setIsTouch(checkTouch());
+    }, []);
+    return isTouch;
+};
 
-// --- HELPERS ---
 const getFieldColorTheme = (type: FieldType) => {
     switch (type) {
         case FieldType.TEXT: 
@@ -179,17 +199,10 @@ const getFieldColorTheme = (type: FieldType) => {
     }
 };
 
-// --- COMPONENTS ---
-
-// 1. The Dragging Preview Card
 function SidebarDragPreview({ fieldType }: { fieldType: typeof allFields[0] }) {
     const Icon = fieldType.icon;
     const theme = getFieldColorTheme(fieldType.type);
-    
-    // Mapping theme legacy check for sidebar preview specific styles if needed, 
-    // but reusing the extracted theme logic for consistency where possible or keeping distinct drag styles.
-    // We'll map the new theme structure to the old component's expectations or update the component.
-    // The old component used specific hardcoded returns. Let's keep using the new theme for consistency.
+    const { t } = useTranslation();
 
     const renderPreview = () => {
         const commonInput = "w-full h-9 bg-white rounded border border-gray-200 px-3 flex items-center text-xs text-gray-400 select-none";
@@ -197,19 +210,19 @@ function SidebarDragPreview({ fieldType }: { fieldType: typeof allFields[0] }) {
              case FieldType.TEXT:
             case FieldType.EMAIL:
             case FieldType.FULLNAME:
-                return <div className={commonInput}>Type here...</div>;
+                return <div className={commonInput}>{t('builder.sidebar.type_here')}</div>;
             case FieldType.ADDRESS:
-                return <div className={commonInput}>Address</div>;
+                return <div className={commonInput}>{t('builder.sidebar.address')}</div>;
             case FieldType.NUMBER:
                 return <div className={commonInput}>0</div>;
             case FieldType.PHONE:
                 return <div className={commonInput + " text-gray-300 tracking-wider"}>(555) 000-0000</div>;
             case FieldType.TEXTAREA:
-                return <div className={commonInput}>Long Text</div>;
+                return <div className={commonInput}>{t('builder.sidebar.long_text')}</div>;
             case FieldType.DROPDOWN:
                 return (
                     <div className={commonInput + " justify-between"}>
-                        <span>Select option</span>
+                        <span>{t('builder.sidebar.select_option')}</span>
                         <ChevronDown className="h-3 w-3" />
                     </div>
                 );
@@ -217,7 +230,7 @@ function SidebarDragPreview({ fieldType }: { fieldType: typeof allFields[0] }) {
             case FieldType.TIME:
                 return (
                         <div className={commonInput + " justify-between"}>
-                        <span>{fieldType.type === FieldType.DATE ? 'Pick a date' : 'Pick a time'}</span>
+                        <span>{fieldType.type === FieldType.DATE ? t('builder.sidebar.pick_date') : t('builder.sidebar.pick_time')}</span>
                         <Icon className="h-3 w-3" />
                     </div>
                 );
@@ -225,7 +238,7 @@ function SidebarDragPreview({ fieldType }: { fieldType: typeof allFields[0] }) {
                 return (
                     <div className="flex items-center gap-2 text-gray-500">
                         <div className="w-4 h-4 rounded-full border border-gray-300 bg-white shadow-sm"></div>
-                        <span className="text-xs">Option 1</span>
+                        <span className="text-xs">{t('builder.sidebar.option_1')}</span>
                     </div>
                 );
             case FieldType.MATRIX:
@@ -242,7 +255,7 @@ function SidebarDragPreview({ fieldType }: { fieldType: typeof allFields[0] }) {
                 return (
                     <div className="flex items-center gap-2 text-gray-500">
                         <div className="w-4 h-4 rounded border border-gray-300 bg-white shadow-sm"></div>
-                        <span className="text-xs">Option 1</span>
+                        <span className="text-xs">{t('builder.sidebar.option_1')}</span>
                     </div>
                 );
             case FieldType.RATE:
@@ -261,11 +274,11 @@ function SidebarDragPreview({ fieldType }: { fieldType: typeof allFields[0] }) {
                     </div>
                 );
             case FieldType.SUBMIT:
-                return <div className="w-24 h-9 bg-black rounded-md text-white flex items-center justify-center text-sm font-medium shadow-sm">Submit</div>;
+                return <div className="w-24 h-9 bg-black rounded-md text-white flex items-center justify-center text-sm font-medium shadow-sm">{t('builder.sidebar.submit')}</div>;
             case FieldType.PAGE_BREAK:
-                return <div className="w-full border-b border-dashed border-gray-300 text-center text-[10px] text-gray-400">PAGE BREAK</div>;
+                return <div className="w-full border-b border-dashed border-gray-300 text-center text-[10px] text-gray-400">{t('builder.sidebar.page_break')}</div>;
             default:
-                return <div className={commonInput}>{fieldType.type} Field</div>;
+                return <div className={commonInput}>{t('builder.sidebar.type_field', { type: fieldType.type })}</div>;
         }
     };
 
@@ -288,7 +301,6 @@ function SidebarDragPreview({ fieldType }: { fieldType: typeof allFields[0] }) {
     );
 }
 
-// 2. The Visual Representation of the Button (Shared)
 const FieldTypeButtonVisual = ({ fieldType, isCollapsed, variant = 'list' }: { fieldType: any, isCollapsed?: boolean, variant?: 'list' | 'grid' }) => {
     const labels = useFieldLabels();
     const Icon = fieldType.icon;
@@ -330,10 +342,10 @@ const FieldTypeButtonVisual = ({ fieldType, isCollapsed, variant = 'list' }: { f
     );
 }
 
-// 3. The Draggable Wrapper (Unchanged for standard fields)
-function FieldTypeButton({ fieldType, isCollapsed, onFieldAdd, variant }: { fieldType: { type: FieldType; label: string; icon: any; options?: any; validation?: any }, isCollapsed?: boolean, onFieldAdd?: () => void, variant?: 'list' | 'grid' }) {
+function FieldTypeButton({ fieldType, isCollapsed, onFieldAdd, variant, isTouch }: { fieldType: { type: FieldType; label: string; icon: any; options?: any; validation?: any }, isCollapsed?: boolean, onFieldAdd?: () => void, variant?: 'list' | 'grid', isTouch?: boolean }) {
   const { addField } = useFormStore();
   const index = allFields.indexOf(fieldType as any); 
+
   
   const handleDoubleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -348,94 +360,74 @@ function FieldTypeButton({ fieldType, isCollapsed, onFieldAdd, variant }: { fiel
     onFieldAdd?.();
   };
 
-  // For grid (mobile), disable drag completely. Just tap to add.
-  // We use custom pointer handling to support "Long Press & Release" without triggering context menu or getting lost.
-  const pointerRef = React.useRef<{ x: number, y: number } | null>(null);
-
-  if (variant === 'grid') {
-      return (
-          <div 
-            onPointerDown={(e) => {
-                pointerRef.current = { x: e.clientX, y: e.clientY };
-            }}
-            onPointerUp={(e) => {
-                if (!pointerRef.current) return;
-                const dist = Math.sqrt(
-                    Math.pow(e.clientX - pointerRef.current.x, 2) + 
-                    Math.pow(e.clientY - pointerRef.current.y, 2)
-                );
-                pointerRef.current = null;
-                
-                // If moved less than 10px, treat as click/tap (even if held for a long time)
-                if (dist < 10) {
-                    handleDoubleClick(e as any);
-                }
-            }}
-            onClick={(e) => {
-                // Fallback for mouse users or simple clicks if pointer events miss for some reason
-                // But we must prevent double-firing if pointerUp already handled it.
-                // Actually, let's rely just on PointerUp for consistency on hybrid devices.
-                // Standard click might be suppressed by context menu prevention anyway.
-                e.stopPropagation();
-            }}
-            onContextMenu={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-            }}
-            className="cursor-pointer active:scale-95 transition-transform select-none"
-            style={{ 
-                WebkitTouchCallout: 'none',
-                WebkitUserSelect: 'none',
-                userSelect: 'none',
-                touchAction: 'pan-y' // Allow vertical scrolling, but we detect tap if no scroll occurred
-            }}
-          >
-              <FieldTypeButtonVisual fieldType={fieldType} isCollapsed={isCollapsed} variant={variant} />
-          </div>
-      );
-  }
-
   return (
-    <div className="relative w-full">
-      {/* 1. Underlying Visual */}
-      <div className="relative z-0 select-none">
+    <div className="relative w-full h-full">
+      <div 
+        className="relative z-0 select-none h-full"
+        onClick={(e) => {
+            if (isTouch && !isCollapsed && variant !== 'grid') {
+                handleDoubleClick(e);
+            }
+        }}
+      >
           <FieldTypeButtonVisual fieldType={fieldType} isCollapsed={isCollapsed} variant={variant} />
       </div>
 
-      {/* 2. Draggable */}
       <Draggable draggableId={`sidebar-${fieldType.type}`} index={index !== -1 ? index : 0}>
-        {(provided, snapshot) => (
+        {(provided, snapshot) => {
+            
+            const useSplitDrag = isTouch && !isCollapsed && variant !== 'grid';
+            
+            return (
+
            <div
               ref={provided.innerRef}
               {...provided.draggableProps}
-              {...provided.dragHandleProps}
-              onDoubleClick={handleDoubleClick}
-              onClick={(e) => {
-                 if (!snapshot.isDragging) {
-                     handleDoubleClick(e);
-                 }
+              style={{
+                  ...provided.draggableProps.style,
+                  position: 'absolute', 
+                  inset: 0, 
+                  zIndex: 20,
+                  opacity: 0, 
+                  pointerEvents: 'none', 
               }}
-              style={
-                  snapshot.isDragging 
-                  ? { ...provided.draggableProps.style, opacity: 0 } 
-                  : { ...provided.draggableProps.style }
-              }
-              className={`z-10 w-full h-full touch-none ${snapshot.isDragging ? 'opacity-0' : 'absolute inset-0'}`}
           >
-              <div className="w-full h-full"> 
-                   <div className="opacity-0">
-                        <FieldTypeButtonVisual fieldType={fieldType} isCollapsed={isCollapsed} variant={variant} />
-                   </div>
-              </div>
+               <div
+                   {...provided.dragHandleProps}
+                   style={{
+                       position: 'absolute',
+                       left: 0, top: 0, bottom: 0,
+                       width: useSplitDrag ? '60px' : '100%',
+                       touchAction: useSplitDrag ? 'none' : (isTouch ? 'manipulation' : 'none'),
+                       pointerEvents: 'auto', 
+                       cursor: snapshot.isDragging ? 'grabbing' : 'grab',
+                   }}
+                   onClick={(e) => {
+                       if (!snapshot.isDragging) handleDoubleClick(e);
+                   }}
+               />
+
+               {useSplitDrag && (
+                   <div 
+                       style={{
+                           position: 'absolute',
+                           left: '60px', right: 0, top: 0, bottom: 0,
+                           pointerEvents: 'auto', 
+                           touchAction: 'manipulation' 
+                       }}
+                       onClick={(e) => {
+                            handleDoubleClick(e);
+                       }}
+                   />
+               )}
           </div>
-        )}
+        );
+      }}
       </Draggable>
     </div>
   );
 }
 
-// --- SAMPLE BUNDLES DATA ---
-// --- ICONS ---
 const IconMap: Record<string, any> = {
   User, MapPin, Briefcase, CalendarCheck, MessageSquare, Share2, GraduationCap, Star, Lock
 };
@@ -443,6 +435,7 @@ const IconMap: Record<string, any> = {
 const TemplatePopup = ({ onClose }: { onClose: () => void }) => {
   if (typeof document === 'undefined') return null;
 
+  const { t } = useTranslation();
   const { addBundle } = useFormStore();
   const [bundles, setBundles] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -451,8 +444,6 @@ const TemplatePopup = ({ onClose }: { onClose: () => void }) => {
     const fetchBundles = async () => {
       try {
         const response = await api.get('/bundles', { params: { isActive: true } });
-        // Only update state if data physically changes to prevent UI flickering/re-renders if strict check exists
-        // But for now, direct set is fine as React batches.
         setBundles(response.data);
       } catch (error) {
         console.error('Failed to fetch bundles:', error);
@@ -461,15 +452,13 @@ const TemplatePopup = ({ onClose }: { onClose: () => void }) => {
       }
     };
 
-    fetchBundles(); // Initial fetch
+    fetchBundles(); 
 
-    // Auto-refresh every 2 seconds
     const interval = setInterval(fetchBundles, 2000);
     return () => clearInterval(interval);
   }, []);
 
   const handleAddBundle = (bundle: any) => {
-    // Map API 'name' to 'title' for store compatibility
     const mappedBundle = {
         title: bundle.name,
         fields: bundle.fields
@@ -482,13 +471,12 @@ const TemplatePopup = ({ onClose }: { onClose: () => void }) => {
     <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-150">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[80vh] overflow-hidden flex flex-col animate-in zoom-in-95 duration-150">
           
-          {/* Header - Clean & Minimal */}
           <div className="px-8 py-6 border-b border-gray-100 flex items-center justify-between">
               <div>
                   <h3 className="text-2xl font-bold text-gray-900 tracking-tight">
-                    Field Bundles
+                    {t('builder.bundles.title')}
                   </h3>
-                  <p className="text-sm text-gray-400 mt-1">Choose a pre-built template to add to your form</p>
+                  <p className="text-sm text-gray-400 mt-1">{t('builder.bundles.choose_template')}</p>
               </div>
               <button 
                   onClick={onClose} 
@@ -498,11 +486,10 @@ const TemplatePopup = ({ onClose }: { onClose: () => void }) => {
               </button>
           </div>
 
-          {/* Body: Grid of Cards */}
           <div className="p-6 overflow-y-auto flex-1">
              {loading ? (
                 <div className="flex justify-center items-center h-48">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+                    <Loader size={32} />
                 </div>
              ) : (
              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -517,17 +504,14 @@ const TemplatePopup = ({ onClose }: { onClose: () => void }) => {
                         onClick={() => handleAddBundle(bundle)}
                         className="group relative p-5 text-left bg-white border border-gray-200 rounded-xl hover:border-indigo-400 hover:shadow-lg transition-all duration-200"
                     >
-                        {/* Title */}
                         <h4 className="text-base font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors">
                             {bundle.name}
                         </h4>
                         
-                        {/* Description - hide on hover */}
                         <p className="text-xs text-gray-400 mt-1 line-clamp-2 leading-relaxed group-hover:hidden">
                             {bundle.description}
                         </p>
                         
-                        {/* Fields Preview - show on hover */}
                         <div className="hidden group-hover:block mt-2">
                             <div className="flex flex-wrap gap-1">
                                 {bundle.fields?.slice(0, 4).map((f: any, i: number) => (
@@ -537,27 +521,24 @@ const TemplatePopup = ({ onClose }: { onClose: () => void }) => {
                                 ))}
                                 {bundle.fields?.length > 4 && (
                                     <span className="px-1.5 py-0.5 text-[9px] text-gray-400">
-                                        +{bundle.fields.length - 4} more
+                                        {t('builder.bundles.more_count', { count: bundle.fields.length - 4 })}
                                     </span>
                                 )}
                             </div>
                         </div>
                         
-                        {/* Field Count Badge */}
                         <div className="mt-3 flex items-center gap-2 group-hover:hidden">
                             <span className="px-2 py-0.5 bg-gray-100 rounded text-[10px] font-medium text-gray-500">
-                                {bundle.fields?.length || 0} fields
+                                {t('builder.group.fields_count', { count: bundle.fields?.length || 0 })}
                             </span>
                         </div>
                         
-                        {/* Hover Indicator */}
                         <div className="absolute top-5 right-5 opacity-0 group-hover:opacity-100 transition-opacity">
                             <div className="w-6 h-6 rounded-full bg-indigo-500 flex items-center justify-center">
                                 <Plus className="w-3.5 h-3.5 text-white" strokeWidth={3} />
                             </div>
                         </div>
 
-                        {/* Icon */}
                         <div className={`absolute top-5 right-5 w-8 h-8 rounded-lg ${bundleBg} flex items-center justify-center group-hover:opacity-0 transition-opacity`}>
                             <IconComponent className={`w-4 h-4 ${bundleColor}`} />
                         </div>
@@ -568,10 +549,9 @@ const TemplatePopup = ({ onClose }: { onClose: () => void }) => {
              )}
           </div>
           
-          {/* Footer */}
           <div className="px-8 py-4 border-t border-gray-100 bg-gray-50/50">
               <p className="text-xs text-gray-400 text-center">
-                  Click on a template to add it to your form
+                  {t('builder.bundles.click_to_add')}
               </p>
           </div>
       </div>
@@ -580,9 +560,7 @@ const TemplatePopup = ({ onClose }: { onClose: () => void }) => {
   );
 };
 
-
-
-function SidebarCategory({ category, isCollapsed, onFieldAdd, variant }: { category: { name: string; fields: any[] }, isCollapsed: boolean, onFieldAdd?: () => void, variant?: 'list' | 'grid' }) {
+function SidebarCategory({ category, isCollapsed, onFieldAdd, variant, isTouch }: { category: { name: string; fields: any[] }, isCollapsed: boolean, onFieldAdd?: () => void, variant?: 'list' | 'grid', isTouch?: boolean }) {
   const [isOpen, setIsOpen] = useState(true);
   const labels = useFieldLabels();
   const translatedCategoryName = labels[category.name as keyof ReturnType<typeof useFieldLabels>] || category.name;
@@ -592,20 +570,19 @@ function SidebarCategory({ category, isCollapsed, onFieldAdd, variant }: { categ
         <div className="space-y-2">
              <div className="w-full h-px bg-gray-200 my-1" />
              {category.fields.map((field) => (
-                <FieldTypeButton key={field.type} fieldType={field} isCollapsed={true} onFieldAdd={onFieldAdd} variant="list" />
+                <FieldTypeButton key={field.type} fieldType={field} isCollapsed={true} onFieldAdd={onFieldAdd} variant="list" isTouch={isTouch} />
               ))}
         </div>
     )
   }
 
-  // Mobile Grid Mode
   if (variant === 'grid') {
       return (
           <div className="mb-6">
               <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 px-1">{translatedCategoryName}</h3>
               <div className="grid grid-cols-2 gap-3">
                   {category.fields.map((field) => (
-                      <FieldTypeButton key={field.type} fieldType={field} onFieldAdd={onFieldAdd} variant="grid" />
+                      <FieldTypeButton key={field.type} fieldType={field} onFieldAdd={onFieldAdd} variant="grid" isTouch={isTouch} />
                   ))}
               </div>
           </div>
@@ -629,7 +606,7 @@ function SidebarCategory({ category, isCollapsed, onFieldAdd, variant }: { categ
       {isOpen && (
         <div className="p-2 space-y-2 bg-gray-50/50 border-t border-gray-100">
           {category.fields.map((field) => (
-            <FieldTypeButton key={field.type} fieldType={field} onFieldAdd={onFieldAdd} variant="list" />
+            <FieldTypeButton key={field.type} fieldType={field} onFieldAdd={onFieldAdd} variant="list" isTouch={isTouch} />
           ))}
         </div>
       )}
@@ -640,19 +617,17 @@ function SidebarCategory({ category, isCollapsed, onFieldAdd, variant }: { categ
 interface FieldSidebarProps {
   onFieldSelected?: () => void;
   className?: string;
-  variant?: 'list' | 'grid'; // Explicit visual variant
+  variant?: 'list' | 'grid'; 
 }
 
 export default function FieldSidebar({ onFieldSelected, className, variant }: FieldSidebarProps) {
   const [isTemplateOpen, setIsTemplateOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { t } = useTranslation();
+  const isTouch = useIsTouchDevice();
 
-  // If className is provided (typical for mobile drawer), we might default to 'grid' if variant not specified, or just trust the prop.
-  // Actually, checking if className exists is a loose way to detect mobile. Explicit prop is better.
   const visualVariant = variant || (className ? 'grid' : 'list');
 
-  // Helper to intercept add field calls
   const handleFieldSelect = () => {
       if (onFieldSelected) {
           onFieldSelected();
@@ -664,7 +639,6 @@ export default function FieldSidebar({ onFieldSelected, className, variant }: Fi
       className={className || `bg-white border-r border-gray-200 flex flex-col h-full shadow-sm relative z-20 transition-all duration-300 ease-in-out ${isCollapsed ? 'w-16' : 'w-[300px]'}`}
     >
 
-      {/* Floating Toggle Button - Desktop Only */}
       {!className && (
       <button
         onClick={() => setIsCollapsed(!isCollapsed)}
@@ -679,7 +653,6 @@ export default function FieldSidebar({ onFieldSelected, className, variant }: Fi
         {!isCollapsed && <h2 className="font-semibold text-gray-800 whitespace-nowrap overflow-hidden">{t('builder.fields')}</h2>}
       </div>
 
-       {/* Template Section Button */}
        <div className={`border-b border-gray-100 bg-gray-50/50 ${isCollapsed ? 'p-2' : 'px-4 py-4'}`}>
             {isCollapsed ? (
                 <button
@@ -735,7 +708,10 @@ export default function FieldSidebar({ onFieldSelected, className, variant }: Fi
                      {...provided.dragHandleProps}
                      style={{
                          ...provided.draggableProps.style,
+                         pointerEvents: 'none', 
+                         zIndex: 99999, 
                      }}
+                     className="pointer-events-none" 
                   >
                       <SidebarDragPreview fieldType={fieldType} />
                   </div>
@@ -749,7 +725,7 @@ export default function FieldSidebar({ onFieldSelected, className, variant }: Fi
                  className={visualVariant === 'list' ? "space-y-6" : "space-y-8 pb-10"}
               >
                  {fieldCategories.map((category) => (
-                     <SidebarCategory key={category.name} category={category} isCollapsed={isCollapsed} onFieldAdd={handleFieldSelect} variant={visualVariant} />
+                     <SidebarCategory key={category.name} category={category} isCollapsed={isCollapsed} onFieldAdd={handleFieldSelect} variant={visualVariant} isTouch={isTouch} />
                  ))}
                  {provided.placeholder}
              </div>
@@ -758,4 +734,4 @@ export default function FieldSidebar({ onFieldSelected, className, variant }: Fi
        </div>
      </div>
    );
- }
+}

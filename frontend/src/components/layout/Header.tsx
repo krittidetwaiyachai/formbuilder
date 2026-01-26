@@ -14,7 +14,7 @@ export default function Header() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 
-  // Close profile menu when auth state changes (e.g. login/logout)
+  
   useEffect(() => {
     setIsProfileMenuOpen(false);
   }, [isAuthenticated, user]);
@@ -61,7 +61,7 @@ export default function Header() {
                   </div>
                 </div>
 
-                {/* Profile Popup */}
+                { }
                  {isProfileMenuOpen && (
                   <>
                     <div 
@@ -99,25 +99,17 @@ export default function Header() {
                   </>
                  )}
                 
-                {/* Logout Button (Hidden from main view to reduce clutter, moved to popup, or keep as quick access? User asked for popup. Let's hide the direct button to clean up, or keep it? User didn't say to remove it, but it makes sense to have it in the popup. I'll hide the direct button for cleaner UI) */}
-                {/* 
-                <button
-                  onClick={handleLogout}
-                  className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all duration-300"
-                  title="Logout"
-                >
-                  <LogOut className="h-5 w-5" />
-                </button> 
-                */}
+                { }
+                { }
               </div>
             ) : (
               <div className="flex items-center gap-3">
                 <LanguageSwitcher />
                 <div className="relative group/btn">
-                {/* Floating Particles */}
+                { }
                 <div className="absolute -inset-10 pointer-events-none overflow-hidden z-20">
                   
-                  {/* Star 1: Yellow - Top Right (Float & Twinkle) */}
+                  { }
                   <svg 
                     className="absolute w-4 h-4 text-yellow-300 opacity-60 group-hover/btn:opacity-100 transition-all duration-500"
                     style={{
@@ -131,7 +123,7 @@ export default function Header() {
                     <path d="M12 0L14.59 8.41L24 12L14.59 15.59L12 24L9.41 15.59L0 12L9.41 8.41L12 0Z" />
                   </svg>
 
-                  {/* Star 2: Pink - Top Left (Spin & Pulse) */}
+                  { }
                   <svg 
                     className="absolute w-3.5 h-3.5 text-pink-300 opacity-50 group-hover/btn:opacity-100 transition-all duration-500"
                     style={{
@@ -145,7 +137,7 @@ export default function Header() {
                     <path d="M12 0L14.59 8.41L24 12L14.59 15.59L12 24L9.41 15.59L0 12L9.41 8.41L12 0Z" />
                   </svg>
 
-                  {/* Star 3: Purple - Bottom Left (Float Wide) */}
+                  { }
                   <svg 
                     className="absolute w-3 h-3 text-purple-300 opacity-60 group-hover/btn:opacity-100 transition-all duration-500"
                     style={{
@@ -159,7 +151,7 @@ export default function Header() {
                     <path d="M12 0L14.59 8.41L24 12L14.59 15.59L12 24L9.41 15.59L0 12L9.41 8.41L12 0Z" />
                   </svg>
 
-                  {/* Star 4: Blue - Bottom Right (Spin Reverse) */}
+                  { }
                   <svg 
                     className="absolute w-3.5 h-3.5 text-blue-300 opacity-50 group-hover/btn:opacity-100 transition-all duration-500"
                     style={{
@@ -173,7 +165,7 @@ export default function Header() {
                     <path d="M12 0L14.59 8.41L24 12L14.59 15.59L12 24L9.41 15.59L0 12L9.41 8.41L12 0Z" />
                   </svg>
 
-                  {/* Star 5: White - Center Top (High twinkle) */}
+                  { }
                   <svg 
                     className="absolute w-2.5 h-2.5 text-white opacity-70 group-hover/btn:opacity-100 transition-all duration-500"
                     style={{
@@ -219,7 +211,7 @@ export default function Header() {
                   </style>
                 </div>
 
-                {/* Main Button with z-10 */}
+                { }
                 <button
                   onClick={() => setIsLoginModalOpen(true)}
                   className="relative z-10 overflow-hidden inline-flex items-center justify-center px-6 py-2.5 font-bold text-white transition-all duration-300 bg-gray-900 rounded-full focus:outline-none hover:bg-black hover:shadow-lg hover:-translate-y-0.5"
@@ -227,7 +219,7 @@ export default function Header() {
                     animation: 'pulse-ring 3s infinite cubic-bezier(0.4, 0, 0.6, 1)'
                   }}
                 >
-                  {/* Shimmer Effect */}
+                  { }
                   <div 
                     className="absolute inset-0 w-full h-full"
                     style={{

@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import { Users, FileText, ClipboardList, TrendingUp } from 'lucide-react';
-import { adminApi, StatsResponse } from '@/lib/adminApi';
+import { Users, FileText, ClipboardList, TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { StatsResponse } from '@/lib/adminApi';
+import { useTranslation } from 'react-i18next';
 
 interface StatCardProps {
   title: string;
@@ -25,25 +25,13 @@ function StatCard({ title, value, icon, color }: StatCardProps) {
   );
 }
 
-export default function StatsGrid() {
-  const [stats, setStats] = useState<StatsResponse | null>(null);
-  const [loading, setLoading] = useState(true);
+interface StatsGridProps {
+  stats: StatsResponse | null;
+  loading: boolean;
+}
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const response = await adminApi.getStats();
-        setStats(response.data);
-      } catch (error) {
-        console.error('Failed to fetch stats:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchStats();
-  }, []);
-
+export default function StatsGrid({ stats, loading }: StatsGridProps) {
+  const { t } = useTranslation();
   if (loading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -60,29 +48,44 @@ export default function StatsGrid() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <StatCard
-        title="ผู้ใช้ทั้งหมด"
+        title={t('admin.stats.total_users')}
         value={stats?.totalUsers ?? 0}
         icon={<Users className="w-6 h-6 text-blue-600" />}
         color="bg-blue-50"
       />
       <StatCard
-        title="ฟอร์มทั้งหมด"
+        title={t('admin.stats.total_forms')}
         value={stats?.totalForms ?? 0}
         icon={<FileText className="w-6 h-6 text-emerald-600" />}
         color="bg-emerald-50"
       />
       <StatCard
-        title="การตอบกลับทั้งหมด"
+        title={t('admin.stats.total_submissions')}
         value={stats?.totalSubmissions ?? 0}
         icon={<ClipboardList className="w-6 h-6 text-purple-600" />}
         color="bg-purple-50"
       />
       <StatCard
-        title="อัตราการเติบโต"
-        value="+12%"
-        icon={<TrendingUp className="w-6 h-6 text-orange-600" />}
-        color="bg-orange-50"
+        title={t('admin.stats.growth_rate')}
+        value={`${stats?.growthRate && stats.growthRate > 0 ? '+' : ''}${stats?.growthRate?.toFixed(1) ?? '0'}%`}
+        icon={
+          (stats?.growthRate || 0) > 0 ? (
+            <TrendingUp className="w-6 h-6 text-orange-600" />
+          ) : (stats?.growthRate || 0) < 0 ? (
+            <TrendingDown className="w-6 h-6 text-red-600" />
+          ) : (
+            <Minus className="w-6 h-6 text-gray-400" />
+          )
+        }
+        color={
+          (stats?.growthRate || 0) > 0 
+            ? "bg-orange-50" 
+            : (stats?.growthRate || 0) < 0 
+              ? "bg-red-50" 
+              : "bg-gray-50"
+        }
       />
     </div>
   );
 }
+

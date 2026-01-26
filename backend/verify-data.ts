@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('Verifying DB Data...');
 
-  // 1. Get the IT Quiz Form
+  
   const forms = await prisma.form.findMany({
     where: { title: { contains: 'IT Knowledge Quiz' } },
     include: { fields: true }
@@ -22,7 +22,7 @@ async function main() {
   console.log(`   Fields: ${form.fields.length}`);
   form.fields.forEach(f => console.log(`   - Field: ${f.label} (${f.id})`));
 
-  // 2. Get Responses (latest first)
+  
   const responses = await prisma.formResponse.findMany({
     where: { formId: form.id },
     include: { answers: true },

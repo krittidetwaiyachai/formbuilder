@@ -43,12 +43,12 @@ export const NumberProperties: React.FC<NumberPropertiesProps> = ({ field, updat
 
   return (
     <div className="space-y-4">
-      {/* Tabs */}
+      { }
       <PropertiesTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {activeTab === 'general' && (
         <div className="space-y-4">
-           {/* Field Label */}
+           { }
            <div>
               <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.field_label')}
@@ -61,7 +61,7 @@ export const NumberProperties: React.FC<NumberPropertiesProps> = ({ field, updat
               />
             </div>
 
-            {/* Label Alignment */}
+            { }
             <div>
               <label className="block text-sm font-medium text-black mb-2">
                 {t('builder.properties.label_alignment')}
@@ -84,7 +84,7 @@ export const NumberProperties: React.FC<NumberPropertiesProps> = ({ field, updat
 
             </div>
 
-            {/* Required */}
+            { }
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                   {t('builder.properties.required')}
@@ -103,7 +103,7 @@ export const NumberProperties: React.FC<NumberPropertiesProps> = ({ field, updat
               </p>
             </div>
 
-            {/* Sub Label */}
+            { }
              <div>
               <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.sublabel')}
@@ -119,7 +119,7 @@ export const NumberProperties: React.FC<NumberPropertiesProps> = ({ field, updat
               </p>
             </div>
 
-             {/* Duplicate Field */}
+             { }
              <button
                type="button"
                onClick={() => duplicatesField({
@@ -147,7 +147,7 @@ export const NumberProperties: React.FC<NumberPropertiesProps> = ({ field, updat
 
       {activeTab === 'options' && (
         <div className="space-y-6">
-            {/* Width */}
+            { }
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.width')}
@@ -183,7 +183,7 @@ export const NumberProperties: React.FC<NumberPropertiesProps> = ({ field, updat
                  )}
             </div>
             
-            {/* Entry Limits */}
+            { }
              <div>
                    <label className="block text-sm font-medium text-black mb-1">
                     {t('builder.properties.entry_limits')}
@@ -228,7 +228,7 @@ export const NumberProperties: React.FC<NumberPropertiesProps> = ({ field, updat
 
       {activeTab === 'advanced' && (
         <div className="space-y-6">
-            {/* Placeholder */}
+            { }
             <div>
               <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.placeholder')}
@@ -245,7 +245,7 @@ export const NumberProperties: React.FC<NumberPropertiesProps> = ({ field, updat
               </p>
             </div>
 
-             {/* Hover Text */}
+             { }
              <div>
               <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.hover_text')}
@@ -261,7 +261,7 @@ export const NumberProperties: React.FC<NumberPropertiesProps> = ({ field, updat
               </p>
             </div>
 
-            {/* Default Value */}
+            { }
             <div>
               <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.default_value')}
@@ -277,7 +277,7 @@ export const NumberProperties: React.FC<NumberPropertiesProps> = ({ field, updat
               </p>
             </div>
 
-             {/* Read Only */}
+             { }
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.read_only')}
@@ -296,7 +296,7 @@ export const NumberProperties: React.FC<NumberPropertiesProps> = ({ field, updat
               </p>
             </div>
 
-             {/* Shrink */}
+             { }
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.shrink')}
@@ -315,7 +315,7 @@ export const NumberProperties: React.FC<NumberPropertiesProps> = ({ field, updat
               </p>
             </div>
             
-            {/* Hide field */}
+            { }
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.hide_field')}

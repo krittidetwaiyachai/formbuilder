@@ -62,7 +62,7 @@ export function TableProperties({ field, updateField, duplicatesField }: TablePr
     updateColumns(items);
   };
 
-  // Predefine some templates
+  
   const applyTemplate = (type: string) => {
       if (type === 'person') {
           updateColumns([
@@ -88,18 +88,18 @@ export function TableProperties({ field, updateField, duplicatesField }: TablePr
 
   return (
     <div className="space-y-4">
-      {/* Tabs */}
-      {/* Tabs */}
+      { }
+      { }
       <PropertiesTabs 
         activeTab={activeTab} 
         setActiveTab={setActiveTab} 
         tabs={['general', 'columns', 'advanced']} 
       />
 
-      {/* GENERAL TAB */}
+      { }
       {activeTab === 'general' && (
         <div className="space-y-4">
-          {/* Field Label */}
+          { }
           <div>
             <label className="block text-sm font-medium text-black mb-1">
               {t('builder.properties.field_label')}
@@ -112,7 +112,7 @@ export function TableProperties({ field, updateField, duplicatesField }: TablePr
             />
           </div>
 
-          {/* Required */}
+          { }
           <div>
              <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.required')}
@@ -131,7 +131,7 @@ export function TableProperties({ field, updateField, duplicatesField }: TablePr
             </p>
           </div>
 
-          {/* Sublabel */}
+          { }
           <div>
             <label className="block text-sm font-medium text-black mb-1">
               {t('builder.properties.sublabel')}
@@ -145,7 +145,7 @@ export function TableProperties({ field, updateField, duplicatesField }: TablePr
             />
           </div>
 
-           {/* Allow Add Row */}
+           { }
            <div>
              <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.allow_add_row')}
@@ -164,7 +164,7 @@ export function TableProperties({ field, updateField, duplicatesField }: TablePr
             </p>
           </div>
 
-          {/* Duplicate Field */}
+          { }
           <button
             type="button"
             onClick={() => duplicatesField({
@@ -179,11 +179,11 @@ export function TableProperties({ field, updateField, duplicatesField }: TablePr
         </div>
       )}
 
-      {/* COLUMNS TAB */}
+      { }
       {activeTab === 'columns' && (
         <div className="space-y-6">
           
-          {/* Quick Templates */}
+          { }
            <div className="grid grid-cols-3 gap-2 mb-4">
                 <button onClick={() => applyTemplate('person')} className="text-xs bg-gray-50 hover:bg-gray-100 border border-gray-200 p-2 rounded text-center">
                     {t('builder.templates.person')}
@@ -196,7 +196,7 @@ export function TableProperties({ field, updateField, duplicatesField }: TablePr
                 </button>
            </div>
 
-          {/* Columns Editor */}
+          { }
           <div>
               <div className="flex items-center justify-between mb-2">
                   <label className="text-sm font-medium text-black">{t('builder.properties.columns_defined')}</label>
@@ -220,7 +220,7 @@ export function TableProperties({ field, updateField, duplicatesField }: TablePr
                                               {...provided.draggableProps}
                                               className="flex items-center gap-2 group"
                                           >
-                                              <div {...provided.dragHandleProps} className="text-gray-300 cursor-move hover:text-gray-500">
+                                              <div {...provided.dragHandleProps} className="text-gray-300 cursor-move hover:text-gray-500" style={{ touchAction: 'none' }}>
                                                   <GripVertical className="w-4 h-4" />
                                               </div>
                                               <input
@@ -251,10 +251,10 @@ export function TableProperties({ field, updateField, duplicatesField }: TablePr
         </div>
       )}
 
-      {/* ADVANCED TAB */}
+      { }
       {activeTab === 'advanced' && (
         <div className="space-y-4">
-             {/* Read Only */}
+             { }
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.read_only')}
@@ -273,7 +273,7 @@ export function TableProperties({ field, updateField, duplicatesField }: TablePr
               </p>
             </div>
 
-            {/* Hover Text */}
+            { }
             <div>
               <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.hover_text')}
@@ -289,7 +289,7 @@ export function TableProperties({ field, updateField, duplicatesField }: TablePr
               </p>
             </div>
 
-             {/* Shrink */}
+             { }
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.shrink')}
@@ -308,7 +308,7 @@ export function TableProperties({ field, updateField, duplicatesField }: TablePr
               </p>
             </div>
             
-            {/* Hide field */}
+            { }
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.hide_field')}

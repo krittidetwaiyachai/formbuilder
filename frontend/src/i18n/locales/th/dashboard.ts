@@ -95,6 +95,7 @@ export default {
   "dashboard.collaborators.you": "คุณ",
   "dashboard.collaborators.no_email": "ไม่ได้ระบุอีเมล",
   "dashboard.collaborators.remove_access": "ลบสิทธิ์การเข้าถึง",
+  "dashboard.collaborators.remove_confirm_title": "ลบผู้ร่วมงาน?",
   "dashboard.collaborators.remove_confirm": "คุณแน่ใจหรือไม่ว่าต้องการลบผู้ร่วมงานนี้?",
   "dashboard.collaborators.remove_error": "ไม่สามารถลบผู้ใช้ได้",
   
@@ -120,5 +121,23 @@ export default {
   "dashboard.folder.count_plural": "โฟลเดอร์",
   "dashboard.modal.close": "ปิด",
   "dashboard.modal.creating": "กำลังสร้าง...",
-  "dashboard.toast.error_folder_create": "ไม่สามารถสร้างโฟลเดอร์ได้ กรุณาลองใหม่อีกครั้ง"
+  "dashboard.toast.error_folder_create": "ไม่สามารถสร้างโฟลเดอร์ได้ กรุณาลองใหม่อีกครั้ง",
+
+  "dashboard.stats.responses": "คำตอบ",
+  "dashboard.stats.views": "การเข้าชม",
+  
+  "dashboard.theme.popular": "ธีมยอดนิยม",
+  "dashboard.theme.exclusive": "ธีมพิเศษ",
+  "dashboard.theme.festival": "ธีมเทศกาล",
+  "dashboard.theme.official": "ธีมทางการ",
+  "dashboard.theme.exclusive_badge": "พิเศษ",
+  "dashboard.theme.submit_preview": "ส่งข้อมูล",
+  "dashboard.theme.close": "ปิด",
+  "dashboard.theme.done": "เสร็จสิ้น",
+  "dashboard.theme.appearance": "รูปแบบฟอร์ม",
+  "dashboard.theme.customize_desc": "ปรับแต่งรูปลักษณ์ของฟอร์มคุณ",
+  "dashboard.form.updated_prefix": "อัปเดตเมื่อ ",
+  "dashboard.toast.error_load_folders": "ไม่สามารถโหลดโฟลเดอร์ได้",
+  "dashboard.toast.error_update_folder": "ไม่สามารถอัปเดตโฟลเดอร์ได้",
+  "dashboard.toast.error_move_form": "ไม่สามารถย้ายฟอร์มได้"
 };

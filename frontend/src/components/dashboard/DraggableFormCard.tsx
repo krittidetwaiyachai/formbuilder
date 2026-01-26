@@ -17,6 +17,7 @@ export default function DraggableFormCard({ formId, children }: DraggableFormCar
       {...listeners}
       {...attributes}
       className={isDragging ? 'opacity-50' : ''}
+      style={{ touchAction: 'none', WebkitTouchCallout: 'none', WebkitUserSelect: 'none', userSelect: 'none' }}
     >
       {children}
     </div>

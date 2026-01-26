@@ -42,12 +42,12 @@ export const TimeProperties: React.FC<TimePropertiesProps> = ({ field, updateFie
 
   return (
     <div className="space-y-4">
-      {/* Tabs */}
+      { }
       <PropertiesTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {activeTab === 'general' && (
         <div className="space-y-4">
-           {/* Field Label */}
+           { }
            <div>
               <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.field_label')}
@@ -60,7 +60,7 @@ export const TimeProperties: React.FC<TimePropertiesProps> = ({ field, updateFie
               />
             </div>
 
-            {/* Label Alignment */}
+            { }
             <div>
               <label className="block text-sm font-medium text-black mb-2">
                 {t('builder.properties.label_alignment')}
@@ -83,7 +83,7 @@ export const TimeProperties: React.FC<TimePropertiesProps> = ({ field, updateFie
 
             </div>
 
-            {/* Required */}
+            { }
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                   {t('builder.properties.required')}
@@ -102,13 +102,13 @@ export const TimeProperties: React.FC<TimePropertiesProps> = ({ field, updateFie
               </p>
             </div>
 
-            {/* Sublabels */}
+            { }
              <div>
               <label className="block text-sm font-medium text-black mb-2">
                 {t('builder.properties.sublabels')}
               </label>
               <div className="grid grid-cols-[auto,1fr] bg-gray-50 rounded-md border border-gray-200 overflow-hidden text-sm">
-                  {/* Hour */}
+                  { }
                   <div className="px-3 py-2 border-r border-gray-200 font-medium text-gray-700 flex items-center bg-gray-100">
                       {t('builder.time.hour')}
                   </div>
@@ -119,7 +119,7 @@ export const TimeProperties: React.FC<TimePropertiesProps> = ({ field, updateFie
                     className="w-full px-3 py-2 bg-white focus:outline-none"
                     placeholder={t('builder.time.hour')}
                   />
-                   {/* Minutes */}
+                   { }
                   <div className="px-3 py-2 border-t border-r border-gray-200 font-medium text-gray-700 flex items-center bg-gray-100">
                       {t('builder.time.minutes')}
                   </div>
@@ -133,7 +133,7 @@ export const TimeProperties: React.FC<TimePropertiesProps> = ({ field, updateFie
               </div>
             </div>
 
-             {/* Duplicate Field */}
+             { }
              <button
                type="button"
                onClick={() => duplicatesField({
@@ -156,7 +156,7 @@ export const TimeProperties: React.FC<TimePropertiesProps> = ({ field, updateFie
 
       {activeTab === 'options' && (
         <div className="space-y-6">
-            {/* Time Format */}
+            { }
              <div>
               <label className="block text-sm font-medium text-black mb-2">
                 {t('builder.properties.time_format')}
@@ -181,7 +181,7 @@ export const TimeProperties: React.FC<TimePropertiesProps> = ({ field, updateFie
               </p>
             </div>
 
-            {/* Limit Time */}
+            { }
             <div>
               <label className="block text-sm font-medium text-black mb-2">
                 {t('builder.properties.limit_time')}
@@ -206,7 +206,7 @@ export const TimeProperties: React.FC<TimePropertiesProps> = ({ field, updateFie
               </p>
             </div>
 
-            {/* Default Time */}
+            { }
             <div>
                <label className="block text-sm font-medium text-black mb-2">
                 {t('builder.properties.default_time')}
@@ -241,7 +241,7 @@ export const TimeProperties: React.FC<TimePropertiesProps> = ({ field, updateFie
               </p>
             </div>
 
-             {/* Time Range */}
+             { }
              <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.time_range')}
@@ -264,7 +264,7 @@ export const TimeProperties: React.FC<TimePropertiesProps> = ({ field, updateFie
 
       {activeTab === 'advanced' && (
         <div className="space-y-6">
-             {/* Hover Text */}
+             { }
              <div>
               <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.hover_text')}
@@ -280,7 +280,7 @@ export const TimeProperties: React.FC<TimePropertiesProps> = ({ field, updateFie
               </p>
             </div>
 
-             {/* Read Only */}
+             { }
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.read_only')}
@@ -299,7 +299,7 @@ export const TimeProperties: React.FC<TimePropertiesProps> = ({ field, updateFie
               </p>
             </div>
 
-             {/* Shrink */}
+             { }
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.shrink')}
@@ -318,7 +318,7 @@ export const TimeProperties: React.FC<TimePropertiesProps> = ({ field, updateFie
               </p>
             </div>
             
-            {/* Hide field */}
+            { }
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.hide_field')}

@@ -17,7 +17,7 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'general' | 'options' | 'advanced'>('general');
 
-  // Helper to safely access options/validation with default values
+  
   const options = field.options || {};
   const validation = field.validation || {};
 
@@ -48,10 +48,10 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
       <PropertiesTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
       <div className="space-y-4">
-        {/* GENERAL TAB */}
+        { }
         {activeTab === 'general' && (
           <div className="space-y-4">
-            {/* Field Label */}
+            { }
             <div>
               <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.field_label')}
@@ -64,7 +64,7 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
               />
             </div>
 
-            {/* Label Alignment */}
+            { }
             <div>
               <label className="block text-sm font-medium text-black mb-2">
                 {t('builder.properties.label_alignment')}
@@ -87,7 +87,7 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
 
             </div>
 
-            {/* Required */}
+            { }
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                   {t('builder.properties.required')}
@@ -106,7 +106,7 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
               </p>
             </div>
 
-            {/* Sublabel */}
+            { }
             <div>
               <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.sublabel')}
@@ -122,8 +122,8 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
               </p>
             </div>
 
-            {/* Duplicate Field */}
-            {/* duplicate button remains above */}
+            { }
+            { }
              <button
               onClick={() => duplicatesField({
                   type: field.type,
@@ -148,10 +148,10 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
           </div>
         )}
 
-        {/* OPTIONS TAB */}
+        { }
         {activeTab === 'options' && (
           <div className="space-y-6">
-            {/* Width */}
+            { }
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.width')}
@@ -182,7 +182,7 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
               </p>
             </div>
 
-             {/* Input Mask */}
+             { }
              <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.input_mask')}
@@ -215,10 +215,10 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
           </div>
         )}
 
-        {/* ADVANCED TAB */}
+        { }
         {activeTab === 'advanced' && (
           <div className="space-y-6">
-            {/* Placeholder */}
+            { }
              <div>
               <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.placeholder')}
@@ -234,7 +234,7 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
               </p>
             </div>
 
-            {/* Hover Text */}
+            { }
             <div>
               <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.hover_text')}
@@ -250,7 +250,7 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
               </p>
             </div>
 
-             {/* Default Value */}
+             { }
              <div>
               <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.default_value')}
@@ -266,7 +266,7 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
               </p>
             </div>
 
-            {/* Validation */}
+            { }
              <div>
               <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.validation')}
@@ -293,7 +293,7 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
               </p>
             </div>
 
-             {/* Character Limit */}
+             { }
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.character_limit')}
@@ -324,7 +324,7 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
               </p>
             </div>
 
-             {/* Read Only */}
+             { }
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.read_only')}
@@ -343,7 +343,7 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
               </p>
             </div>
 
-            {/* Shrink */}
+            { }
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.shrink')}
@@ -362,7 +362,7 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
               </p>
             </div>
 
-             {/* Hide Field */}
+             { }
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.hide_field')}

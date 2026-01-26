@@ -3,6 +3,8 @@ import { useFormStore } from '@/store/formStore';
 import { Edit2, Check, GitBranch, X, Trash2, ChevronDown } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { useTranslation } from 'react-i18next';
+import ConfirmDialog from '@/components/ui/ConfirmDialog';
+import { stripHtml } from '@/lib/ui/utils';
 
 export default function LogicSidebarList() {
   const { t } = useTranslation();
@@ -11,10 +13,22 @@ export default function LogicSidebarList() {
   
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState('');
+  const [deleteRuleId, setDeleteRuleId] = useState<string | null>(null);
+
+  const handleDeleteRule = (id: string) => {
+    setDeleteRuleId(id);
+  };
+
+  const confirmDelete = () => {
+    if (deleteRuleId) {
+      deleteLogicRule(deleteRuleId);
+      setDeleteRuleId(null);
+    }
+  };
 
   const getFieldLabel = (fieldId: string) => {
     const field = currentForm?.fields?.find(f => f.id === fieldId);
-    return field?.label || field?.type || 'Unknown';
+    return stripHtml(field?.label || field?.type || 'Unknown');
   };
 
   const handleStartEdit = (id: string, currentName: string) => {
@@ -117,21 +131,19 @@ export default function LogicSidebarList() {
                         <span>{actionCount} {t('builder.logic.then').toUpperCase()}</span>
                     </div>
 
-                    {/* Delete Button */}
+                    { }
                     <button
                         onClick={(e) => {
                             e.stopPropagation();
-                            if (window.confirm(t('builder.logic.delete_confirm'))) {
-                                deleteLogicRule(rule.id);
-                            }
+                            handleDeleteRule(rule.id);
                         }}
                         className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-md opacity-0 group-hover:opacity-100 transition-all"
-                        title="Delete Rule"
+                        title={t('builder.logic.delete_rule')}
                     >
                         <Trash2 className="w-4 h-4" />
                     </button>
 
-                    {/* Expand/Collapse Icon */}
+                    { }
                     <div className={`text-gray-400 transition-transform duration-200 ${isSelected ? 'rotate-180' : ''}`}>
                         <ChevronDown className="w-4 h-4" />
                     </div>
@@ -141,7 +153,7 @@ export default function LogicSidebarList() {
               {isSelected && (
                 <div className="px-3 pb-3 border-t border-gray-100">
                   <div className="pt-2 space-y-3">
-                    {/* Conditions */}
+                    { }
                     <div>
                         <div className="text-[10px] font-semibold text-gray-400 mb-1 uppercase tracking-wider">{t('builder.logic.conditions')} ({rule.logicType})</div>
                         <div className="space-y-1">
@@ -156,7 +168,7 @@ export default function LogicSidebarList() {
                         </div>
                     </div>
 
-                    {/* Actions */}
+                    { }
                     <div>
                         <div className="text-[10px] font-semibold text-gray-400 mb-1 uppercase tracking-wider">{t('builder.logic.actions')}</div>
                         <div className="space-y-1">
@@ -183,6 +195,14 @@ export default function LogicSidebarList() {
           {t('builder.logic.click_expand')}
         </p>
       </div>
+
+      <ConfirmDialog
+        open={!!deleteRuleId}
+        onOpenChange={(open) => !open && setDeleteRuleId(null)}
+        title={t('builder.logic.delete_confirm')}
+        description={t('builder.logic.delete_confirm_desc')}
+        onConfirm={confirmDelete}
+      />
     </div>
   );
 }

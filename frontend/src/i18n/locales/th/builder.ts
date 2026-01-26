@@ -12,6 +12,9 @@ export default {
   "builder.properties.pdpa_title": "เก็บข้อมูลส่วนบุคคล (PDPA)",
   "builder.properties.pdpa_desc": "ข้อมูลในช่องนี้จะถูกเข้ารหัสก่อนบันทึก",
   "builder.cannot_delete_last_page": "ไม่สามารถลบหน้าได้ ฟอร์มต้องมีอย่างน้อย 1 หน้า",
+  "builder.access_denied": "การเข้าถึงถูกปฏิเสธ",
+  "builder.access_denied_msg": "คุณไม่มีสิทธิ์ในการเข้าถึงฟอร์มนี้",
+  "builder.back_to_dashboard": "กลับไปหน้าแดชบอร์ด",
   
   "builder.field_bundles": "ชุดฟิลด์",
   "builder.bundles_subtitle": "ชุดสำเร็จรูป",
@@ -68,33 +71,34 @@ export default {
   "builder_header.redo": "ทำซ้ำ",
   "builder_header.invite_collaborators": "เชิญผู้ร่วมงาน",
   
-  "builder.logic.title": "ตรรกะแบบมีเงื่อนไข", // Conditional Logic
-  "builder.logic.subtitle": "สร้างกฎเพื่อแสดงหรือซ่อนฟิลด์ตามข้อมูลที่ผู้ใช้ระบุ", // Create rules...
-  "builder.logic.add_rule": "เพิ่มกฎ", // Add Rule
-  "builder.logic.no_rules_title": "ยังไม่มีกฎทางตรรกะ", // No logic rules yet
-  "builder.logic.create_first": "สร้างกฎแรกของคุณ", // Create Your First Rule
-  "builder.logic.how_it_works": "หลักการทำงาน:", // How it works:
+  "builder.logic.title": "ตรรกะแบบมีเงื่อนไข", 
+  "builder.logic.subtitle": "สร้างกฎเพื่อแสดงหรือซ่อนฟิลด์ตามข้อมูลที่ผู้ใช้ระบุ", 
+  "builder.logic.add_rule": "เพิ่มกฎ", 
+  "builder.logic.no_rules_title": "ยังไม่มีกฎทางตรรกะ", 
+  "builder.logic.create_first": "สร้างกฎแรกของคุณ", 
+  "builder.logic.how_it_works": "หลักการทำงาน:", 
   "builder.logic.how_show": "แสดง: ฟิลด์เป้าหมายจะถูกซ่อนโดยค่าเริ่มต้น และจะปรากฏเมื่อตรงตามเงื่อนไข",
   "builder.logic.how_hide": "ซ่อน: ฟิลด์เป้าหมายจะแสดงโดยค่าเริ่มต้น และจะหายไปเมื่อตรงตามเงื่อนไข",
   "builder.logic.how_and": "และ (AND): เงื่อนไขทั้งหมดต้องเป็นจริง",
   "builder.logic.how_or": "หรือ (OR): เงื่อนไขอย่างน้อยหนึ่งข้อเป็นจริง",
-  "builder.logic.if": "ถ้า", // if
-  "builder.logic.then": "แล้ว", // then
-  "builder.logic.select_field": "เลือกฟิลด์", // Select field
-  "builder.logic.value_placeholder": "ค่า", // Value
-  "builder.logic.add_condition": "เพิ่มเงื่อนไข", // Add condition
-  "builder.logic.show_hide": "แสดง / ซ่อน", // Show / Hide
-  "builder.logic.add_action": "เพิ่มการกระทำ", // Add action
-  "builder.logic.not_enough_fields": "ฟิลด์ไม่เพียงพอ", // Not Enough Fields
+  "builder.logic.if": "ถ้า", 
+  "builder.logic.then": "แล้ว", 
+  "builder.logic.select_field": "เลือกฟิลด์", 
+  "builder.logic.value_placeholder": "ค่า", 
+  "builder.logic.add_condition": "เพิ่มเงื่อนไข", 
+  "builder.logic.show_hide": "แสดง / ซ่อน", 
+  "builder.logic.add_action": "เพิ่มการกระทำ", 
+  "builder.logic.not_enough_fields": "ฟิลด์ไม่เพียงพอ", 
   "builder.logic.not_enough_desc": "ตรรกะแบบมีเงื่อนไขต้องการอย่างน้อย 2 ฟิลด์ (ฟิลด์trigger และฟิลด์เป้าหมาย)",
   "builder.logic.please_add": "กรุณาเพิ่มอีก {{count}} ฟิลด์",
-  "builder.logic.sidebar_title": "เงื่อนไขทั้งหมด", // All Conditions
+  "builder.logic.sidebar_title": "เงื่อนไขทั้งหมด", 
   "builder.logic.sidebar_subtitle": "สร้างเงื่อนไขในหน้า Canvas",
-  "builder.logic.no_conditions": "ยังไม่มีเงื่อนไข", // No Conditions Yet
-  "builder.logic.delete_confirm": "คุณแน่ใจหรือไม่ว่าต้องการลบกฎนี้?", // Are you sure...?
-  "builder.logic.click_expand": "คลิกที่กฎเพื่อดูรายละเอียด", // Click a rule to expand details
-  "builder.logic.conditions": "เงื่อนไข", // Conditions
-  "builder.logic.actions": "การกระทำ", // Actions
+  "builder.logic.no_conditions": "ยังไม่มีเงื่อนไข", 
+  "builder.logic.delete_confirm": "คุณแน่ใจหรือไม่ว่าต้องการลบกฎนี้?", 
+  "builder.logic.delete_confirm_desc": "การกระทำนี้ไม่สามารถย้อนกลับได้", 
+  "builder.logic.click_expand": "คลิกที่กฎเพื่อดูรายละเอียด", 
+  "builder.logic.conditions": "เงื่อนไข", 
+  "builder.logic.actions": "การกระทำ", 
   
   "builder.logic.op.equals": "เท่ากับ",
   "builder.logic.op.not_equals": "ไม่เท่ากับ",
@@ -113,6 +117,15 @@ export default {
   "builder.quiz.score_complete": "คะแนนครบ",
   "builder.quiz.missing_points": "ขาดอีก {{points}} คะแนน",
   "builder.quiz.exceeded_points": "เกินมา {{points}} คะแนน",
+  "builder.quiz.pts": "คะแนน",
+  "builder.quiz.score": "คะแนน",
+  "builder.quiz.set_answer": "ตั้งคำตอบ",
+  "builder.quiz.correct_answer": "คำตอบที่ถูกต้อง",
+  "builder.quiz.add_answer": "เพิ่มคำตอบ...",
+  "builder.quiz.answer_instruction": "กด Enter หรือคลิก + เพื่อเพิ่ม ยอมรับคำตอบใดๆ ที่ระบุไว้",
+  "builder.quiz.options": "ตัวเลือก",
+  "builder.quiz.answers": "คำตอบ",
+  "builder.quiz.remaining": "คงเหลือ:",
   
   "builder.pagination.page": "หน้า {{index}}",
   "builder.pagination.page_generic": "หน้า",
@@ -122,6 +135,8 @@ export default {
   "builder.drag_drop_instructions": "ลากฟิลด์มาวางที่นี่ หรือกดเพิ่มฟิลจากแถบด้านข้าง",
   "builder.drop_here": "วางที่นี่",
   "builder.pagination.added": "(เพิ่มแล้ว)",
+  "builder.pagination.delete_page_title": "ลบหน้านี้?",
+  "builder.pagination.delete_page_desc": "คุณแน่ใจหรือไม่ว่าต้องการลบหน้านี้? ฟิลด์ทั้งหมดในหน้านี้จะถูกลบไปด้วย",
   
   "builder.special_page.appearance": "รูปลักษณ์",
   "builder.special_page.icon": "ไอคอน",
@@ -136,6 +151,69 @@ export default {
   "builder.special_page.button_link": "ลิงก์ของปุ่ม",
   "builder.special_page.show_start_button": "แสดงปุ่มเริ่มต้น",
 
+  "builder.sidebar.fields": "องค์ประกอบฟอร์ม",
+  "builder.sidebar.drag": "ลากมาวาง",
+  "builder.canvas.drop_here": "วางที่นี่เพื่อเพิ่มองค์ประกอบ",
+  "builder.properties.select_element": "เลือกองค์ประกอบเพื่อแก้ไขคุณสมบัติ",
+  "builder.properties.element_properties": "คุณสมบัติองค์ประกอบ",
+  "builder.properties.tooltip_duplicate": "ทำซ้ำ (Ctrl+D)",
+  "builder.properties.tooltip_delete": "ลบ (Delete)",
+  
+  "builder.theme.title": "ธีมของฟอร์ม",
+  "builder.theme.settings_title": "ตั้งค่าธีม",
+  "builder.insert_link": "แทรกลิงก์",
+  "builder.insert": "แทรก",
+  "builder.url": "URL",
+  "builder.theme.description": "ปรับแต่งรูปลักษณ์ของฟอร์ม",
+  "builder.theme.presets": "ธีมสำเร็จรูป",
+  "builder.theme.primary_color": "สีหลัก",
+  "builder.theme.background_type": "ประเภทพื้นหลัง",
+  "builder.theme.bg_color": "สีพื้นหลัง",
+  "builder.theme.bg_image": "รูปภาพพื้นหลัง",
+  "builder.theme.bg_gradient": "ไล่สี", 
+  "builder.theme.text_color": "สีข้อความ",
+  "builder.theme.btn_style": "สไตล์ปุ่ม",
+  "builder.theme.border_radius": "ความโค้งมุม",
+  "builder.theme.font_family": "แบบอักษร",
+  
+  "builder.theme.type_color": "สีล้วน",
+  "builder.theme.type_gradient": "ไล่สี",
+  "builder.theme.type_image": "รูปภาพ",
+  "builder.theme.btn_filled": "ทึบ",
+  "builder.theme.btn_outlined": "เส้นขอบ",
+  "builder.theme.btn_ghost": "โปร่งใส",
+  "builder.theme.radius_none": "ไม่มี",
+  "builder.theme.radius_small": "เล็ก",
+  "builder.theme.radius_medium": "กลาง",
+  "builder.theme.radius_large": "ใหญ่",
+
+  "builder.settings.redirect_url": "URL ปลายทาง (ไม่บังคับ)",
+  "builder.settings.redirect_desc": "เปลี่ยนหน้าผู้ใช้หลังจากส่งฟอร์มสำเร็จ",
+  "builder.settings.notifications": "การแจ้งเตือนทางอีเมล",
+  "builder.settings.notify_emails": "อีเมลผู้รับแจ้งเตือน",
+  "builder.settings.remove_email": "ลบ",
+  "builder.settings.add_email_placeholder": "กด Enter เพื่อเพิ่มอีเมล",
+
+  "builder.properties.content": "เนื้อหา",
+  "builder.properties.general": "ทั่วไป",
+  "builder.properties.heading_image": "รูปหัวเรื่อง",
+  "builder.properties.choose_file": "เลือกไฟล์",
+  "builder.properties.remove_image": "ลบรูปภาพ",
+  "builder.properties.image_uploaded": "อัปโหลดรูปภาพแล้ว",
+  "builder.properties.image_removed": "ลบรูปภาพแล้ว",
+  "builder.properties.add_option": "เพิ่มตัวเลือก",
+  "builder.properties.answer_explanation": "คำอธิบายเฉลย",
+  "builder.properties.answer_explanation_placeholder": "อธิบายคำตอบที่ถูกต้อง...",
+  "builder.properties.answer_explanation_desc": "คำอธิบายนี้จะแสดงให้ผู้ตอบเห็นหลังจากส่งคำตอบ (ถ้าเปิดใช้งาน)",
+  "builder.properties.min_value": "ค่าน้อยสุด",
+  "builder.properties.max_value": "ค่ามากสุด",
+  "builder.properties.max_rating": "คะแนนสูงสุด",
+  "builder.properties.rows": "จำนวนแถว",
+  
+  "builder.element.delete_confirm": "ลบองค์ประกอบ?",
+  "builder.element.delete_confirm_desc": "คุณแน่ใจหรือไม่ว่าต้องการลบองค์ประกอบนี้? การกระทำนี้ไม่สามารถย้อนกลับได้",
+  "builder.field.delete_confirm": "ลบฟิลด์?",
+  "builder.field.delete_confirm_desc": "คุณแน่ใจหรือไม่ว่าต้องการลบฟิลด์นี้? การกระทำนี้ไม่สามารถย้อนกลับได้",
   "builder.placeholder.short_text": "กรอกข้อความ...",
   "builder.placeholder.long_text": "กรอกข้อความยาวๆ...",
   "builder.placeholder.email": "กรอกอีเมล...",
@@ -144,5 +222,29 @@ export default {
   "builder.placeholder.dropdown": "เลือกตัวเลือก...",
   "builder.placeholder.date": "เลือกวันที่...",
   "builder.placeholder.time": "เลือกเวลา...",
-  "builder.placeholder.header_subheading": "เพิ่มรายละเอียด..."
+  "builder.placeholder.header_subheading": "เพิ่มรายละเอียด...",
+
+  "builder.media.insert_image": "แทรกรูปภาพ",
+  "builder.media.insert_video": "แทรกวิดีโอ",
+  "builder.media.paste_image_url": "วาง URL รูปภาพ...",
+  "builder.media.paste_youtube_url": "วาง URL YouTube...",
+  "builder.media.cancel": "ยกเลิก",
+  "builder.media.remove_image": "ลบรูปภาพ",
+  "builder.media.remove_video": "ลบวิดีโอ",
+  "builder.properties.type_sublabel": "พิมพ์ป้ายกำกับย่อย...",
+
+  "builder.submit.default_label": "ส่ง",
+  "builder.submit.clear_form": "ล้างฟอร์ม",
+  "builder.submit.print": "พิมพ์",
+
+  "builder.toast.element_deleted": "ลบ Element แล้ว",
+  "builder.toast.element_deleted_desc": "Element ถูกลบออกจากฟอร์มแล้ว",
+  "builder.toast.element_duplicated": "ทำซ้ำ Element แล้ว",
+  "builder.toast.element_duplicated_desc": "Element ถูกทำซ้ำเรียบร้อยแล้ว",
+
+  "builder.toast.save_success": "บันทึกฟอร์มสำเร็จ",
+  "builder.toast.save_error": "ไม่สามารถบันทึกฟอร์มได้",
+  "builder.toast.load_error": "ไม่สามารถโหลดฟอร์มได้",
+  "builder.toast.save_before_nav": "บันทึกก่อนเปลี่ยนหน้าแล้ว",
+  "builder.warning.temp_form": "ไม่สามารถเชื่อมต่อ Server ได้ ระบบจะสร้างฟอร์มชั่วคราว"
 };

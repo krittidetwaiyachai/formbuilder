@@ -1,4 +1,7 @@
 "use client";
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import ConfirmDialog from '@/components/ui/ConfirmDialog';
 
 import { useFormStore } from "@/store/formStore";
 import { Button } from "@/components/ui/button";
@@ -23,6 +26,7 @@ const OPTION_FIELD_TYPES: FormElementType[] = [
 ];
 
 export default function PropertiesPanel() {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const { selectedFieldId, currentForm, updateField, deleteField, duplicateField } =
     useFormStore();
@@ -34,7 +38,7 @@ export default function PropertiesPanel() {
     return (
       <div className="p-4">
         <p className="text-sm text-muted-foreground text-center py-8">
-          Select an element to edit its properties
+          {t('builder.properties.select_element', 'Select an element to edit its properties')}
         </p>
       </div>
     );
@@ -44,22 +48,26 @@ export default function PropertiesPanel() {
     updateField(selectedElement.id, updates);
   };
 
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+
   const handleDelete = () => {
-    if (confirm("Are you sure you want to delete this element?")) {
+    setDeleteConfirmOpen(true);
+  };
+
+  const confirmDelete = () => {
       deleteField(selectedElement.id);
       toast({
-        title: "Element deleted",
-        description: "The element has been removed from your form.",
+        title: t('builder.toast.element_deleted'),
+        description: t('builder.toast.element_deleted_desc'),
         variant: "default",
       });
-    }
   };
 
   const handleDuplicate = () => {
     duplicateField(selectedElement.id);
     toast({
-      title: "Element duplicated",
-      description: "The element has been duplicated.",
+      title: t('builder.toast.element_duplicated'),
+      description: t('builder.toast.element_duplicated_desc'),
       variant: "default",
     });
   };
@@ -73,9 +81,9 @@ export default function PropertiesPanel() {
   return (
     <div className="p-4 space-y-4">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-sm font-semibold text-gray-700">Element Properties</h2>
+        <h2 className="text-sm font-semibold text-gray-700">{t('builder.properties.element_properties', 'Element Properties')}</h2>
         <div className="flex gap-1">
-          <Tooltip content="Duplicate (Ctrl+D)">
+          <Tooltip content={t('builder.properties.tooltip_duplicate', 'Duplicate (Ctrl+D)')}>
             <Button
               variant="ghost"
               size="icon"
@@ -85,7 +93,7 @@ export default function PropertiesPanel() {
               <Copy className="h-4 w-4" />
             </Button>
           </Tooltip>
-          <Tooltip content="Delete (Delete key)">
+          <Tooltip content={t('builder.properties.tooltip_delete', 'Delete (Delete key)')}>
             <Button
               variant="ghost"
               size="icon"
@@ -125,6 +133,17 @@ export default function PropertiesPanel() {
       {needsOptions && (
         <OptionsProperties element={selectedElement} onUpdate={handleUpdate} />
       )}
+
+      <ConfirmDialog
+        open={deleteConfirmOpen}
+        onOpenChange={setDeleteConfirmOpen}
+        title={t('builder.element.delete_confirm')}
+        description={t('builder.element.delete_confirm_desc')}
+        onConfirm={confirmDelete}
+        confirmText={t('common.delete', 'Delete')}
+        cancelText={t('common.cancel', 'Cancel')}
+        variant="destructive"
+      />
     </div>
   );
 }

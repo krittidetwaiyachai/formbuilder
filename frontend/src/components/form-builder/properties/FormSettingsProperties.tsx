@@ -40,7 +40,7 @@ export function FormSettingsProperties({
     });
   };
 
-  // Helper function to convert ISO date string to local datetime string for datetime-local input
+  
   const toLocalDateTimeString = (dateString: string): string => {
     const date = new Date(dateString);
     const year = date.getFullYear();
@@ -51,15 +51,15 @@ export function FormSettingsProperties({
     return `${year}-${month}-${day}T${hours}:${minutes}`;
   };
 
-  /* Custom Smooth Scroll Animation */
+   
   const smoothScrollToElement = (element: HTMLElement) => {
-    const container = element.closest('.overflow-y-auto') as HTMLElement; // Find parent scroll container
+    const container = element.closest('.overflow-y-auto') as HTMLElement; 
     if (!container) return;
 
-    const targetPosition = element.offsetTop - (container.clientHeight / 2) + (element.clientHeight / 2); // Center alignment
+    const targetPosition = element.offsetTop - (container.clientHeight / 2) + (element.clientHeight / 2); 
     const startPosition = container.scrollTop;
     const distance = targetPosition - startPosition;
-    const duration = 1200; // Duration in ms (slower than browser default ~300-500ms)
+    const duration = 1200; 
     let startTime: number | null = null;
 
     const easeInOutQuad = (t: number, b: number, c: number, d: number) => {
@@ -89,19 +89,19 @@ export function FormSettingsProperties({
   const prevIsQuiz = useRef(currentForm.isQuiz);
   
   useEffect(() => {
-    // Check if Quiz Mode was just toggled ON (change from false to true)
+    
     const isQuizToggledOn = !prevIsQuiz.current && currentForm.isQuiz;
 
     if (currentForm.isQuiz && quizSettingsRef.current) {
-        // Scroll ONLY if requested explicitly via flag OR if just toggled ON
+        
         if (shouldScrollToQuizSettings || isQuizToggledOn) {
-            // Delay slightly to allow animation/render
+            
             setTimeout(() => {
-                // Use custom smooth scroll instead of native scrollIntoView
+                
                 smoothScrollToElement(quizSettingsRef.current!);
             }, 100);
             
-            // Reset flag if it was used
+            
             if (shouldScrollToQuizSettings) {
                 setShouldScrollToQuizSettings(false);
             }
@@ -113,7 +113,7 @@ export function FormSettingsProperties({
 
   return (
     <>
-      {/* Tabs */}
+      { }
       <div className="flex items-center gap-1 mb-4 bg-gray-100 p-1 rounded-md">
         {['general', 'submission', 'display'].map((tab) => (
           <button
@@ -131,7 +131,7 @@ export function FormSettingsProperties({
       </div>
 
       <div className="space-y-4">
-        {/* GENERAL TAB */}
+        { }
         {activeTab === 'general' && (
           <div className="space-y-4">
             <div>
@@ -201,7 +201,7 @@ export function FormSettingsProperties({
                 type="text"
                 value={settings.footerText || ''}
                 onChange={(e) => updateSettings('footerText', e.target.value)}
-                placeholder="© 2024 Your Company. All rights reserved."
+                placeholder={t('builder.settings.footer_placeholder')}
                 className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
               />
               <p className="mt-1 text-xs text-gray-500">
@@ -209,7 +209,7 @@ export function FormSettingsProperties({
               </p>
             </div>
 
-            {/* Quiz Mode Toggle - Redesigned */}
+            { }
             <div
               onClick={() => handleFormUpdate('isQuiz', !currentForm.isQuiz)}
               className={`
@@ -235,7 +235,7 @@ export function FormSettingsProperties({
                 </div>
               </div>
 
-              {/* Switch Toggle */}
+              { }
               <div className={`
                 w-12 h-7 rounded-full transition-colors relative shrink-0
                 ${currentForm.isQuiz ? 'bg-black' : 'bg-gray-200'}
@@ -247,7 +247,7 @@ export function FormSettingsProperties({
               </div>
             </div>
 
-            {/* QUIZ SETTINGS - แสดงเมื่อเปิด Quiz Mode */}
+            { }
             {currentForm.isQuiz && (
               <div 
                 ref={quizSettingsRef}
@@ -255,66 +255,32 @@ export function FormSettingsProperties({
               >
                 <h4 className="text-xs font-bold text-gray-700 uppercase tracking-wide">{t('settings.quiz.settings')}</h4>
                 
-                {/* Release Score Mode */}
-                <div>
-                  <label className="block text-sm font-medium text-black mb-2">
-                    {t('settings.quiz.release_score')}
-                  </label>
-                  <div className="space-y-2">
-                    <label className="flex items-center cursor-pointer">
-                      <input
-                        type="radio"
-                        name="releaseScoreMode"
-                        value="immediately"
-                        checked={!currentForm.quizSettings?.releaseScoreMode || currentForm.quizSettings?.releaseScoreMode === 'immediately'}
-                        onChange={(e) => handleFormUpdate('quizSettings', {
-                          ...currentForm.quizSettings,
-                          releaseScoreMode: e.target.value as 'immediately' | 'manual'
-                        })}
-                        className="h-4 w-4 text-black focus:ring-black border-gray-400"
-                      />
-                      <span className="ml-2 text-sm text-black">{t('settings.quiz.release_immediate')}</span>
-                    </label>
-                    <label className="flex items-center cursor-pointer">
-                      <input
-                        type="radio"
-                        name="releaseScoreMode"
-                        value="manual"
-                        checked={currentForm.quizSettings?.releaseScoreMode === 'manual'}
-                        onChange={(e) => handleFormUpdate('quizSettings', {
-                          ...currentForm.quizSettings,
-                          releaseScoreMode: e.target.value as 'immediately' | 'manual'
-                        })}
-                        className="h-4 w-4 text-black focus:ring-black border-gray-400"
-                      />
-                      <span className="ml-2 text-sm text-black">{t('settings.quiz.release_manual')}</span>
-                    </label>
-                  </div>
-                </div>
+                { }
 
-                {/* Respondents Can See */}
+                { }
                 <div className="pt-3 border-t border-gray-200">
                   <p className="text-xs font-semibold text-gray-700 mb-3 uppercase">{t('settings.quiz.respondents_see')}</p>
                   
                   <div className="space-y-3">
-                    {/* Total Score */}
+                    { }
                     <div>
-                      <label className="block text-sm font-medium text-black mb-1">
-                        {t('settings.quiz.total_score')}
-                      </label>
-                      <input
-                        type="number"
-                        min="1"
-                        value={currentForm.quizSettings?.totalScore || 100}
-                        onChange={(e) => handleFormUpdate('quizSettings', {
-                          ...currentForm.quizSettings,
-                          totalScore: parseInt(e.target.value) || 100
-                        })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
-                      />
-                      <p className="mt-1 text-xs text-gray-500">{t('settings.quiz.total_score_desc')}</p>
+                        <label className="block text-sm font-medium text-black mb-1">
+                          {t('settings.quiz.total_score')}
+                        </label>
+                        <input
+                          type="number"
+                          min="1"
+                          value={currentForm.quizSettings?.totalScore || 100}
+                          onChange={(e) => handleFormUpdate('quizSettings', {
+                            ...currentForm.quizSettings,
+                            totalScore: parseInt(e.target.value) || 100
+                          })}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
+                        />
+                        <p className="mt-1 text-xs text-gray-500">{t('settings.quiz.total_score_desc')}</p>
                     </div>
 
+                    { }
                     <div>
                       <label className="block text-sm font-medium text-black mb-1">
                         {t('settings.quiz.show_score')}
@@ -324,145 +290,151 @@ export function FormSettingsProperties({
                           type="checkbox"
                           checked={currentForm.quizSettings?.showScore || false}
                           onChange={(e) => handleFormUpdate('quizSettings', {
-                            ...currentForm.quizSettings,
-                            showScore: e.target.checked
+                           ...currentForm.quizSettings,
+                           showScore: e.target.checked
                           })}
                           className="sr-only peer"
                         />
-                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
+                         <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
                       </label>
                       <p className="mt-1 text-xs text-gray-500">{t('settings.quiz.show_score_desc')}</p>
                     </div>
 
+                    { }
                     <div>
                       <label className="block text-sm font-medium text-black mb-1">
                         {t('settings.quiz.show_correct')}
                       </label>
                       <label className="relative inline-flex items-center cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={currentForm.quizSettings?.showAnswer || false}
-                          onChange={(e) => handleFormUpdate('quizSettings', {
-                            ...currentForm.quizSettings,
-                            showAnswer: e.target.checked
-                          })}
-                          className="sr-only peer"
-                        />
-                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
+                         <input
+                           type="checkbox"
+                           checked={currentForm.quizSettings?.showAnswer || false}
+                           onChange={(e) => handleFormUpdate('quizSettings', {
+                             ...currentForm.quizSettings,
+                             showAnswer: e.target.checked
+                           })}
+                           className="sr-only peer"
+                         />
+                         <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
                       </label>
                       <p className="mt-1 text-xs text-gray-500">{t('settings.quiz.show_correct_desc')}</p>
                     </div>
 
-                    <div>
+                    { }
+                     <div>
                       <label className="block text-sm font-medium text-black mb-1">
                         {t('settings.quiz.missed_questions')}
                       </label>
                       <label className="relative inline-flex items-center cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={currentForm.quizSettings?.allowViewMissedQuestions || false}
-                          onChange={(e) => handleFormUpdate('quizSettings', {
-                            ...currentForm.quizSettings,
-                            allowViewMissedQuestions: e.target.checked
-                          })}
-                          className="sr-only peer"
-                        />
-                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
+                         <input
+                           type="checkbox"
+                           checked={currentForm.quizSettings?.allowViewMissedQuestions || false}
+                           onChange={(e) => handleFormUpdate('quizSettings', {
+                             ...currentForm.quizSettings,
+                             allowViewMissedQuestions: e.target.checked
+                           })}
+                           className="sr-only peer"
+                         />
+                         <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
                       </label>
                       <p className="mt-1 text-xs text-gray-500">{t('settings.quiz.missed_desc')}</p>
                     </div>
 
+                    { }
                     <div>
                       <label className="block text-sm font-medium text-black mb-1">
                         {t('settings.quiz.point_values')}
                       </label>
-                      <label className="relative inline-flex items-center cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={currentForm.quizSettings?.showDetail || false}
-                          onChange={(e) => handleFormUpdate('quizSettings', {
-                            ...currentForm.quizSettings,
-                            showDetail: e.target.checked
-                          })}
-                          className="sr-only peer"
-                        />
-                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
+                       <label className="relative inline-flex items-center cursor-pointer">
+                         <input
+                           type="checkbox"
+                           checked={currentForm.quizSettings?.showDetail || false}
+                           onChange={(e) => handleFormUpdate('quizSettings', {
+                             ...currentForm.quizSettings,
+                             showDetail: e.target.checked
+                           })}
+                           className="sr-only peer"
+                         />
+                         <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
                       </label>
                       <p className="mt-1 text-xs text-gray-500">{t('settings.quiz.point_desc')}</p>
                     </div>
 
+                    { }
                     <div>
-                      <label className="block text-sm font-medium text-black mb-1">
-                        {t('settings.quiz.show_explanation')}
-                      </label>
+                       <label className="block text-sm font-medium text-black mb-1">
+                          {t('settings.quiz.show_explanation')}
+                        </label>
                       <label className="relative inline-flex items-center cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={currentForm.quizSettings?.showExplanation || false}
-                          onChange={(e) => handleFormUpdate('quizSettings', {
-                            ...currentForm.quizSettings,
-                            showExplanation: e.target.checked
-                          })}
-                          className="sr-only peer"
-                        />
-                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
+                         <input
+                           type="checkbox"
+                           checked={currentForm.quizSettings?.showExplanation || false}
+                           onChange={(e) => handleFormUpdate('quizSettings', {
+                             ...currentForm.quizSettings,
+                             showExplanation: e.target.checked
+                           })}
+                           className="sr-only peer"
+                         />
+                         <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
                       </label>
                       <p className="mt-1 text-xs text-gray-500">{t('settings.quiz.explanation_desc')}</p>
                     </div>
                   </div>
                 </div>
 
-                {/* Quiz Options */}
+                { }
                 <div className="pt-3 border-t border-gray-200">
                   <p className="text-xs font-semibold text-gray-700 mb-3 uppercase">{t('settings.quiz.options')}</p>
                   
                   <div className="space-y-3">
+                    { }
                     <div>
                       <label className="block text-sm font-medium text-black mb-1">
-                        {t('settings.quiz.shuffle')}
+                          {t('settings.quiz.shuffle')}
                       </label>
-                      <label className="relative inline-flex items-center cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={currentForm.quizSettings?.shuffleQuestions || false}
-                          onChange={(e) => handleFormUpdate('quizSettings', {
-                            ...currentForm.quizSettings,
-                            shuffleQuestions: e.target.checked
-                          })}
-                          className="sr-only peer"
-                        />
-                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
-                      </label>
-                      <p className="mt-1 text-xs text-gray-500">{t('settings.quiz.shuffle_desc')}</p>
+                       <label className="relative inline-flex items-center cursor-pointer">
+                         <input
+                           type="checkbox"
+                           checked={currentForm.quizSettings?.shuffleQuestions || false}
+                           onChange={(e) => handleFormUpdate('quizSettings', {
+                             ...currentForm.quizSettings,
+                             shuffleQuestions: e.target.checked
+                           })}
+                           className="sr-only peer"
+                         />
+                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
+                       </label>
+                       <p className="mt-1 text-xs text-gray-500">{t('settings.quiz.shuffle_desc')}</p>
                     </div>
 
+                    { }
                     <div>
                       <label className="block text-sm font-medium text-black mb-1">
-                        {t('settings.quiz.require_signin')}
+                          {t('settings.quiz.require_signin')}
                       </label>
                       <label className="relative inline-flex items-center cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={currentForm.quizSettings?.requireSignIn || false}
-                          onChange={(e) => handleFormUpdate('quizSettings', {
-                            ...currentForm.quizSettings,
-                            requireSignIn: e.target.checked
-                          })}
-                          className="sr-only peer"
-                        />
-                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
-                      </label>
-                      <p className="mt-1 text-xs text-gray-500">{t('settings.quiz.signin_desc')}</p>
+                         <input
+                           type="checkbox"
+                           checked={currentForm.quizSettings?.requireSignIn || false}
+                           onChange={(e) => handleFormUpdate('quizSettings', {
+                             ...currentForm.quizSettings,
+                             requireSignIn: e.target.checked
+                           })}
+                           className="sr-only peer"
+                         />
+                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
+                       </label>
+                       <p className="mt-1 text-xs text-gray-500">{t('settings.quiz.signin_desc')}</p>
                     </div>
                   </div>
                 </div>
 
-                {/* Quiz Timing Settings */}
+                { }
                 <div className="pt-3 border-t border-gray-200">
                   <p className="text-xs font-semibold text-gray-700 mb-3 uppercase">{t('settings.quiz.timing')}</p>
                   
                   <div className="space-y-3">
-                    {/* Time Limit */}
+                    { }
                     <div>
                       <label className="block text-sm font-medium text-black mb-1">
                         {t('settings.quiz.time_limit')}
@@ -475,13 +447,13 @@ export function FormSettingsProperties({
                           ...currentForm.quizSettings,
                           timeLimit: e.target.value ? parseInt(e.target.value) : undefined
                         })}
-                        placeholder="No time limit"
+                        placeholder={t('builder.settings.no_time_limit')}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent"
                       />
                       <p className="mt-1 text-xs text-gray-500">{t('settings.quiz.time_limit_desc')}</p>
                     </div>
 
-                    {/* Start Time */}
+                    { }
                     <div>
                       <label className="block text-sm font-medium text-black mb-1">
                         {t('settings.quiz.start_time')}
@@ -501,7 +473,7 @@ export function FormSettingsProperties({
                       <p className="mt-1 text-xs text-gray-500">{t('settings.quiz.start_time_desc')}</p>
                     </div>
 
-                    {/* End Time */}
+                    { }
                     <div>
                       <label className="block text-sm font-medium text-black mb-1">
                         {t('settings.quiz.end_time')}
@@ -527,7 +499,7 @@ export function FormSettingsProperties({
           </div>
         )}
 
-        {/* SUBMISSION TAB */}
+        { }
         {activeTab === 'submission' && (
           <div className="space-y-4">
             <div>
@@ -623,7 +595,7 @@ export function FormSettingsProperties({
                     onChange={(e) => updateSettings('responseLimit', parseInt(e.target.value) || 0)}
                     min={1}
                     className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
-                    placeholder="Maximum responses"
+                    placeholder={t('builder.settings.max_responses_placeholder')}
                   />
                 </div>
               )}
@@ -634,16 +606,16 @@ export function FormSettingsProperties({
           </div>
         )}
 
-        {/* DISPLAY TAB */}
+        { }
         {activeTab === 'display' && (
           <div className="space-y-4">
-            {/* Form Layout */}
+            { }
             <div>
               <label className="block text-sm font-medium text-black mb-2">
                 {t('settings.display.layout')}
               </label>
               <div className="grid grid-cols-2 gap-3">
-                {/* Classic Form Card */}
+                { }
                 <button
                   type="button"
                   onClick={() => updateSettings('formLayout', 'classic')}
@@ -674,7 +646,7 @@ export function FormSettingsProperties({
                   )}
                 </button>
 
-                {/* Card Form Card */}
+                { }
                 <button
                   type="button"
                   onClick={() => updateSettings('formLayout', 'card')}

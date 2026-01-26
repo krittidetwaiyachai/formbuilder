@@ -18,7 +18,7 @@ export default function ResponsesPage({ params }: { params: { id: string } }) {
   const [selectedField, setSelectedField] = useState<string>("");
   const [selectedAnalysis, setSelectedAnalysis] = useState<string>("ranking");
 
-  // Get available fields from submissions
+  
   const availableFields = Array.from(
     new Set(
       submissions.flatMap((submission) => Object.keys(submission.data))
@@ -78,13 +78,13 @@ export default function ResponsesPage({ params }: { params: { id: string } }) {
       </div>
 
       <div className="space-y-6">
-        {/* Field & Analysis Selector */}
+        { }
         <FieldAnalyticsSelector
           availableFields={availableFields}
           onAnalysisChange={handleAnalysisChange}
         />
 
-        {/* Analysis Results */}
+        { }
         {selectedField && (
           <AnalysisRenderer
             fieldName={selectedField}

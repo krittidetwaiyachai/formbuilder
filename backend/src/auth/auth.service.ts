@@ -7,7 +7,8 @@ import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 import { PrismaService } from '../prisma/prisma.service';
 import { LoginDto } from './dto/login.dto';
-import { DEFAULT_USER_ROLE } from './auth.constants';
+import { DEFAULT_USER_ROLE,  } from './auth.constants';
+import { DEFAULT_ROLE_PERMISSIONS } from './permissions.constants';
 
 import { ConfigService } from '@nestjs/config';
 
@@ -58,7 +59,7 @@ export class AuthService {
     });
 
     if (user) {
-      // Kick existing sessions
+      
       this.eventsGateway.server.to(`user_${user.id}`).emit('force_logout');
     
       const sessionToken = this.generateSessionToken();
@@ -107,9 +108,7 @@ export class AuthService {
       sessionToken: user.sessionToken,
     };
 
-    const rolePermissions = Array.isArray(user.role.permissions) 
-      ? user.role.permissions as string[]
-      : [];
+    const rolePermissions = DEFAULT_ROLE_PERMISSIONS[user.role.name] || [];
     const userOverrides = Array.isArray(user.permissionOverrides)
       ? user.permissionOverrides as string[]
       : null;
@@ -147,7 +146,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    // Kick existing sessions
+    
     this.eventsGateway.server.to(`user_${user.id}`).emit('force_logout');
 
     const sessionToken = this.generateSessionToken();
@@ -164,9 +163,7 @@ export class AuthService {
       sessionToken,
     };
 
-    const rolePermissions = Array.isArray(user.role.permissions) 
-      ? user.role.permissions as string[]
-      : [];
+    const rolePermissions = DEFAULT_ROLE_PERMISSIONS[user.role.name] || [];
     const userOverrides = Array.isArray(user.permissionOverrides)
       ? user.permissionOverrides as string[]
       : null;
@@ -204,9 +201,7 @@ export class AuthService {
       return null;
     }
 
-    const rolePermissions = Array.isArray(user.role.permissions) 
-      ? user.role.permissions 
-      : [];
+    const rolePermissions = DEFAULT_ROLE_PERMISSIONS[user.role.name] || [];
 
     return {
       id: user.id,

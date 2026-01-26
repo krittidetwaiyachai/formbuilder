@@ -3,7 +3,7 @@
 import { MOCK_USER_FORMS } from "@/lib/mock-data";
 import { Button } from "@/components/ui/button";
 import { Plus, Pencil, BarChart3 } from "lucide-react";
-// import { useRouter } from "next/navigation"; // Unused
+
 
 import { Badge } from "@/components/ui/badge";
 import {
@@ -27,7 +27,7 @@ export default function DashboardGrid() {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {/* Create New Form Card */}
+      { }
       <Card className="border-2 border-dashed hover:border-primary/50 transition-colors cursor-pointer bg-gray-50/50">
         <CardContent className="flex flex-col items-center justify-center h-full min-h-[200px] p-6">
           <div className="flex flex-col items-center gap-3">
@@ -44,7 +44,7 @@ export default function DashboardGrid() {
         </CardContent>
       </Card>
 
-      {/* Form Cards */}
+      { }
       {MOCK_USER_FORMS.map((form: any) => (
         <Card
           key={form.id}

@@ -14,6 +14,8 @@ interface PreviewMatrixFieldProps {
   isPublic?: boolean;
 }
 
+import { useTranslation } from 'react-i18next';
+
 export const PreviewMatrixField: React.FC<PreviewMatrixFieldProps> = ({
   field,
   register,
@@ -23,11 +25,12 @@ export const PreviewMatrixField: React.FC<PreviewMatrixFieldProps> = ({
   questionNumber,
   isPublic
 }) => {
+  const { t } = useTranslation();
   const rows = field.options?.rows || [];
   const columns = field.options?.columns || [];
   const inputType = field.options?.inputType || 'radio';
   
-  // Watch the entire field value
+  
   const fieldName = `field_${field.id}`; 
   const currentValue = watch(fieldName) || {};
 
@@ -35,7 +38,7 @@ export const PreviewMatrixField: React.FC<PreviewMatrixFieldProps> = ({
     const newValue = { ...currentValue };
 
     if (inputType === 'checkbox') {
-      // Initialize row array if not exists
+      
       if (!Array.isArray(newValue[rowId])) {
         newValue[rowId] = [];
       }
@@ -47,7 +50,7 @@ export const PreviewMatrixField: React.FC<PreviewMatrixFieldProps> = ({
         newValue[rowId].splice(index, 1);
       }
     } else {
-      // Radio: just set the value
+      
       newValue[rowId] = colLabel;
     }
 
@@ -62,7 +65,7 @@ export const PreviewMatrixField: React.FC<PreviewMatrixFieldProps> = ({
     return rowValue === colLabel;
   };
 
-  // Layout & Styling Props
+  
   const validation = field.validation || {};
   const optionsSettings = field.options || {};
   const { 
@@ -77,7 +80,7 @@ export const PreviewMatrixField: React.FC<PreviewMatrixFieldProps> = ({
   return (
     <div className={`mb-6 w-full ${hidden ? 'hidden' : ''} ${isRowLayout ? 'flex items-start gap-6' : ''}`} title={hoverText}>
       
-      {/* Label Section */}
+      { }
       <div className={`${isRowLayout ? 'w-48 flex-shrink-0 pt-2' : 'mb-3'} ${labelAlignment === 'RIGHT' ? 'text-right' : ''}`}>
         <PreviewLabel field={field} questionNumber={questionNumber} isPublic={isPublic} />
         {subLabel && subLabel !== 'Sublabel' && (
@@ -85,30 +88,41 @@ export const PreviewMatrixField: React.FC<PreviewMatrixFieldProps> = ({
         )}
       </div>
 
-      {/* Input Section */}
+      { }
       <div className="flex-1 min-w-0">
-        <div className="w-full overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-100">
+        <div className="w-full rounded-xl border shadow-sm relative group overflow-hidden" 
+             style={{ 
+               backgroundColor: 'var(--card-bg)', 
+               borderColor: 'var(--card-border)' 
+             }}>
+          { }
+          <div className="md:hidden absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-black/5 to-transparent pointer-events-none z-10 rounded-r-xl" />
+          
+          <div className="overflow-x-auto pb-1">
+            <table className="min-w-full divide-y divide-[color:var(--divider)]">
               <thead>
-                <tr className="bg-gray-50/80">
-                  <th scope="col" className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider min-w-[150px]">
-                    {/* Corner */}
+                <tr style={{ backgroundColor: 'var(--input-bg)' }}>
+                  <th scope="col" className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider min-w-[150px] sticky left-0 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]"
+                      style={{ color: 'var(--text)', opacity: 0.7, backgroundColor: 'var(--input-bg)' }}>
+                    { }
                   </th>
                   {columns.map((col: any) => (
-                    <th key={col.id} scope="col" className="px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider min-w-[80px]">
+                    <th key={col.id} scope="col" className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider min-w-[80px]"
+                        style={{ color: 'var(--text)', opacity: 0.7 }}>
                       {col.label}
                     </th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100 bg-white">
+              <tbody className="divide-y divide-[color:var(--divider)]" style={{ backgroundColor: 'var(--card-bg)' }}>
                 {rows.map((row: any, rowIndex: number) => (
                   <tr 
                     key={row.id} 
-                    className={`transition-colors hover:bg-gray-50/50 ${rowIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50/30'}`}
+                    className="transition-colors hover:bg-black/5"
+                    style={{ backgroundColor: rowIndex % 2 === 0 ? 'var(--card-bg)' : 'var(--input-bg)' }}
                   >
-                    <td className="px-4 py-3.5 whitespace-normal text-sm font-medium text-gray-700">
+                    <td className="px-4 py-3.5 whitespace-normal text-sm font-medium sticky left-0 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]"
+                        style={{ color: 'var(--text)', backgroundColor: rowIndex % 2 === 0 ? 'var(--card-bg)' : 'var(--input-bg)' }}>
                       {row.label}
                     </td>
                     {columns.map((col: any) => (
@@ -119,13 +133,15 @@ export const PreviewMatrixField: React.FC<PreviewMatrixFieldProps> = ({
                             name={`${field.id}_${row.id}`}
                             checked={isChecked(row.id, col.label)}
                             onChange={() => handleCellChange(row.id, col.label)}
+                            style={{
+                                borderColor: isChecked(row.id, col.label) ? 'var(--primary)' : 'var(--input-border)',
+                                backgroundColor: isChecked(row.id, col.label) ? 'var(--primary)' : 'transparent',
+                            }}
                             className={`
                               w-5 h-5 
-                              border-2 border-gray-300 
-                              text-black focus:ring-black focus:ring-offset-0
+                              border-2
                               appearance-none cursor-pointer transition-all duration-200
                               ${inputType === 'checkbox' ? 'rounded' : 'rounded-full'}
-                              checked:bg-black checked:border-black
                             `}
                             disabled={false}
                           />
@@ -147,8 +163,13 @@ export const PreviewMatrixField: React.FC<PreviewMatrixFieldProps> = ({
             </table>
           </div>
         </div>
+        <div className="md:hidden mt-2 text-center">
+             <span className="text-xs text-gray-400 bg-gray-100 px-3 py-1 rounded-full inline-flex items-center gap-1">
+                ⟷ {t('public.scroll_hint', 'เลื่อนเพื่อดูเพิ่มเติม')}
+             </span>
+        </div>
         
-        {/* Hidden input to register with react-hook-form validation */}
+        { }
         <input 
           type="hidden" 
           {...register(`field_${field.id}`, { 
@@ -156,20 +177,21 @@ export const PreviewMatrixField: React.FC<PreviewMatrixFieldProps> = ({
             validate: (value) => {
               if (!field.required) return true;
               
-              if (inputType === 'radio') {
-                  const answeredRows = Object.keys(value || {}).length;
-                  // Check if all rows found in 'value' keys match the total rows count
-                  // Note: Logic might need robust checking against row IDs, but count is a good proxy for now.
-                  return answeredRows === rows.length || 'Please answer all questions in this table.';
-              }
-              // For Checkbox, usually we need at least one answer total or per row? 
-              // Standard behavior: At least one answer in the entire table? Or per row?
-              // Let's assume at least one answer TOTAL for checkbox matrix if required.
-              if (inputType === 'checkbox') {
-                 const hasAnswers = Object.values(value || {}).some((arr: any) => Array.isArray(arr) && arr.length > 0);
-                 return hasAnswers || 'Please select at least one option.';
-              }
-              return true;
+                if (inputType === 'radio') {
+                    if (value && typeof value === 'object') {
+                        const answeredRows = Object.keys(value).filter(k => value[k]).length;
+                        if (answeredRows !== rows.length) {
+                          return t('public.validation.matrix_radio', 'Please answer all questions');
+                        }
+                        return true;
+                    }
+                    return t('public.validation.matrix_radio', 'Please answer all questions');
+                }
+                if (inputType === 'checkbox') {
+                   const hasAnswers = Object.values(value || {}).some((arr: any) => Array.isArray(arr) && arr.length > 0);
+                   return hasAnswers || t('public.validation.matrix_checkbox', 'Please select at least one option.');
+                }
+                return true;
             }
           })} 
         />

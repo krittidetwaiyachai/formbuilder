@@ -16,6 +16,18 @@ export default function PublicForm() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (form?.settings?.backgroundColor) {
+      const bgColor = form.settings.backgroundColor;
+      document.documentElement.style.backgroundColor = bgColor;
+      document.body.style.backgroundColor = bgColor;
+    }
+    return () => {
+      document.documentElement.style.backgroundColor = '';
+      document.body.style.backgroundColor = '';
+    };
+  }, [form?.settings?.backgroundColor]);
+
+  useEffect(() => {
     if (id) {
       loadForm();
     }
@@ -97,8 +109,23 @@ export default function PublicForm() {
   }
 
   return (
-    <div className="min-h-screen w-full overflow-auto bg-white">
-      <PublicFormRenderer form={form} loading={loading} />
-    </div>
+    <>
+      <div 
+        className="fixed inset-0 z-0 transition-colors duration-500"
+        style={{ 
+          backgroundColor: form.settings?.backgroundColor || '#ffffff',
+          backgroundImage: form.settings?.backgroundType === 'image' && form.settings?.backgroundImage ? `url(${form.settings.backgroundImage})` : 'none',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      />
+      <div 
+        className="relative z-10 min-h-screen w-full overflow-y-auto overflow-x-hidden"
+        style={{ fontFamily: form.settings?.fontFamily || 'inherit' }}
+      >
+        <PublicFormRenderer form={form} loading={loading} />
+      </div>
+    </>
   );
 }

@@ -26,10 +26,13 @@ const defaultSettings: FormSettings = {
   notificationEmails: [],
 };
 
+import { useTranslation } from "react-i18next";
+
 export default function FormSettingsPanel({ settings, onSettingsChange }: FormSettingsPanelProps) {
+  const { t } = useTranslation();
   const [localSettings, setLocalSettings] = useState<FormSettings>(settings || defaultSettings);
 
-  // Sync with prop changes
+  
   React.useEffect(() => {
     if (settings) {
       setLocalSettings(settings);
@@ -61,14 +64,14 @@ export default function FormSettingsPanel({ settings, onSettingsChange }: FormSe
       <CardHeader>
         <CardTitle className="text-lg flex items-center gap-2">
           <Settings className="h-5 w-5" />
-          Form Settings
+          {t('builder.settings', 'Form Settings')}
         </CardTitle>
-        <CardDescription>Configure form behavior and preferences</CardDescription>
+        <CardDescription>{t('settings.general.description', 'Configure form behavior and preferences')}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* Submission Settings */}
+        { }
         <div className="space-y-3">
-          <h3 className="text-sm font-semibold text-gray-700">Submission Settings</h3>
+          <h3 className="text-sm font-semibold text-gray-700">{t('settings.tabs.submission', 'Submission Settings')}</h3>
           
           <div className="flex items-center space-x-2">
             <Checkbox
@@ -77,7 +80,7 @@ export default function FormSettingsPanel({ settings, onSettingsChange }: FormSe
               onChange={(e) => handleChange({ allowMultipleSubmissions: e.target.checked })}
             />
             <Label htmlFor="allowMultiple" className="cursor-pointer">
-              Allow multiple submissions
+              {t('settings.submission.allow_multiple', 'Allow multiple submissions')}
             </Label>
           </div>
 
@@ -89,14 +92,14 @@ export default function FormSettingsPanel({ settings, onSettingsChange }: FormSe
             />
             <Label htmlFor="requireLogin" className="cursor-pointer flex items-center gap-2">
               <Lock className="h-3.5 w-3.5" />
-              Require login to submit
+              {t('settings.quiz.require_signin', 'Require login to submit')}
             </Label>
           </div>
         </div>
 
-        {/* Display Settings */}
+        { }
         <div className="space-y-3 border-t pt-4">
-          <h3 className="text-sm font-semibold text-gray-700">Display Settings</h3>
+          <h3 className="text-sm font-semibold text-gray-700">{t('settings.tabs.display', 'Display Settings')}</h3>
           
           <div className="flex items-center space-x-2">
             <Checkbox
@@ -105,7 +108,7 @@ export default function FormSettingsPanel({ settings, onSettingsChange }: FormSe
               onChange={(e) => handleChange({ showProgressBar: e.target.checked })}
             />
             <Label htmlFor="showProgress" className="cursor-pointer">
-              Show progress bar
+              {t('settings.display.progress_bar', 'Show progress bar')}
             </Label>
           </div>
 
@@ -116,27 +119,27 @@ export default function FormSettingsPanel({ settings, onSettingsChange }: FormSe
               onChange={(e) => handleChange({ showPageNumbers: e.target.checked })}
             />
             <Label htmlFor="showPageNumbers" className="cursor-pointer">
-              Show page numbers
+              {t('settings.display.question_number', 'Show page numbers')}
             </Label>
           </div>
         </div>
 
-        {/* Success Message */}
+        { }
         <div className="space-y-2 border-t pt-4">
-          <Label>Success Message</Label>
+          <Label>{t('settings.submission.success_msg', 'Success Message')}</Label>
           <Textarea
             value={localSettings.successMessage || ""}
             onChange={(e) => handleChange({ successMessage: e.target.value })}
-            placeholder="Thank you for your submission!"
+            placeholder={t('settings.submission.success_placeholder', 'Thank you for your submission!')}
             rows={3}
           />
         </div>
 
-        {/* Redirect URL */}
+        { }
         <div className="space-y-2 border-t pt-4">
           <Label className="flex items-center gap-2">
             <LinkIcon className="h-4 w-4" />
-            Redirect URL (Optional)
+            {t('builder.settings.redirect_url', 'Redirect URL (Optional)')}
           </Label>
           <Input
             type="url"
@@ -145,11 +148,11 @@ export default function FormSettingsPanel({ settings, onSettingsChange }: FormSe
             placeholder="https://example.com/thank-you"
           />
           <p className="text-xs text-muted-foreground">
-            Redirect users after form submission
+            {t('builder.settings.redirect_desc', 'Redirect users after form submission')}
           </p>
         </div>
 
-        {/* Email Notifications */}
+        { }
         <div className="space-y-3 border-t pt-4">
           <div className="flex items-center space-x-2">
             <Checkbox
@@ -159,13 +162,13 @@ export default function FormSettingsPanel({ settings, onSettingsChange }: FormSe
             />
             <Label htmlFor="emailNotifications" className="cursor-pointer flex items-center gap-2">
               <Mail className="h-3.5 w-3.5" />
-              Email notifications
+              {t('builder.settings.notifications', 'Email notifications')}
             </Label>
           </div>
 
           {localSettings.emailNotifications && (
             <div className="space-y-2 ml-6">
-              <Label className="text-xs">Notification Emails</Label>
+              <Label className="text-xs">{t('builder.settings.notify_emails', 'Notification Emails')}</Label>
               <div className="space-y-2">
                 {localSettings.notificationEmails?.map((email: string) => (
                   <div key={email} className="flex items-center gap-2">
@@ -176,7 +179,7 @@ export default function FormSettingsPanel({ settings, onSettingsChange }: FormSe
                       onClick={() => handleEmailRemove(email)}
                       className="text-destructive"
                     >
-                      Remove
+                      {t('builder.settings.remove_email', 'Remove')}
                     </Button>
                   </div>
                 ))}
@@ -192,7 +195,7 @@ export default function FormSettingsPanel({ settings, onSettingsChange }: FormSe
                   }}
                 />
                 <p className="text-xs text-muted-foreground">
-                  Press Enter to add email
+                  {t('builder.settings.add_email_placeholder', 'Press Enter to add email')}
                 </p>
               </div>
             </div>

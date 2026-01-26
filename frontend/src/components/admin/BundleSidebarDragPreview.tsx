@@ -12,16 +12,16 @@ import {
   Clock,
   Star,
   Heading,
-  User, // FullName uses User icon
+  User, 
   MapPin,
   AlignLeft,
   Minus,
   FileX,
   Layers,
-  LayoutGrid // Matrix/Table
+  LayoutGrid 
 } from 'lucide-react';
 
-// Helper for theme colors (Replicated from FieldSidebar.tsx)
+
 const getFieldColorTheme = (type: FieldType) => {
     switch (type) {
         case FieldType.TEXT: 
@@ -67,7 +67,7 @@ interface BundleSidebarDragPreviewProps {
 }
 
 export default function BundleSidebarDragPreview({ fieldConfig }: BundleSidebarDragPreviewProps) {
-    // Map icons if not provided or to ensure consistency
+    
     const getIcon = () => {
         if (fieldConfig.icon) return fieldConfig.icon;
         switch (fieldConfig.type) {

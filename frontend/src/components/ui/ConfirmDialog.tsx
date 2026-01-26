@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertTriangle, AlertCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -17,18 +18,22 @@ export default function ConfirmDialog({
   onOpenChange,
   title,
   description,
-  confirmText = 'Confirm',
-  cancelText = 'Cancel',
+  confirmText,
+  cancelText,
   onConfirm,
   variant = 'destructive',
 }: ConfirmDialogProps) {
+  const { t } = useTranslation();
+  const finalConfirmText = confirmText || t('common.confirm');
+  const finalCancelText = cancelText || t('common.cancel');
+
   if (!open) return null;
 
   return (
     <AnimatePresence>
       {open && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
-          {/* Backdrop */}
+          { }
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -37,7 +42,7 @@ export default function ConfirmDialog({
             className="absolute inset-0 bg-black/60 backdrop-blur-sm cursor-pointer"
           />
 
-          {/* Dialog Content */}
+          { }
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -45,7 +50,7 @@ export default function ConfirmDialog({
             transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
             className="relative bg-white w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden z-20"
           >
-            {/* Header/Banner Logic - Optional visual flair */}
+            { }
             <div className={`h-2 w-full ${variant === 'destructive' ? 'bg-red-500' : 'bg-black'}`} />
 
 
@@ -96,7 +101,7 @@ export default function ConfirmDialog({
                     onClick={() => onOpenChange(false)}
                     className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 text-gray-700 font-medium hover:bg-gray-50 hover:border-gray-300 transition-colors text-sm"
                   >
-                    {cancelText}
+                    {finalCancelText}
                   </button>
                   <button
                     onClick={() => {
@@ -109,7 +114,7 @@ export default function ConfirmDialog({
                         : 'bg-black hover:bg-gray-800 shadow-gray-200'
                     }`}
                   >
-                    {confirmText}
+                    {finalConfirmText}
                   </button>
                 </div>
               </div>

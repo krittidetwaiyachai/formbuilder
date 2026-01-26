@@ -4,6 +4,7 @@ export interface StatsResponse {
   totalUsers: number;
   totalForms: number;
   totalSubmissions: number;
+  growthRate: number;
   recentActivity: Array<{
     id: string;
     action: string;
@@ -20,6 +21,19 @@ export interface StatsResponse {
       title: string;
     };
     details?: Record<string, unknown>;
+  }>;
+  monthlyStats: Array<{
+    name: string;
+    submissions: number;
+  }>;
+  monthlyForms: Array<{
+    name: string;
+    value: number;
+  }>;
+  popularForms: Array<{
+    id: string;
+    title: string;
+    submissions: number;
   }>;
 }
 

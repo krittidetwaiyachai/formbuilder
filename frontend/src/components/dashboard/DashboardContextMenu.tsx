@@ -53,7 +53,7 @@ export function DashboardContextMenu({
   const menuRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
 
-  // Close on click outside
+  
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -70,8 +70,8 @@ export function DashboardContextMenu({
     };
   }, [onClose]);
 
-  // Adjust position to stay within viewport
-  // We'll do a simple check to see if it overflows right or bottom
+  
+  
   const getAdjustedStyle = () => {
       let top = position.y;
       let left = position.x;

@@ -9,15 +9,12 @@ interface UseFormLogicProps {
 
 export const useFormLogic = ({ fields, logicRules, formValues }: UseFormLogicProps) => {
   const hiddenFieldIds = useMemo(() => {
-    // If no rules, nothing is hidden by logic (unless manually hidden, which is handled outside)
     if (!logicRules || logicRules.length === 0) return new Set<string>();
 
-    const showTargets = new Set<string>();      // Fields that are targets of a SHOW action
-    const currentlyVisible = new Set<string>(); // Fields explicitly SHOWN by a passing rule
-    const currentlyHidden = new Set<string>();  // Fields explicitly HIDDEN by a passing rule
+    const showTargets = new Set<string>();      
+    const currentlyVisible = new Set<string>(); 
+    const currentlyHidden = new Set<string>();  
 
-    // 1. Identify all targets of "SHOW" actions.
-    // These fields become "Hidden by Default" unless a rule explicitly shows them.
     logicRules.forEach(rule => {
       rule.actions.forEach(action => {
         if (action.type === 'show' && action.fieldId) {
@@ -26,92 +23,106 @@ export const useFormLogic = ({ fields, logicRules, formValues }: UseFormLogicPro
       });
     });
 
-    // 2. Evaluate each rule
     logicRules.forEach(rule => {
       if (!rule.conditions || rule.conditions.length === 0) return;
 
-      // Evaluate all conditions in the rule
       const conditionResults = rule.conditions.map(c => {
-        const sourceValue = formValues[c.fieldId]; // logic values are keyed by fieldId from PublicFormRenderer
-        const targetValue = c.value;
-        const operator = c.operator;
+        const hasContent = (val: any): boolean => {
+            if (val === undefined || val === null || val === "") return false;
+            if (Array.isArray(val)) return val.length > 0;
+            if (typeof val === 'object') return Object.keys(val).length > 0;
+            return true;
+        };
 
-        // Handle string conversion for comparison
-        let sVal = '';
+        const field = fields.find(f => f.id === c.fieldId);
+        
+        const children = fields.filter(f => f.groupId === c.fieldId);
+        const isGroupTarget = children.length > 0 || field?.type === 'GROUP';
+
+        let sourceValue = formValues[c.fieldId];
+        if (isGroupTarget) {
+             const activeValues: Record<string, any> = {};
+             children.forEach(child => {
+                const val = formValues[child.id];
+                if (hasContent(val)) {
+                    activeValues[child.id] = val;
+                }
+             });
+             sourceValue = activeValues;
+        }
+
+        const targetValue = c.value;
+        const operator = c.operator.toLowerCase();
         const tVal = String(targetValue || '').toLowerCase();
 
-        // Complex value handling (Matrix, Checkbox array)
-        if (typeof sourceValue === 'object' && sourceValue !== null) {
-            if (Array.isArray(sourceValue)) {
-                // Array (Checkbox): join for string search, or check specific
-                sVal = sourceValue.join(',').toLowerCase();
-            } else {
-                // Object (Matrix): stringify or use values
-                // For 'contains', we might want to search in values
-                sVal = JSON.stringify(sourceValue).toLowerCase(); 
-            }
+        let sourceValuesList: string[] = [];
+
+        if (sourceValue === undefined || sourceValue === null) {
+            sourceValuesList = [];
+        } else if (Array.isArray(sourceValue)) {
+            sourceValuesList = sourceValue
+                .map(v => String(v).toLowerCase())
+                .filter(v => v !== ''); 
+        } else if (typeof sourceValue === 'object') {
+            sourceValuesList = Object.values(sourceValue)
+                .map(v => String(v).toLowerCase())
+                .filter(v => v !== ''); 
         } else {
-             sVal = String(sourceValue === undefined || sourceValue === null ? '' : sourceValue).toLowerCase();
+            const str = String(sourceValue).toLowerCase();
+            sourceValuesList = str !== '' ? [str] : []; 
         }
 
         switch (operator) {
           case 'equals':
-            return sVal === tVal;
+            return sourceValuesList.some(v => v === tVal);
+
           case 'not_equals':
-            return sVal !== tVal;
+            if (sourceValuesList.length === 0) return true;
+            return !sourceValuesList.some(v => v === tVal);
+
           case 'contains':
-             // Enhanced contain for Arrays/Objects: check if ANY value matches
-             if (typeof sourceValue === 'object' && sourceValue !== null) {
-                 if (Array.isArray(sourceValue)) {
-                     // Checkbox: check if array includes the value
-                     return sourceValue.some(v => String(v).toLowerCase().includes(tVal));
-                 } else {
-                     // Matrix: check if any ROW value includes the target
-                     return Object.values(sourceValue).some(v => String(v).toLowerCase().includes(tVal));
-                 }
-             }
-            return sVal.includes(tVal);
+             return sourceValuesList.some(v => v.includes(tVal));
+
           case 'not_contains':
-             if (typeof sourceValue === 'object' && sourceValue !== null) {
-                 if (Array.isArray(sourceValue)) {
-                     return !sourceValue.some(v => String(v).toLowerCase().includes(tVal));
-                 } else {
-                     return !Object.values(sourceValue).some(v => String(v).toLowerCase().includes(tVal));
-                 }
-             }
-            return !sVal.includes(tVal);
+             if (sourceValuesList.length === 0) return true;
+             return !sourceValuesList.some(v => v.includes(tVal));
+
           case 'starts_with':
-            return sVal.startsWith(tVal);
+             return sourceValuesList.some(v => v.startsWith(tVal));
+
           case 'ends_with':
-            return sVal.endsWith(tVal);
+             return sourceValuesList.some(v => v.endsWith(tVal));
+
           case 'is_empty':
-             if (Array.isArray(sourceValue)) return sourceValue.length === 0;
-             if (typeof sourceValue === 'object' && sourceValue !== null) return Object.keys(sourceValue).length === 0;
-            return !sourceValue || sourceValue.length === 0;
+            return sourceValuesList.length === 0;
+
           case 'is_not_empty':
-             if (Array.isArray(sourceValue)) return sourceValue.length > 0;
-             if (typeof sourceValue === 'object' && sourceValue !== null) return Object.keys(sourceValue).length > 0;
-            return !!sourceValue && sourceValue.length > 0;
+            return sourceValuesList.length > 0;
+
           case 'greater_than':
-             return Number(sourceValue) > Number(targetValue);
+             return sourceValuesList.some(v => {
+                 const n = Number(v);
+                 return !isNaN(n) && n > Number(targetValue);
+             });
+
           case 'less_than':
-             return Number(sourceValue) < Number(targetValue);
-          // Add other operators as needed
+             return sourceValuesList.some(v => {
+                 const n = Number(v);
+                 return !isNaN(n) && n < Number(targetValue);
+             });
+
           default:
             return false;
         }
       });
 
-      // Combine conditions based on logicType (AND / OR)
       let isRuleMet = false;
       if (rule.logicType === 'or') {
         isRuleMet = conditionResults.some(r => r);
       } else {
-        // Default to AND
         isRuleMet = conditionResults.every(r => r);
       }
 
-      // 3. Apply Actions if Rule is Met
       if (isRuleMet) {
         rule.actions.forEach(action => {
             if (action.fieldId) {
@@ -125,22 +136,18 @@ export const useFormLogic = ({ fields, logicRules, formValues }: UseFormLogicPro
       }
     });
 
-    // 4. Calculate Final Visibility
     const finalHiddenIds = new Set<string>();
-
+    
     fields.forEach(field => {
         let isVisible = true;
 
-        // Rule 1: If it's a target of a SHOW action, it is HIDDEN by default...
         if (showTargets.has(field.id)) {
             isVisible = false; 
-            // ...UNLESS it is strictly SHOWN by a passing rule
             if (currentlyVisible.has(field.id)) {
                 isVisible = true;
             }
         }
 
-        // Rule 2: If it is explicitly HIDDEN by a passing rule, it is hidden relative to Rule 1 result
         if (currentlyHidden.has(field.id)) {
             isVisible = false;
         }

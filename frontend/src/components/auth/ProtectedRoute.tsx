@@ -13,7 +13,7 @@ export default function ProtectedRoute() {
             isOpen={true} 
             onClose={() => navigate('/')} 
             onSuccess={() => {
-                // Store updates automatically, triggering re-render
+                
             }} 
         />
       </div>

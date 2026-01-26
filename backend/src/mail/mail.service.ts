@@ -38,7 +38,7 @@ export class MailService {
     const subject = `New Submission: ${formTitle}`;
     
     const frontendUrl = this.configService.get('FRONTEND_URL') || 'http://localhost:5173';
-    // Logic to view specific response if supported, otherwise list
+    
     const link = `${frontendUrl}/forms/${answers.formId || ''}/responses`; 
 
     const htmlContent = `

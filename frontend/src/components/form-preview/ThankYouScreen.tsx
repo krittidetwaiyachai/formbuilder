@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Check, CheckCircle, Facebook, Twitter, Linkedin, ThumbsUp, Heart, Star, Trophy, PartyPopper } from 'lucide-react';
 import { FormSettings, ThankYouScreenSettings } from '@/types';
 import QuizResults from './QuizResults';
+import Loader from '@/components/common/Loader';
 
 const iconMap: Record<string, any> = {
   check: CheckCircle,
@@ -14,7 +15,7 @@ const iconMap: Record<string, any> = {
   party: PartyPopper,
 };
 
-// Premium Icon Backgrounds
+
 const iconStyles: Record<string, string> = {
   green: 'bg-emerald-50 text-emerald-600 border-emerald-100',
   blue: 'bg-blue-50 text-blue-600 border-blue-100',
@@ -32,12 +33,17 @@ interface ThankYouScreenProps {
   globalSettings?: FormSettings;
   score?: { score: number; totalScore: number } | null;
   showScore?: boolean;
+  allowViewMissedQuestions?: boolean;
+  showExplanation?: boolean;
   quizReview?: any;
   isQuiz?: boolean;
   viewMode?: 'desktop' | 'tablet' | 'mobile';
 }
 
-export default function ThankYouScreen({ settings, globalSettings, score, showScore, quizReview, isQuiz, viewMode = 'desktop' }: ThankYouScreenProps) {
+import { useTranslation } from 'react-i18next';
+
+export default function ThankYouScreen({ settings, globalSettings, score, showScore, allowViewMissedQuestions, showExplanation, quizReview, isQuiz, viewMode = 'desktop' }: ThankYouScreenProps) {
+  const { t } = useTranslation();
   const layout = settings?.layout || 'simple';
   const bgImage = settings?.backgroundImage;
   const iconColor = settings?.iconColor || 'green';
@@ -45,8 +51,8 @@ export default function ThankYouScreen({ settings, globalSettings, score, showSc
   const isMobile = viewMode === 'mobile';
   const isTablet = viewMode === 'tablet';
   
-  const defaultTitle = 'Thank you!';
-  const defaultMessage = 'Your submission has been received.';
+  const defaultTitle = t('public.thank_you.title', 'Thank you!');
+  const defaultMessage = t('public.thank_you.message', 'Your submission has been received.');
   
   const title = settings?.title ?? defaultTitle;
   const message = globalSettings?.successMessage || settings?.message || defaultMessage;
@@ -60,6 +66,8 @@ export default function ThankYouScreen({ settings, globalSettings, score, showSc
       return () => clearTimeout(timer);
     }
   }, [settings?.autoRedirect, settings?.redirectUrl, settings?.redirectDelay]);
+
+  
 
   useEffect(() => {
     if (settings?.showConfetti) {
@@ -97,45 +105,29 @@ export default function ThankYouScreen({ settings, globalSettings, score, showSc
   const renderContent = (isCover = false) => (
     <div className="flex flex-col items-center justify-center w-full text-center space-y-8 px-4">
       
-      {/* Title */}
+      { }
       <motion.h2 
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.1 }}
-        className={`text-4xl md:text-5xl font-bold tracking-tight ${isCover ? 'text-white drop-shadow-md' : 'text-gray-900'}`}
+        className={`text-4xl md:text-5xl font-bold tracking-tight ${isCover ? 'text-white drop-shadow-md' : ''}`}
+        style={!isCover ? { color: 'var(--text)' } : {}}
       >
         {title}
       </motion.h2>
 
-      {/* Message */}
+      { }
       <motion.p 
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.2 }}
-        className={`text-lg md:text-xl font-normal whitespace-pre-wrap leading-relaxed max-w-2xl ${isCover ? 'text-white/90 drop-shadow' : 'text-gray-500'}`}
+        className={`text-lg md:text-xl font-normal whitespace-pre-wrap leading-relaxed max-w-2xl ${isCover ? 'text-white/90 drop-shadow' : ''}`}
+        style={!isCover ? { color: 'var(--text)', opacity: 0.7 } : {}}
       >
         {message}
       </motion.p>
 
-      {/* Score Display (Clean & Modern) */}
-      {showScore && score && (
-        <motion.div 
-           initial={{ scale: 0.9, opacity: 0 }}
-           animate={{ scale: 1, opacity: 1 }}
-           transition={{ delay: 0.3 }}
-           className={`mt-4 rounded-2xl p-6 min-w-[200px] ${isCover ? 'bg-white/10 backdrop-blur-md border border-white/20' : 'bg-gray-50 border border-gray-100'}`}
-        >
-           <p className={`text-xs font-semibold uppercase tracking-widest mb-2 ${isCover ? 'text-white/70' : 'text-gray-400'}`}>
-             Total Score
-           </p>
-           <div className="flex items-baseline justify-center gap-1.5">
-             <span className={`text-5xl font-bold ${isCover ? 'text-white' : 'text-black'}`}>{score.score}</span>
-             <span className={`text-xl font-medium ${isCover ? 'text-white/60' : 'text-gray-400'}`}>/ {score.totalScore}</span>
-           </div>
-        </motion.div>
-      )}
-
-      {/* Button */}
+      { }
       {settings?.showButton && settings?.buttonText && (
         <motion.a
           initial={{ opacity: 0, y: 10 }}
@@ -145,14 +137,15 @@ export default function ThankYouScreen({ settings, globalSettings, score, showSc
           className={`mt-4 px-10 py-4 rounded-full font-bold text-lg shadow-lg hover:shadow-xl transition-all ${
             isCover 
               ? 'bg-white text-black hover:bg-gray-50' 
-              : 'bg-black text-white hover:bg-gray-800'
+              : 'text-white hover:opacity-90'
           }`}
+          style={!isCover ? { backgroundColor: 'var(--primary)', borderRadius: 'var(--radius)' } : {}}
         >
           {settings.buttonText}
         </motion.a>
       )}
 
-      {/* Social Share (Minimalist) */}
+      { }
       {settings?.showSocialShare && (
         <motion.div 
           initial={{ opacity: 0 }}
@@ -180,12 +173,18 @@ export default function ThankYouScreen({ settings, globalSettings, score, showSc
         </motion.div>
       )}
 
-      {/* Quiz Results */}
+      { }
       {quizReview && score && (
-        <QuizResults quizReview={quizReview} score={score} />
+        <QuizResults 
+          quizReview={quizReview} 
+          score={score} 
+          showScore={showScore} 
+          allowViewMissedQuestions={allowViewMissedQuestions}
+          showExplanation={showExplanation}
+        />
       )}
 
-      {/* Redirect Countdown */}
+      { }
       {settings?.autoRedirect && settings?.redirectUrl && (
         <motion.div 
           initial={{ opacity: 0 }}
@@ -193,8 +192,8 @@ export default function ThankYouScreen({ settings, globalSettings, score, showSc
           transition={{ delay: 0.6 }}
           className={`flex items-center gap-2 text-sm font-medium mt-4 ${isCover ? 'text-white/70' : 'text-gray-400'}`}
         >
-           <div className="w-4 h-4 rounded-full border-2 border-current border-t-transparent animate-spin" />
-           <span>Redirecting in {settings?.redirectDelay || 3}s...</span>
+           <Loader size={16} />
+           <span>{t('public.redirecting_in', { seconds: settings?.redirectDelay || 3 })}</span>
         </motion.div>
       )}
     </div>
@@ -221,7 +220,7 @@ export default function ThankYouScreen({ settings, globalSettings, score, showSc
       transition={{ type: "spring", stiffness: 200, damping: 20 }}
       className="mb-8 relative"
     >
-       {/* Background Ripple Effect */}
+       { }
       <div className={`absolute inset-0 rounded-full opacity-20 animate-ping ${
           iconColor === 'white' ? 'bg-gray-200' : iconStyles[iconColor]?.split(' ')[0]?.replace('bg-', 'bg-') || 'bg-emerald-200'
       }`} />
@@ -237,7 +236,7 @@ export default function ThankYouScreen({ settings, globalSettings, score, showSc
     return (
       <div className="absolute bottom-6 left-0 right-0 text-center">
         <p className={`text-xs font-medium tracking-wide opacity-50 ${isCover ? 'text-white' : 'text-gray-400'}`}>
-          {settings?.footerText || 'Powered by FormBuilder'}
+          {settings?.footerText || t('public.powered_by', 'Powered by FormBuilder')}
         </p>
       </div>
     );
@@ -248,27 +247,32 @@ export default function ThankYouScreen({ settings, globalSettings, score, showSc
       initial={{ opacity: 0, scale: 0.98 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className={`w-full bg-white shadow-2xl shadow-gray-200/50 overflow-hidden flex ${
+      className={`w-full shadow-2xl overflow-hidden flex ${
           layout === 'split-left' ? 'flex-col md:flex-row' : 
           layout === 'split-right' ? 'flex-col-reverse md:flex-row-reverse' : 
           'flex-col'
       } relative ${
           (isMobile || isTablet)
             ? 'min-h-full rounded-none max-w-full' 
-            : `${layout === 'simple' ? 'max-w-4xl' : 'max-w-6xl'} ${isQuiz ? 'min-h-full' : 'min-h-[500px]'} rounded-[2.5rem] my-8 border border-white`
+            : `${layout === 'simple' ? 'max-w-4xl' : 'max-w-6xl'} ${isQuiz ? 'min-h-full' : 'min-h-[500px]'} rounded-[2.5rem] my-8 border`
       }`}
+      style={{ 
+        backgroundColor: 'var(--card-bg, rgba(255,255,255,0.9))', 
+        borderColor: 'var(--card-border, rgba(0,0,0,0.05))',
+        backdropFilter: 'blur(16px)'
+      }}
     >
       
-      {/* SIMPLE LAYOUT */}
+      { }
       {layout === 'simple' && (
           <div className={`flex flex-col items-center justify-center flex-1 w-full ${isQuiz ? 'py-8 pb-0' : 'py-16'} px-8 overflow-y-auto ${isQuiz ? 'flex-1 max-h-full' : 'max-h-[90vh]'}`}>
-               {/* Decorative background blobs */}
-               <div className="absolute top-0 right-0 w-64 h-64 bg-gray-50 rounded-full mix-blend-multiply filter blur-3xl opacity-50 translate-x-1/2 -translate-y-1/2" />
-               <div className="absolute bottom-0 left-0 w-64 h-64 bg-gray-50 rounded-full mix-blend-multiply filter blur-3xl opacity-50 -translate-x-1/2 translate-y-1/2" />
+               { }
+               <div className="absolute top-0 right-0 w-64 h-64 rounded-full mix-blend-multiply filter blur-3xl opacity-20 translate-x-1/2 -translate-y-1/2" style={{ backgroundColor: 'var(--primary)' }} />
+               <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full mix-blend-multiply filter blur-3xl opacity-20 -translate-x-1/2 translate-y-1/2" style={{ backgroundColor: 'var(--primary)' }} />
 
                {bgImage ? (
                   <div className="w-40 h-40 mb-8 mx-auto relative z-10">
-                      <img src={bgImage} alt="Success" className="w-full h-full object-contain" />
+                      <img src={bgImage} alt={t('common.success')} className="w-full h-full object-contain" />
                   </div>
                ) : (
                   <div className="relative z-10">
@@ -281,20 +285,20 @@ export default function ThankYouScreen({ settings, globalSettings, score, showSc
           </div>
       )}
 
-      {/* SPLIT LAYOUTS */}
+      { }
       {(layout === 'split-left' || layout === 'split-right') && (
           <>
               <div className="w-full md:w-1/2 relative min-h-[300px] md:min-h-full">
                    {renderImage()}
               </div>
-              <div className="w-full md:w-1/2 flex flex-col items-center justify-center p-8 md:p-16 bg-white">
+              <div className="w-full md:w-1/2 flex flex-col items-center justify-center p-8 md:p-16" style={{ backgroundColor: 'var(--card-bg, rgba(255,255,255,0.9))' }}>
                    {successIcon}
                    {renderContent()}
               </div>
           </>
       )}
 
-      {/* COVER LAYOUT */}
+      { }
       {layout === 'cover' && (
           <div className="absolute inset-0 w-full h-full">
               {bgImage ? (
@@ -310,7 +314,7 @@ export default function ThankYouScreen({ settings, globalSettings, score, showSc
           </div>
       )}
 
-      {/* Footer for non-cover layouts */}
+      { }
       {layout !== 'cover' && renderFooter()}
 
     </motion.div>

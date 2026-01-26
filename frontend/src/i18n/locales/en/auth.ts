@@ -15,5 +15,6 @@ export default {
   "auth.google_error": "Could not sign in with Google.",
   "auth.error": "Error",
   "auth.error_message": "Something went wrong. Please try again.",
-  "auth.logout": "Log Out"
+  "auth.logout": "Log Out",
+  "auth.protected_by": "Protected by FormBuilder"
 };

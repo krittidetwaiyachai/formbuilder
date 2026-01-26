@@ -27,13 +27,13 @@ export function HeaderProperties({ field, updateField, duplicatesField }: Header
 
   return (
     <>
-      {/* Tabs */}
-      {/* Tabs */}
+      { }
+      { }
       <PropertiesTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {activeTab === 'general' && (
         <div className="space-y-4">
-          {/* Heading Text */}
+          { }
           <div>
             <label className="block text-sm font-medium text-black mb-1">
               {t('builder.properties.heading_text')}
@@ -47,7 +47,7 @@ export function HeaderProperties({ field, updateField, duplicatesField }: Header
             />
           </div>
 
-          {/* Subheading Text */}
+          { }
           <div>
             <label className="block text-sm font-medium text-black mb-1">
               {t('builder.properties.subheading_text')}
@@ -62,7 +62,7 @@ export function HeaderProperties({ field, updateField, duplicatesField }: Header
             <p className="mt-1 text-xs text-gray-500">{t('builder.properties.subheading_desc')}</p>
           </div>
 
-          {/* Duplicate Field */}
+          { }
           <button
             type="button"
             onClick={() => {
@@ -85,7 +85,7 @@ export function HeaderProperties({ field, updateField, duplicatesField }: Header
 
       {activeTab === 'options' && (
         <div className="space-y-6">
-          {/* Heading Size */}
+          { }
           <div>
             <label className="block text-sm font-medium text-black mb-2">
               {t('builder.properties.heading_size')}
@@ -110,7 +110,7 @@ export function HeaderProperties({ field, updateField, duplicatesField }: Header
             </div>
           </div>
 
-          {/* Text Alignment */}
+          { }
           <div>
             <label className="block text-sm font-medium text-black mb-2">
               {t('builder.properties.text_alignment')}
@@ -141,7 +141,7 @@ export function HeaderProperties({ field, updateField, duplicatesField }: Header
             <p className="mt-1 text-xs text-gray-500">{t('builder.properties.alignment_desc')}</p>
           </div>
 
-          {/* Heading Image URL */}
+          { }
           <div>
             <label className="block text-sm font-medium text-black mb-1">
               {t('builder.properties.heading_image')}
@@ -152,7 +152,7 @@ export function HeaderProperties({ field, updateField, duplicatesField }: Header
               onChange={(e) => updateField(field.id, {
                 validation: { ...field.validation, headingImage: e.target.value }
               })}
-              placeholder="https://example.com/image.jpg"
+              placeholder={t('properties.placeholder.image_url')}
               className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text mb-2"
               onKeyDown={(e) => {
                 if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
@@ -178,7 +178,7 @@ export function HeaderProperties({ field, updateField, duplicatesField }: Header
             )}
           </div>
 
-          {/* Image Position */}
+          { }
           <div>
             <label className="block text-sm font-medium text-black mb-2">
               {t('builder.properties.image_position')}
@@ -241,7 +241,7 @@ export function HeaderProperties({ field, updateField, duplicatesField }: Header
 
       {activeTab === 'advanced' && (
          <div className="space-y-6">
-           {/* Shrink Field */}
+           { }
           <div>
              <label className="block text-sm font-medium text-black mb-1">
               {t('builder.properties.shrink')}
@@ -260,7 +260,7 @@ export function HeaderProperties({ field, updateField, duplicatesField }: Header
             </p>
           </div>
 
-          {/* Hide field */}
+          { }
           <div>
             <label className="block text-sm font-medium text-black mb-1">
               {t('builder.properties.hide_field')}

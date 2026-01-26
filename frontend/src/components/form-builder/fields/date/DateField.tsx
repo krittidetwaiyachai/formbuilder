@@ -13,7 +13,11 @@ interface DateFieldProps {
   disabledClass?: string;
 }
 
+import { useTranslation } from 'react-i18next';
+
 export const DateField: React.FC<DateFieldProps> = ({ field, fieldStyle, disabledClass = "opacity-60 cursor-pointer" }) => {
+  const { t } = useTranslation();
+
   if (field.type === FieldType.TIME) {
     return (
       <div className="relative max-w-sm group">
@@ -22,7 +26,7 @@ export const DateField: React.FC<DateFieldProps> = ({ field, fieldStyle, disable
         </div>
         <input
           type="text"
-          placeholder="Select time..."
+          placeholder={t('common.time.select_time')}
           readOnly
           tabIndex={-1}
           className={`w-full pl-12 pr-4 py-3.5 border ${fieldStyle.inputBorder} rounded-xl bg-cyan-50/30 text-black text-base shadow-sm transition-all duration-300 ${disabledClass} pointer-events-none group-hover/field:bg-white group-hover/field:shadow-md`}
@@ -31,12 +35,12 @@ export const DateField: React.FC<DateFieldProps> = ({ field, fieldStyle, disable
     );
   }
 
-  // FieldType.DATE
+  
   const showTime = (field.validation as any)?.showTime || false;
   const liteMode = (field.validation as any)?.liteMode || false;
   const separator = (field.validation as any)?.separator || '/';
   const dateFormat = (field.validation as any)?.dateFormat || 'MM-DD-YYYY';
-  const dateSublabel = (field.validation as any)?.sublabels?.date || 'Date';
+  const dateSublabel = (field.validation as any)?.sublabels?.date || t('builder.fields.date'); 
   const parts = dateFormat.split('-');
 
   return (
@@ -70,7 +74,7 @@ export const DateField: React.FC<DateFieldProps> = ({ field, fieldStyle, disable
                                     className={`w-full px-3 py-3.5 border ${fieldStyle.inputBorder} rounded-xl bg-teal-50/20 text-black text-center text-sm shadow-sm transition-all duration-300 ${disabledClass} group-hover/field:bg-white group-hover/field:shadow-md`}
                                   />
                                   <span className="text-xs text-gray-500 mt-1 block text-center">
-                                      {part === 'MM' ? 'Month' : part === 'DD' ? 'Day' : 'Year'}
+                                      {part === 'MM' ? t('common.date.month') : part === 'DD' ? t('common.date.day') : t('common.date.year')}
                                   </span>
                             </div>
                             {index < parts.length - 1 && (
@@ -93,12 +97,12 @@ export const DateField: React.FC<DateFieldProps> = ({ field, fieldStyle, disable
                       </div>
                        <input
                         type="text"
-                        placeholder="00 : 00 AM"
+                        placeholder={t('builder.date.time_placeholder')}
                         readOnly
                         tabIndex={-1}
                         className={`w-full pl-9 pr-2 py-3.5 border ${fieldStyle.inputBorder} rounded-xl bg-teal-50/20 text-black text-sm shadow-sm transition-all duration-300 ${disabledClass} group-hover/field:bg-white group-hover/field:shadow-md`}
                       />
-                      <span className="text-xs text-gray-500 mt-1 block px-1">Time</span>
+                      <span className="text-xs text-gray-500 mt-1 block px-1">{t('common.time.time')}</span>
                    </div>
               </div>
            )}

@@ -22,13 +22,13 @@ export function ClassicLayout({
   form,
 }: ClassicLayoutProps) {
   return (
-    <>
+    <div className="flex flex-wrap gap-x-6 gap-y-6">
       {currentPageFields.map((field, index) => {
-        const isShrunk = field.shrink;
+        const isShrunk = field.options?.shrink; 
         return (
           <div 
             key={field.id} 
-            className={`${isShrunk ? 'w-full md:w-[calc(50%-0.75rem)]' : 'w-full'} pb-6 border-b border-gray-50 last:border-0 last:pb-0`}
+            className={`${isShrunk ? 'w-full md:w-[calc(50%-0.75rem)]' : 'w-full'}`}
           >
             <FormFieldRenderer
               field={field}
@@ -43,6 +43,6 @@ export function ClassicLayout({
           </div>
         );
       })}
-    </>
+    </div>
   );
 }

@@ -25,13 +25,13 @@ export interface FormElement {
   placeholder?: string;
   helperText?: string;
   required: boolean;
-  options?: FormElementOption[]; // For select, radio, checkbox
-  min?: number; // For number, rating
-  max?: number; // For number, rating
-  rows?: number; // For textarea
-  accept?: string; // For file
-  content?: string; // For heading, paragraph
-  headingImage?: string; // For heading - image URL
+  options?: FormElementOption[]; 
+  min?: number; 
+  max?: number; 
+  rows?: number; 
+  accept?: string; 
+  content?: string; 
+  headingImage?: string; 
 }
 
 export interface FormTheme {

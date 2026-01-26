@@ -6,39 +6,164 @@ export class AdminService {
   constructor(private prisma: PrismaService) {}
 
   async getStats() {
-    const [totalUsers, totalForms, totalSubmissions, recentActivity] =
-      await Promise.all([
-        this.prisma.user.count(),
-        this.prisma.form.count(),
-        this.prisma.formResponse.count(),
-        this.prisma.activityLog.findMany({
-          take: 10,
-          orderBy: { createdAt: 'desc' },
-          include: {
-            user: {
-              select: {
-                id: true,
-                email: true,
-                firstName: true,
-                lastName: true,
-                photoUrl: true,
-              },
-            },
-            form: {
-              select: {
-                id: true,
-                title: true,
-              },
+    const now = new Date();
+    const startOfThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    
+    const [userCount, formCount, submissionCount, thisMonthSubmissions, lastMonthSubmissions, recentActivity] = await Promise.all([
+      this.prisma.user.count(),
+      this.prisma.form.count(),
+      this.prisma.formResponse.count(),
+      this.prisma.formResponse.count({
+        where: {
+          createdAt: { gte: startOfThisMonth },
+        },
+      }),
+      this.prisma.formResponse.count({
+        where: {
+          createdAt: {
+            gte: startOfLastMonth,
+            lt: startOfThisMonth,
+          },
+        },
+      }),
+      this.prisma.activityLog.findMany({
+        take: 10,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          user: {
+            select: {
+              id: true,
+              email: true,
+              firstName: true,
+              lastName: true,
+              photoUrl: true,
             },
           },
-        }),
-      ]);
+          form: {
+            select: {
+              id: true,
+              title: true,
+            },
+          },
+        },
+      }),
+    ]);
+
+    let growthRate = 0;
+    if (lastMonthSubmissions > 0) {
+      growthRate = ((thisMonthSubmissions - lastMonthSubmissions) / lastMonthSubmissions) * 100;
+    } else if (thisMonthSubmissions > 0) {
+      growthRate = 100; 
+    }
+
+    
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5);
+    sixMonthsAgo.setDate(1);
+    sixMonthsAgo.setHours(0, 0, 0, 0);
+
+    const monthlyStatsRaw = await this.prisma.formResponse.groupBy({
+      by: ['createdAt'],
+      where: {
+        createdAt: {
+          gte: sixMonthsAgo,
+        },
+      },
+      _count: {
+        _all: true,
+      },
+    });
+
+    const monthlyStats = [];
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    
+    for (let i = 0; i < 6; i++) {
+      const d = new Date();
+      d.setMonth(d.getMonth() - i);
+      const monthKey = `${months[d.getMonth()]} ${d.getFullYear()}`;
+      const monthStart = new Date(d.getFullYear(), d.getMonth(), 1);
+      const monthEnd = new Date(d.getFullYear(), d.getMonth() + 1, 0);
+      
+      const count = monthlyStatsRaw.filter(
+        item => item.createdAt >= monthStart && item.createdAt <= monthEnd
+      ).length;
+
+      monthlyStats.unshift({
+        name: monthKey,
+        submissions: count
+      });
+    }
+
+    
+    const monthlyFormsRaw = await this.prisma.form.groupBy({
+      by: ['createdAt'],
+      where: {
+        createdAt: {
+          gte: sixMonthsAgo,
+        },
+      },
+      _count: {
+        _all: true,
+      },
+    });
+
+    const monthlyForms = [];
+    
+    for (let i = 0; i < 6; i++) {
+      const d = new Date();
+      d.setMonth(d.getMonth() - i);
+      const monthKey = `${months[d.getMonth()]} ${d.getFullYear()}`;
+      const monthStart = new Date(d.getFullYear(), d.getMonth(), 1);
+      const monthEnd = new Date(d.getFullYear(), d.getMonth() + 1, 0);
+      
+      const count = monthlyFormsRaw.filter(
+        item => item.createdAt >= monthStart && item.createdAt <= monthEnd
+      ).length;
+
+      monthlyForms.unshift({
+        name: monthKey,
+        value: count
+      });
+    }
+
+    
+    const popularFormsRaw = await this.prisma.formResponse.groupBy({
+      by: ['formId'],
+      _count: {
+        _all: true,
+      },
+      orderBy: {
+        _count: {
+          formId: 'desc',
+        },
+      },
+      take: 5,
+    });
+
+    const popularForms = await Promise.all(
+      popularFormsRaw.map(async (item) => {
+        const form = await this.prisma.form.findUnique({
+          where: { id: item.formId },
+          select: { title: true },
+        });
+        return {
+          id: item.formId,
+          title: form?.title || 'Unknown Form',
+          submissions: item._count._all,
+        };
+      })
+    );
 
     return {
-      totalUsers,
-      totalForms,
-      totalSubmissions,
+      totalUsers: userCount,
+      totalForms: formCount,
+      totalSubmissions: submissionCount,
+      growthRate,
       recentActivity,
+      monthlyStats,
+      monthlyForms,
+      popularForms,
     };
   }
 

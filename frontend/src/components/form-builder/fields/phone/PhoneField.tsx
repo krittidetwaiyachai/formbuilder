@@ -1,6 +1,7 @@
 import React from 'react';
 import { Field } from '@/types';
 import { Phone } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface PhoneFieldProps {
   field: Field;
@@ -14,9 +15,10 @@ interface PhoneFieldProps {
 }
 
 export const PhoneField: React.FC<PhoneFieldProps> = ({ field, fieldStyle, disabledClass = "opacity-60 cursor-pointer" }) => {
+  const { t } = useTranslation();
   const showCountryCode = (field.validation as any)?.countryCode || false;
   const phoneSublabel = (field.validation as any)?.sublabels?.masked;
-  const phonePlaceholder = (field.validation as any)?.placeholders?.masked || (field.validation as any)?.maskPattern || '(###) ###-####';
+  const phonePlaceholder = (field.validation as any)?.placeholders?.masked || (field.validation as any)?.maskPattern || t('builder.phone.default_placeholder');
 
   return (
     <div className="space-y-2 max-w-full group">
@@ -25,7 +27,7 @@ export const PhoneField: React.FC<PhoneFieldProps> = ({ field, fieldStyle, disab
              <div className="w-[80px]">
                 <input
                   type="text"
-                   placeholder="+1"
+                   placeholder={t('builder.phone.country_code_placeholder')}
                   readOnly
                   tabIndex={-1}
                   className={`w-full px-4 py-3.5 border ${fieldStyle.inputBorder} rounded-xl bg-green-50/20 text-black text-base shadow-sm text-center transition-all duration-300 ${disabledClass} group-hover/field:bg-white group-hover/field:shadow-md`}

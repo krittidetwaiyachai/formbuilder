@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Plus, Trash2, ArrowLeft, Check, Edit2, X, AlertTriangle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { useTranslation } from 'react-i18next';
+import ConfirmDialog from '@/components/ui/ConfirmDialog';
 
 export default function LogicCanvas() {
   const { t } = useTranslation();
@@ -24,8 +25,20 @@ export default function LogicCanvas() {
   } = useFormStore();
   
   const ruleRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+  const [deleteRuleId, setDeleteRuleId] = useState<string | null>(null);
 
-  // Custom smooth scroll function
+  const handleDeleteRule = (id: string) => {
+    setDeleteRuleId(id);
+  };
+
+  const confirmDelete = () => {
+    if (deleteRuleId) {
+      deleteLogicRule(deleteRuleId);
+      setDeleteRuleId(null);
+    }
+  };
+
+  
   const scrollToSmoothly = (element: HTMLElement, duration: number = 500) => {
       let parent = element.parentElement;
       while (parent) {
@@ -39,11 +52,11 @@ export default function LogicCanvas() {
       if (!parent) return;
       
       const container = parent;
-      // Calculate center position
-      // element.offsetTop is relative to offsetParent. 
-      // If container is offsetParent (position relative), good. 
-      // If not, we might need cumulative offset. 
-      // Safest is getBoundingClientRect diff.
+      
+      
+      
+      
+      
       const elementRect = element.getBoundingClientRect();
       const containerRect = container.getBoundingClientRect();
       const relativeTop = elementRect.top - containerRect.top;
@@ -58,7 +71,7 @@ export default function LogicCanvas() {
           if (!startTime) startTime = currentTime;
           const timeElapsed = currentTime - startTime;
           
-          // Easing: easeInOutQuad
+          
           const ease = (t: number, b: number, c: number, d: number) => {
               t /= d / 2;
               if (t < 1) return c / 2 * t * t + b;
@@ -81,7 +94,7 @@ export default function LogicCanvas() {
     if (focusedLogicRuleId && ruleRefs.current[focusedLogicRuleId]) {
       const el = ruleRefs.current[focusedLogicRuleId];
       if (el) {
-          scrollToSmoothly(el, 600); // 600ms duration
+          scrollToSmoothly(el, 600); 
       }
     }
   }, [focusedLogicRuleId]);
@@ -125,37 +138,44 @@ export default function LogicCanvas() {
     );
   }
 
+  const stripHtml = (html: string) => { 
+    if (!html) return "";
+    const tmp = document.createElement("DIV");
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || "";
+  };
+
   return (
     <div className="min-h-full py-6 px-4">
       <div className="max-w-2xl mx-auto">
-        {/* Page Header */}
+        { }
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
-            {/* Glass Morphism Back Button */}
+            { }
             <div className="relative group/back">
-              {/* Animated Gradient Border */}
+              { }
               <div className="absolute -inset-[1px] bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 rounded-2xl opacity-75 blur-sm group-hover/back:opacity-100 group-hover/back:blur-md transition-all duration-500 animate-gradient-x" />
               
-              {/* Ripple Effect Container */}
+              { }
               <div className="absolute inset-0 rounded-2xl overflow-hidden">
                 <div className="absolute inset-0 opacity-0 group-hover/back:opacity-100 transition-opacity duration-300">
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-0 h-0 group-hover/back:w-32 group-hover/back:h-32 bg-white/20 rounded-full transition-all duration-700 ease-out" />
                 </div>
               </div>
 
-              {/* Purple Gradient Button */}
+              { }
               <button
                 onClick={() => setActiveSidebarTab('properties')}
                 className="relative p-3.5 bg-gradient-to-br from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105 flex items-center justify-center overflow-hidden group"
-                title="กลับไปหน้า Canvas"
+                title={t('builder.logic.back_to_canvas')}
               >
-                {/* Subtle Shine Overlay */}
+                { }
                 <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent opacity-50" />
                 
-                {/* Moving Light Streak */}
+                { }
                 <div className="absolute -inset-x-20 -top-20 h-40 bg-gradient-to-b from-white/30 via-white/10 to-transparent rotate-12 group-hover:translate-x-full group-hover:translate-y-full transition-transform duration-1000 ease-out" />
 
-                {/* Floating Star Particles */}
+                { }
                 <svg className="absolute top-1 right-2 w-3 h-3 text-yellow-200 animate-spin-slow opacity-80" viewBox="0 0 24 24" fill="currentColor" style={{ animationDuration: '4s' }}>
                   <path d="M12 0L14.59 8.41L24 12L14.59 15.59L12 24L9.41 15.59L0 12L9.41 8.41L12 0Z" />
                 </svg>
@@ -172,7 +192,7 @@ export default function LogicCanvas() {
                   <path d="M12 0L14.59 8.41L24 12L14.59 15.59L12 24L9.41 15.59L0 12L9.41 8.41L12 0Z" />
                 </svg>
 
-                {/* Icon with Smooth Animation */}
+                { }
                 <ArrowLeft className="w-5 h-5 relative z-10 group-hover:-translate-x-1 transition-transform duration-300 filter drop-shadow-[0_2px_8px_rgba(255,255,255,0.5)]" />
               </button>
             </div>
@@ -227,7 +247,7 @@ export default function LogicCanvas() {
                     focusedLogicRuleId === rule.id ? 'border-purple-400 ring-4 ring-purple-50' : 'border-gray-200'
                 }`}
             >
-              {/* Header */}
+              { }
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
                   {isEditing ? (
@@ -282,7 +302,7 @@ export default function LogicCanvas() {
                   )}
                 </div>
                 <div className="flex items-center gap-2">
-                  {/* AND/OR Toggle */}
+                  { }
                   <div className="flex bg-gray-100 rounded-lg p-1">
                     <button
                       onClick={() => updateLogicRule(rule.id, { logicType: 'and' })}
@@ -301,22 +321,22 @@ export default function LogicCanvas() {
                       {t('builder.logic.or')}
                     </button>
                   </div>
-                  {/* Delete button */}
+                  { }
                   <button
-                    onClick={() => deleteLogicRule(rule.id)}
+                    onClick={() => handleDeleteRule(rule.id)}
                     className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                    title="Delete condition"
+                    title={t('builder.logic.delete_condition')}
                   >
                     <Trash2 className="w-5 h-5" />
                   </button>
                 </div>
               </div>
 
-              {/* IF Conditions */}
+              { }
               <div className="space-y-4">
                 {rule.conditions.map((condition) => (
                   <div key={condition.id} className="relative">
-                    {/* Vertical line removed */}
+                    { }
                     
                     <div className="flex items-start gap-4 mb-4">
                       <div className="flex flex-col items-center relative -mt-1.5">
@@ -335,8 +355,14 @@ export default function LogicCanvas() {
                               <SelectValue placeholder={t('builder.logic.select_field')} />
                             </SelectTrigger>
                             <SelectContent>
-                              {availableFields.map((f) => (
-                                <SelectItem key={f.id} value={f.id}>{f.label || f.type}</SelectItem>
+                              {availableFields
+                                .filter(f => {
+                                  
+                                  const actionTargetIds = rule.actions.map(a => a.fieldId);
+                                  return !actionTargetIds.includes(f.id);
+                                })
+                                .map((f) => (
+                                <SelectItem key={f.id} value={f.id}>{stripHtml(f.label || f.type)}</SelectItem>
                               ))}
                             </SelectContent>
                           </Select>
@@ -380,24 +406,24 @@ export default function LogicCanvas() {
                 ))}
               </div>
 
-              {/* Add IF button */}
+              { }
               <div className="flex justify-end mt-2">
                 <button
                   onClick={() => addConditionToRule(rule.id)}
                   className="w-8 h-8 bg-purple-500 hover:bg-purple-600 rounded-full flex items-center justify-center transition-colors text-white shadow-md"
-                  title="Add condition"
+                  title={t('builder.logic.add_condition')}
                 >
                   <Plus className="w-4 h-4" />
                 </button>
               </div>
 
-              {/* Connector */}
+              { }
               <div className="flex flex-col items-center py-0.5 gap-1">
                 <div className="w-[3px] h-6 bg-purple-400 rounded-full" />
                 <div className="w-2.5 h-2.5 rounded-full bg-purple-500" />
               </div>
 
-              {/* THEN Section */}
+              { }
               <div className="pt-4">
                 <div className="text-gray-500 text-sm italic mb-4">{t('builder.logic.then')}</div>
                 <div className="text-sm font-semibold text-gray-900 mb-3">{t('builder.logic.show_hide')}</div>
@@ -427,17 +453,17 @@ export default function LogicCanvas() {
                         <SelectContent>
                           {availableFields
                             .filter(f => {
-                              // Don't show fields used in conditions
+                              
                               if (rule.conditions.some(c => c.fieldId === f.id)) return false;
                               
-                              // Don't show fields already used in other actions
+                              
                               const otherActions = rule.actions.filter(a => a.id !== action.id);
                               if (otherActions.some(a => a.fieldId === f.id)) return false;
                               
                               return true;
                             })
                             .map((f) => (
-                              <SelectItem key={f.id} value={f.id}>{f.label || f.type}</SelectItem>
+                              <SelectItem key={f.id} value={f.id}>{stripHtml(f.label || f.type)}</SelectItem>
                             ))}
                         </SelectContent>
                       </Select>
@@ -465,7 +491,7 @@ export default function LogicCanvas() {
           );
         })}
 
-        {/* Guide */}
+        { }
         {logicRules.length > 0 && (
           <div className="bg-blue-50 border border-blue-100 p-5 rounded-xl text-sm text-blue-700 space-y-2">
             <p className="font-semibold">{t('builder.logic.how_it_works')}</p>
@@ -477,6 +503,14 @@ export default function LogicCanvas() {
             </ul>
           </div>
         )}
+
+        <ConfirmDialog
+          open={!!deleteRuleId}
+          onOpenChange={(open) => !open && setDeleteRuleId(null)}
+          title={t('builder.logic.delete_confirm')}
+          description={t('builder.logic.delete_confirm_desc')}
+          onConfirm={confirmDelete}
+        />
       </div>
     </div>
   );

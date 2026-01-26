@@ -14,7 +14,7 @@ export const TableField: React.FC<TableFieldProps> = ({ field, isSelected, updat
   const columns = field.options?.columns || [{ id: 'c1', label: `${t('builder.field.column')} 1` }, { id: 'c2', label: `${t('builder.field.column')} 2` }];
   const allowAddRow = field.options?.allowAddRow !== undefined ? field.options.allowAddRow : true;
 
-  // Helper to update columns in parent
+  
   const updateColumns = (newCols: any[]) => {
     if (updateField) {
       updateField(field.id, { options: { ...field.options, columns: newCols } });
@@ -37,7 +37,7 @@ export const TableField: React.FC<TableFieldProps> = ({ field, isSelected, updat
     updateColumns(newCols);
   };
 
-  // Render dummy rows for preview
+  
   const rowCount = 2; 
 
   return (
@@ -71,7 +71,7 @@ export const TableField: React.FC<TableFieldProps> = ({ field, isSelected, updat
                             </div>
                         </th>
                     ))}
-                    {/* Action Column Placeholder or Add Column Button */}
+                    { }
                      <th scope="col" className="px-2 py-3 border border-gray-200 w-10 text-center">
                         {isSelected && updateField && (
                             <button 

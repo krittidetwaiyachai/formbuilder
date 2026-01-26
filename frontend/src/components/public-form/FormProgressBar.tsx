@@ -43,7 +43,7 @@ export function FormProgressBar({
     };
 
     const answeredCount = visibleFields.filter(field => {
-       // Only count input fields
+       
        if (!inputFieldTypes.includes(field.type)) return false;
 
        const fieldName = `field_${field.id}`;
@@ -51,7 +51,7 @@ export function FormProgressBar({
        
        if (isFieldAnswered(value)) return true;
 
-       // Composite fields support (Full Name, Address) - check for flattened keys
+       
        if (field.type === FieldType.FULLNAME || field.type === FieldType.ADDRESS) {
           const prefix = `${fieldName}_`;
           if (watchedValues) {
@@ -78,7 +78,8 @@ export function FormProgressBar({
          <motion.div 
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
-            className="h-full bg-black rounded-full"
+            className="h-full rounded-full"
+            style={{ backgroundColor: 'var(--primary)' }}
           />
        </div>
        <span className="text-xs font-semibold text-gray-500 whitespace-nowrap">

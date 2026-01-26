@@ -5,7 +5,6 @@ export const generateGroupTemplate = (template: string, formId: string): Field[]
     const groupFieldId = generateUUID();
     const fields: Field[] = [];
 
-    // 1. Create the Container Group
     const groupField: Field = {
         id: groupFieldId,
         formId: formId,
@@ -13,12 +12,11 @@ export const generateGroupTemplate = (template: string, formId: string): Field[]
         label: template === 'address' ? 'Address Block' : 
                template === 'contact' ? 'Contact Information' : 'Shipping Details',
         required: false,
-        order: 0, // Will be adjusted by caller
+        order: 0, 
         options: { collapsible: true }
     };
     fields.push(groupField);
 
-    // 2. Create Child Fields based on Template
     if (template === 'address') {
         fields.push({
             id: generateUUID(), formId: formId, groupId: groupFieldId, type: FieldType.TEXTAREA, label: 'Street Address', order: 0, required: true, options: { subLabel: '' }
@@ -116,9 +114,6 @@ export const generateGroupTemplate = (template: string, formId: string): Field[]
         });
         fields.push({
             id: generateUUID(), formId: formId, groupId: groupFieldId, type: FieldType.TEXT, label: 'Password', order: 1, required: true, options: { 
-               // Note: Standard fields might not have 'password' type, using TEXT for now or verify if PASSWORD type exists? 
-               // Assuming TEXT with custom handling or just label 'Password'. 
-               // If you have a PASSWORD field type, use it. Based on imports, likely no specific Password type yet, so TEXT is safest.
                placeholder: '••••••••'
             }
         });

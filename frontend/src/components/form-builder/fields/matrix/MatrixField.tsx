@@ -65,7 +65,7 @@ export function MatrixField({ field, fieldStyle, isSelected, updateField }: Matr
         <thead>
           <tr>
             <th className="p-2 border-b border-gray-200 bg-gray-50 text-left text-xs font-medium text-gray-500 min-w-[150px]">
-              {/* Corner */}
+              { }
             </th>
             {columns.map((col: any, colIndex: number) => (
               <th key={col.id} className="p-2 border-b border-gray-200 bg-gray-50 text-center min-w-[100px] relative group/col">
@@ -126,7 +126,7 @@ export function MatrixField({ field, fieldStyle, isSelected, updateField }: Matr
                                    <button
                                        onClick={() => handleRemoveRow(rowIndex)}
                                        className="p-1 text-gray-300 hover:text-red-500 opacity-0 group-hover/row:opacity-100 transition-opacity"
-                                       title="Remove Row"
+                                       title={t('builder.field.remove_row')}
                                    >
                                        <X className="w-3 h-3" />
                                    </button>
@@ -140,7 +140,7 @@ export function MatrixField({ field, fieldStyle, isSelected, updateField }: Matr
               {columns.map((col: any) => (
                 <td key={col.id} className="p-2 border-b border-gray-100 text-center">
                   <div className={`inline-flex items-center justify-center w-5 h-5 rounded-full border ${fieldStyle.inputBorder} bg-white`}>
-                    {/* Visual placeholder only */}
+                    { }
                     {inputType === 'checkbox' ? (
                         <div className={`w-3 h-3 rounded-[2px] ${fieldStyle.iconColor} opacity-20`} />
                     ) : (

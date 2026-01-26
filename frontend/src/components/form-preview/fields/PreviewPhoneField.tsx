@@ -3,6 +3,7 @@ import { Field } from '@/types';
 import { useForm } from 'react-hook-form';
 import { Phone } from 'lucide-react';
 import { PreviewLabel } from '../PreviewLabel';
+import { stripHtml } from '@/lib/ui/utils';
 
 interface PreviewFieldProps {
   field: Field;
@@ -12,7 +13,10 @@ interface PreviewFieldProps {
   isPublic?: boolean;
 }
 
+import { useTranslation } from 'react-i18next';
+
 export const PreviewPhoneField: React.FC<PreviewFieldProps> = ({ field, register, errors, questionNumber, isPublic }) => {
+  const { t } = useTranslation();
   const fieldName = `field_${field.id}`;
   const fieldError = errors[fieldName];
 
@@ -24,10 +28,10 @@ export const PreviewPhoneField: React.FC<PreviewFieldProps> = ({ field, register
   const isRowLayout = labelAlignment === 'LEFT' || labelAlignment === 'RIGHT';
 
   const validationRules: any = {
-    required: field.required ? 'This field is required' : false,
+    required: field.required ? t('public.validation.required_field', { label: stripHtml(field.label) }) : false,
     pattern: {
-      value: /^[\d\s\-\(\)\+]+$/,
-      message: "Please enter a valid phone number"
+      value: /^[\d\s\-\(\)\+]{9,}$/,
+      message: t('public.validation.phone_invalid', "Please enter a valid phone number")
     }
   };
 
@@ -73,7 +77,8 @@ export const PreviewPhoneField: React.FC<PreviewFieldProps> = ({ field, register
         <div className="relative group flex items-center gap-2" title={hoverText}>
           {showCountryCode && isPublic && (
             <select
-              className={`${shrink ? 'py-2 text-base' : 'py-3 text-base'} px-3 border border-gray-200 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all appearance-none cursor-pointer`}
+              className={`${shrink ? 'py-2 text-base' : 'py-3 text-base'} px-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all appearance-none cursor-pointer`}
+              style={{ backgroundColor: 'transparent', color: 'var(--text)' }}
               defaultValue="+66"
             >
               <option value="+66">🇹🇭 +66</option>
@@ -110,8 +115,13 @@ export const PreviewPhoneField: React.FC<PreviewFieldProps> = ({ field, register
                 defaultValue={defaultValue}
                 readOnly={readOnly}
                 maxLength={hasInputMask && inputMask ? inputMask.length : undefined}
-                style={width === 'FIXED' && customWidth ? { maxWidth: `${customWidth}px` } : {}}
-                className={`flex-1 px-4 ${shrink ? 'py-2 text-base' : 'py-3 text-base'} border border-gray-200 rounded-lg bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all ${
+                style={isPublic ? { 
+                  ...(width === 'FIXED' && customWidth ? { maxWidth: `${customWidth}px` } : {}),
+                  color: 'var(--text)', 
+                  backgroundColor: 'var(--input-bg)', 
+                  borderColor: 'var(--input-border)' 
+                } : (width === 'FIXED' && customWidth ? { maxWidth: `${customWidth}px` } : {})}
+                className={`flex-1 px-4 ${shrink ? 'py-2 text-base' : 'py-3 text-base'} border rounded-lg placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all ${
                     fieldError ? 'border-red-500 bg-red-50' : 'hover:border-gray-300'
                 } ${readOnly ? 'bg-gray-50 cursor-not-allowed' : ''}`}
             />

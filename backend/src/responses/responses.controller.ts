@@ -55,8 +55,14 @@ export class ResponsesController {
   findAll(
     @Param('formId') formId: string,
     @CurrentUser() user: any,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+    @Query('sort') sort?: string,
   ) {
-    return this.responsesService.findAll(formId, user.id, user.role);
+    const pageNum = page ? parseInt(page, 10) : 1;
+    const limitNum = limit ? parseInt(limit, 10) : 50;
+    const sortOrder = sort === 'asc' ? 'asc' : 'desc';
+    return this.responsesService.findAll(formId, user.id, user.role, pageNum, limitNum, sortOrder);
   }
 
   @Get(':id')
@@ -85,6 +91,7 @@ export class ResponsesController {
 
     res.setHeader('Content-Type', 'text/csv');
     res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.setHeader('Content-Length', Buffer.byteLength(csv, 'utf8'));
     res.send(csv);
   }
 

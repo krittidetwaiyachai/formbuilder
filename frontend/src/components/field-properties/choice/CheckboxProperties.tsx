@@ -17,7 +17,7 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'general' | 'options' | 'surveying' | 'advanced'>('general');
 
-  // We will now prioritize `options` for all settings to be consistent with other fields.
+  
   const options = Array.isArray(field.options) ? { items: field.options } : (field.options || {});
 
   
@@ -39,13 +39,13 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
     });
   };
 
-  // For Options List management
+  
   const optionsList = Array.isArray(field.options) ? field.options : ((field.options as any)?.items || []);
   
   const handleOptionsListChange = (text: string) => {
     const newItems = parseOptions(text);
     
-    // Preserve existing options settings if it's an object
+    
     const currentOptions = Array.isArray(field.options) ? {} : field.options;
     
     handleUpdate({ 
@@ -57,7 +57,7 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
  
   return (
     <div className="space-y-4">
-      {/* Tabs */}
+      { }
       <PropertiesTabs 
         activeTab={activeTab} 
         setActiveTab={setActiveTab} 
@@ -66,7 +66,7 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
 
       {activeTab === 'general' && (
         <div className="space-y-4">
-           {/* Field Label */}
+           { }
            <div>
               <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.field_label')}
@@ -79,7 +79,7 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
               />
             </div>
 
-            {/* Label Alignment */}
+            { }
             <div>
               <label className="block text-sm font-medium text-black mb-2">
                 {t('builder.properties.label_alignment')}
@@ -101,7 +101,7 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
               </div>
             </div>
 
-            {/* Required */}
+            { }
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                   {t('builder.properties.required')}
@@ -120,7 +120,7 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
               </p>
             </div>
 
-            {/* Sublabel */}
+            { }
             <div>
               <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.sublabel')}
@@ -137,7 +137,7 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
               </p>
             </div>
 
-             {/* Duplicate Field */}
+             { }
              <button
                type="button"
                onClick={() => duplicatesField({
@@ -159,7 +159,7 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
 
       {activeTab === 'options' && (
         <div className="space-y-6">
-            {/* Options List */}
+            { }
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                  {t('builder.properties.options')}
@@ -178,7 +178,7 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
                </p>
             </div>
             
-             {/* Predefined Options */}
+             { }
              <div>
                 <label className="block text-sm font-medium text-black mb-1">
                   {t('builder.properties.predefined_options')}
@@ -206,7 +206,7 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
                         if (selected) {
                             const newItems = selected.map(item => ({ label: item, value: item }));
                             
-                            // Handler for updating options while preserving other settings
+                            
                             const currentOptions = Array.isArray(field.options) ? {} : (field.options || {});
                             handleUpdate({ 
                                 options: {
@@ -249,7 +249,7 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
                 </p>
             </div>
 
-            {/* Calculation Values */}
+            { }
              <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.calculation_values')}
@@ -268,7 +268,7 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
                 </p>
             </div>
 
-            {/* Display Other Option */}
+            { }
              <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.display_other_option')}
@@ -287,7 +287,7 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
                 </p>
             </div>
 
-             {/* Spread to Columns */}
+             { }
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.spread_to_columns')}
@@ -330,7 +330,7 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
 
       {activeTab === 'surveying' && (
            <div className="space-y-6">
-               {/* Entry Limits */}
+               { }
                 <div>
                    <label className="block text-sm font-medium text-black mb-1">
                     {t('builder.properties.entry_limits')}
@@ -373,7 +373,7 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
                    )}
                 </div>
 
-               {/* Shuffle Options */}
+               { }
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.shuffle_options')}
@@ -396,7 +396,7 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
 
       {activeTab === 'advanced' && (
         <div className="space-y-6">
-            {/* Selected by Default */}
+            { }
             <div>
                 <label className="block text-sm font-medium text-black mb-1">
                   {t('builder.properties.selected_by_default')}
@@ -422,7 +422,7 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
                 </p>
             </div>
 
-            {/* Hover Text */}
+            { }
              <div>
               <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.hover_text')}
@@ -438,7 +438,7 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
               </p>
             </div>
 
-             {/* Read Only */}
+             { }
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.read_only')}
@@ -457,7 +457,7 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
               </p>
             </div>
 
-             {/* Shrink */}
+             { }
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.shrink')}
@@ -476,7 +476,7 @@ export const CheckboxProperties: React.FC<CheckboxPropertiesProps> = ({ field, u
               </p>
             </div>
             
-             {/* Hide field */}
+             { }
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.hide_field')}

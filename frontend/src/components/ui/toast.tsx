@@ -32,7 +32,7 @@ const Toast = React.forwardRef<HTMLDivElement, ToastProps>(
         }, 300);
       }, duration);
 
-      // Start progress animation
+      
       const progressTimer = setTimeout(() => {
         setProgress(0);
       }, 100);

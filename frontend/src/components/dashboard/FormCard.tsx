@@ -22,6 +22,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu";
+import { useTranslation } from "react-i18next";
 
 interface FormCardProps {
   form: FormSchema;
@@ -32,8 +33,9 @@ interface FormCardProps {
 }
 
 export default function FormCard({ form, onDelete, onDuplicate, onEdit, onView }: FormCardProps) {
-  // Use mock active editors for demo purposes
-  // In a real app, this would come from a websocket/API
+  const { t } = useTranslation();
+  
+  
   const activeEditors = mockActiveEditors.filter((e: any) => e.fieldId === form.id) || [];
 
   const formatDate = (dateString: string) => {
@@ -47,7 +49,7 @@ export default function FormCard({ form, onDelete, onDuplicate, onEdit, onView }
 
   return (
     <div className="group relative bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden">
-      {/* Active Editors Strip */}
+      { }
       {activeEditors.length > 0 && (
         <div className="absolute top-0 left-0 right-0 h-1 bg-blue-500 z-10" />
       )}
@@ -63,7 +65,7 @@ export default function FormCard({ form, onDelete, onDuplicate, onEdit, onView }
                 {form.title}
               </h3>
               <p className="text-sm text-gray-500 mt-1 line-clamp-1">
-                {form.description || "No description"}
+                {form.description || t('dashboard.form_card.no_description')}
               </p>
             </div>
           </div>
@@ -77,15 +79,15 @@ export default function FormCard({ form, onDelete, onDuplicate, onEdit, onView }
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => onEdit(form.id)}>
                 <Edit className="w-4 h-4 mr-2" />
-                Edit
+                {t('dashboard.context.edit')}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => onView(form.id)}>
                 <ExternalLink className="w-4 h-4 mr-2" />
-                Preview
+                {t('dashboard.context.preview')}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => onDuplicate(form.id)}>
                 <Copy className="w-4 h-4 mr-2" />
-                Duplicate
+                {t('dashboard.context.duplicate')}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem 
@@ -93,13 +95,13 @@ export default function FormCard({ form, onDelete, onDuplicate, onEdit, onView }
                 className="text-red-600 focus:text-red-600"
               >
                 <Trash2 className="w-4 h-4 mr-2" />
-                Delete
+                {t('dashboard.context.delete')}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
 
-        {/* Active Editors Avatars */}
+        { }
         {activeEditors.length > 0 && (
           <div className="flex -space-x-2 overflow-hidden mb-4 pl-1">
             {activeEditors.slice(0, 3).map((editor: any) => (
@@ -123,15 +125,15 @@ export default function FormCard({ form, onDelete, onDuplicate, onEdit, onView }
         <div className="space-y-2 text-sm text-muted-foreground mt-4">
           <div className="flex items-center gap-2">
             <MessageSquare className="h-4 w-4" />
-            <span>{form.responseCount || 0} responses</span>
+            <span>{form.responseCount || 0} {t('dashboard.form_card.responses')}</span>
           </div>
           <div className="flex items-center gap-2">
             <Eye className="h-4 w-4" />
-            <span>{form.viewCount || 0} views</span>
+            <span>{form.viewCount || 0} {t('dashboard.form_card.views')}</span>
           </div>
           <div className="flex items-center gap-2">
             <Calendar className="h-4 w-4" />
-            <span>Updated {formatDate(form.updatedAt)}</span>
+            <span>{t('dashboard.form.updated_prefix')}{formatDate(form.updatedAt)}</span>
           </div>
         </div>
       </div>
@@ -140,25 +142,25 @@ export default function FormCard({ form, onDelete, onDuplicate, onEdit, onView }
           <Button asChild variant="outline" className="w-full justify-center">
             <Link href={`/builder/${form.id}`}>
               <Edit className="h-4 w-4 mr-2" />
-              Edit
+              {t('dashboard.form_card.edit')}
             </Link>
           </Button>
           <Button asChild variant="default" className="w-full justify-center">
             <Link href={`/preview/${form.id}`}>
               <Eye className="h-4 w-4 mr-2" />
-              Preview
+              {t('dashboard.form_card.preview')}
             </Link>
           </Button>
           <Button asChild variant="outline" className="w-full justify-center">
             <Link href={`/analytics/${form.id}`}>
               <BarChart2 className="h-4 w-4 mr-2" />
-              Analytics
+              {t('dashboard.form_card.analytics')}
             </Link>
           </Button>
           <Button asChild variant="outline" className="w-full justify-center">
             <Link href={`/activity/${form.id}`}>
               <Clock className="h-4 w-4 mr-2" />
-              Activity
+              {t('dashboard.form_card.activity')}
             </Link>
           </Button>
       </div>

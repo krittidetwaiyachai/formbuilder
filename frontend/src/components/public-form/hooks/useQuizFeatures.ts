@@ -110,7 +110,7 @@ export function useSubmissionCheck({
           setHasAlreadySubmitted(true);
         }
       } catch {
-        // Silent fail
+        
       } finally {
         setCheckingSubmission(false);
       }

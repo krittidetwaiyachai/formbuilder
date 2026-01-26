@@ -51,7 +51,7 @@ export default function MobileFilterSheet({
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
             className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl z-[61] overflow-hidden flex flex-col max-h-[85vh] safe-area-pb"
           >
-            {/* Header */}
+            { }
             <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
               <h3 className="text-lg font-bold text-gray-900">{t('dashboard.filters.title') || 'Filter & Sort'}</h3>
               <button 
@@ -62,10 +62,10 @@ export default function MobileFilterSheet({
               </button>
             </div>
 
-            {/* Content */}
+            { }
             <div className="p-6 space-y-8 overflow-y-auto">
               
-              {/* Sort Section */}
+              { }
               <div className="space-y-4">
                 <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">{t('dashboard.sort.title') || 'Sort By'}</h4>
                 <div className="grid grid-cols-1 gap-3">
@@ -86,7 +86,7 @@ export default function MobileFilterSheet({
                 </div>
               </div>
 
-              {/* Status Section */}
+              { }
               <div className="space-y-4">
                 <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-wider">{t('dashboard.filters.status') || 'Status'}</h4>
                 <div className="flex flex-wrap gap-3">

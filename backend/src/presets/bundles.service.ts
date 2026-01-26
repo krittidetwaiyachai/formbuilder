@@ -61,10 +61,10 @@ export class BundlesService {
       ],
     });
 
-    // Soft delete filter and Get Latest Versions only
+    
     let allBundles = bundles.filter(b => !(b.options as any)?.deleted);
     
-    // Group by name and pick the one with highest version
+    
     const latestBundlesMap = new Map<string, typeof bundles[0]>();
     
     allBundles.forEach(bundle => {
@@ -75,7 +75,7 @@ export class BundlesService {
     });
 
     const finalBundles = Array.from(latestBundlesMap.values()).sort((a, b) => {
-        // Sort by updated at desc (most recent first)
+        
         return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
     });
 
@@ -143,7 +143,7 @@ export class BundlesService {
             validation: field.validation,
             order: field.order,
             options: field.options,
-            isPII: field.isPII ?? false, // PDPA flag
+            isPII: field.isPII ?? false, 
           },
         }),
       ),

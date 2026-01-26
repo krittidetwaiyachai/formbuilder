@@ -50,9 +50,9 @@ export default function DashboardPage() {
   const { isAuthenticated, user } = useAuthStore();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('All');
-  const [sortOrder, setSortOrder] = useState('newest'); // Added sort state
-  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false); // Added sheet state
-  const [isMobileMoveFolderSheetOpen, setIsMobileMoveFolderSheetOpen] = useState(false); // Added sheet state
+  const [sortOrder, setSortOrder] = useState('newest'); 
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false); 
+  const [isMobileMoveFolderSheetOpen, setIsMobileMoveFolderSheetOpen] = useState(false); 
   const [activeMobileFolderId, setActiveMobileFolderId] = useState<string | null>(null);
   const [isProfileSheetOpen, setIsProfileSheetOpen] = useState(false);
   const navigate = useNavigate();
@@ -127,7 +127,7 @@ export default function DashboardPage() {
         title: 'Untitled Form',
         description: '',
       });
-      // Navigate to the builder with the new real ID
+      
       navigate(`/forms/${res.data.form.id}/builder`);
     } catch (error) {
       console.error('Failed to create form:', error);
@@ -232,7 +232,7 @@ export default function DashboardPage() {
 
     try {
       await deleteFolder(folderToDelete);
-      // Refresh forms immediately to show them as ungrouped
+      
       await loadForms();
     } catch (error) {
       console.error('Failed to delete folder:', error);
@@ -269,7 +269,7 @@ export default function DashboardPage() {
                          (filterStatus === 'DRAFT' && form.status === 'DRAFT') ||
                          (filterStatus === 'ARCHIVED' && form.status === 'ARCHIVED');
     
-    // Mobile Folder Filter
+    
     const matchesFolder = activeMobileFolderId === null 
         ? true 
         : activeMobileFolderId === 'ungrouped' 
@@ -315,7 +315,7 @@ export default function DashboardPage() {
     }}>
       <BackgroundParticles />
 
-      {/* DashboardHeader - hidden on desktop, shown on mobile */}
+      { }
       <div className="md:hidden">
         <DashboardHeader
           username={user?.firstName}
@@ -339,7 +339,7 @@ export default function DashboardPage() {
 
 
 
-        {/* Mobile: Simple List View */}
+        { }
         <MobileFormsSection
           forms={filteredForms}
           onCreateForm={createNewForm}
@@ -377,9 +377,9 @@ export default function DashboardPage() {
             }}
         />
 
-        {/* Desktop: Grid with Folders & Drag-and-Drop */}
+        { }
         <div className="hidden md:block flex-1 overflow-y-auto">
-          {/* DashboardHeader for desktop - scrolls with content */}
+          { }
           <DashboardHeader
             username={user?.firstName}
             onCreateForm={createNewForm}
@@ -388,7 +388,7 @@ export default function DashboardPage() {
             onProfileClick={() => setIsProfileSheetOpen(true)}
           />
           
-          {/* SearchFilters - sticky on desktop */}
+          { }
           <div className="sticky top-0 z-30 bg-gray-50/95 backdrop-blur-sm border-b border-gray-100 shadow-sm">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
               <SearchFilters
@@ -471,7 +471,7 @@ export default function DashboardPage() {
             {activeForm ? (
               <div 
                 className="opacity-90 scale-105 cursor-grabbing" 
-                style={{ width: '300px' }} // Approximate grid width
+                style={{ width: '300px' }} 
               >
                   <DashboardFormCard
                     form={activeForm}

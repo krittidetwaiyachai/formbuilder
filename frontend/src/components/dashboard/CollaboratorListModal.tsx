@@ -5,6 +5,7 @@ import UserAvatar from '@/components/common/UserAvatar';
 import api from '@/lib/api';
 import { useAuthStore } from '@/store/authStore';
 import { useTranslation } from 'react-i18next';
+import ConfirmDialog from '@/components/ui/ConfirmDialog';
 
 interface Collaborator {
   id?: string;
@@ -60,18 +61,27 @@ export default function CollaboratorListModal({
     }
   };
 
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [collaboratorToRemove, setCollaboratorToRemove] = useState<string | null>(null);
+
   const handleRemove = async (userId: string) => {
-    if (!confirm(t('dashboard.collaborators.remove_confirm'))) return;
+    setCollaboratorToRemove(userId);
+    setDeleteConfirmOpen(true);
+  };
+
+  const confirmRemove = async () => {
+    if (!collaboratorToRemove) return;
     
     setLoading(true);
     try {
-      await api.delete(`/forms/${formId}/collaborators/${userId}`);
+      await api.delete(`/forms/${formId}/collaborators/${collaboratorToRemove}`);
       onUpdate();
     } catch (err: any) {
       console.error('Failed to remove:', err);
       setError(err.response?.data?.message || t('dashboard.collaborators.remove_error'));
     } finally {
       setLoading(false);
+      setCollaboratorToRemove(null);
     }
   };
 
@@ -95,7 +105,7 @@ export default function CollaboratorListModal({
           className="relative w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 flex flex-col max-h-[85vh]"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Header */}
+          { }
           <div className="px-5 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
             <div>
               <h3 className="text-lg font-bold text-gray-900">{t('dashboard.collaborators.manage_access')}</h3>
@@ -112,7 +122,7 @@ export default function CollaboratorListModal({
           </div>
 
           <div className="flex-1 overflow-y-auto">
-             {/* Invite Section */}
+             { }
              <div className="p-5 border-b border-gray-100">
                 <label className="text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2 block">
                     {t('dashboard.collaborators.add_people')}
@@ -138,7 +148,7 @@ export default function CollaboratorListModal({
                     </button>
                 </form>
 
-                {/* Feedback Messages */}
+                { }
                 <AnimatePresence mode='wait'>
                     {error && (
                         <motion.div 
@@ -165,7 +175,7 @@ export default function CollaboratorListModal({
                 </AnimatePresence>
              </div>
 
-             {/* List */}
+             { }
              <div className="p-2">
                 <label className="px-3 text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1 block mt-2">
                     {t('dashboard.collaborators.current_access')} ({collaborators.length})
@@ -178,7 +188,7 @@ export default function CollaboratorListModal({
                 ) : (
                   <div className="space-y-1">
                     {collaborators.map((user, index) => {
-                       const isOwner = index === 0; // Assuming first in list is owner as per current logic
+                       const isOwner = index === 0; 
                        const isMe = user.id === currentUser?.id;
                        
                        return (
@@ -188,7 +198,7 @@ export default function CollaboratorListModal({
                         key={index} 
                         className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-xl transition-colors group"
                       >
-                        {/* Avatar */}
+                        { }
                         <div className="flex-shrink-0">
                           <UserAvatar 
                             user={user} 
@@ -196,7 +206,7 @@ export default function CollaboratorListModal({
                           />
                         </div>
 
-                        {/* Info */}
+                        { }
                         <div className="min-w-0 flex-1">
                           <p className="text-sm font-bold text-gray-900 truncate flex items-center gap-2">
                             {user.firstName} {user.lastName}
@@ -209,7 +219,7 @@ export default function CollaboratorListModal({
                           </div>
                         </div>
 
-                        {/* Actions */}
+                        { }
                         {!isOwner && (
                            <button
                              onClick={() => user.id && handleRemove(user.id)}
@@ -227,6 +237,17 @@ export default function CollaboratorListModal({
           </div>
         </motion.div>
       </div>
+      
+      <ConfirmDialog
+        open={deleteConfirmOpen}
+        onOpenChange={setDeleteConfirmOpen}
+        title={t('dashboard.collaborators.remove_confirm_title')}
+        description={t('dashboard.collaborators.remove_confirm')}
+        onConfirm={confirmRemove}
+        confirmText={t('common.delete')}
+        cancelText={t('common.cancel')}
+        variant="destructive"
+      />
     </AnimatePresence>
   );
 }

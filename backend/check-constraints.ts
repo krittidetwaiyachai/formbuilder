@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 async function checkConstraints() {
   console.log('Checking Database Constraints and Triggers...\n');
 
-  // Get total responses and answers
+  
   const totalResponses = await prisma.formResponse.count();
   const totalAnswers = await prisma.responseAnswer.count();
   
@@ -13,7 +13,7 @@ async function checkConstraints() {
   console.log(`Total Answers: ${totalAnswers}`);
   console.log(`Average Answers per Response: ${(totalAnswers / totalResponses).toFixed(2)}\n`);
 
-  // Check for responses without answers
+  
   const responsesWithoutAnswers = await prisma.formResponse.findMany({
     where: {
       answers: {

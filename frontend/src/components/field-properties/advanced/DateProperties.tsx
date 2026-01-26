@@ -200,7 +200,7 @@ export const DateProperties = ({ field, updateField, duplicatesField }: DateProp
             <label className="relative inline-flex items-center cursor-pointer">
               <input
                 type="checkbox"
-                checked={(field.validation as any)?.calendarPopup !== false} // Default true
+                checked={(field.validation as any)?.calendarPopup !== false} 
                 onChange={(e) => updateField(field.id, {
                   validation: { ...field.validation, calendarPopup: e.target.checked }
                 })}

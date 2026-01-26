@@ -70,11 +70,11 @@ export default function PreviewPage({ params }: { params: { id: string } }) {
     backgroundImage: currentForm.settings.backgroundImage,
   } : undefined;
   
-  // In a real app, you'd fetch the form schema from an API
-  // For now, we'll use the store or mock data
+  
+  
   const form = mockForms.find((f) => f.id === params.id);
 
-  // If no elements in store, use mock elements for preview
+  
   const previewElements = elements.length > 0 ? elements : [
     {
       id: "1",

@@ -155,7 +155,7 @@ export default function FieldAnalyticsSelector({
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        {/* Field Selection */}
+        { }
         <div className="space-y-2">
           <Label>{t('analytics.select_field')}</Label>
           <Select
@@ -175,7 +175,7 @@ export default function FieldAnalyticsSelector({
           </Select>
         </div>
 
-        {/* Analysis Type Selection */}
+        { }
         <div className="space-y-2">
           <Label>{t('analytics.analysis_type')}</Label>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">

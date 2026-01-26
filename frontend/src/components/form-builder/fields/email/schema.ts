@@ -14,6 +14,6 @@ export const emailDefaultValues = {
   validation: {
     required: false,
     readOnly: false,
-    confirmation: false, // For "confirm email" field
+    confirmation: false, 
   }
 };

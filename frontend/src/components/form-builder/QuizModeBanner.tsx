@@ -52,7 +52,7 @@ export default function QuizModeBanner({ form, onOpenSettings }: QuizModeBannerP
       className={`sticky top-0 z-30 mb-4 px-4 py-3 rounded-xl bg-black text-white shadow-xl border ${config.border}`}
     >
       <div className="flex flex-col md:flex-row items-center justify-between gap-3 md:gap-4">
-        {/* Left: Quiz Mode Info & Stats */}
+        { }
         <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-4 gap-y-2 w-full md:w-auto">
           <div className="flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-full">
             <GraduationCap className="w-4 h-4 text-white" />
@@ -76,7 +76,7 @@ export default function QuizModeBanner({ form, onOpenSettings }: QuizModeBannerP
           </div>
         </div>
 
-        {/* Right: Status & Settings */}
+        { }
         <div className="flex items-center justify-between w-full md:w-auto gap-3 border-t md:border-t-0 border-white/10 pt-2 md:pt-0 mt-1 md:mt-0">
           <div className="flex items-center gap-2">
             <StatusIcon className={`w-4 h-4 ${config.iconColor}`} />

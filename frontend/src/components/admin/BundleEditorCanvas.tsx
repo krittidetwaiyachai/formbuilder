@@ -1,7 +1,7 @@
 import React from 'react';
 import { Droppable, Draggable } from '@hello-pangea/dnd';
 import { useBundleEditorStore, BundleField } from '@/store/bundleEditorStore';
-import { Trash2 } from 'lucide-react';
+import { Trash2, Image, Video } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Field, FieldType } from '@/types';
 import { useTranslation } from 'react-i18next';
@@ -28,6 +28,7 @@ import { MatrixField } from '@/components/form-builder/fields/matrix/MatrixField
 import { TableField } from '@/components/form-builder/fields/table/TableField';
 import { RichTextEditor } from '@/components/ui/RichTextEditor';
 import { RichTextToolbar } from '@/components/ui/RichTextToolbar';
+import { sanitize } from '@/utils/sanitization';
 
 const getFieldStyle = (field: Field) => {
     switch (field.type) {
@@ -151,6 +152,8 @@ export function BundleFieldCard({
   const { t } = useTranslation();
   const { setSelectedFieldId, deleteField, updateField } = useBundleEditorStore();
   
+  const [mediaInputMode, setMediaInputMode] = React.useState<'image' | 'video' | null>(null);
+
   const renderField = { ...field } as unknown as Field;
   const fieldStyle = getFieldStyle(renderField);
 
@@ -225,6 +228,160 @@ export function BundleFieldCard({
             </div>
 
              <div className="px-4 pb-4 pt-6">
+                { }
+                {isSelected && !isOverlay && !isDragging && (
+                  <div className="mb-4 flex flex-col gap-3">
+                      { }
+                      <div className="flex items-center justify-end gap-1 pb-2 border-b border-gray-100">
+                          <button
+                              onClick={(e) => {
+                                  e.stopPropagation();
+                                  setMediaInputMode(prev => prev === 'image' ? null : 'image');
+                              }}
+                              className={cn(
+                                "p-2 rounded-full transition-colors",
+                                mediaInputMode === 'image' || field.imageUrl ? 'bg-blue-50 text-blue-600' : 'text-gray-400 hover:bg-gray-100 hover:text-gray-600'
+                              )}
+                              title="Insert Image"
+                          >
+                              <Image className="h-4 w-4" />
+                          </button>
+                          <button
+                              onClick={(e) => {
+                                  e.stopPropagation();
+                                  setMediaInputMode(prev => prev === 'video' ? null : 'video');
+                              }}
+                              className={cn(
+                                "p-2 rounded-full transition-colors",
+                                mediaInputMode === 'video' || field.videoUrl ? 'bg-blue-50 text-blue-600' : 'text-gray-400 hover:bg-gray-100 hover:text-gray-600'
+                              )}
+                              title="Insert Video"
+                          >
+                              <Video className="h-4 w-4" />
+                          </button>
+                          
+                          <div className="w-px h-4 bg-gray-200 mx-2"></div>
+                          
+                          {!isLayoutField && (
+                            <button
+                               onClick={(e) => {
+                                   e.stopPropagation();
+                                   deleteField(field.id);
+                               }}
+                               className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
+                               title={t('common.delete_field')}
+                            >
+                               <Trash2 className="h-4 w-4" />
+                            </button>
+                          )}
+                      </div>
+
+                      { }
+                      {(mediaInputMode === 'image' || mediaInputMode === 'video') && (
+                          <div className="flex items-center gap-2 animate-in slide-in-from-top-2 fade-in duration-200">
+                               <input
+                                  autoFocus
+                                  type="text"
+                                  placeholder={mediaInputMode === 'image' ? "Paste Image URL..." : "Paste YouTube URL..."}
+                                  className="flex-1 text-sm border-b border-blue-500 focus:outline-none py-1 bg-transparent"
+                                  defaultValue={mediaInputMode === 'image' ? field.imageUrl : field.videoUrl}
+                                  onKeyDown={(e) => {
+                                      if (e.key === 'Enter') {
+                                          const val = e.currentTarget.value;
+                                          if (mediaInputMode === 'image') {
+                                              updateField(field.id, { imageUrl: val });
+                                              if (val && !field.imageWidth) updateField(field.id, { imageWidth: '100%' });
+                                          } else {
+                                              updateField(field.id, { videoUrl: val });
+                                          }
+                                          setMediaInputMode(null);
+                                      } else if (e.key === 'Escape') {
+                                          setMediaInputMode(null);
+                                      }
+                                  }}
+                                  onBlur={(e) => {
+                                      const val = e.currentTarget.value;
+                                       if (mediaInputMode === 'image') {
+                                          if (val !== field.imageUrl) {
+                                              updateField(field.id, { imageUrl: val });
+                                              if (val && !field.imageWidth) updateField(field.id, { imageWidth: '100%' });
+                                          }
+                                      } else {
+                                          if (val !== field.videoUrl) updateField(field.id, { videoUrl: val });
+                                      }
+                                      setMediaInputMode(null);
+                                  }}
+                               />
+                               <button onClick={() => setMediaInputMode(null)} className="text-xs text-gray-400 hover:text-gray-600">
+                                  Cancel
+                               </button>
+                          </div>
+                      )}
+                  </div>
+                )}
+              
+                { }
+                {!isOverlay && !isDragging && (field.imageUrl || field.videoUrl) && (
+                  <div className="flex flex-col items-center gap-3 my-4">
+                      { }
+                      {field.imageUrl && (
+                          <div className="relative group/media">
+                              <img 
+                                  src={field.imageUrl} 
+                                  alt="Preview" 
+                                  className="rounded-lg object-contain bg-gray-50 max-h-64"
+                                  style={{ maxWidth: field.imageWidth || '100%' }}
+                                  onError={(e) => {
+                                      (e.target as HTMLImageElement).style.display = 'none';
+                                  }}
+                              />
+                              <button
+                                  onClick={(e) => {
+                                      e.stopPropagation();
+                                      updateField(field.id, { imageUrl: '', imageWidth: '' });
+                                  }}
+                                  className="absolute top-1 right-1 bg-black/50 hover:bg-black/70 text-white rounded-full p-1 opacity-0 group-hover/media:opacity-100 transition-opacity"
+                                  title="Remove Image"
+                              >
+                                  <Trash2 className="h-3 w-3" />
+                              </button>
+                          </div>
+                      )}
+
+                      { }
+                      {field.videoUrl && (() => {
+                          const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+                          const match = field.videoUrl?.match(regExp);
+                          const videoId = (match && match[2].length === 11) ? match[2] : null;
+
+                          if (videoId) {
+                              return (
+                                  <div className="relative group/media w-full max-w-md overflow-hidden rounded-xl bg-black/5 aspect-video">
+                                      <iframe 
+                                          src={`https://www.youtube.com/embed/${videoId}`}
+                                          title="YouTube video player"
+                                          frameBorder="0" 
+                                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                          allowFullScreen
+                                          className="absolute top-0 left-0 w-full h-full rounded-xl"
+                                      />
+                                      <button
+                                          onClick={(e) => {
+                                              e.stopPropagation();
+                                              updateField(field.id, { videoUrl: '' });
+                                          }}
+                                          className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white rounded-full p-1.5 opacity-0 group-hover/media:opacity-100 transition-opacity z-10"
+                                          title="Remove Video"
+                                      >
+                                          <Trash2 className="h-3 w-3" />
+                                      </button>
+                                  </div>
+                              );
+                          }
+                          return null;
+                      })()}
+                  </div>
+                )}
                 {isLayoutField ? (
                     content
                 ) : (
@@ -254,7 +411,7 @@ export function BundleFieldCard({
                                      ) : (
                                         <div 
                                             className="font-medium text-black break-words max-w-full ql-editor !p-0"
-                                            dangerouslySetInnerHTML={{ __html: field.label || t('common.question') }}
+                                            dangerouslySetInnerHTML={{ __html: sanitize(field.label || t('common.question')) }}
                                         />
                                      )}
                                  </div>
@@ -284,7 +441,7 @@ export function BundleFieldCard({
                                    ) : (
                                        <div 
                                            className="ql-editor !p-0"
-                                           dangerouslySetInnerHTML={{ __html: field.options?.subLabel }}
+                                           dangerouslySetInnerHTML={{ __html: sanitize(field.options?.subLabel) }}
                                        />
                                    )}
                                 </div>
@@ -295,7 +452,7 @@ export function BundleFieldCard({
              </div>
         </div>
 
-        {!isLayoutField && !isOverlay && (
+        {(!isLayoutField && !isOverlay && !isSelected) && (
              <button 
                 onClick={(e) => {
                     e.stopPropagation();
@@ -303,9 +460,7 @@ export function BundleFieldCard({
                 }}
                 className={cn(
                     "flex-shrink-0 p-1 transition-colors",
-                    isSelected 
-                      ? "text-gray-500 hover:text-red-500" 
-                      : "text-gray-400 hover:text-red-500 opacity-0 group-hover/wrap:opacity-100" 
+                    "text-gray-400 hover:text-red-500 opacity-0 group-hover/wrap:opacity-100" 
                 )}
                 title="Delete Field"
              >

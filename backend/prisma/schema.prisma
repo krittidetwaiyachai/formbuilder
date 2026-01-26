@@ -119,6 +119,9 @@ model Field {
   groupId         String?
   shrink          Boolean          @default(false)
   isPII           Boolean          @default(false)
+  imageUrl        String?
+  imageWidth      String?
+  videoUrl        String?
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
   conditions      FieldCondition[] @relation("SourceField")
@@ -218,6 +221,9 @@ model BundleField {
   order       Int       @default(0)
   options     Json?
   isPII       Boolean   @default(false)
+  imageUrl    String?
+  imageWidth  String?
+  videoUrl    String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   form        Form?     @relation(fields: [formId], references: [id], onDelete: Cascade)
@@ -243,6 +249,9 @@ model FormResponse {
   quizScore   QuizScore?
   answers     ResponseAnswer[]
 
+  @@index([formId, userId])
+  @@index([formId, fingerprint])
+  @@index([formId, respondentEmail])
   @@map("form_responses")
 }
 

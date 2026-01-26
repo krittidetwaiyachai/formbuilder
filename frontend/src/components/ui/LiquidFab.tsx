@@ -4,7 +4,7 @@ import './LiquidFab.css';
 interface LiquidFabProps {
   onClick: () => void;
   isOpen: boolean;
-  className?: string; // Allow passing external classes
+  className?: string; 
 }
 
 export const LiquidFab: React.FC<LiquidFabProps> = ({ onClick, isOpen, className }) => {
@@ -15,7 +15,7 @@ export const LiquidFab: React.FC<LiquidFabProps> = ({ onClick, isOpen, className
         style={{ 
             '--size': '0.73', 
             '--rotation': isOpen ? '45deg' : '0deg' 
-        } as React.CSSProperties} // Scale down to approx 25px
+        } as React.CSSProperties} 
         role="button"
         tabIndex={0}
     >

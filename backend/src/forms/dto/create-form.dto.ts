@@ -58,6 +58,18 @@ export class CreateFieldDto {
   @IsOptional()
   @IsBoolean()
   isPII?: boolean;
+
+  @IsOptional()
+  @IsString()
+  imageUrl?: string;
+
+  @IsOptional()
+  @IsString()
+  imageWidth?: string;
+
+  @IsOptional()
+  @IsString()
+  videoUrl?: string;
 }
 
 export class CreateFieldConditionDto {
@@ -116,7 +128,7 @@ export class CreateLogicRuleDto {
 
   @IsOptional()
   @IsString()
-  logicType?: string; // AND / OR
+  logicType?: string; 
 
   @IsOptional()
   @IsArray()

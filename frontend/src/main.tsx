@@ -14,7 +14,7 @@ if (import.meta.env.DEV) {
   };
 }
 
-// Unregister service workers
+
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.getRegistrations().then((registrations) => {
     registrations.forEach((registration) => {

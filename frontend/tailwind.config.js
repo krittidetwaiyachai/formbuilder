@@ -1,4 +1,4 @@
-/** @type {import('tailwindcss').Config} */
+ 
 export default {
   content: [
     "./index.html",
@@ -32,7 +32,11 @@ export default {
       float: 'float 3s ease-in-out infinite',
       wiggle: 'wiggle 1s ease-in-out infinite',
     },
-    extend: {},
+    extend: {
+      colors: {
+        primary: 'var(--primary)',
+      }
+    },
   },
   plugins: [],
 }

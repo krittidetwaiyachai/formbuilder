@@ -4,22 +4,27 @@ import {
   LayoutDashboard, 
   Users, 
   Package, 
-  Settings, 
+
   LogOut,
   ChevronLeft,
-  Shield
+  Shield,
+  FileText
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
-const navItems = [
-  { to: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/admin/users', label: 'Users', icon: Users },
-  { to: '/admin/bundles', label: 'Bundles', icon: Package },
-  { to: '/admin/settings', label: 'Settings', icon: Settings },
-];
+
+
 
 export default function AdminLayout() {
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
+  const navItems = [
+    { to: '/admin/dashboard', label: t('admin.nav.dashboard'), icon: LayoutDashboard },
+    { to: '/admin/users', label: t('admin.nav.users'), icon: Users },
+    { to: '/admin/bundles', label: t('admin.nav.bundles'), icon: Package },
+  ];
 
   const handleLogout = () => {
     logout();
@@ -39,7 +44,7 @@ export default function AdminLayout() {
               <Shield className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h1 className="font-bold text-lg">Admin Panel</h1>
+              <h1 className="font-bold text-lg">{t('admin.layout.title')}</h1>
               <p className="text-xs text-gray-400">Form Builder</p>
             </div>
           </div>
@@ -70,7 +75,7 @@ export default function AdminLayout() {
             className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5 transition-all"
           >
             <ChevronLeft className="w-5 h-5" />
-            กลับไปแอป
+            {t('admin.layout.back')}
           </button>
           
           <div className="flex items-center gap-3 px-4 py-3">
@@ -94,7 +99,7 @@ export default function AdminLayout() {
             className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all"
           >
             <LogOut className="w-5 h-5" />
-            ออกจากระบบ
+            {t('admin.layout.logout')}
           </button>
         </div>
       </aside>

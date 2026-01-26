@@ -13,7 +13,7 @@ const iconMap: Record<string, any> = {
   sparkles: Sparkles,
 };
 
-// Premium, standardized icon backgrounds
+
 const iconStyles: Record<string, string> = {
   green: 'bg-emerald-50 text-emerald-600 border-emerald-100',
   blue: 'bg-blue-50 text-blue-600 border-blue-100',
@@ -32,7 +32,10 @@ interface WelcomeScreenProps {
   viewMode?: 'desktop' | 'tablet' | 'mobile';
 }
 
+import { useTranslation } from 'react-i18next';
+
 export default function WelcomeScreen({ settings, onStart, viewMode = 'desktop' }: WelcomeScreenProps) {
+  const { t } = useTranslation();
   const isMobile = viewMode === 'mobile';
   const isTablet = viewMode === 'tablet';
   const layout = settings?.layout || 'simple';
@@ -41,13 +44,13 @@ export default function WelcomeScreen({ settings, onStart, viewMode = 'desktop' 
   const IconComponent = iconMap[(settings as any)?.icon || 'sparkles'] || Sparkles;
   const title = settings?.title;
   const description = settings?.description;
-  const buttonText = settings?.buttonText || 'Start';
+  const buttonText = settings?.buttonText || t('public.start', 'Start');
   const showButton = settings?.showStartButton !== false;
 
   const renderContent = (isCover = false) => (
     <div className={`flex flex-col items-center justify-center ${isMobile ? 'px-4 py-10' : 'p-12 md:p-16'} w-full max-w-2xl mx-auto text-center space-y-8`}>
       
-       {/* Icon */}
+       { }
        {layout === 'simple' && (
           <motion.div 
             initial={{ scale: 0.8, opacity: 0 }}
@@ -59,31 +62,32 @@ export default function WelcomeScreen({ settings, onStart, viewMode = 'desktop' 
           </motion.div>
        )}
 
-      {/* Title */}
+      { }
       {title && (
-          <h1 className={`${isMobile ? 'text-3xl' : 'text-4xl md:text-6xl'} font-bold tracking-tight leading-tight ${isCover ? 'text-white drop-shadow-md' : 'text-gray-900'}`}>
+          <h1 className={`${isMobile ? 'text-3xl' : 'text-4xl md:text-6xl'} font-bold tracking-tight leading-tight ${isCover ? 'text-white drop-shadow-md' : ''}`} style={!isCover ? { color: 'var(--text)' } : {}}>
             {title}
           </h1>
       )}
 
-      {/* Description */}
+      { }
       {description && (
-        <p className={`${isMobile ? 'text-base' : 'text-xl'} font-normal leading-relaxed max-w-xl mx-auto ${isCover ? 'text-white/90 drop-shadow' : 'text-gray-500'}`}>
+        <p className={`${isMobile ? 'text-base' : 'text-xl'} font-normal leading-relaxed max-w-xl mx-auto ${isCover ? 'text-white/90 drop-shadow' : ''}`} style={!isCover ? { color: 'var(--text)', opacity: 0.7 } : {}}>
             {description}
         </p>
       )}
 
-      {/* Start Button */}
+      { }
       {showButton && (
         <motion.button
             whileHover={{ scale: 1.02, y: -2 }}
             whileTap={{ scale: 0.98 }}
             onClick={onStart}
-            className={`group relative mt-4 flex items-center justify-center gap-3 px-12 py-4 font-bold rounded-full text-lg shadow-xl shadow-gray-200 hover:shadow-2xl hover:shadow-gray-300 transition-all w-full md:w-auto min-w-[200px] ${
+            className={`group relative mt-4 flex items-center justify-center gap-3 px-12 py-4 font-bold rounded-full text-lg shadow-xl transition-all w-full md:w-auto min-w-[200px] ${
                 isCover 
                 ? 'bg-white text-black border-2 border-transparent hover:border-white/50' 
-                : 'bg-gray-900 text-white hover:bg-black'
+                : 'text-white hover:opacity-90'
             }`}
+            style={!isCover ? { backgroundColor: 'var(--primary)', borderRadius: 'var(--radius)' } : {}}
         >
             <span>{buttonText}</span>
         </motion.button>
@@ -100,7 +104,7 @@ export default function WelcomeScreen({ settings, onStart, viewMode = 'desktop' 
                 <div className="w-20 h-20 bg-white rounded-3xl shadow-sm flex items-center justify-center">
                     <IconComponent className="w-8 h-8 opacity-20" />
                 </div>
-                <span className="text-sm font-medium tracking-widest text-gray-400 uppercase">Image Placeholder</span>
+                <span className="text-sm font-medium tracking-widest text-gray-400 uppercase">{t('public.image_placeholder', 'Image Placeholder')}</span>
             </div>
           )}
       </div>
@@ -111,23 +115,28 @@ export default function WelcomeScreen({ settings, onStart, viewMode = 'desktop' 
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className={`w-full bg-white shadow-2xl shadow-gray-200/50 overflow-hidden flex ${
+      className={`w-full shadow-2xl overflow-hidden flex ${
           layout === 'split-left' ? 'flex-col md:flex-row' : 
           layout === 'split-right' ? 'flex-col-reverse md:flex-row-reverse' : 
           'flex-col'
       } relative ${
           (isMobile || isTablet)
             ? 'min-h-full rounded-none max-w-full' 
-            : 'min-h-[650px] rounded-[2.5rem] max-w-6xl my-8 border border-white'
+            : 'min-h-[650px] rounded-[2.5rem] max-w-6xl my-8 border'
       }`}
+      style={{ 
+        backgroundColor: 'var(--card-bg, rgba(255,255,255,0.9))', 
+        borderColor: 'var(--card-border, rgba(0,0,0,0.05))',
+        backdropFilter: 'blur(16px)'
+      }}
     >
       
-      {/* SIMPLE LAYOUT */}
+      { }
       {layout === 'simple' && (
-          <div className="flex flex-col items-center justify-center w-full min-h-[inherit] relative bg-white">
-               {/* Decorative background blobs */}
-               <div className="absolute top-0 left-0 w-64 h-64 bg-gray-50 rounded-full mix-blend-multiply filter blur-3xl opacity-50 -translate-x-1/2 -translate-y-1/2" />
-               <div className="absolute bottom-0 right-0 w-64 h-64 bg-gray-50 rounded-full mix-blend-multiply filter blur-3xl opacity-50 translate-x-1/2 translate-y-1/2" />
+          <div className="flex flex-col items-center justify-center w-full min-h-[inherit] relative" style={{ backgroundColor: 'transparent' }}>
+               { }
+               <div className="absolute top-0 left-0 w-64 h-64 rounded-full mix-blend-multiply filter blur-3xl opacity-20 -translate-x-1/2 -translate-y-1/2" style={{ backgroundColor: 'var(--primary)' }} />
+               <div className="absolute bottom-0 right-0 w-64 h-64 rounded-full mix-blend-multiply filter blur-3xl opacity-20 translate-x-1/2 translate-y-1/2" style={{ backgroundColor: 'var(--primary)' }} />
                
                <div className="w-full flex-1 flex items-center justify-center relative z-10">
                     {renderContent()}
@@ -135,19 +144,19 @@ export default function WelcomeScreen({ settings, onStart, viewMode = 'desktop' 
           </div>
       )}
 
-      {/* SPLIT LAYOUTS */}
+      { }
       {(layout === 'split-left' || layout === 'split-right') && (
           <>
                <div className="w-full md:w-1/2 relative min-h-[350px] md:min-h-full">
                    {renderImage()}
                </div>
-               <div className="w-full md:w-1/2 flex flex-col items-center justify-center bg-white">
+               <div className="w-full md:w-1/2 flex flex-col items-center justify-center" style={{ backgroundColor: 'var(--card-bg, rgba(255,255,255,0.9))' }}>
                    {renderContent()}
                </div>
           </>
       )}
 
-      {/* COVER LAYOUT */}
+      { }
       {layout === 'cover' && (
           <div className="absolute inset-0 w-full h-full">
               {bgImage ? (

@@ -68,7 +68,7 @@ export const useBuilderStore = create<BuilderState>((set, get) => ({
       timestamp: Date.now(),
     });
     set({
-      history: newHistory.slice(-50), // Keep last 50 states
+      history: newHistory.slice(-50), 
       historyIndex: newHistory.length - 1,
     });
   },

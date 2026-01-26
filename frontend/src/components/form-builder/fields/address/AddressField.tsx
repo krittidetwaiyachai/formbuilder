@@ -2,6 +2,7 @@ import React from 'react';
 import { Field } from '@/types';
 import { useFormStore } from '@/store/formStore';
 import { MapPin } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface AddressFieldProps {
   field: Field;
@@ -16,9 +17,10 @@ interface AddressFieldProps {
 
 export const AddressField: React.FC<AddressFieldProps> = ({ field, fieldStyle, disabledClass = "opacity-60 cursor-pointer" }) => {
   const { updateField } = useFormStore();
+  const { t } = useTranslation();
   const { inputBorder } = fieldStyle;
 
-  // Correctly read from options
+  
   const options = field.options || {};
   const showStreet = options.showStreet !== false;
   const showStreet2 = options.showStreet2 !== false;
@@ -49,12 +51,16 @@ export const AddressField: React.FC<AddressFieldProps> = ({ field, fieldStyle, d
         contentEditable
         suppressContentEditableWarning
         spellCheck={false}
-        className="mt-1 text-xs text-gray-500 font-normal outline-none focus:outline-none focus:ring-0 border border-transparent hover:border-gray-200 rounded px-1 transition-colors empty:before:content-['Type_sublabel...']"
+        className="mt-1 text-xs text-gray-500 font-normal outline-none focus:outline-none focus:ring-0 border border-transparent hover:border-gray-200 rounded px-1 transition-colors empty:before:content-[var(--placeholder)]"
         onBlur={(e) => handleSubLabelBlur(key, e)}
         onClick={(e) => e.stopPropagation()}
         onMouseDown={(e) => e.stopPropagation()}
         dangerouslySetInnerHTML={{ __html: addressSublabels[key] || defaultText }}
-        style={{ pointerEvents: 'auto', cursor: 'text' }}
+        style={{ 
+          pointerEvents: 'auto', 
+          cursor: 'text',
+          '--placeholder': `"${t('builder.properties.type_sublabel')}"`
+        } as React.CSSProperties}
       />
   );
 
@@ -68,14 +74,14 @@ export const AddressField: React.FC<AddressFieldProps> = ({ field, fieldStyle, d
               </div>
               <input
                 type="text"
-                placeholder={addressPlaceholders.street || 'Street Address'}
+                placeholder={addressPlaceholders.street || t('common.address.street')}
                 readOnly
                 tabIndex={-1}
                 className={`w-full pl-12 pr-4 py-3.5 border ${inputBorder} rounded-xl bg-white text-black text-base shadow-sm transition-all duration-300 ${disabledClass}`}
                 style={{ pointerEvents: 'none' }}
               />
             </div>
-            {renderEditableSublabel('street', 'Street Address')}
+            {renderEditableSublabel('street', t('common.address.street'))}
           </div>
        )}
 
@@ -83,13 +89,13 @@ export const AddressField: React.FC<AddressFieldProps> = ({ field, fieldStyle, d
           <div className="relative group">
             <input
               type="text"
-              placeholder={addressPlaceholders.street2 || 'Street Address Line 2'}
+              placeholder={addressPlaceholders.street2 || t('common.address.street2')}
               readOnly
               tabIndex={-1}
               className={`w-full px-4 py-3.5 border ${inputBorder} rounded-xl bg-white text-black text-base shadow-sm transition-all duration-300 ${disabledClass}`}
                style={{ pointerEvents: 'none' }}
             />
-            {renderEditableSublabel('street2', 'Street Address Line 2')}
+            {renderEditableSublabel('street2', t('common.address.street2'))}
           </div>
        )}
 
@@ -98,13 +104,13 @@ export const AddressField: React.FC<AddressFieldProps> = ({ field, fieldStyle, d
             <div className="relative group">
               <input
                 type="text"
-                placeholder={addressPlaceholders.city || 'City'}
+                placeholder={addressPlaceholders.city || t('common.address.city')}
                 readOnly
                 tabIndex={-1}
                 className={`w-full px-4 py-3.5 border ${inputBorder} rounded-xl bg-white text-black text-base shadow-sm transition-all duration-300 ${disabledClass}`}
                  style={{ pointerEvents: 'none' }}
               />
-              {renderEditableSublabel('city', 'City')}
+              {renderEditableSublabel('city', t('common.address.city'))}
             </div>
         )}
         {showState && (
@@ -115,19 +121,19 @@ export const AddressField: React.FC<AddressFieldProps> = ({ field, fieldStyle, d
                      className={`w-full px-4 py-3.5 border ${inputBorder} rounded-xl bg-white text-black text-base shadow-sm transition-all duration-300 ${disabledClass} appearance-none`}
                      style={{ pointerEvents: 'none' }}
                   >
-                      <option>{addressPlaceholders.state || 'Select State'}</option>
+                      <option>{addressPlaceholders.state || t('common.address.select_state')}</option>
                   </select>
               ) : (
                    <input
                     type="text"
-                    placeholder={addressPlaceholders.state || 'State / Province'}
+                    placeholder={addressPlaceholders.state || t('common.address.state')}
                     readOnly
                     tabIndex={-1}
                     className={`w-full px-4 py-3.5 border ${inputBorder} rounded-xl bg-white text-black text-base shadow-sm transition-all duration-300 ${disabledClass}`}
                     style={{ pointerEvents: 'none' }}
                   />
               )}
-              {renderEditableSublabel('state', 'State / Province')}
+              {renderEditableSublabel('state', t('common.address.state'))}
             </div>
         )}
       </div>
@@ -137,13 +143,13 @@ export const AddressField: React.FC<AddressFieldProps> = ({ field, fieldStyle, d
           <div className="relative group">
             <input
               type="text"
-              placeholder={addressPlaceholders.zip || 'Postal / Zip Code'}
+              placeholder={addressPlaceholders.zip || t('common.address.zip')}
               readOnly
               tabIndex={-1}
               className={`w-full px-4 py-3.5 border ${inputBorder} rounded-xl bg-white text-black text-base shadow-sm transition-all duration-300 ${disabledClass}`}
                style={{ pointerEvents: 'none' }}
             />
-            {renderEditableSublabel('zip', 'Postal / Zip Code')}
+            {renderEditableSublabel('zip', t('common.address.zip'))}
           </div>
          )}
          {showCountry && (
@@ -153,9 +159,9 @@ export const AddressField: React.FC<AddressFieldProps> = ({ field, fieldStyle, d
                      className={`w-full px-4 py-3.5 border ${inputBorder} rounded-xl bg-white text-black text-base shadow-sm transition-all duration-300 ${disabledClass} appearance-none`}
                      style={{ pointerEvents: 'none' }}
                   >
-                      <option>{addressPlaceholders.country || 'Select Country'}</option>
+                      <option>{addressPlaceholders.country || t('common.address.select_country')}</option>
                   </select>
-              {renderEditableSublabel('country', 'Country')}
+              {renderEditableSublabel('country', t('common.address.country'))}
             </div>
          )}
       </div>

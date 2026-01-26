@@ -8,5 +8,9 @@ export default {
   "error.503.title": "Maintenance",
   "error.503.message": "We're currently performing maintenance. We'll be back shortly.",
   "error.back_home": "Back to Home",
-  "error.go_back": "Go Back"
+  "error.go_back": "Go Back",
+  "error.footer.security": "Security Protocol • Access Level: Restricted",
+  "error.footer.diagnostic": "System Diagnostic • Status: Critical",
+  "error.footer.upgrade": "System Upgrade • Estimating Time: Unknown",
+  "error.footer.default": "FormBuilder • 404 Error"
 };

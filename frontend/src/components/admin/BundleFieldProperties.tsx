@@ -3,7 +3,7 @@ import { Settings } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { FieldType, Field } from '@/types';
 
-// Property Components
+
 import { DateProperties } from '@/components/field-properties/advanced/DateProperties';
 import { FullNameProperties } from '@/components/field-properties/text/FullNameProperties';
 import { EmailProperties } from '@/components/field-properties/text/EmailProperties';
@@ -23,7 +23,7 @@ import { RateProperties } from '@/components/field-properties/advanced/RatePrope
 import { MatrixProperties } from '@/components/field-properties/advanced/MatrixProperties';
 import { TableProperties } from '@/components/field-properties/advanced/TableProperties';
 
-// Internal Components
+
 const COLOR_OPTIONS = [
     { label: 'Gray', value: 'gray', bg: 'bg-gray-100', text: 'text-gray-600' },
     { label: 'Blue', value: 'blue', bg: 'bg-blue-100', text: 'text-blue-600' },
@@ -93,11 +93,11 @@ function BundleSettings({ bundle, updateBundleMeta }: { bundle: any; updateBundl
 
 
 
-                {/* Appearance Settings */}
+                { }
                 <div className="space-y-4 pt-4 border-t border-gray-100">
                     <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Appearance</h4>
                     
-                    {/* Icon Selection */}
+                    { }
                     <div>
                         <label className="block text-sm font-medium text-black mb-2">Icon</label>
                         <div className="grid grid-cols-5 gap-2">
@@ -124,7 +124,7 @@ function BundleSettings({ bundle, updateBundleMeta }: { bundle: any; updateBundl
                         </div>
                     </div>
 
-                    {/* Color Selection */}
+                    { }
                     <div>
                         <label className="block text-sm font-medium text-black mb-2">Color Theme</label>
                         <div className="grid grid-cols-4 gap-2">
@@ -159,12 +159,12 @@ export default function BundleFieldProperties() {
   const { bundle, selectedFieldId, updateField, addField, updateBundleMeta } = useBundleEditorStore();
   const selectedField = bundle?.fields.find((f) => f.id === selectedFieldId);
 
-  // Helper to adapt addField to duplicatesField signature
-  // duplicatesField in properties usually receives `Omit<Field, 'id'>`.
+  
+  
   const handleDuplicate = (fieldData: Omit<Field, 'id'>) => {
-    // Adapter: Field -> BundleField (Omit id, order)
-    // We assume fieldData is compatible. 
-    // We need to strip 'formId' and other unused props if they exist, but addField in bundle uses partial matching
+    
+    
+    
     const { order, formId, ...rest } = fieldData as any;
     addField(rest);
   };
@@ -173,7 +173,7 @@ export default function BundleFieldProperties() {
 
   return (
     <div className="w-[320px] bg-white border-l border-gray-200 flex flex-col h-full z-20 shadow-[-2px_0_15px_-3px_rgba(0,0,0,0.05)]">
-      {/* Header */}
+      { }
       <div className="border-b border-gray-100 bg-white px-4 py-3 sticky top-0 z-10 shrink-0 h-[57px] flex items-center">
          <div className="flex items-center gap-2 text-gray-800 font-semibold">
             <Settings className="w-4 h-4" />
@@ -186,14 +186,11 @@ export default function BundleFieldProperties() {
              <BundleSettings bundle={bundle} updateBundleMeta={updateBundleMeta} />
          ) : (
              <div className="space-y-4">
-                 {/* 
-                    We cast selectedField to Field because they are structurally compatible enough for the Properties components.
-                    BundleField has 'validation?: any' and 'options?: any' now.
-                 */}
+                 { }
                  {(() => {
-                    const fieldProps = {
-                        field: selectedField as unknown as Field,
-                        updateField: updateField as any,
+                    const fieldProps: any = {
+                        field: selectedField,
+                        updateField: updateField,
                         duplicatesField: handleDuplicate
                     };
 
@@ -212,7 +209,7 @@ export default function BundleFieldProperties() {
                         case FieldType.CHECKBOX: return <CheckboxProperties {...fieldProps} />;
                         case FieldType.NUMBER: return <NumberProperties {...fieldProps} />;
                         case FieldType.TIME: return <TimeProperties {...fieldProps} />;
-                        case FieldType.SUBMIT: return <SubmitProperties {...fieldProps} />; // Probably not needed for bundles but kept for consistency
+                        case FieldType.SUBMIT: return <SubmitProperties {...fieldProps} />; 
                         case FieldType.RATE: return <RateProperties {...fieldProps} />;
                         case FieldType.MATRIX: return <MatrixProperties {...fieldProps} />;
                         case FieldType.TABLE: return <TableProperties {...fieldProps} />;

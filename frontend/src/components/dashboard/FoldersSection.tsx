@@ -43,17 +43,17 @@ export default function FoldersSection({
     setExpandedFolderId(current => current === folderId ? null : folderId);
   };
 
-  // Sort folders: folders with forms first, then by name
+  
   const sortedFolders = useMemo(() => {
     return [...folders].sort((a, b) => {
       const aCount = a._count?.forms || 0;
       const bCount = b._count?.forms || 0;
       
-      // Folders with forms come first
+      
       if (aCount > 0 && bCount === 0) return -1;
       if (aCount === 0 && bCount > 0) return 1;
       
-      // Then sort alphabetically
+      
       return a.name.localeCompare(b.name);
     });
   }, [folders]);

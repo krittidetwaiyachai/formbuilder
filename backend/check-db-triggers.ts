@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 async function checkTriggers() {
   console.log('Checking for PostgreSQL triggers and constraints...\n');
 
-  // Query to find all triggers
+  
   const triggers = await prisma.$queryRaw`
     SELECT 
       trigger_name,
@@ -21,7 +21,7 @@ async function checkTriggers() {
   console.log('=== DATABASE TRIGGERS ===');
   console.log(JSON.stringify(triggers, null, 2));
   
-  // Check foreign key constraints
+  
   const fkConstraints = await prisma.$queryRaw`
     SELECT
       tc.table_name,

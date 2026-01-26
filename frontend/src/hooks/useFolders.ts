@@ -3,7 +3,9 @@ import api from '@/lib/api';
 import type { Folder } from '@/types/folder';
 import { useAuthStore } from '@/store/authStore';
 
+import { useTranslation } from 'react-i18next';
 export function useFolders() {
+  const { t } = useTranslation();
   const [folders, setFolders] = useState<Folder[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -23,7 +25,7 @@ export function useFolders() {
       setFolders(response.data || []);
     } catch (error: any) {
       console.error('Failed to load folders:', error);
-      setError(error?.response?.data?.message || 'Failed to load folders');
+      setError(error?.response?.data?.message || t('dashboard.toast.error_load_folders'));
       setFolders([]);
     } finally {
       setLoading(false);
@@ -43,7 +45,7 @@ export function useFolders() {
       return newFolder;
     } catch (error: any) {
       console.error('Failed to create folder:', error);
-      const errorMessage = error?.response?.data?.message || 'Failed to create folder';
+      const errorMessage = error?.response?.data?.message || t('dashboard.toast.error_create_folder');
       setError(errorMessage);
       throw new Error(errorMessage);
     }
@@ -58,7 +60,7 @@ export function useFolders() {
       return updatedFolder;
     } catch (error: any) {
       console.error('Failed to update folder:', error);
-      const errorMessage = error?.response?.data?.message || 'Failed to update folder';
+      const errorMessage = error?.response?.data?.message || t('dashboard.toast.error_update_folder');
       setError(errorMessage);
       throw new Error(errorMessage);
     }
@@ -71,7 +73,7 @@ export function useFolders() {
       setFolders(prev => prev.filter(f => f.id !== id));
     } catch (error: any) {
       console.error('Failed to delete folder:', error);
-      const errorMessage = error?.response?.data?.message || 'Failed to delete folder';
+      const errorMessage = error?.response?.data?.message || t('dashboard.toast.error_delete_folder');
       setError(errorMessage);
       throw new Error(errorMessage);
     }
@@ -81,11 +83,10 @@ export function useFolders() {
     try {
       setError(null);
       await api.put(`/folders/move-form/${formId}`, { folderId });
-      // Refresh folders to update form counts
       await loadFolders();
     } catch (error: any) {
       console.error('Failed to move form:', error);
-      const errorMessage = error?.response?.data?.message || 'Failed to move form';
+      const errorMessage = error?.response?.data?.message || t('dashboard.toast.error_move_form');
       setError(errorMessage);
       throw new Error(errorMessage);
     }

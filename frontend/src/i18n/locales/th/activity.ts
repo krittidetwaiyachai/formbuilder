@@ -12,6 +12,7 @@ export default {
     "h_ago": "{{count}} ชั่วโมงที่แล้ว",
     "d_ago": "{{count}} วันที่แล้ว",
     "back_to_builder": "กลับไปหน้าสร้าง",
+    "started_journey": "เริ่มต้นการเดินทางใหม่กับ \"{{title}}\"",
     "filter": {
       "title": "ตัวกรอง",
       "actions": "การกระทำ",

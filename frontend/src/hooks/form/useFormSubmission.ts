@@ -20,14 +20,14 @@ export function useFormSubmission({ form, isPreview = false }: UseFormSubmission
     setSubmitting(true);
 
     if (isPreview) {
-      // Mock submission for preview
+      
       setTimeout(() => {
         if (form.isQuiz) {
           let mockScore = 0;
           let total = 0;
           if (form.quizSettings?.showScore) {
             total = form.fields?.length || 0;
-            mockScore = total; // Mock perfect score
+            mockScore = total; 
           }
           setScore({ score: mockScore, totalScore: total });
         }

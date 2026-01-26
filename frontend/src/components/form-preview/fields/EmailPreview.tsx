@@ -1,8 +1,10 @@
 import React from 'react';
 import { Field } from '@/types';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { Mail } from 'lucide-react';
 import { PreviewLabel } from '../PreviewLabel';
+import { stripHtml } from '@/lib/ui/utils';
 
 interface PreviewFieldProps {
   field: Field;
@@ -15,6 +17,7 @@ interface PreviewFieldProps {
 const FREE_EMAIL_DOMAINS = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'aol.com', 'mail.com', 'protonmail.com', 'icloud.com', 'live.com', 'msn.com'];
 
 export const EmailPreview: React.FC<PreviewFieldProps> = ({ field, register, errors, questionNumber, isPublic }) => {
+  const { t } = useTranslation();
   const fieldName = `field_${field.id}`;
   const fieldError = errors[fieldName];
 
@@ -26,17 +29,17 @@ export const EmailPreview: React.FC<PreviewFieldProps> = ({ field, register, err
   const isRowLayout = labelAlignment === 'LEFT' || labelAlignment === 'RIGHT';
 
   const validationRules: any = {
-    required: field.required ? 'This field is required' : false,
+    required: field.required ? t('public.validation.required_field', { label: stripHtml(field.label) }) : false,
     pattern: {
       value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-      message: "Invalid email address"
+      message: t('public.validation.invalid_email', "Invalid email address")
     }
   };
 
   if (hasMaxLength && maxLength) {
     validationRules.maxLength = {
       value: maxLength,
-      message: `Max length is ${maxLength} characters`
+      message: t('public.validation.max_length', { count: maxLength })
     };
   }
 
@@ -47,7 +50,7 @@ export const EmailPreview: React.FC<PreviewFieldProps> = ({ field, register, err
         if (!value) return true;
         const domain = value.split('@')[1]?.toLowerCase();
         if (domain && FREE_EMAIL_DOMAINS.includes(domain)) {
-          return "Please use a business/work email address";
+          return t('public.validation.business_email', "Please use a business/work email address");
         }
         return true;
       }
@@ -70,20 +73,28 @@ export const EmailPreview: React.FC<PreviewFieldProps> = ({ field, register, err
                 <Mail className="h-4 w-4 text-gray-400" />
             </div>
           )}
-          
-          {isPublic ? (
+                    {isPublic ? (
             <input
                 type="email"
                 id={fieldName}
                 {...register(fieldName, validationRules)}
-                placeholder={field.placeholder || "email@example.com"}
+                placeholder={field.placeholder || t('public.placeholder.email', "email@example.com")}
                 defaultValue={defaultValue}
                 readOnly={readOnly}
                 maxLength={hasMaxLength ? maxLength : undefined}
-                style={width === 'FIXED' && customWidth ? { maxWidth: `${customWidth}px` } : {}}
-                className={`w-full px-4 ${shrink ? 'py-2 text-base' : 'py-3 text-base'} border border-gray-200 rounded-lg bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all ${
-                    fieldError ? 'border-red-500 bg-red-50' : 'hover:border-gray-300'
-                } ${readOnly ? 'bg-gray-50 cursor-not-allowed' : ''}`}
+                style={width === 'FIXED' && customWidth ? { 
+                    maxWidth: `${customWidth}px`, 
+                    color: 'var(--text)', 
+                    backgroundColor: 'var(--input-bg)',
+                    borderColor: 'var(--input-border)'
+                } : { 
+                    color: 'var(--text)', 
+                    backgroundColor: 'var(--input-bg)',
+                    borderColor: 'var(--input-border)'
+                }}
+                className={`w-full px-4 ${shrink ? 'py-2 text-base' : 'py-3 text-base'} border rounded-lg placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all ${
+                    fieldError ? 'border-red-500 bg-red-50/10' : 'hover:border-primary/50'
+                } ${readOnly ? 'opacity-60 cursor-not-allowed' : ''}`}
             />
           ) : (
             <input
@@ -106,23 +117,24 @@ export const EmailPreview: React.FC<PreviewFieldProps> = ({ field, register, err
 
         {confirmation && isPublic && (
           <div className="mt-4">
-            <label htmlFor={`${fieldName}_confirm`} className="block text-sm font-medium text-gray-700 mb-2">
-              Confirm Email
+            <label htmlFor={`${fieldName}_confirm`} className="block text-sm font-medium mb-2" style={{ color: 'var(--text)' }}>
+              {t('public.validation.confirm_email_label', 'Confirm Email')}
             </label>
             <input
                 type="email"
                 id={`${fieldName}_confirm`}
                 {...register(`${fieldName}_confirm`, {
-                    required: field.required ? 'Please confirm your email' : false,
+                    required: field.required ? t('public.validation.required_field', { label: t('public.validation.confirm_email_label') }) : false,
                     validate: (value: string, formValues: any) => {
                         if (value !== formValues[fieldName]) {
-                            return 'Emails do not match';
+                            return t('public.validation.emails_not_match', 'Emails do not match');
                         }
                         return true;
                     }
                 })}
-                placeholder="Confirm your email"
-                className={`w-full px-0 ${shrink ? 'py-2 text-base' : 'py-3 text-lg'} border-0 border-b-2 bg-transparent text-gray-900 placeholder:text-gray-300 focus:ring-0 focus:border-black transition-all ${
+                placeholder={t('public.validation.confirm_email_placeholder', "Confirm your email")}
+                style={{ color: 'var(--text)', backgroundColor: 'transparent' }}
+                className={`w-full px-0 ${shrink ? 'py-2 text-base' : 'py-3 text-lg'} border-0 border-b-2 placeholder:text-gray-300 focus:ring-0 focus:border-black transition-all ${
                     errors[`${fieldName}_confirm`] ? 'border-red-500' : 'border-gray-200 hover:border-gray-300'
                 }`}
             />

@@ -3,6 +3,7 @@ import { Field } from '@/types';
 import { useForm } from 'react-hook-form';
 import { FileText, Bold, Italic, Underline, Link as LinkIcon, List, ListOrdered, AlignLeft, AlignCenter, AlignRight, AlignJustify } from 'lucide-react';
 import { PreviewLabel } from '../PreviewLabel';
+import { stripHtml } from '@/lib/ui/utils';
 
 interface PreviewFieldProps {
   field: Field;
@@ -14,7 +15,10 @@ interface PreviewFieldProps {
   setValue?: ReturnType<typeof useForm>['setValue'];
 }
 
+import { useTranslation } from 'react-i18next';
+
 export const PreviewTextAreaField: React.FC<PreviewFieldProps> = ({ field, register, errors, questionNumber, isPublic, watch, setValue }) => {
+  const { t } = useTranslation();
   const fieldName = `field_${field.id}`;
   const fieldError = errors[fieldName];
   const editorRef = useRef<HTMLDivElement>(null);
@@ -26,20 +30,20 @@ export const PreviewTextAreaField: React.FC<PreviewFieldProps> = ({ field, regis
   const isRichText = editorMode === 'RICH_TEXT';
   const watchedValue = watch ? watch(fieldName) : undefined;
 
-  // Initialize Rich Text Content
+  
   useEffect(() => {
     if (isRichText && editorRef.current && isPublic) {
-       // Initialize with current form value (persistence) or default value
+       
        const initialContent = watchedValue || defaultValue;
        if (initialContent && !editorRef.current.innerHTML) {
           editorRef.current.innerHTML = initialContent;
        }
     }
-    // Only run on mount or when mode changes, do NOT re-run on watchedValue change to avoid cursor jumps
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    
+  
   }, [isRichText, isPublic]);
 
-  // State for toolbar active buttons
+  
   const [activeFormats, setActiveFormats] = React.useState({
     bold: false,
     italic: false,
@@ -50,10 +54,10 @@ export const PreviewTextAreaField: React.FC<PreviewFieldProps> = ({ field, regis
     justifyCenter: false,
     justifyRight: false,
     justifyFull: false,
-    fontSize: '3', // Default numeric value for 'normal' size (3 is roughly 16px/normal in execCommand)
+    fontSize: '3', 
   });
 
-  // Check active formatting
+  
   const checkFormats = () => {
     if (!isRichText || !isPublic || readOnly) return;
     setActiveFormats({
@@ -70,7 +74,7 @@ export const PreviewTextAreaField: React.FC<PreviewFieldProps> = ({ field, regis
     });
   };
 
-  // Sync Rich Text to Form
+  
   const handleInput = () => {
     checkFormats();
     if (editorRef.current && setValue) {
@@ -92,20 +96,20 @@ export const PreviewTextAreaField: React.FC<PreviewFieldProps> = ({ field, regis
   const isRowLayout = labelAlignment === 'LEFT' || labelAlignment === 'RIGHT';
 
   const validationRules: any = {
-    required: field.required ? 'This field is required' : false,
+    required: field.required ? t('public.validation.required_field', { label: stripHtml(field.label) }) : false,
   };
 
   if (hasEntryLimits) {
       if (maxLength) {
            validationRules.maxLength = {
                 value: maxLength,
-                message: `Max length is ${maxLength} characters`
+                message: t('public.validation.max_length', { count: maxLength })
            };
       }
       if (minLength) {
            validationRules.minLength = {
                 value: minLength,
-                message: `Min length is ${minLength} characters`
+                message: t('public.validation.min_length', { count: minLength })
            };
       }
   }
@@ -114,27 +118,27 @@ export const PreviewTextAreaField: React.FC<PreviewFieldProps> = ({ field, regis
       if (validationType === 'Email') {
           validationRules.pattern = {
               value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-              message: "Invalid email address"
+              message: t('public.validation.invalid_email', "Invalid email address")
           };
       } else if (validationType === 'URL') {
            validationRules.pattern = {
-              value: /^(https?:\/\/)?[\da-z\.-]+\.[a-z\.]{2,6}(\/[\w \.-]*)*\/?$/,
-              message: "Invalid URL"
+              value: /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/,
+              message: t('public.validation.invalid_url', "Invalid URL")
           };
       } else if (validationType === 'Alphabetic') {
            validationRules.pattern = {
               value: /^[a-zA-Z\s]*$/,
-              message: "Only alphabetic characters allowed"
+              message: t('public.validation.alphabetic', "Only alphabetic characters allowed")
           };
       } else if (validationType === 'Alphanumeric') {
            validationRules.pattern = {
               value: /^[a-zA-Z0-9\s]*$/,
-              message: "Only alphanumeric characters allowed"
+              message: t('public.validation.alphanumeric', "Only alphanumeric characters allowed")
           };
       }  else if (validationType === 'Numeric') {
            validationRules.pattern = {
               value: /^[0-9\s]*$/,
-              message: "Only numeric characters allowed"
+              message: t('public.validation.numeric', "Only numeric characters allowed")
           };
       }
   }
@@ -159,19 +163,19 @@ export const PreviewTextAreaField: React.FC<PreviewFieldProps> = ({ field, regis
           
           {isPublic ? (
             isRichText ? (
-                // Rich Text Editor Mode
+                
                 <div style={width === 'FIXED' && customWidth ? { maxWidth: `${customWidth}px` } : {}} className="w-full">
                     <div className={`border ${fieldError ? 'border-red-500 ring-1 ring-red-500' : 'border-gray-200'} rounded-lg overflow-hidden bg-white shadow-sm transition-all focus-within:ring-2 focus-within:ring-black/5 focus-within:border-black`}>
-                        {/* Toolbar */}
+                        { }
                         {!readOnly && (
                             <div className="bg-gray-50 border-b border-gray-200 px-2 py-1.5 flex flex-wrap items-center gap-1 select-none">
-                                {/* Text Style */}
+                                { }
                                 <div className="flex items-center gap-0.5 border-r border-gray-300 pr-1.5 mr-1">
                                     <button 
                                       type="button" 
                                       onMouseDown={(e) => { e.preventDefault(); execCmd('bold'); }} 
                                       className={`p-1.5 rounded transition-colors ${activeFormats.bold ? 'bg-gray-300 text-black' : 'hover:bg-gray-200 text-gray-600'}`}
-                                      title="Bold"
+                                      title={t('public.rte.bold', 'Bold')}
                                     >
                                       <Bold className="w-4 h-4" />
                                     </button>
@@ -179,7 +183,7 @@ export const PreviewTextAreaField: React.FC<PreviewFieldProps> = ({ field, regis
                                       type="button" 
                                       onMouseDown={(e) => { e.preventDefault(); execCmd('italic'); }} 
                                       className={`p-1.5 rounded transition-colors ${activeFormats.italic ? 'bg-gray-300 text-black' : 'hover:bg-gray-200 text-gray-600'}`}
-                                      title="Italic"
+                                      title={t('public.rte.italic', 'Italic')}
                                     >
                                       <Italic className="w-4 h-4" />
                                     </button>
@@ -187,19 +191,19 @@ export const PreviewTextAreaField: React.FC<PreviewFieldProps> = ({ field, regis
                                       type="button" 
                                       onMouseDown={(e) => { e.preventDefault(); execCmd('underline'); }} 
                                       className={`p-1.5 rounded transition-colors ${activeFormats.underline ? 'bg-gray-300 text-black' : 'hover:bg-gray-200 text-gray-600'}`}
-                                      title="Underline"
+                                      title={t('public.rte.underline', 'Underline')}
                                     >
                                       <Underline className="w-4 h-4" />
                                     </button>
                                 </div>
                                 
-                                {/* Alignment */}
+                                { }
                                 <div className="flex items-center gap-0.5 border-r border-gray-300 pr-1.5 mr-1">
                                     <button 
                                       type="button" 
                                       onMouseDown={(e) => { e.preventDefault(); execCmd('justifyLeft'); }} 
                                       className={`p-1.5 rounded transition-colors ${activeFormats.justifyLeft ? 'bg-gray-300 text-black' : 'hover:bg-gray-200 text-gray-600'}`}
-                                      title="Align Left"
+                                      title={t('public.rte.align_left', 'Align Left')}
                                     >
                                       <AlignLeft className="w-4 h-4" />
                                     </button>
@@ -207,7 +211,7 @@ export const PreviewTextAreaField: React.FC<PreviewFieldProps> = ({ field, regis
                                       type="button" 
                                       onMouseDown={(e) => { e.preventDefault(); execCmd('justifyCenter'); }} 
                                       className={`p-1.5 rounded transition-colors ${activeFormats.justifyCenter ? 'bg-gray-300 text-black' : 'hover:bg-gray-200 text-gray-600'}`}
-                                      title="Align Center"
+                                      title={t('public.rte.align_center', 'Align Center')}
                                     >
                                       <AlignCenter className="w-4 h-4" />
                                     </button>
@@ -215,7 +219,7 @@ export const PreviewTextAreaField: React.FC<PreviewFieldProps> = ({ field, regis
                                       type="button" 
                                       onMouseDown={(e) => { e.preventDefault(); execCmd('justifyRight'); }} 
                                       className={`p-1.5 rounded transition-colors ${activeFormats.justifyRight ? 'bg-gray-300 text-black' : 'hover:bg-gray-200 text-gray-600'}`}
-                                      title="Align Right"
+                                      title={t('public.rte.align_right', 'Align Right')}
                                     >
                                       <AlignRight className="w-4 h-4" />
                                     </button>
@@ -223,19 +227,19 @@ export const PreviewTextAreaField: React.FC<PreviewFieldProps> = ({ field, regis
                                       type="button" 
                                       onMouseDown={(e) => { e.preventDefault(); execCmd('justifyFull'); }} 
                                       className={`p-1.5 rounded transition-colors ${activeFormats.justifyFull ? 'bg-gray-300 text-black' : 'hover:bg-gray-200 text-gray-600'}`}
-                                      title="Justify"
+                                      title={t('public.rte.justify', 'Justify')}
                                     >
                                       <AlignJustify className="w-4 h-4" />
                                     </button>
                                 </div>
 
-                                {/* Lists */}
+                                { }
                                 <div className="flex items-center gap-0.5 border-r border-gray-300 pr-1.5 mr-1">
                                     <button 
                                       type="button" 
                                       onMouseDown={(e) => { e.preventDefault(); execCmd('insertUnorderedList'); }} 
                                       className={`p-1.5 rounded transition-colors ${activeFormats.insertUnorderedList ? 'bg-gray-300 text-black' : 'hover:bg-gray-200 text-gray-600'}`}
-                                      title="Bullet List"
+                                      title={t('public.rte.list_bullet', 'Bullet List')}
                                     >
                                       <List className="w-4 h-4" />
                                     </button>
@@ -243,51 +247,51 @@ export const PreviewTextAreaField: React.FC<PreviewFieldProps> = ({ field, regis
                                       type="button" 
                                       onMouseDown={(e) => { e.preventDefault(); execCmd('insertOrderedList'); }} 
                                       className={`p-1.5 rounded transition-colors ${activeFormats.insertOrderedList ? 'bg-gray-300 text-black' : 'hover:bg-gray-200 text-gray-600'}`}
-                                      title="Numbered List"
+                                      title={t('public.rte.list_ordered', 'Numbered List')}
                                     >
                                       <ListOrdered className="w-4 h-4" />
                                     </button>
                                 </div>
 
-                                {/* Link */}
+                                { }
                                 <div className="flex items-center gap-0.5 border-r border-gray-300 pr-1.5 mr-1">
                                      <button 
                                        type="button" 
                                        onMouseDown={(e) => { 
                                          e.preventDefault(); 
-                                         const url = prompt('Enter URL'); 
+                                         const url = prompt(t('public.rte.enter_url', 'Enter URL')); 
                                          if(url) execCmd('createLink', url); 
                                      }} 
                                      className="p-1.5 hover:bg-gray-200 rounded text-gray-600 transition-colors"
-                                     title="Link"
+                                     title={t('public.rte.link', 'Link')}
                                      >
                                       <LinkIcon className="w-4 h-4" />
                                     </button>
                                 </div>
 
-                                {/* Font Size */}
+                                { }
                                 <div className="flex items-center gap-1">
                                      <select
-                                        onMouseDown={(e) => e.stopPropagation()} // Allow click to options
+                                        onMouseDown={(e) => e.stopPropagation()} 
                                         onChange={(e) => {
                                             execCmd('fontSize', e.target.value);
                                         }}
                                         value={activeFormats.fontSize}
                                         className="h-7 text-xs border border-gray-300 rounded px-1 min-w-[60px] focus:outline-none focus:border-black bg-white"
-                                        title="Font Size"
+                                        title={t('public.rte.font_size', 'Font Size')}
                                      >
-                                        <option value="1">Small (1)</option>
-                                        <option value="2">Small (2)</option>
-                                        <option value="3">Normal</option>
-                                        <option value="4">Large (4)</option>
-                                        <option value="5">Large (5)</option>
-                                        <option value="6">Huge (6)</option>
-                                        <option value="7">Huge (7)</option>
+                                        <option value="1">{t('public.rte.size_small', 'Small')} (1)</option>
+                                        <option value="2">{t('public.rte.size_small', 'Small')} (2)</option>
+                                        <option value="3">{t('public.rte.size_normal', 'Normal')}</option>
+                                        <option value="4">{t('public.rte.size_large', 'Large')} (4)</option>
+                                        <option value="5">{t('public.rte.size_large', 'Large')} (5)</option>
+                                        <option value="6">{t('public.rte.size_huge', 'Huge')} (6)</option>
+                                        <option value="7">{t('public.rte.size_huge', 'Huge')} (7)</option>
                                      </select>
                                 </div>
                             </div>
                         )}
-                        {/* Editable Area */}
+                        { }
                         <div
                             ref={editorRef}
                             contentEditable={!readOnly}
@@ -299,28 +303,37 @@ export const PreviewTextAreaField: React.FC<PreviewFieldProps> = ({ field, regis
                             } [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-1 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-1 [&_a]:text-blue-600 [&_a]:underline [&_a]:cursor-pointer`}
                             style={{ minHeight: rows ? `${rows * 24}px` : 'auto' }}
                         />
-                        {/* Hidden input for validation syncing if needed, though setValue handles validation */}
+                        { }
                         <input type="hidden" {...register(fieldName, validationRules)} />
                     </div>
                 </div>
             ) : (
-                // Normal Textarea
+                
                 <textarea
                     id={fieldName}
                     {...register(fieldName, validationRules)}
-                    placeholder={field.placeholder || "Type your answer here..."}
+                    placeholder={field.placeholder || t('public.placeholder.text', "Type your answer here...")}
                     defaultValue={defaultValue}
                     readOnly={readOnly}
                     rows={shrink ? Math.max(2, rows - 2) : rows}
                     maxLength={hasEntryLimits && maxLength ? maxLength : undefined}
-                    style={width === 'FIXED' && customWidth ? { maxWidth: `${customWidth}px` } : {}}
-                    className={`w-full px-4 ${shrink ? 'py-2 text-base' : 'py-3 text-base'} border border-gray-200 rounded-lg bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all resize-none ${
+                    style={width === 'FIXED' && customWidth ? { 
+                        maxWidth: `${customWidth}px`, 
+                        color: 'var(--text)', 
+                        backgroundColor: 'var(--input-bg)',
+                        borderColor: 'var(--input-border)'
+                    } : { 
+                        color: 'var(--text)', 
+                        backgroundColor: 'var(--input-bg)',
+                        borderColor: 'var(--input-border)'
+                    }}
+                    className={`w-full px-4 ${shrink ? 'py-2 text-base' : 'py-3 text-base'} border rounded-lg placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none ${
                         fieldError ? 'border-red-500 bg-red-50' : 'hover:border-gray-300'
                     } ${readOnly ? 'bg-gray-50 cursor-not-allowed' : ''}`}
                 />
             )
           ) : (
-            // Builder Preview (Mock)
+            
             <textarea
                 id={fieldName}
                 {...register(fieldName, validationRules)}
@@ -341,7 +354,7 @@ export const PreviewTextAreaField: React.FC<PreviewFieldProps> = ({ field, regis
 
         {hasEntryLimits && maxLength && isPublic && (
           <p className="mt-1 text-xs text-gray-400 text-right">
-            Max {maxLength} characters
+            {t('public.max_characters', { count: maxLength })}
           </p>
         )}
 

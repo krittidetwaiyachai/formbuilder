@@ -10,6 +10,9 @@ export interface BundleField {
   order: number;
   options?: any;
   validation?: Record<string, unknown>;
+  imageUrl?: string;
+  imageWidth?: string;
+  videoUrl?: string;
 }
 
 export interface Bundle {
@@ -27,7 +30,6 @@ interface BundleEditorState {
   selectedFieldId: string | null;
   isDirty: boolean;
   
-  // History State
   history: {
     past: Bundle[];
     future: Bundle[];
@@ -41,21 +43,17 @@ interface BundleEditorState {
   reorderFields: (startIndex: number, endIndex: number) => void;
   updateBundleMeta: (updates: Partial<Pick<Bundle, 'name' | 'description' | 'isPII' | 'isActive' | 'options'>>) => void;
   
-  // History Actions
   undo: () => void;
   redo: () => void;
   
-  // Save Action
   saveBundle: () => Promise<void>;
   
   reset: () => void;
 }
 
-// Helper to push state to history
 const pushHistory = (state: BundleEditorState): { past: Bundle[] } => {
   if (!state.bundle) return { past: state.history.past };
   const newPast = [...state.history.past, state.bundle];
-  // Limit history size if needed, e.g., 50
   if (newPast.length > 50) newPast.shift();
   return { past: newPast };
 };
@@ -73,7 +71,6 @@ export const useBundleEditorStore = create<BundleEditorState>((set, get) => ({
   addField: (fieldData, index) => set((state) => {
     if (!state.bundle) return state;
     
-    // Push to history
     const historyUpdate = { history: { ...state.history, ...pushHistory(state), future: [] } };
 
     const newField: BundleField = {
@@ -103,7 +100,6 @@ export const useBundleEditorStore = create<BundleEditorState>((set, get) => ({
   updateField: (id, updates) => set((state) => {
     if (!state.bundle) return state;
 
-    // Push to history
     const historyUpdate = { history: { ...state.history, ...pushHistory(state), future: [] } };
     
     return {
@@ -121,7 +117,6 @@ export const useBundleEditorStore = create<BundleEditorState>((set, get) => ({
   deleteField: (id) => set((state) => {
     if (!state.bundle) return state;
 
-    // Push to history
     const historyUpdate = { history: { ...state.history, ...pushHistory(state), future: [] } };
     
     return {
@@ -140,7 +135,6 @@ export const useBundleEditorStore = create<BundleEditorState>((set, get) => ({
   reorderFields: (startIndex, endIndex) => set((state) => {
     if (!state.bundle) return state;
 
-    // Push to history
     const historyUpdate = { history: { ...state.history, ...pushHistory(state), future: [] } };
     
     const fields = [...state.bundle.fields];
@@ -160,7 +154,6 @@ export const useBundleEditorStore = create<BundleEditorState>((set, get) => ({
   updateBundleMeta: (updates) => set((state) => {
     if (!state.bundle) return state;
 
-    // Push to history
     const historyUpdate = { history: { ...state.history, ...pushHistory(state), future: [] } };
     
     return {
@@ -203,15 +196,11 @@ export const useBundleEditorStore = create<BundleEditorState>((set, get) => ({
   }),
 
   saveBundle: async () => {
-    const { bundle, setBundle } = get();
+    const { bundle } = get();
     if (!bundle) return;
     
-    // Convert fields to expected format (if needed by backend, though DTO looks compatible)
-    // The backend expects `fields` array.
-    
     try {
-        // Use api.patch
-        const { default: api } = await import('@/lib/api'); // Dynamic import for api
+        const { default: api } = await import('@/lib/api'); 
         const response = await api.patch(`/bundles/${bundle.id}`, {
             name: bundle.name,
             description: bundle.description,
@@ -221,10 +210,8 @@ export const useBundleEditorStore = create<BundleEditorState>((set, get) => ({
             options: bundle.options,
         });
 
-        // Backend creates NEW bundle version with NEW ID
         const newBundle = response.data;
         
-        // Preserve selection by mapping index
         const currentSelectedId = get().selectedFieldId;
         let newSelectedId = null;
 
@@ -235,15 +222,13 @@ export const useBundleEditorStore = create<BundleEditorState>((set, get) => ({
             }
         }
 
-        // Update local state with new bundle (new ID)
         set({ bundle: newBundle, selectedFieldId: newSelectedId, isDirty: false });
         
-        // Update URL without internal navigation
         window.history.replaceState(null, '', `/admin/bundles/${newBundle.id}`);
         
     } catch (error) {
         console.error("Failed to save bundle:", error);
-        throw error; // Let the component handle UI error state
+        throw error; 
     }
   },
 

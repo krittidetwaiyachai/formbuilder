@@ -55,12 +55,12 @@ export const ParagraphProperties: React.FC<ParagraphPropertiesProps> = ({ field,
 
   return (
     <div className="space-y-4">
-      {/* Tabs */}
+      { }
       <PropertiesTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {activeTab === 'general' && (
         <div className="space-y-4">
-          {/* Paragraph Text */}
+          { }
           <div>
             <label className="block text-sm font-medium text-black mb-2">
               {t('builder.properties.paragraph_text')}
@@ -74,7 +74,7 @@ export const ParagraphProperties: React.FC<ParagraphPropertiesProps> = ({ field,
             />
           </div>
 
-          {/* Duplicate Field */}
+          { }
           <button
              type="button"
              onClick={handleDuplicate}
@@ -88,7 +88,7 @@ export const ParagraphProperties: React.FC<ParagraphPropertiesProps> = ({ field,
 
       {activeTab === 'options' && (
          <div className="space-y-6">
-            {/* Move to a new line */}
+            { }
            <div>
              <div className="flex items-center justify-between mb-1">
                  <label className="block text-sm font-medium text-black">
@@ -113,7 +113,7 @@ export const ParagraphProperties: React.FC<ParagraphPropertiesProps> = ({ field,
 
       {activeTab === 'advanced' && (
         <div className="space-y-6">
-           {/* Shrink */}
+           { }
            <div>
             <div className="flex items-center justify-between mb-1">
                 <label className="block text-sm font-medium text-black">
@@ -136,7 +136,7 @@ export const ParagraphProperties: React.FC<ParagraphPropertiesProps> = ({ field,
 
           <hr className="border-gray-200" />
 
-          {/* Hide Field */}
+          { }
           <div>
             <div className="flex items-center justify-between mb-1">
                 <label className="block text-sm font-medium text-black">

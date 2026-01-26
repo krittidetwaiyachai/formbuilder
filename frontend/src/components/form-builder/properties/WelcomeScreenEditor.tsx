@@ -2,6 +2,7 @@
 import { Form } from '@/types';
 import { Check, ThumbsUp, Heart, Star, Trophy, PartyPopper, Rocket, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 const iconMap: Record<string, any> = {
   check: Check,
@@ -14,7 +15,7 @@ const iconMap: Record<string, any> = {
   sparkles: Sparkles,
 };
 
-// Premium, standardized icon backgrounds
+
 const iconStyles: Record<string, string> = {
   green: 'bg-emerald-50 text-emerald-600 border-emerald-100',
   blue: 'bg-blue-50 text-blue-600 border-blue-100',
@@ -33,6 +34,7 @@ interface WelcomeScreenEditorProps {
 }
 
 export default function WelcomeScreenEditor({ currentForm, updateForm }: WelcomeScreenEditorProps) {
+  const { t } = useTranslation();
   if (!currentForm) return null;
 
   const settings = currentForm.welcomeSettings;
@@ -43,14 +45,14 @@ export default function WelcomeScreenEditor({ currentForm, updateForm }: Welcome
 
   const renderContent = () => (
       <div className="max-w-2xl w-full text-center space-y-8 p-12">
-        {/* Icon Placeholder - Premium Style */}
+        { }
         <div className="flex justify-center mb-8">
           <div className={`w-28 h-28 rounded-3xl flex items-center justify-center border-4 border-white shadow-xl ${iconStyles[iconColor] || iconStyles.blue}`}>
              <IconComponent className="w-12 h-12" strokeWidth={1.5} />
           </div>
         </div>
 
-        {/* Inline Editable Title */}
+        { }
         <div className="relative group">
           <input
             type="text"
@@ -67,14 +69,14 @@ export default function WelcomeScreenEditor({ currentForm, updateForm }: Welcome
                 showStartButton: currentForm?.welcomeSettings?.showStartButton ?? true
               }
             })}
-            placeholder="Click to edit title"
+            placeholder={t('builder.welcome.edit_title')}
           />
           <div className={`absolute -inset-2 border-2 border-transparent group-hover:border-dashed group-hover:border-gray-200 rounded-lg pointer-events-none transition-colors ${
              layout === 'cover' ? 'group-hover:border-white/50' : ''
           }`} />
         </div>
 
-        {/* Inline Editable Description */}
+        { }
         <div className="relative group">
           <textarea
             className={`block w-full text-center text-xl font-normal border-none bg-transparent focus:ring-0 resize-none min-h-[80px] placeholder-gray-300 focus:placeholder-gray-200 leading-relaxed ${
@@ -90,14 +92,14 @@ export default function WelcomeScreenEditor({ currentForm, updateForm }: Welcome
                 description: e.target.value
               }
             })}
-            placeholder="Click to add a description..."
+            placeholder={t('builder.welcome.edit_desc')}
           />
           <div className={`absolute -inset-2 border-2 border-transparent group-hover:border-dashed group-hover:border-gray-200 rounded-lg pointer-events-none transition-colors ${
              layout === 'cover' ? 'group-hover:border-white/50' : ''
           }`} />
         </div>
 
-        {/* Start Button */}
+        { }
         {currentForm?.welcomeSettings?.showStartButton !== false && (
           <div className="flex justify-center pt-4">
             <div className="relative group">
@@ -108,7 +110,7 @@ export default function WelcomeScreenEditor({ currentForm, updateForm }: Welcome
                     ? 'bg-white text-black hover:bg-white/90 shadow-lg' 
                     : 'bg-black text-white hover:bg-gray-800 shadow-gray-200'
                 }`}
-                value={currentForm?.welcomeSettings?.buttonText || 'Start'}
+                value={currentForm?.welcomeSettings?.buttonText || t('builder.welcome.start_button')}
                 onChange={(e) => updateForm({
                   welcomeSettings: {
                     ...currentForm?.welcomeSettings,
@@ -135,7 +137,7 @@ export default function WelcomeScreenEditor({ currentForm, updateForm }: Welcome
                 <div className="w-20 h-20 bg-white rounded-3xl shadow-sm flex items-center justify-center">
                     <IconComponent className="w-8 h-8 opacity-20" />
                 </div>
-                <span className="text-sm font-medium tracking-widest text-gray-400 uppercase">Image Placeholder</span>
+                <span className="text-sm font-medium tracking-widest text-gray-400 uppercase">{t('builder.welcome.image_placeholder')}</span>
             </div>
           )}
       </div>
@@ -149,10 +151,10 @@ export default function WelcomeScreenEditor({ currentForm, updateForm }: Welcome
           'flex-col'
       } relative min-h-[600px] border border-white`}>
         
-        {/* SIMPLE CENTERED */}
+        { }
         {layout === 'simple' && (
              <div className="w-full h-full flex items-center justify-center relative">
-                 {/* Decorative blobs */}
+                 { }
                  <div className="absolute top-0 left-0 w-64 h-64 bg-gray-50 rounded-full mix-blend-multiply filter blur-3xl opacity-50 -translate-x-1/2 -translate-y-1/2" />
                  <div className="absolute bottom-0 right-0 w-64 h-64 bg-gray-50 rounded-full mix-blend-multiply filter blur-3xl opacity-50 translate-x-1/2 translate-y-1/2" />
                  
@@ -162,7 +164,7 @@ export default function WelcomeScreenEditor({ currentForm, updateForm }: Welcome
              </div>
         )}
 
-        {/* SPLIT LAYOUTS */}
+        { }
         {(layout === 'split-left' || layout === 'split-right') && (
             <>
                 <div className="w-1/2 relative bg-gray-50 border-gray-100">
@@ -174,7 +176,7 @@ export default function WelcomeScreenEditor({ currentForm, updateForm }: Welcome
             </>
         )}
 
-        {/* COVER LAYOUT */}
+        { }
         {layout === 'cover' && (
             <div className="absolute inset-0 w-full h-full">
                 {bgImage ? (

@@ -41,6 +41,18 @@ export class CreateBundleFieldDto {
   @IsOptional()
   @IsBoolean()
   isPII?: boolean;
+
+  @IsOptional()
+  @IsString()
+  imageUrl?: string;
+
+  @IsOptional()
+  @IsString()
+  imageWidth?: string;
+
+  @IsOptional()
+  @IsString()
+  videoUrl?: string;
 }
 
 export class CreateBundleDto {

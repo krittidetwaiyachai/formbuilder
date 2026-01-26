@@ -1,7 +1,7 @@
 import { FormElement, FormSchema, FormSubmission } from "@/types/form";
 import { User, ActivityLog, ActiveEditor } from "@/types/collaboration";
 
-// Mock form elements for FormPreview
+
 export const MOCK_FORM_ELEMENTS: FormElement[] = [
   {
     id: "1",
@@ -89,7 +89,7 @@ export const MOCK_FORM_ELEMENTS: FormElement[] = [
   },
 ];
 
-// Mock analytics data
+
 export interface AnalyticsData {
   totalViews: number;
   totalSubmissions: number;
@@ -301,7 +301,7 @@ export const mockSubmissions: FormSubmission[] = [
   },
 ];
 
-// Mock users
+
 export const mockUsers: User[] = [
   {
     id: "user1",
@@ -329,7 +329,7 @@ export const mockUsers: User[] = [
   },
 ];
 
-// Mock active editors (users currently editing)
+
 export const mockActiveEditors: Record<string, ActiveEditor[]> = {
   "1": [
     {
@@ -358,7 +358,7 @@ export const mockActiveEditors: Record<string, ActiveEditor[]> = {
   ],
 };
 
-// Mock activity logs
+
 export const mockActivityLogs: ActivityLog[] = [
   {
     id: "act1",
@@ -426,7 +426,7 @@ export const mockActivityLogs: ActivityLog[] = [
   },
 ];
 
-// Export aliases for demo components
+
 export const MOCK_USER_FORMS = mockForms;
 export const MOCK_SUBMISSIONS = mockSubmissions;
 

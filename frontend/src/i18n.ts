@@ -22,7 +22,7 @@ i18n
     fallbackLng: 'en',
     load: 'languageOnly',
     detection: {
-      order: ['localStorage', 'cookie'],
+      order: ['localStorage', 'cookie', 'navigator'],
       caches: ['localStorage', 'cookie'],
     },
     interpolation: {

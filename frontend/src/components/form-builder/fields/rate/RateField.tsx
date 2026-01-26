@@ -33,7 +33,7 @@ export const RateField: React.FC<RateFieldProps> = ({ field, fieldStyle, disable
 
   const Icon = getIcon();
 
-  // Color mapping based on icon type (optional)
+  
   const getColorClass = (active: boolean) => {
       if (!active) return 'text-gray-300 fill-gray-100';
       if (iconType === 'heart') return 'text-red-400 fill-red-400';
@@ -42,7 +42,7 @@ export const RateField: React.FC<RateFieldProps> = ({ field, fieldStyle, disable
       if (iconType === 'flag') return 'text-green-400 fill-green-400';
       if (iconType === 'thumbsup') return 'text-blue-500 fill-blue-500';
       if (iconType === 'smile') return 'text-yellow-500 fill-yellow-500';
-      return 'text-yellow-400 fill-yellow-400'; // Default star
+      return 'text-yellow-400 fill-yellow-400'; 
   };
 
   const labelAlignment = options.labelAlignment || 'TOP';
@@ -51,7 +51,7 @@ export const RateField: React.FC<RateFieldProps> = ({ field, fieldStyle, disable
     <div className={`flex items-center gap-2 py-2 px-4 rounded-xl border ${fieldStyle.inputBorder} bg-white max-w-fit ${disabledClass} ${labelAlignment === 'CENTER' ? 'mx-auto' : ''}`}>
       {Array.from({ length: maxRating }).map((_, index) => {
           const star = index + 1;
-          const isActive = star <= defaultValue; // Show default value in builder
+          const isActive = star <= defaultValue; 
           return (
             <div key={star} className="relative group">
             <Icon 

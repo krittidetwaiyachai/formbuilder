@@ -15,5 +15,6 @@ export default {
   "auth.google_error": "ไม่สามารถเข้าสู่ระบบด้วย Google ได้",
   "auth.error": "เกิดข้อผิดพลาด",
   "auth.error_message": "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
-  "auth.logout": "ออกจากระบบ"
+  "auth.logout": "ออกจากระบบ",
+  "auth.protected_by": "ป้องกันโดย FormBuilder"
 };

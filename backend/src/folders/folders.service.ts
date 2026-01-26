@@ -89,7 +89,7 @@ export class FoldersService {
       throw new NotFoundException('Folder not found');
     }
 
-    // Unlink forms before deleting folder
+    
     await this.prisma.form.updateMany({
       where: { folderId: id },
       data: { folderId: null },

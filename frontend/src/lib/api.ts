@@ -21,7 +21,23 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (error.response?.status === 429 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      const retryCount = originalRequest._retryCount || 0;
+      
+      if (retryCount < 5) { 
+        originalRequest._retryCount = retryCount + 1;
+        
+        const waitTime = Math.pow(2, retryCount) * 1000 + Math.random() * 1000;
+        
+        await new Promise(resolve => setTimeout(resolve, waitTime));
+        return api(originalRequest);
+      }
+    }
+
     if (error.response?.status === 401) {
       const errorData = error.response?.data;
       const isSessionExpired = errorData?.code === 'SESSION_EXPIRED' || errorData?.message === 'Session expired';
@@ -34,10 +50,16 @@ api.interceptors.response.use(
 
       window.location.href = '/';
     }
+
+    if (error.response?.status === 403) {
+      const message = error.response?.data?.message || 'Access Denied: You do not have permission to perform this action.';
+      window.dispatchEvent(new CustomEvent('permission-denied', { 
+        detail: { message } 
+      }));
+    }
+
     return Promise.reject(error);
   },
 );
 
 export default api;
-
-

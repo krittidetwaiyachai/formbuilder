@@ -14,7 +14,10 @@ interface HeaderPropertiesProps {
   onUpdate: (updates: Partial<Field>) => void;
 }
 
+import { useTranslation } from "react-i18next";
+
 export default function HeaderProperties({ element, onUpdate }: HeaderPropertiesProps) {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const [headingTab, setHeadingTab] = useState<"general" | "image">("general");
 
@@ -52,19 +55,19 @@ export default function HeaderProperties({ element, onUpdate }: HeaderProperties
             value="general" 
             className="rounded-none border-b-2 border-transparent data-[state=active]:border-orange-500 data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-gray-400 py-3 px-4"
           >
-            GENERAL
+            {t('builder.properties.general', 'GENERAL')}
           </TabsTrigger>
           <TabsTrigger 
             value="image"
             className="rounded-none border-b-2 border-transparent data-[state=active]:border-orange-500 data-[state=active]:bg-transparent data-[state=active]:text-white data-[state=inactive]:text-gray-400 py-3 px-4"
           >
-            HEADING IMAGE
+            {t('builder.properties.heading_image', 'HEADING IMAGE')}
           </TabsTrigger>
         </TabsList>
         
         <TabsContent value="general" className="mt-0 p-4 space-y-4 bg-gray-800">
           <div className="space-y-2">
-            <Label className="text-white text-sm font-medium">Content</Label>
+            <Label className="text-white text-sm font-medium">{t('builder.properties.content', 'Content')}</Label>
             <Textarea
               value={element.content || ""}
               onChange={(e) => onUpdate({ content: e.target.value })}
@@ -76,7 +79,7 @@ export default function HeaderProperties({ element, onUpdate }: HeaderProperties
         
         <TabsContent value="image" className="mt-0 p-4 space-y-4 bg-gray-800">
           <div className="space-y-2">
-            <Label className="text-white text-sm font-medium">Heading Image</Label>
+            <Label className="text-white text-sm font-medium">{t('builder.properties.heading_image', 'Heading Image')}</Label>
             <div className="border-2 border-dashed border-gray-600 rounded-lg p-8 bg-gray-700/30 hover:bg-gray-700/50 transition-colors">
               <input
                 type="file"
@@ -90,7 +93,7 @@ export default function HeaderProperties({ element, onUpdate }: HeaderProperties
                 className="flex flex-col items-center justify-center cursor-pointer"
               >
                 <ImageIcon className="h-12 w-12 text-gray-400 mb-2" />
-                <span className="text-sm text-gray-300 font-medium">Choose a file</span>
+                <span className="text-sm text-gray-300 font-medium">{t('builder.properties.choose_file', 'Choose a file')}</span>
               </label>
             </div>
             {(element as any).headingImage && (
@@ -106,7 +109,7 @@ export default function HeaderProperties({ element, onUpdate }: HeaderProperties
                   onClick={handleRemoveImage}
                   className="w-full bg-gray-700 text-white border-gray-600 hover:bg-gray-600"
                 >
-                  Remove Image
+                  {t('builder.properties.remove_image', 'Remove Image')}
                 </Button>
               </div>
             )}

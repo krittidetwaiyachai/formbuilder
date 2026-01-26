@@ -13,8 +13,8 @@ import { ActivityLogModule } from './activity-log/activity-log.module';
 import { FoldersModule } from './folders/folders.module';
 import { EventsModule } from './events/events.module';
 import { CommonModule } from './common/common.module';
+import { CustomThrottlerGuard } from './common/guards/custom-throttler.guard';
 import { AdminModule } from './admin/admin.module';
-
 
 @Module({
   imports: [
@@ -23,7 +23,7 @@ import { AdminModule } from './admin/admin.module';
     }),
     ThrottlerModule.forRoot([{
       ttl: 60000,
-      limit: 60,
+      limit: 1000,
     }]),
     PrismaModule,
     AuthModule,
@@ -44,7 +44,7 @@ import { AdminModule } from './admin/admin.module';
     },
     {
       provide: APP_GUARD,
-      useClass: ThrottlerGuard,
+      useClass: CustomThrottlerGuard,
     },
   ],
 })

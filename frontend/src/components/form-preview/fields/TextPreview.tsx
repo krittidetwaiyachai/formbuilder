@@ -1,8 +1,10 @@
 import React from 'react';
 import { Field } from '@/types';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { Type } from 'lucide-react';
 import { PreviewLabel } from '../PreviewLabel';
+import { stripHtml } from '@/lib/ui/utils';
 
 interface PreviewFieldProps {
   field: Field;
@@ -13,6 +15,7 @@ interface PreviewFieldProps {
 }
 
 export const TextPreview: React.FC<PreviewFieldProps> = ({ field, register, errors, questionNumber, isPublic }) => {
+  const { t } = useTranslation();
   const fieldName = `field_${field.id}`;
   const fieldError = errors[fieldName];
 
@@ -23,15 +26,15 @@ export const TextPreview: React.FC<PreviewFieldProps> = ({ field, register, erro
 
   const isRowLayout = labelAlignment === 'LEFT' || labelAlignment === 'RIGHT';
 
-  // Validation rules
+  
   const validationRules: any = {
-    required: field.required ? 'This field is required' : false,
+    required: field.required ? t('public.validation.required_field', { label: stripHtml(field.label) }) : false,
   };
 
   if (hasMaxLength && maxLength) {
     validationRules.maxLength = {
       value: maxLength,
-      message: `Max length is ${maxLength} characters`
+      message: t('public.validation.max_length', { count: maxLength })
     };
   }
 
@@ -39,27 +42,27 @@ export const TextPreview: React.FC<PreviewFieldProps> = ({ field, register, erro
     if (validationType === 'Email') {
       validationRules.pattern = {
         value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-        message: "Invalid email address"
+        message: t('public.validation.invalid_email', "Invalid email address")
       };
     } else if (validationType === 'URL') {
       validationRules.pattern = {
         value: /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/,
-        message: "Invalid URL"
+        message: t('public.validation.invalid_url', "Invalid URL")
       };
     } else if (validationType === 'Alphabetic') {
       validationRules.pattern = {
         value: /^[a-zA-Z\s]*$/,
-        message: "Only alphabetic characters allowed"
+        message: t('public.validation.alphabetic', "Only alphabetic characters allowed")
       };
     } else if (validationType === 'Alphanumeric') {
       validationRules.pattern = {
         value: /^[a-zA-Z0-9\s]*$/,
-        message: "Only alphanumeric characters allowed"
+        message: t('public.validation.alphanumeric', "Only alphanumeric characters allowed")
       };
     } else if (validationType === 'Numeric') {
       validationRules.pattern = {
         value: /^[0-9\s]*$/,
-        message: "Only numeric characters allowed"
+        message: t('public.validation.numeric', "Only numeric characters allowed")
       };
     }
   }
@@ -82,7 +85,7 @@ export const TextPreview: React.FC<PreviewFieldProps> = ({ field, register, erro
           )}
           
           {isPublic ? (
-             // Public Design: Clean, underlined or minimal box
+             
             <input
                 type="text"
                 id={fieldName}
@@ -137,17 +140,26 @@ export const TextPreview: React.FC<PreviewFieldProps> = ({ field, register, erro
                         }
                     }
                 })}
-                placeholder={field.placeholder || "Type your answer here..."}
+                placeholder={field.placeholder || t('public.placeholder.text', "Type your answer here...")}
                 defaultValue={defaultValue}
                 readOnly={readOnly}
                 maxLength={validation.hasInputMask && validation.inputMask ? validation.inputMask.length : (hasMaxLength ? maxLength : undefined)}
-                style={width === 'FIXED' && customWidth ? { maxWidth: `${customWidth}px` } : {}}
-                className={`w-full px-4 ${shrink ? 'py-2 text-base' : 'py-3 text-base'} border border-gray-200 rounded-lg bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all ${
-                    fieldError ? 'border-red-500 bg-red-50' : 'hover:border-gray-300'
-                }`}
+                style={width === 'FIXED' && customWidth ? { 
+                    maxWidth: `${customWidth}px`, 
+                    color: 'var(--text)', 
+                    backgroundColor: 'var(--input-bg)',
+                    borderColor: 'var(--input-border)'
+                } : { 
+                    color: 'var(--text)', 
+                    backgroundColor: 'var(--input-bg)',
+                    borderColor: 'var(--input-border)'
+                }}
+                className={`w-full px-4 ${shrink ? 'py-2 text-base' : 'py-3 text-base'} border rounded-lg placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all ${
+                    fieldError ? 'border-red-500 bg-red-50/10' : 'hover:border-primary/50'
+                } ${readOnly ? 'opacity-60 cursor-not-allowed' : ''}`}
             />
           ) : (
-            // Builder Design
+            
             <input
                 type="text"
                 id={fieldName}

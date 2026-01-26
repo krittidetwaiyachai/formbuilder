@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, KeyboardEvent } from 'react';
 import { X, Plus } from 'lucide-react';
 import { Field, FieldType, Form } from '@/types';
+import { useTranslation } from 'react-i18next';
 
 interface InlineQuizBarProps {
   field: Field;
@@ -10,9 +11,18 @@ interface InlineQuizBarProps {
 }
 
 export default function InlineQuizBar({ field, currentForm, allFields, onUpdate }: InlineQuizBarProps) {
+  const { t } = useTranslation();
   const [showScoreModal, setShowScoreModal] = useState(false);
   const [showAnswerModal, setShowAnswerModal] = useState(false);
   const [newAnswer, setNewAnswer] = useState('');
+  
+  
+  const [localScore, setLocalScore] = useState<string | number>(field.score || 0);
+
+  
+  useEffect(() => {
+     setLocalScore(field.score || 0);
+  }, [field.score]);
   
   const scoreModalRef = useRef<HTMLDivElement>(null);
   const answerModalRef = useRef<HTMLDivElement>(null);
@@ -24,9 +34,14 @@ export default function InlineQuizBar({ field, currentForm, allFields, onUpdate 
   const remainingScore = totalScore - usedScore;
   const maxAllowed = remainingScore + (field.score || 0);
 
+  
+  if (field.type === FieldType.GROUP) {
+    return null;
+  }
+
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      // Close score modal if click is outside modal AND outside button
+      
       if (
         showScoreModal &&
         scoreModalRef.current && 
@@ -37,7 +52,7 @@ export default function InlineQuizBar({ field, currentForm, allFields, onUpdate 
         setShowScoreModal(false);
       }
 
-      // Close answer modal if click is outside modal AND outside button
+      
       if (
         showAnswerModal &&
         answerModalRef.current && 
@@ -89,20 +104,20 @@ export default function InlineQuizBar({ field, currentForm, allFields, onUpdate 
   };
 
   const getAnswerDisplay = () => {
-    if (!field.correctAnswer) return 'Set answer';
+    if (!field.correctAnswer) return t('builder.quiz.set_answer');
     const answers = field.correctAnswer.split(',').filter(Boolean);
     if (field.type === FieldType.CHECKBOX) {
-      return answers.length > 1 ? `${answers.length} options` : answers[0];
+      return answers.length > 1 ? `${answers.length} ${t('builder.quiz.options')}` : answers[0];
     }
     if (answers.length > 1) {
-      return `${answers.length} answers`;
+      return `${answers.length} ${t('builder.quiz.answers')}`;
     }
     return answers[0].length > 20 ? answers[0].substring(0, 20) + '...' : answers[0];
   };
 
   return (
     <div className="border-t border-indigo-200 bg-indigo-50/30 px-3 py-2 flex items-center gap-3 text-xs relative">
-      {/* Score Badge */}
+      { }
       <div className="relative">
         <button
           ref={scoreButtonRef}
@@ -115,10 +130,10 @@ export default function InlineQuizBar({ field, currentForm, allFields, onUpdate 
         >
 
           <span className="font-semibold text-indigo-900">{field.score || 0}</span>
-          <span className="text-gray-500">pts</span>
+          <span className="text-gray-500">{t('builder.quiz.pts')}</span>
         </button>
 
-        {/* Score Edit Modal */}
+        { }
         {showScoreModal && (
           <div
             ref={scoreModalRef}
@@ -126,38 +141,70 @@ export default function InlineQuizBar({ field, currentForm, allFields, onUpdate 
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-2">
-              <label className="text-xs font-semibold text-gray-700">Score</label>
+              <label className="text-xs font-semibold text-gray-700">{t('builder.quiz.score')}</label>
               <button onClick={() => setShowScoreModal(false)} className="text-gray-400 hover:text-gray-600">
                 <X className="w-3 h-3" />
               </button>
             </div>
             <div className="relative">
               <input
-                type="number"
-                min="0"
-                max={maxAllowed}
-                value={field.score || 0}
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                value={localScore}
                 onChange={(e) => {
-                  const value = parseInt(e.target.value) || 0;
-                  const clamped = Math.min(value, maxAllowed);
-                  onUpdate(field.id, { score: clamped });
+                  const val = e.target.value;
+                  
+                  
+                  if (val !== "" && !/^\d+$/.test(val)) {
+                    return;
+                  }
+
+                  setLocalScore(val);
+                  
+                  if (val === "") {
+                     return;
+                  }
+                  
+                  const value = parseInt(val, 10);
+                  if (!isNaN(value)) {
+                    
+                    
+                    const clamped = Math.min(value, maxAllowed);
+                    
+                    
+                    onUpdate(field.id, { score: clamped });
+
+                    
+                    
+                    
+                    
+                  }
+                }}
+                onBlur={() => {
+                   if (localScore === "" || isNaN(parseInt(localScore as string, 10))) {
+                      setLocalScore(field.score || 0);
+                   } else {
+                      
+                      setLocalScore(field.score || 0);
+                   }
                 }}
                 className="w-full px-2 py-1.5 pr-10 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                 onClick={(e) => e.stopPropagation()}
               />
-              <div className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-500">pts</div>
+              <div className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-500">{t('builder.quiz.pts')}</div>
             </div>
             <p className="mt-2 text-xs text-gray-600">
-              Remaining: <span className="font-bold text-indigo-700">{remainingScore}</span> / {totalScore}
+              {t('builder.quiz.remaining')} <span className="font-bold text-indigo-700">{remainingScore}</span> / {totalScore}
             </p>
           </div>
         )}
       </div>
 
-      {/* Divider */}
+      { }
       <div className="h-4 w-px bg-indigo-200" />
 
-      {/* Correct Answer Badge */}
+      { }
       <div className="relative flex-1 min-w-0">
         <button
           ref={answerButtonRef}
@@ -172,7 +219,7 @@ export default function InlineQuizBar({ field, currentForm, allFields, onUpdate 
           <span className="font-medium text-gray-700 truncate flex-1 text-left">{getAnswerDisplay()}</span>
         </button>
 
-        {/* Answer Edit Modal */}
+        { }
         {showAnswerModal && (
           <div
             ref={answerModalRef}
@@ -180,7 +227,7 @@ export default function InlineQuizBar({ field, currentForm, allFields, onUpdate 
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-2">
-              <label className="text-xs font-semibold text-gray-700">Correct Answer</label>
+              <label className="text-xs font-semibold text-gray-700">{t('builder.quiz.correct_answer')}</label>
               <button onClick={() => setShowAnswerModal(false)} className="text-gray-400 hover:text-gray-600">
                 <X className="w-3 h-3" />
               </button>
@@ -193,7 +240,7 @@ export default function InlineQuizBar({ field, currentForm, allFields, onUpdate 
                 className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-indigo-500"
                 onClick={(e) => e.stopPropagation()}
               >
-                <option value="">-- Select --</option>
+                <option value="">{t('builder.quiz.select_placeholder')}</option>
                 {field.options.map((opt: any, idx: number) => (
                   <option key={idx} value={opt.value}>{opt.label}</option>
                 ))}
@@ -217,9 +264,9 @@ export default function InlineQuizBar({ field, currentForm, allFields, onUpdate 
                 })}
               </div>
             ) : (
-              // Multi-answer tag input for text fields
+              
               <div>
-                {/* Existing answers as tags */}
+                { }
                 {field.correctAnswer && field.correctAnswer.split(',').filter(Boolean).length > 0 && (
                   <div className="flex flex-wrap gap-1.5 mb-2 p-2 border border-gray-200 rounded bg-gray-50 max-h-32 overflow-y-auto">
                     {field.correctAnswer.split(',').filter(Boolean).map((answer, idx) => (
@@ -239,14 +286,14 @@ export default function InlineQuizBar({ field, currentForm, allFields, onUpdate 
                   </div>
                 )}
                 
-                {/* Input to add new answer */}
+                { }
                 <div className="flex gap-1.5">
                   <input
                     type="text"
                     value={newAnswer}
                     onChange={(e) => setNewAnswer(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder="Add answer..."
+                    placeholder={t('builder.quiz.add_answer')}
                     className="flex-1 px-2 py-1.5 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-indigo-500"
                     onClick={(e) => e.stopPropagation()}
                   />
@@ -258,7 +305,7 @@ export default function InlineQuizBar({ field, currentForm, allFields, onUpdate 
                   </button>
                 </div>
                 <p className="mt-2 text-xs text-gray-500">
-                  Press Enter or click + to add. Any of these answers will be accepted.
+                  {t('builder.quiz.answer_instruction')}
                 </p>
               </div>
             )}

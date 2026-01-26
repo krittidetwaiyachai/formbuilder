@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
+import { useTranslation } from 'react-i18next';
 
 interface LinkDialogProps {
   isOpen: boolean;
@@ -14,6 +15,7 @@ export const LinkDialog: React.FC<LinkDialogProps> = ({
   onConfirm, 
   onCancel 
 }) => {
+  const { t } = useTranslation();
   const [url, setUrl] = useState(initialValue);
 
   useEffect(() => {
@@ -39,18 +41,18 @@ export const LinkDialog: React.FC<LinkDialogProps> = ({
       />
       
       <div className="relative bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md animate-in zoom-in-95 duration-200">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Insert Link</h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('builder.insert_link')}</h3>
         
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              URL
+              {t('builder.url')}
             </label>
             <input
               type="url"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
-              placeholder="https://example.com"
+              placeholder={t('common.url_placeholder')}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
               autoFocus
             />
@@ -62,13 +64,13 @@ export const LinkDialog: React.FC<LinkDialogProps> = ({
               onClick={onCancel}
               className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
             >
-              Cancel
+              {t('common.cancel')}
             </button>
             <button
               type="submit"
               className="px-4 py-2 text-sm font-medium text-white bg-black rounded-lg hover:bg-gray-800 transition-colors"
             >
-              Insert
+              {t('builder.insert')}
             </button>
           </div>
         </form>

@@ -69,7 +69,7 @@ export default function FormFieldRenderer({
       return <PreviewMatrixField {...commonProps} watch={watch} setValue={setValue} />;
 
     case FieldType.TABLE:
-      if (!watch || !control) return null; // Using control for useFieldArray
+      if (!watch || !control) return null; 
       return <PreviewTableField {...commonProps} control={control} />;
 
     

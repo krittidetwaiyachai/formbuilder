@@ -9,10 +9,13 @@ interface RatePropertiesProps {
   onUpdate: (updates: Partial<Field>) => void;
 }
 
+import { useTranslation } from "react-i18next";
+
 export default function RateProperties({ element, onUpdate }: RatePropertiesProps) {
+  const { t } = useTranslation();
   return (
     <div className="space-y-2">
-      <Label>Max Rating</Label>
+      <Label>{t('builder.properties.max_rating', 'Max Rating')}</Label>
       <Input
         type="number"
         value={element.max || 5}

@@ -12,9 +12,9 @@ import { Logger } from '@nestjs/common';
 
 @WebSocketGateway({
   cors: {
-    origin: '*', // Allow all origins for dev
+    origin: '*', 
   },
-  namespace: 'forms', // Separate namespace for form events
+  namespace: 'forms', 
 })
 export class FormGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
@@ -57,7 +57,7 @@ export class FormGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: Socket,
   ) {
     const room = `form_${payload.formId}`;
-    // Broadcast to everyone else in the room
+    
     client.to(room).emit('form_updated', payload.data);
     this.logger.log(`Broadcasted update to room: ${room}`);
   }

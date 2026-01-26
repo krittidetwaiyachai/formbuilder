@@ -25,12 +25,12 @@ export function FormNavigation({
   const { t } = useTranslation();
 
   return (
-    <div className="mt-8 md:mt-12 pt-6 md:pt-8 flex flex-col-reverse md:flex-row items-center justify-between gap-4">
+    <div className="mt-12 pt-4 pb-8 flex items-center justify-between px-8 md:px-12">
        <button
          type="button"
          onClick={handlePrevious}
          disabled={isFirstPage}
-         className="flex items-center justify-center gap-2 px-6 py-3 text-sm font-medium text-gray-500 hover:text-gray-900 disabled:opacity-30 disabled:hover:text-gray-500 transition-colors w-full md:w-auto"
+         className={`flex items-center gap-1.5 text-sm font-medium text-gray-400 hover:text-gray-600 disabled:opacity-0 transition-colors ${isFirstPage ? 'pointer-events-none' : ''}`}
        >
           <ChevronLeft className="h-4 w-4" />
           {t('public.back')}
@@ -38,11 +38,16 @@ export function FormNavigation({
 
        {!isLastPage ? (
           <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            whileHover={{ scale: 1.02, filter: 'brightness(1.1)' }}
+            whileTap={{ scale: 0.96 }}
             type="button"
             onClick={handleNext}
-            className="flex items-center justify-center gap-2 px-8 py-3 bg-black text-white text-sm font-semibold rounded-full hover:bg-gray-800 shadow-lg hover:shadow-xl transition-all w-full md:w-auto"
+            className="flex items-center gap-2 px-6 py-2.5 text-white text-sm font-medium shadow-lg hover:shadow-xl transition-all"
+            style={{ 
+                backgroundColor: 'var(--primary)', 
+                color: '#ffffff', 
+                borderRadius: 'var(--radius)'
+            }}
           >
              {t('public.next')}
              <ChevronRight className="h-4 w-4" />
@@ -50,10 +55,15 @@ export function FormNavigation({
        ) : (
           <motion.button
             whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            whileTap={{ scale: 0.96 }}
             type="submit"
             disabled={submitting}
-            className="flex items-center justify-center gap-2 px-8 py-3 bg-black text-white text-sm font-semibold rounded-full hover:bg-gray-800 shadow-lg hover:shadow-xl transition-all disabled:opacity-70 disabled:cursor-not-allowed w-full md:w-auto"
+            className="flex items-center gap-2 px-6 py-2.5 text-white text-sm font-medium shadow-lg hover:shadow-xl transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+            style={{ 
+                backgroundColor: 'var(--primary)', 
+                color: '#ffffff',
+                borderRadius: 'var(--radius)'
+            }}
           >
              {submitting ? (
                 <Loader />

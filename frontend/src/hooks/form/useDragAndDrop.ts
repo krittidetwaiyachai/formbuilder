@@ -25,7 +25,6 @@ export function useFormDragAndDrop({
 
   const [isDragging, setIsDragging] = useState(false);
 
-  // Use ref to track activeFields to avoid stale closures in drag callbacks
   const activeFieldsRef = React.useRef(activeFields);
   
   React.useEffect(() => {
@@ -46,7 +45,6 @@ export function useFormDragAndDrop({
       const targetField = currentFields.find(f => f.id === targetFieldId);
       
       if (targetField && targetField.type === FieldType.GROUP) {
-        // Handle Sidebar -> Group (Combine)
         if (draggableId.startsWith('sidebar-')) {
              const type = draggableId.replace('sidebar-', '') as FieldType;
              if (type === FieldType.GROUP) return;
@@ -57,7 +55,7 @@ export function useFormDragAndDrop({
                 type: type,
                 label: getLabelForType(type),
                 required: false,
-                order: 9999, // Will be sorted
+                order: 9999, 
                 groupId: targetFieldId,
                 options: {},
              };
@@ -84,7 +82,6 @@ export function useFormDragAndDrop({
                 newField.options = { subLabel: 'Sublabel' };
              }
 
-             // Append to group (insert after last child or after group)
              const groupChildren = currentFields.filter(f => f.groupId === targetFieldId);
              let insertIndex = -1;
              
@@ -143,12 +140,9 @@ export function useFormDragAndDrop({
     const isFromGroup = source.droppableId.startsWith('GROUP-');
     const isFromCanvas = source.droppableId === 'CANVAS';
 
-    // Helper to get global index offset based on current Page
     const getPageOffset = () => {
         if (currentPage <= 0) return 0;
         
-        // Find index after the (currentPage)-th PAGE_BREAK
-        // e.g. Page 1 (index 1) starts after 1st PAGE_BREAK
         let foundBreaks = 0;
         for (let i = 0; i < currentFields.length; i++) {
             if (currentFields[i].type === FieldType.PAGE_BREAK) {
@@ -158,16 +152,13 @@ export function useFormDragAndDrop({
                 }
             }
         }
-        return currentFields.length; // Fallback (append to end if not found)
+        return currentFields.length; 
     };
 
     if (isFromCanvas && isToCanvas) {
       const pageOffset = getPageOffset();
       const newFields = Array.from(currentFields);
       
-      // Source Index Logic:
-      // If we are dragging from CANVAS on Page X, the source.index is also relative to Page X!
-      // So we need to convert source.index to global index as well.
       const globalSourceIndex = pageOffset + source.index;
       const globalDestinationIndex = pageOffset + destination.index;
 
@@ -216,14 +207,12 @@ export function useFormDragAndDrop({
             newField.options = { subLabel: '' };
        }
 
-       // Insert Standard Field
        const pageOffset = getPageOffset();
        const globalDestinationIndex = pageOffset + destination.index;
        
-       newField.order = globalDestinationIndex; // Temporarily assign
+       newField.order = globalDestinationIndex; 
 
        const newFields = Array.from(currentFields);
-       // Ensure insertion index is within bounds (should be ok with splice)
        newFields.splice(globalDestinationIndex, 0, newField);
        
        const ordered = newFields.map((f, i) => ({ ...f, order: i }));
@@ -248,7 +237,6 @@ export function useFormDragAndDrop({
         type: type,
         label: getLabelForType(type),
         required: false,
-        // Order will be set during re-indexing below
         order: 0, 
         groupId: groupId,
         options: {},
@@ -276,9 +264,6 @@ export function useFormDragAndDrop({
         newField.options = { subLabel: 'Sublabel' };
       }
 
-
-
-      // 1. Find the exact global insertion index
       const groupChildren = currentFields
           .filter(f => f.groupId === groupId)
           .sort((a, b) => a.order - b.order);
@@ -286,33 +271,26 @@ export function useFormDragAndDrop({
       let insertIndex = -1;
 
       if (groupChildren.length === 0) {
-          // No children? Insert right after the group
           const groupIndex = currentFields.findIndex(f => f.id === groupId);
           if (groupIndex !== -1) insertIndex = groupIndex + 1;
       } else {
           if (destination.index < groupChildren.length) {
-              // Inserting before a specific child
               const targetChild = groupChildren[destination.index];
               insertIndex = currentFields.findIndex(f => f.id === targetChild.id);
           } else {
-              // Appending after the last child
               const lastChild = groupChildren[groupChildren.length - 1];
               const lastChildIndex = currentFields.findIndex(f => f.id === lastChild.id);
               if (lastChildIndex !== -1) insertIndex = lastChildIndex + 1;
           }
       }
 
-      // Safety fallback
       if (insertIndex === -1) {
-         // Should not happen if group exists, but just append if lost
          insertIndex = currentFields.length;
       }
 
-      // 2. Insert the field
       const newFields = [...currentFields];
       newFields.splice(insertIndex, 0, newField);
 
-      // 3. Global Re-index
       const ordered = newFields.map((f, i) => ({ ...f, order: i }));
 
       setActiveFields(ordered);
@@ -390,7 +368,6 @@ export function useFormDragAndDrop({
     }
   };
 
-  // Helper to get default label
   const getLabelForType = (type: FieldType): string => {
       switch (type) {
           case FieldType.TEXT: return 'Short Text';

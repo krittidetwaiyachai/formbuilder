@@ -79,9 +79,9 @@ export default function FolderCard({
             : 'hover:border-gray-300 hover:shadow-md'
         }`}
       >
-        {/* Main Folder Card */}
+        { }
         <div className="p-4 flex items-center gap-3 group relative">
-          {/* Expand/Collapse Arrow */}
+          { }
           <button
             onClick={onToggleExpand}
             className="flex-shrink-0 p-1.5 rounded-lg hover:bg-gray-100 transition-colors group/arrow relative"
@@ -95,7 +95,7 @@ export default function FolderCard({
             </motion.div>
           </button>
 
-          {/* Folder Icon */}
+          { }
           <div
             className="flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center transition-transform group-hover:scale-105"
             style={{ 
@@ -111,7 +111,7 @@ export default function FolderCard({
             />
           </div>
 
-          {/* Folder Info */}
+          { }
           <div className="flex-1 min-w-0">
             {isEditing ? (
               <div className="flex items-center gap-2">
@@ -152,7 +152,7 @@ export default function FolderCard({
             )}
           </div>
 
-          {/* Actions Menu */}
+          { }
           <div className="relative">
             <button
               onClick={(e) => {
@@ -204,7 +204,7 @@ export default function FolderCard({
           </div>
         </div>
 
-        {/* Expanded Forms Grid */}
+        { }
         <AnimatePresence>
           {isExpanded && forms.length > 0 && (
             <motion.div
@@ -237,7 +237,7 @@ export default function FolderCard({
           )}
         </AnimatePresence>
 
-        {/* Empty State */}
+        { }
         {isExpanded && forms.length === 0 && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}

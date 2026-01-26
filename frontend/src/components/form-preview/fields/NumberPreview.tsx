@@ -1,8 +1,10 @@
 import React from 'react';
 import { Field } from '@/types';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { Hash } from 'lucide-react';
 import { PreviewLabel } from '../PreviewLabel';
+import { stripHtml } from '@/lib/ui/utils';
 
 interface PreviewFieldProps {
   field: Field;
@@ -13,6 +15,7 @@ interface PreviewFieldProps {
 }
 
 export const NumberPreview: React.FC<PreviewFieldProps> = ({ field, register, errors, questionNumber, isPublic }) => {
+  const { t } = useTranslation();
   const fieldName = `field_${field.id}`;
   const fieldError = errors[fieldName];
 
@@ -24,20 +27,20 @@ export const NumberPreview: React.FC<PreviewFieldProps> = ({ field, register, er
   const isRowLayout = labelAlignment === 'LEFT' || labelAlignment === 'RIGHT';
 
   const validationRules: any = {
-    required: field.required ? 'This field is required' : false,
+    required: field.required ? t('public.validation.required_field', { label: stripHtml(field.label) }) : false,
   };
 
   if (entryLimits) {
     if (min !== undefined && min !== null) {
       validationRules.min = {
         value: min,
-        message: `Minimum value is ${min}`
+        message: t('public.validation.min_value', { min: min })
       };
     }
     if (max !== undefined && max !== null) {
       validationRules.max = {
         value: max,
-        message: `Maximum value is ${max}`
+        message: t('public.validation.max_value', { max: max })
       };
     }
   }
@@ -64,13 +67,18 @@ export const NumberPreview: React.FC<PreviewFieldProps> = ({ field, register, er
                 type="number"
                 id={fieldName}
                 {...register(fieldName, { ...validationRules, valueAsNumber: true })}
-                placeholder={field.placeholder || "Enter a number..."}
+                placeholder={field.placeholder || t('public.placeholder.number', "Enter a number...")}
                 defaultValue={defaultValue}
                 readOnly={readOnly}
                 min={entryLimits ? min : undefined}
                 max={entryLimits ? max : undefined}
-                style={width === 'FIXED' && customWidth ? { maxWidth: `${customWidth}px` } : {}}
-                className={`w-full px-4 ${shrink ? 'py-2 text-base' : 'py-3 text-base'} border border-gray-200 rounded-lg bg-white text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all ${
+                style={{ 
+                  ...(width === 'FIXED' && customWidth ? { maxWidth: `${customWidth}px` } : {}),
+                  color: 'var(--text)', 
+                  backgroundColor: 'var(--input-bg)', 
+                  borderColor: 'var(--input-border)' 
+                }}
+                className={`w-full px-4 ${shrink ? 'py-2 text-base' : 'py-3 text-base'} border rounded-lg placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all ${
                     fieldError ? 'border-red-500 bg-red-50' : 'hover:border-gray-300'
                 } ${readOnly ? 'bg-gray-50 cursor-not-allowed' : ''}`}
             />

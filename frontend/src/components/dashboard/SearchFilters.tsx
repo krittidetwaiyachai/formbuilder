@@ -27,7 +27,7 @@ export default function SearchFilters({
   return (
     <div className="space-y-4">
       <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
-        {/* Search Bar */}
+        { }
         <div className="relative flex-1 group">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-black transition-colors" />
           <input
@@ -39,7 +39,7 @@ export default function SearchFilters({
           />
         </div>
 
-        {/* Status Filter */}
+        { }
         <div className="flex items-center gap-1.5 bg-gray-100 p-1.5 rounded-2xl border border-gray-200 overflow-x-auto no-scrollbar">
           {STATUS_OPTIONS.map((status) => (
             <button

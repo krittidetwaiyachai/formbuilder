@@ -17,7 +17,7 @@ export class ResponsesService {
 
 
 
-        // Check if form exists and is published
+        
         const form = await this.prisma.form.findUnique({
           where: { id: formId },
           select: {
@@ -38,7 +38,7 @@ export class ResponsesService {
           throw new ForbiddenException('Form is not published');
         }
 
-        // Check quiz availability times
+        
         if (form.isQuiz && form.quizSettings) {
           const quizSettings = form.quizSettings as any;
           const now = new Date();
@@ -58,12 +58,12 @@ export class ResponsesService {
           }
         }
 
-        // Check if multiple submissions are allowed
+        
         const settings = form.settings as any;
         const allowMultipleSubmissions = settings?.allowMultipleSubmissions === true;
 
         if (!allowMultipleSubmissions) {
-          // Check if user has already submitted (check userId, email, or fingerprint)
+          
           const whereConditions = [];
           
           if (userId) {
@@ -90,7 +90,7 @@ export class ResponsesService {
           }
         }
 
-        // Calculate quiz score if form is a quiz
+        
         let score = 0;
         let totalScore = 0;
         const answerResults: any[] = [];
@@ -113,7 +113,7 @@ export class ResponsesService {
           }
         }
 
-        // Create response
+        
         const response = await this.prisma.formResponse.create({
           data: {
             formId,
@@ -155,7 +155,7 @@ export class ResponsesService {
           },
         });
 
-        // Create quiz score record if quiz
+        
         if (form.isQuiz && totalScore > 0) {
           const percentage = (score / totalScore) * 100;
           await this.prisma.quizScore.create({
@@ -172,7 +172,7 @@ export class ResponsesService {
           ...response,
           score: form.isQuiz ? score : undefined,
           totalScore: form.isQuiz ? totalScore : undefined,
-          // Quiz Review data for answer display
+          
           quizReview: form.isQuiz ? {
             answers: response.answers.map(ans => ({
               fieldId: ans.fieldId,
@@ -188,7 +188,7 @@ export class ResponsesService {
         };
     } catch (error) {
         console.error('FAILED TO CREATE RESPONSE:', error);
-        throw error; // Re-throw to ensure 500 is still sent, but verified via logs
+        throw error; 
     }
   }
 
@@ -242,8 +242,14 @@ export class ResponsesService {
     return { hasSubmitted: false };
   }
 
-  async findAll(formId: string, userId: string, userRole: RoleType) {
-    // Check form access
+  async findAll(
+    formId: string,
+    userId: string,
+    userRole: RoleType,
+    page: number = 1,
+    limit: number = 50,
+    sort: 'asc' | 'desc' = 'desc',
+  ) {
     const form = await this.prisma.form.findUnique({
       where: { id: formId },
     });
@@ -252,58 +258,65 @@ export class ResponsesService {
       throw new NotFoundException('Form not found');
     }
 
-    // Check permissions
     if (userRole === RoleType.VIEWER && form.status !== FormStatus.PUBLISHED) {
       throw new ForbiddenException('You can only view responses for published forms');
     }
 
-    if (
-      userRole === RoleType.EDITOR &&
-      form.createdById !== userId &&
-      form.status !== FormStatus.PUBLISHED
-    ) {
-      throw new ForbiddenException('You can only view responses for your own forms');
-    }
 
-    const responses = await this.prisma.formResponse.findMany({
-      where: { formId },
-      include: {
-        answers: {
-          include: {
-            field: true,
+
+    const skip = (page - 1) * limit;
+
+    const [responses, total] = await Promise.all([
+      this.prisma.formResponse.findMany({
+        where: { formId },
+        include: {
+          answers: {
+            include: {
+              field: true,
+            },
+          },
+          user: {
+            select: {
+              id: true,
+              email: true,
+              firstName: true,
+              lastName: true,
+            },
           },
         },
-        user: {
-          select: {
-            id: true,
-            email: true,
-            firstName: true,
-            lastName: true,
-          },
+        orderBy: {
+          submittedAt: sort,
         },
-      },
-      orderBy: {
-        submittedAt: 'desc',
-      },
-    });
+        take: limit,
+        skip: skip,
+      }),
+      this.prisma.formResponse.count({ where: { formId } }),
+    ]);
 
-    return responses.map(response => ({
+    const decryptedResponses = responses.map(response => ({
       ...response,
       answers: response.answers.map(answer => {
         let value = answer.value;
         if (answer.field?.isPII && answer.value) {
-            try {
-                value = this.encryptionService.decrypt(answer.value);
-            } catch (error) {
-                value = '[Error: Data Encrypted]';
-            }
+          try {
+            value = this.encryptionService.decrypt(answer.value);
+          } catch {
+            value = '[Error: Data Encrypted]';
+          }
         }
-        return {
-            ...answer,
-            value,
-        };
+        return { ...answer, value };
       }),
     }));
+
+    return {
+      data: decryptedResponses,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 
   async findOne(id: string, userId: string, userRole: RoleType) {
@@ -331,19 +344,13 @@ export class ResponsesService {
       throw new NotFoundException('Response not found');
     }
 
-    // Check permissions
+    
     const form = response.form;
     if (userRole === RoleType.VIEWER && form.status !== FormStatus.PUBLISHED) {
       throw new ForbiddenException('You can only view responses for published forms');
     }
 
-    if (
-      userRole === RoleType.EDITOR &&
-      form.createdById !== userId &&
-      form.status !== FormStatus.PUBLISHED
-    ) {
-      throw new ForbiddenException('You can only view responses for your own forms');
-    }
+
 
     return {
       ...response,
@@ -366,7 +373,6 @@ export class ResponsesService {
 
   async exportToCSV(formId: string, userId: string, userRole: RoleType) {
     try {
-      const responses = await this.findAll(formId, userId, userRole);
       const form = await this.prisma.form.findUnique({
         where: { id: formId },
         include: { fields: { orderBy: { order: 'asc' } } },
@@ -376,7 +382,12 @@ export class ResponsesService {
         throw new NotFoundException('Form not found');
       }
 
-      // Helper to escape CSV values
+      if (userRole === RoleType.VIEWER && form.status !== FormStatus.PUBLISHED) {
+        throw new ForbiddenException('You can only view responses for published forms');
+      }
+
+
+
       const escapeCsv = (value: any): string => {
         if (value === null || value === undefined) return '';
         const stringValue = String(value);
@@ -386,17 +397,19 @@ export class ResponsesService {
         return stringValue;
       };
 
-      // Generate CSV
-      // Add 'Respondent Email' to headers if collected
       const headers = ['Submitted At'];
       const safeSettings = form.settings as any;
       if (safeSettings?.collectEmail) {
         headers.push('Respondent Email');
       }
       
+      const stripHtml = (html: string): string => {
+        return html.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
+      };
+      
       form.fields.forEach(f => {
          if (!['HEADER', 'PARAGRAPH', 'DIVIDER', 'PAGE_BREAK', 'SUBMIT'].includes(f.type)) {
-             headers.push(f.label);
+             headers.push(stripHtml(f.label));
          }
       });
 
@@ -404,52 +417,78 @@ export class ResponsesService {
         headers.push('Score', 'Total Score', 'Percentage');
       }
 
-      const rows = responses.map((response) => {
-        const date = new Date(response.submittedAt);
-        const formattedDate = date.toLocaleString('th-TH', { 
-           day: '2-digit', 
-           month: '2-digit', 
-           year: 'numeric',
-           hour: '2-digit', 
-           minute: '2-digit',
-           second: '2-digit'
+      const BATCH_SIZE = 500;
+      let cursor: string | undefined = undefined;
+      const rows: string[] = [];
+
+      while (true) {
+        const batch = await this.prisma.formResponse.findMany({
+          where: { formId },
+          include: {
+            answers: {
+              include: { field: true },
+            },
+          },
+          orderBy: { submittedAt: 'desc' },
+          take: BATCH_SIZE,
+          ...(cursor ? { skip: 1, cursor: { id: cursor } } : {}),
         });
-        
-        const row = [escapeCsv(formattedDate)];
-        
-        // Add email if collected
-        if (safeSettings?.collectEmail) {
-           const email = (response as any).respondentEmail || '';
-           row.push(escapeCsv(email));
-        }
 
-        form.fields.forEach((field) => {
-          if (!['HEADER', 'PARAGRAPH', 'DIVIDER', 'PAGE_BREAK', 'SUBMIT'].includes(field.type)) {
-              const answer = response.answers.find((a) => a.fieldId === field.id);
-              if (!answer && responses.indexOf(response) === 0) {
+        if (batch.length === 0) break;
 
-              }
-              row.push(escapeCsv(answer?.value || ''));
+        for (const response of batch) {
+          const date = new Date(response.submittedAt);
+          const formattedDate = date.toLocaleString('th-TH', { 
+            day: '2-digit', 
+            month: '2-digit', 
+            year: 'numeric',
+            hour: '2-digit', 
+            minute: '2-digit',
+            second: '2-digit'
+          });
+          
+          const row: string[] = [escapeCsv(formattedDate)];
+          
+          if (safeSettings?.collectEmail) {
+            row.push(escapeCsv(response.respondentEmail || ''));
           }
-        });
 
-        if (form.isQuiz) {
-          const percentage = response.totalScore
-            ? ((response.score || 0) / response.totalScore * 100).toFixed(2)
-            : '0';
+          form.fields.forEach((field) => {
+            if (!['HEADER', 'PARAGRAPH', 'DIVIDER', 'PAGE_BREAK', 'SUBMIT'].includes(field.type)) {
+              const answer = response.answers.find((a) => a.fieldId === field.id);
+              let value = answer?.value || '';
+              if (answer?.field?.isPII && answer.value) {
+                try {
+                  value = this.encryptionService.decrypt(answer.value);
+                } catch {
+                  value = '[Encrypted]';
+                }
+              }
+              row.push(escapeCsv(value));
+            }
+          });
 
-          row.push(
-            escapeCsv(response.score || 0),
-            escapeCsv(response.totalScore || 0),
-            escapeCsv(percentage),
-          );
+          if (form.isQuiz) {
+            const percentage = response.totalScore
+              ? ((response.score || 0) / response.totalScore * 100).toFixed(2)
+              : '0';
+
+            row.push(
+              escapeCsv(response.score || 0),
+              escapeCsv(response.totalScore || 0),
+              escapeCsv(percentage),
+            );
+          }
+          
+          rows.push(row.join(','));
         }
-        return row.join(',');
-      });
+
+        cursor = batch[batch.length - 1].id;
+        
+        if (batch.length < BATCH_SIZE) break;
+      }
 
       const csv = [headers.map(escapeCsv).join(','), ...rows].join('\n');
-      
-      // Add UTF-8 BOM for Excel compatibility
       const csvWithBOM = '\uFEFF' + csv;
 
       return {
@@ -457,8 +496,8 @@ export class ResponsesService {
         filename: `${form.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_responses_${new Date().toISOString().split('T')[0]}.csv`,
       };
     } catch (error) {
-        console.error('Export CSV Error:', error);
-        throw error;
+      console.error('Export CSV Error:', error);
+      throw error;
     }
   }
 

@@ -32,7 +32,7 @@ export default function ActivityPage() {
   const [formTitle, setFormTitle] = useState('');
   const [fieldLabels, setFieldLabels] = useState<Record<string, string>>({});
   
-  // Pagination & Sort & Search State
+  
   const [page, setPage] = useState(1);
   const [limit] = useState(20);
   const [sort, setSort] = useState<'asc' | 'desc'>('desc');
@@ -44,9 +44,9 @@ export default function ActivityPage() {
   const [isUserFilterOpen, setIsUserFilterOpen] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
 
-  // Custom Smooth Scroll
+  
   const scrollToTop = () => {
-    const duration = 1000; // Slower, smoother animation (1s)
+    const duration = 1000; 
     const start = window.scrollY;
     const startTime = performance.now();
 
@@ -54,7 +54,7 @@ export default function ActivityPage() {
       const timeElapsed = currentTime - startTime;
       const progress = Math.min(timeElapsed / duration, 1);
       
-      // Easing function: easeOutCubic
+      
       const ease = 1 - Math.pow(1 - progress, 3);
       
       window.scrollTo(0, start * (1 - ease));
@@ -67,7 +67,7 @@ export default function ActivityPage() {
     requestAnimationFrame(animateScroll);
   };
 
-  // Scroll to top listener
+  
   useEffect(() => {
     const handleScroll = () => {
       setShowScrollTop(window.scrollY > 300);
@@ -76,7 +76,7 @@ export default function ActivityPage() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Fetch editors on mount
+  
   useEffect(() => {
     const fetchEditors = async () => {
       try {
@@ -125,7 +125,7 @@ export default function ActivityPage() {
         setLogs(responseData.data);
         setTotalPages(responseData.meta.totalPages);
       } else {
-        // Fallback for old API if needed
+        
         setLogs(Array.isArray(responseData) ? responseData : []);
         setTotalPages(1);
       }
@@ -142,7 +142,7 @@ export default function ActivityPage() {
   };
 
   const getPropertyLabel = (property: string) => {
-    // Handle dot notation (e.g., "multiple.enabled" → "Multiple: Enabled")
+    
     if (property.includes('.')) {
       const parts = property.split('.');
       return parts.map(p => {
@@ -173,7 +173,7 @@ export default function ActivityPage() {
     if (typeof val === 'object') {
       if (Array.isArray(val)) {
         if (val.length === 0) return <span className="text-gray-300 italic">{t('activity.values.empty')}</span>;
-        // Check if first item looks like an option object (has label or value)
+        
         if (val[0] && typeof val[0] === 'object' && ('label' in val[0] || 'value' in val[0])) {
           return (
             <div className="flex flex-wrap gap-1">
@@ -249,11 +249,11 @@ export default function ActivityPage() {
   const renderRuleContent = (rule: any, isDeleted: boolean = false) => {
     const conditions = rule.conditions || [];
     const actions = rule.actions || [];
-    const logicType = rule.logicType || 'ALL'; // ALL (AND), ANY (OR)
+    const logicType = rule.logicType || 'ALL'; 
 
     return (
       <div className={`space-y-3 p-3 bg-white rounded-xl border ${isDeleted ? 'border-rose-100 bg-rose-50/20' : 'border-indigo-100 shadow-sm'} transition-all`}>
-        {/* IF SECTION */}
+        { }
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <div className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${isDeleted ? 'bg-rose-100 text-rose-700' : 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-sm'}`}>
@@ -285,12 +285,12 @@ export default function ActivityPage() {
           </div>
         </div>
 
-        {/* FLOW ARROW */}
+        { }
         <div className="flex justify-center -my-1">
           <ArrowDownUp className={`w-4 h-4 ${isDeleted ? 'text-rose-200' : 'text-indigo-200'}`} />
         </div>
 
-        {/* THEN SECTION */}
+        { }
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <div className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${isDeleted ? 'bg-rose-100 text-rose-700' : 'bg-gradient-to-r from-violet-500 to-purple-500 text-white shadow-sm'}`}>
@@ -320,7 +320,7 @@ export default function ActivityPage() {
 
     return (
       <div className="space-y-6 mt-4 border-t border-gray-100 pt-6">
-        {/* ADDED */}
+        { }
         {added?.length > 0 && (
           <div className="space-y-3">
             <div className="flex items-center gap-2">
@@ -343,7 +343,7 @@ export default function ActivityPage() {
           </div>
         )}
 
-        {/* UPDATED */}
+        { }
         {updated?.length > 0 && (
           <div className="space-y-3">
             <div className="flex items-center gap-2">
@@ -354,7 +354,7 @@ export default function ActivityPage() {
             </div>
             <div className="grid gap-6">
               {updated.map((r: any, i: number) => {
-                // Find before/after for conditions/actions if they exist in changes
+                
                 const conditionChange = r.changes.find((c: any) => c.property === 'conditions');
                 const actionChange = r.changes.find((c: any) => c.property === 'actions');
                 const typeChange = r.changes.find((c: any) => c.property === 'logicType');
@@ -405,7 +405,7 @@ export default function ActivityPage() {
           </div>
         )}
 
-        {/* DELETED */}
+        { }
         {deleted?.length > 0 && (
           <div className="space-y-3">
             <div className="flex items-center gap-2">
@@ -434,7 +434,7 @@ export default function ActivityPage() {
   const renderChanges = (log: ActivityLog) => {
     const details = log.details || {};
     
-    // Custom Formatter for Quiz/Settings Values
+    
     const formatDiffValue = (key: string, val: any) => {
       if (key === 'releaseScoreMode') {
           const v = val || 'immediately';
@@ -443,7 +443,7 @@ export default function ActivityPage() {
       }
       const quizToggles = ['showScore', 'showAnswer', 'allowViewMissedQuestions', 'showDetail', 'showExplanation', 'shuffleQuestions', 'requireSignIn'];
       if (quizToggles.includes(key)) {
-           // Treat null/undefined as false (Disable)
+           
            const boolVal = !!val;
            return boolVal ? <span className="text-emerald-700 font-medium">{t('activity.values.enable')}</span> : <span className="text-gray-500 font-medium">{t('activity.values.disable')}</span>;
       }
@@ -458,12 +458,12 @@ export default function ActivityPage() {
 
     if (!hasFieldChanges && !hasGeneralChanges && !hasLogicChanges) return null;
     
-    // Helper to check if a change is boolean toggle
+    
     const isBooleanToggle = (before: any, after: any) => {
       return typeof before === 'boolean' && typeof after === 'boolean';
     };
     
-    // Helper to check if a property is a string-based toggle (like width, align)
+    
     const isStringToggle = (property: string, before: any, after: any) => {
       const prop = property.split('.').pop()?.toLowerCase();
       const isStringValue = typeof before === 'string' || typeof after === 'string' || typeof before === 'number' || typeof after === 'number';
@@ -481,7 +481,7 @@ export default function ActivityPage() {
 
     return (
       <div className="mt-3 space-y-3">
-        {/* Added Fields */}
+        { }
         {addedFields?.length > 0 && isVisible('added') && (
           <div className="space-y-4">
             <div className="text-xs font-semibold text-green-600 bg-green-50 px-2 py-1 rounded-md border border-green-100 inline-flex items-center gap-1">
@@ -504,7 +504,7 @@ export default function ActivityPage() {
           </div>
         )}
 
-        {/* Deleted Fields */}
+        { }
         {deletedFields?.length > 0 && isVisible('deleted') && (
           <div className="space-y-4">
              <div className="text-xs font-semibold text-red-600 bg-red-50 px-2 py-1 rounded-md border border-red-100 inline-flex items-center gap-1">
@@ -527,9 +527,9 @@ export default function ActivityPage() {
           </div>
         )}
 
-        {/* ... (unchanged) ... */}
+        { }
 
-        {/* Updated Fields - DETAILED TABLE VIEW */}
+        { }
         {updatedFields?.length > 0 && isVisible('updated') && (
           <div className="space-y-4">
             <div className="text-xs font-semibold text-indigo-600 bg-indigo-50 px-2 py-1 rounded-md border border-indigo-100 inline-flex items-center gap-1">
@@ -555,64 +555,64 @@ export default function ActivityPage() {
                     {f.changes.map((c: any, idx: number) => {
                        const propName = getPropertyLabel(c.property);
                        
-                       // Handle special defaults
+                       
                        let beforeValue = c.before;
                        if (c.property === 'stateInputType' && !beforeValue) {
                            beforeValue = 'text';
                        }
-                       // Handle 'rows' default (Visible Options)
+                       
                        if (c.property === 'rows' && !beforeValue) {
                            beforeValue = 4;
                        }
-                       // Handle 'customWidth' default
+                       
                        if (c.property === 'customWidth' && !beforeValue) {
                            beforeValue = 300;
                        }
-                       // Handle 'separator' default
+                       
                        if ((c.property === 'validation.separator' || c.property === 'separator') && !beforeValue) {
                            beforeValue = '/';
                        }
-                       // Handle 'dateFormat' default
+                       
                        if ((c.property === 'validation.dateFormat' || c.property === 'dateFormat') && !beforeValue) {
                            beforeValue = 'MM-DD-YYYY';
                        }
-                       // Handle 'timeFormat' default
+                       
                        if ((c.property === 'validation.timeFormat' || c.property === 'timeFormat') && !beforeValue) {
                            beforeValue = 'AM/PM';
                        }
-                       // Handle 'minimumAge' default
+                       
                        if ((c.property === 'validation.minimumAge' || c.property === 'minimumAge') && !beforeValue) {
                            beforeValue = 18;
                        }
-                       // Handle 'allowPast' / 'allowFuture' default
+                       
                        if (['validation.allowPast', 'allowPast', 'validation.allowFuture', 'allowFuture'].includes(c.property) && beforeValue === undefined) {
                            beforeValue = true;
                        }
-                       // Handle 'limitTime' default
+                       
                        if ((c.property === 'validation.limitTime' || c.property === 'limitTime') && !beforeValue) {
                            beforeValue = 'BOTH';
                        }
-                       // Handle 'Rating Icon' default
+                       
                        if (c.property === 'icon' && !beforeValue) {
                            beforeValue = 'star';
                        }
-                       // Handle 'Rating Amount' default
+                       
                        if (c.property === 'maxRating' && !beforeValue) {
                            beforeValue = 5;
                        }
-                       // Handle 'Max Length' default
+                       
                        if ((c.property === 'validation.maxLength' || c.property === 'maxLength') && !beforeValue) {
                            beforeValue = 100;
                        }
-                       // Handle 'Header Image Position' default
+                       
                        if ((c.property === 'validation.imagePosition' || c.property === 'imagePosition') && !beforeValue) {
                            beforeValue = 'CENTER';
                        }
 
-                       // Hide 'items' as per user request? NO, user wants to see adds/changes.
-                       // Backend now filters out reordering noise. Only real content changes will reach here.
                        
-                       // Handle 'groupId' (Move)
+                       
+                       
+                       
                        if (c.property === 'groupId') {
                            const groupNameBefore = beforeValue ? fieldLabels[String(beforeValue)] : 'Canvas';
                            const groupNameAfter = c.after ? fieldLabels[String(c.after)] : 'Canvas';
@@ -631,16 +631,16 @@ export default function ActivityPage() {
                            );
                        }
                        
-                       // Hide 'items' as per user request? NO, user wants to see adds/changes.
-                       // Backend now filters out reordering noise. Only real content changes will reach here.
-                       // if (c.property === 'items') return null;
+                       
+                       
+                       
 
                        
                        return (
                            <div key={idx} className="flex items-center gap-1.5 text-xs">
                            <span className="text-gray-500 font-medium whitespace-nowrap">{propName}</span>
                            {isBooleanToggle(beforeValue, c.after) ? (
-                             // Boolean toggle display (Enabled/Disabled)
+                             
                              <>
                                <div className={`px-2 py-1 rounded border whitespace-nowrap ${beforeValue ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-gray-100 text-gray-500'}`}>
                                  {beforeValue ? t('activity.values.enable') : t('activity.values.disable')}
@@ -651,7 +651,7 @@ export default function ActivityPage() {
                                </div>
                              </>
                            ) : isStringToggle(c.property, beforeValue, c.after) ? (
-                             // String/Enum toggle display (FIXED/AUTO, LEFT/CENTER/RIGHT, etc.)
+                             
                              <>
                                 <div className="px-2 py-1 bg-gray-100 text-gray-600 rounded border border-gray-200 whitespace-nowrap">
                                   {typeof beforeValue === 'string' || typeof beforeValue === 'number' ? beforeValue : (c.property.toLowerCase().includes('editormode') ? t('activity.values.plain_text') : t('activity.values.auto'))}
@@ -662,7 +662,7 @@ export default function ActivityPage() {
                                 </div>
                              </>
                            ) : (
-                             // Normal before/after display
+                             
                              <>
                                <div className="bg-red-50 text-red-700 px-2 py-1 rounded border border-red-100 line-through opacity-75 break-words min-w-0" title={String(beforeValue)}>
                                  {formatValue(beforeValue)}
@@ -684,10 +684,10 @@ export default function ActivityPage() {
           </div>
         )}
 
-        {/* General Settings */}
-        {/* General Settings */}
+        { }
+        { }
         {(() => {
-          // Pre-filter to ensure we only have REAL changes
+          
           const rawChanges = details.settingsChanges?.filter((c: any) => c.before != c.after) || [];
           
           const renderableChanges = rawChanges.filter((change: any) => {
@@ -705,7 +705,7 @@ export default function ActivityPage() {
                 });
                 return diffKeys.length > 0;
              }
-             return true; // Simple value changes are always relevant if filter passed
+             return true; 
           });
 
           if (renderableChanges.length === 0 || !isVisible('updated')) return null;
@@ -731,7 +731,7 @@ export default function ActivityPage() {
                         return vBefore !== vAfter;
                     });
 
-                    // Should theoretically not happen due to pre-filter, but kept for safety
+                    
                     if (diffKeys.length === 0) return null;
 
                     return (
@@ -818,7 +818,7 @@ export default function ActivityPage() {
         );
       })()}
         
-        {/* Fallback: Show simple pills if no settingsChanges but changes exist */}
+        { }
         {hasGeneralChanges && (!details.settingsChanges || details.settingsChanges.length === 0) && (
           <div className="flex flex-wrap gap-2">
              <span className="text-xs font-semibold text-amber-600 bg-amber-50 px-2 py-1 rounded-md border border-amber-100 flex items-center gap-1">
@@ -856,7 +856,7 @@ export default function ActivityPage() {
 
   return (
     <div className="min-h-screen bg-gray-50/50 pb-32 md:pb-0">
-        {/* Mobile iOS Header */}
+        { }
         <header className="md:hidden sticky top-0 z-40 bg-white border-b border-gray-100">
           <div className="px-5 pt-12 pb-4 safe-area-pt">
             <div className="flex items-center justify-between mb-3">
@@ -867,7 +867,7 @@ export default function ActivityPage() {
                 <ArrowLeft className="w-5 h-5 text-gray-700" />
               </button>
               <div className="flex gap-2">
-                {/* User Filter Mobile */}
+                { }
                 <div className="relative">
                     <button
                         onClick={() => { setIsUserFilterOpen(!isUserFilterOpen); setIsFilterOpen(false); }}
@@ -908,7 +908,7 @@ export default function ActivityPage() {
                     )}
                 </div>
 
-                {/* Sort Button Mobile */}
+                { }
                 <button
                   onClick={() => setSort(sort === 'desc' ? 'asc' : 'desc')}
                   className="p-2.5 bg-gray-100 rounded-xl active:bg-gray-200 transition-colors flex items-center gap-1.5"
@@ -917,7 +917,7 @@ export default function ActivityPage() {
                   <span className="text-[10px] font-medium text-gray-600 min-w-[30px]">{sort === 'desc' ? t('activity.filter.newest') : t('activity.filter.oldest')}</span>
                 </button>
 
-                {/* Filter Button Mobile */}
+                { }
                 <div className="relative">
                     <button
                       onClick={() => { setIsFilterOpen(!isFilterOpen); setIsUserFilterOpen(false); }}
@@ -959,7 +959,7 @@ export default function ActivityPage() {
           </div>
         </header>
 
-        {/* Desktop Header */}
+        { }
         <header className="hidden md:block sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm transition-all duration-200">
             <div className="max-w-4xl mx-auto px-6 py-3 min-h-[64px] flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
@@ -980,7 +980,7 @@ export default function ActivityPage() {
             </div>
 
             <div className="flex items-center gap-3 overflow-x-auto md:overflow-visible md:flex-wrap pb-1 md:pb-0 justify-end flex-shrink-0">
-                {/* User Filter Dropdown */}
+                { }
                 <div className="relative">
                    <button
                        onClick={() => setIsUserFilterOpen(!isUserFilterOpen)}
@@ -1019,7 +1019,7 @@ export default function ActivityPage() {
                    )}
                 </div>
 
-                {/* Custom Filter Dropdown */}
+                { }
                 <div className="relative">
                    <button
                      onClick={() => setIsFilterOpen(!isFilterOpen)}
@@ -1059,7 +1059,7 @@ export default function ActivityPage() {
                              </button>
                           ))}
                         </div>
-                        {/* Settings Hint */}
+                        { }
                         <div className="px-4 py-2 bg-gray-50 border-t border-gray-100">
                           <p className="text-[10px] text-gray-500 leading-tight">
                             *{t('activity.filter.updated')} includes settings.
@@ -1092,11 +1092,11 @@ export default function ActivityPage() {
             </div>
         </header>
 
-        {/* Scrollable Content */}
+        { }
         <main className="flex-1 overflow-y-auto custom-scrollbar">
             <div className="max-w-4xl mx-auto px-6 py-10">
                 <div className="relative">
-                {/* Vertical Line */}
+                { }
                 <div className="absolute left-[28px] top-6 bottom-6 w-0.5 bg-gradient-to-b from-gray-200 via-gray-200/50 to-transparent" />
 
                 <div className="space-y-8">
@@ -1118,7 +1118,7 @@ export default function ActivityPage() {
               </div>
                     ) : (
                     logs.map((log, index) => {
-                      // Helper to check visibility based on filter
+                      
                       const isVisible = (section: 'created' | 'deleted' | 'updated') => {
                           if (actionFilter === 'ALL') return true;
                           if (actionFilter === 'CREATED' && section === 'created') return true;
@@ -1127,11 +1127,11 @@ export default function ActivityPage() {
                           return false;
                       };
 
-                      // Check if log should be rendered
+                      
                       const shouldRenderLog = (log: ActivityLog) => {
                           const details = log.details || {};
                           
-                          // 1. Check direct changes
+                          
                           if (
                             (details.addedFields && details.addedFields.length > 0) ||
                             (details.deletedFields && details.deletedFields.length > 0) ||
@@ -1142,7 +1142,7 @@ export default function ActivityPage() {
                              if (isVisible('updated') && details.updatedFields?.length > 0) return true;
                           }
 
-                          // 2. Check Logic Changes
+                          
                           if (details.logicChanges) {
                               const logic = details.logicChanges;
                               if (
@@ -1154,11 +1154,11 @@ export default function ActivityPage() {
                               }
                           }
 
-                          // 3. Check Settings Changes
+                          
                           if (details.settingsChanges && details.settingsChanges.length > 0) {
                               if (!isVisible('updated')) return false;
 
-                              // Apply the SAME filtering logic as the render block
+                              
                               const rawChanges = details.settingsChanges.filter((c: any) => c.before != c.after);
                               
                               const renderableSettings = rawChanges.filter((change: any) => {
@@ -1167,7 +1167,7 @@ export default function ActivityPage() {
                                    
                                    if (isObjectDiff) {
                                       const allKeys = Array.from(new Set([...Object.keys(change.before), ...Object.keys(change.after)]));
-                                      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                                      
                                       const diffKeys = allKeys.filter(key => {
                                           const vBefore = change.before[key];
                                           const vAfter = change.after[key];
@@ -1196,14 +1196,14 @@ export default function ActivityPage() {
                         transition={{ delay: index * 0.05, duration: 0.3 }}
                         className="relative pl-20"
                         >
-                        {/* Avatar */}
+                        { }
                         <div className="absolute left-0 top-0 z-10">
                             <UserAvatar 
                                 user={log.user} 
                                 className="w-14 h-14 rounded-full border-4 border-white shadow-sm"
                             />
                             
-                            {/* Action Badge */}
+                            { }
                             <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-white flex items-center justify-center shadow-md border border-gray-100">
                                 {log.action === 'CREATED' && <Plus className="w-3.5 h-3.5 text-green-600" />}
                                 {log.action === 'UPDATED' && <Edit3 className="w-3.5 h-3.5 text-blue-600" />}
@@ -1211,7 +1211,7 @@ export default function ActivityPage() {
                             </div>
                         </div>
 
-                        {/* Card Content */}
+                        { }
                         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 p-5 group">
                             <div className="flex items-start justify-between mb-2">
                             <div className="flex-1">
@@ -1231,7 +1231,7 @@ export default function ActivityPage() {
 
                             <div className="pl-4 border-l-2 border-gray-100">
                             {log.action === 'CREATED' && (
-                                <div className="text-sm text-gray-500 italic">Started a new journey with "{typeof log.details?.title === 'string' ? log.details.title : 'Untitled Form'}"</div>
+                                <div className="text-sm text-gray-500 italic">{t('activity.started_journey', { title: typeof log.details?.title === 'string' ? log.details.title : t('common.untitled_form') })}</div>
                             )}
                             {renderChanges(log)}
                             </div>
@@ -1242,7 +1242,7 @@ export default function ActivityPage() {
 
                     )}
                     
-                    {/* Pagination Controls */}
+                    { }
                     {totalPages > 1 && (
                     <div className="flex items-center justify-between pt-8 border-t border-gray-100">
                         <p className="text-xs text-gray-500">
@@ -1271,7 +1271,7 @@ export default function ActivityPage() {
             </div>
         </main>
 
-        {/* Scroll to Top Button */}
+        { }
         <button
           onClick={scrollToTop}
           className={`fixed bottom-8 right-8 z-50 p-3 bg-black text-white rounded-full shadow-lg transition-all duration-300 transform hover:scale-110 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black ${

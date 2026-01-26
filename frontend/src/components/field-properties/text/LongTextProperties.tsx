@@ -17,7 +17,7 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'general' | 'options' | 'advanced'>('general');
 
-  // Helper to safely access options/validation with default values
+  
   const options = field.options || {};
   const validation = field.validation || {};
 
@@ -48,10 +48,10 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
       <PropertiesTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
       <div className="space-y-4">
-        {/* GENERAL TAB */}
+        { }
         {activeTab === 'general' && (
           <div className="space-y-4">
-            {/* Field Label */}
+            { }
             <div>
               <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.field_label')}
@@ -64,7 +64,7 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
               />
             </div>
 
-            {/* Label Alignment */}
+            { }
             <div>
               <label className="block text-sm font-medium text-black mb-2">
                 {t('builder.properties.label_alignment')}
@@ -87,7 +87,7 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
 
             </div>
 
-            {/* Required */}
+            { }
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                   {t('builder.properties.required')}
@@ -106,7 +106,7 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
               </p>
             </div>
 
-            {/* Sublabel */}
+            { }
             <div>
               <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.sublabel')}
@@ -122,7 +122,7 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
               </p>
             </div>
 
-            {/* Duplicate Field */}
+            { }
              <button
               onClick={() => duplicatesField({
                   type: field.type,
@@ -146,10 +146,10 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
           </div>
         )}
 
-        {/* OPTIONS TAB */}
+        { }
         {activeTab === 'options' && (
           <div className="space-y-6">
-            {/* Width */}
+            { }
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.width')}
@@ -180,7 +180,7 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
               </p>
             </div>
 
-            {/* Height */}
+            { }
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.height')}
@@ -193,14 +193,14 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
                       className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
                       placeholder={t('builder.properties.height')}
                   />
-                  {/* <span className="text-sm text-gray-500">Rows</span> */}
+                  { }
                </div>
                <p className="mt-1 text-xs text-gray-500">
                 {t('builder.properties.height_desc')}
               </p>
             </div>
 
-            {/* Entry Limits */}
+            { }
              <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.entry_limits')}
@@ -237,7 +237,7 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
                         />
                      </div>
                    </div>
-                    {/* Mode selection (Characters/Words) could go here */}
+                    { }
                  </div>
               )}
                <p className="mt-1 text-xs text-gray-500">
@@ -245,7 +245,7 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
               </p>
             </div>
 
-            {/* Editor Mode */}
+            { }
             <div>
               <label className="block text-sm font-medium text-black mb-2">
                 {t('builder.properties.editor_mode')}
@@ -270,7 +270,7 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
               </p>
             </div>
 
-            {/* Validation */}
+            { }
              <div>
               <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.validation')}
@@ -299,10 +299,10 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
           </div>
         )}
 
-        {/* ADVANCED TAB */}
+        { }
         {activeTab === 'advanced' && (
           <div className="space-y-6">
-            {/* Placeholder */}
+            { }
              <div>
               <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.placeholder')}
@@ -318,7 +318,7 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
               </p>
             </div>
 
-            {/* Hover Text */}
+            { }
             <div>
               <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.hover_text')}
@@ -334,7 +334,7 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
               </p>
             </div>
 
-             {/* Default Value */}
+             { }
              <div>
               <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.default_value')}
@@ -350,7 +350,7 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
               </p>
             </div>
 
-             {/* Read Only */}
+             { }
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.read_only')}
@@ -369,7 +369,7 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
               </p>
             </div>
 
-            {/* Shrink */}
+            { }
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.shrink')}
@@ -388,7 +388,7 @@ export function LongTextProperties({ field, updateField, duplicatesField }: Long
               </p>
             </div>
 
-             {/* Hide Field */}
+             { }
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.hide_field')}

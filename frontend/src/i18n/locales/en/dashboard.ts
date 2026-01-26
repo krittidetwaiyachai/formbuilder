@@ -95,6 +95,7 @@ export default {
   "dashboard.collaborators.you": "YOU",
   "dashboard.collaborators.no_email": "No email provided",
   "dashboard.collaborators.remove_access": "Remove access",
+  "dashboard.collaborators.remove_confirm_title": "Remove Collaborator?",
   "dashboard.collaborators.remove_confirm": "Are you sure you want to remove this collaborator?",
   "dashboard.collaborators.remove_error": "Failed to remove user",
 
@@ -120,5 +121,23 @@ export default {
   "dashboard.folder.count_plural": "folders",
   "dashboard.modal.close": "Close",
   "dashboard.modal.creating": "Creating...",
-  "dashboard.toast.error_folder_create": "Failed to create folder. Please try again."
+  "dashboard.toast.error_folder_create": "Failed to create folder. Please try again.",
+
+  "dashboard.stats.responses": "Responses",
+  "dashboard.stats.views": "Views",
+  
+  "dashboard.theme.popular": "Popular Themes",
+  "dashboard.theme.exclusive": "Exclusive Themes",
+  "dashboard.theme.festival": "Festival Themes",
+  "dashboard.theme.official": "Official Theme",
+  "dashboard.theme.exclusive_badge": "EXCLUSIVE",
+  "dashboard.theme.submit_preview": "Submit",
+  "dashboard.theme.close": "Close",
+  "dashboard.theme.done": "Done",
+  "dashboard.theme.appearance": "Form Appearance",
+  "dashboard.theme.customize_desc": "Customize how your form looks",
+  "dashboard.form.updated_prefix": "Updated ",
+  "dashboard.toast.error_load_folders": "Failed to load folders",
+  "dashboard.toast.error_update_folder": "Failed to update folder",
+  "dashboard.toast.error_move_form": "Failed to move form"
 };

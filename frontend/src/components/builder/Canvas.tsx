@@ -12,7 +12,10 @@ interface CanvasProps {
   activeId?: string | null;
 }
 
+import { useTranslation } from "react-i18next";
+
 export default function Canvas({ activeId }: CanvasProps) {
+  const { t } = useTranslation();
   const { currentForm } = useFormStore();
   const elements = currentForm?.fields || [];
   const theme = currentForm?.settings;
@@ -162,7 +165,7 @@ export default function Canvas({ activeId }: CanvasProps) {
         ) : (
           isOver && (
             <div className="border-2 border-dashed border-primary rounded-lg p-8 text-center text-gray-500">
-              Drop here to add element
+              {t('builder.canvas.drop_here', 'Drop here to add element')}
             </div>
           )
         )}

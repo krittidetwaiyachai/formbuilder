@@ -1,6 +1,7 @@
 import React from 'react';
 import { Field } from '@/types';
 import { useFormStore } from '@/store/formStore';
+import { useTranslation } from 'react-i18next';
 
 
 interface FullNameFieldProps {
@@ -16,9 +17,10 @@ interface FullNameFieldProps {
 
 export const FullNameField: React.FC<FullNameFieldProps> = ({ field, fieldStyle, disabledClass = "opacity-60 cursor-pointer" }) => {
   const { updateField } = useFormStore();
+  const { t } = useTranslation();
   const { inputBorder } = fieldStyle;
 
-  // Correctly read from options, matching FullNameProperties
+  
   const options = field.options || {};
   const showPrefix = options.showPrefix;
   const showMiddleName = options.showMiddleName;
@@ -43,7 +45,7 @@ export const FullNameField: React.FC<FullNameFieldProps> = ({ field, fieldStyle,
     <div className={`flex-1 min-w-[${minWidth}] relative group`}>
       {key === 'first' && (
         <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-50">
-           {/* <User className="h-5 w-5 text-gray-400" /> */}
+           { }
         </div>
       )}
       <input
@@ -52,29 +54,33 @@ export const FullNameField: React.FC<FullNameFieldProps> = ({ field, fieldStyle,
         readOnly
         tabIndex={-1}
         className={`w-full px-4 py-3.5 border ${inputBorder} rounded-xl bg-gray-50/50 text-black text-sm shadow-sm transition-all duration-300 ${disabledClass}`}
-        style={{ pointerEvents: 'none' }} // Inputs shouldn't be interactable in builder
+        style={{ pointerEvents: 'none' }} 
       />
       <div
         contentEditable
         suppressContentEditableWarning
         spellCheck={false}
-        className="mt-1 text-xs text-gray-500 font-normal outline-none focus:outline-none focus:ring-0 border border-transparent hover:border-gray-200 rounded px-1 transition-colors empty:before:content-['Type_sublabel...']"
+        className="mt-1 text-xs text-gray-500 font-normal outline-none focus:outline-none focus:ring-0 border border-transparent hover:border-gray-200 rounded px-1 transition-colors empty:before:content-[var(--placeholder)]"
         onBlur={(e) => handleSubLabelBlur(key, e)}
         onClick={(e) => e.stopPropagation()}
         onMouseDown={(e) => e.stopPropagation()}
         dangerouslySetInnerHTML={{ __html: sublabels[key] || defaultSublabel }}
-        style={{ pointerEvents: 'auto', cursor: 'text' }}
+        style={{ 
+          pointerEvents: 'auto', 
+          cursor: 'text',
+          '--placeholder': `"${t('builder.properties.type_sublabel')}"`
+        } as React.CSSProperties}
       />
     </div>
   );
 
   return (
     <div className="flex flex-wrap gap-4">
-      {showPrefix && renderInput('prefix', placeholders.prefix, 'Prefix', '80px')}
-      {renderInput('first', placeholders.first, 'First Name', '150px')}
-      {showMiddleName && renderInput('middle', placeholders.middle, 'Middle Name', '150px')}
-      {renderInput('last', placeholders.last, 'Last Name', '150px')}
-      {showSuffix && renderInput('suffix', placeholders.suffix, 'Suffix', '80px')}
+      {showPrefix && renderInput('prefix', placeholders.prefix, t('common.fullname.prefix'), '80px')}
+      {renderInput('first', placeholders.first, t('common.fullname.first'), '150px')}
+      {showMiddleName && renderInput('middle', placeholders.middle, t('common.fullname.middle'), '150px')}
+      {renderInput('last', placeholders.last, t('common.fullname.last'), '150px')}
+      {showSuffix && renderInput('suffix', placeholders.suffix, t('common.fullname.suffix'), '80px')}
     </div>
   );
 };

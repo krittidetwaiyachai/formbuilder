@@ -46,7 +46,7 @@ export default function MobileMoveFolderSheet({
             <div className="flex-1 overflow-y-auto p-4 space-y-2">
               <button
                 onClick={() => {
-                  onSelectFolder(null); // Move to Ungrouped
+                  onSelectFolder(null); 
                   onClose();
                 }}
                 className="w-full flex items-center gap-3 p-4 rounded-2xl bg-gray-50 active:bg-gray-100 transition-colors"
@@ -88,7 +88,7 @@ export default function MobileMoveFolderSheet({
                  <button
                     onClick={() => {
                         onCreateFolder();
-                        // Don't close immediately, let the modal open
+                        
                     }}
                     className="w-full flex items-center gap-3 p-4 rounded-2xl border-2 border-dashed border-gray-200 active:bg-gray-50 transition-colors mt-2"
                   >

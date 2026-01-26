@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { ChevronDown } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/custom-select';
 import { PreviewLabel } from '../PreviewLabel';
+import { stripHtml } from '@/lib/ui/utils';
 
 interface PreviewFieldProps {
   field: Field;
@@ -15,14 +16,18 @@ interface PreviewFieldProps {
   setValue?: ReturnType<typeof useForm>['setValue'];
 }
 
+import { useTranslation } from 'react-i18next';
+
 export const PreviewSelectField: React.FC<PreviewFieldProps> = ({ field, register, errors, watch, questionNumber, isPublic, setValue }) => {
+  const { t } = useTranslation();
   const fieldName = `field_${field.id}`;
   const fieldError = errors[fieldName];
+  const currentValue = watch(fieldName);
 
   const validation = field.validation || {};
   const optionsSettings = (field.options && !Array.isArray(field.options)) ? field.options : {};
   
-  // Merge settings, preferring options over validation (standard vs legacy)
+  
   const { 
     labelAlignment = 'TOP', 
     subLabel, 
@@ -97,21 +102,19 @@ export const PreviewSelectField: React.FC<PreviewFieldProps> = ({ field, registe
 
                 <div className="flex-1 min-w-0">
                     <div className="relative" style={width === 'FIXED' && customWidth ? { maxWidth: `${customWidth}px` } : {}}>
-                        {/* Hidden input for validation registration if needed, or simple register. 
-                            Since we use CustomSelect, we'll dummy register to hook up validation. 
-                        */}
+                        { }
                         <input 
                             type="hidden" 
-                            {...register(fieldName, { required: field.required ? `${field.label} is required` : false })} 
+                            {...register(fieldName, { required: field.required ? t('public.validation.required_field', { label: stripHtml(field.label) }) : false })} 
                         />
                         <Select 
-                            value={watch(fieldName) || defaultValue || ''} 
+                            value={currentValue || defaultValue || ''} 
                             onValueChange={(val) => {
                                 setValue(fieldName, val, { shouldValidate: true });
                             }}
                         >
                             <SelectTrigger className={`w-full ${isPublic ? 'h-12 text-base px-4' : ''} ${shrink ? '' : ''}`}>
-                                <SelectValue placeholder={field.placeholder || 'Select an option...'} />
+                                <SelectValue placeholder={field.placeholder || t('public.select.placeholder', 'Select an option...')} />
                             </SelectTrigger>
                             <SelectContent>
                                 {displayOptions.map((opt: any, index: number) => (
@@ -131,8 +134,10 @@ export const PreviewSelectField: React.FC<PreviewFieldProps> = ({ field, registe
     }
 
     const selectClass = isPublic
-      ? `w-full px-4 ${shrink ? 'py-2 text-base' : 'py-3 text-base'} border border-gray-200 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all hover:border-gray-300 appearance-none cursor-pointer ${showAsList ? 'overflow-y-auto' : ''}`
+      ? `w-full px-4 ${shrink ? 'py-2 text-base' : 'py-3 text-base'} border rounded-lg focus:outline-none focus:ring-2 transition-all hover:border-gray-300 appearance-none cursor-pointer ${showAsList ? 'overflow-y-auto' : ''}`
       : `w-full pl-4 pr-10 py-3 border-2 border-gray-300 rounded-lg bg-white text-black text-sm shadow-sm appearance-none focus:outline-none focus:ring-2 focus:ring-black focus:border-black transition-all ${showAsList ? 'overflow-y-auto' : ''}`;
+
+      const publicSelectStyle = isPublic ? { color: 'var(--text)', backgroundColor: 'var(--input-bg)', borderColor: 'var(--input-border)' } : {};
 
     return (
       <div className={`mb-4 w-full ${isRowLayout ? 'flex items-start gap-4' : ''}`} title={hoverText}>
@@ -147,7 +152,7 @@ export const PreviewSelectField: React.FC<PreviewFieldProps> = ({ field, registe
           <div className="relative" style={width === 'FIXED' && customWidth ? { maxWidth: `${customWidth}px` } : {}}>
             {!showAsList && (
               <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                <ChevronDown className={`h-5 w-5 ${isPublic ? 'text-gray-400' : 'text-gray-500'}`} />
+              <ChevronDown className={`h-5 w-5 ${isPublic ? '' : 'text-gray-500'}`} style={isPublic ? { color: 'var(--text)', opacity: 0.5 } : {}} />
               </div>
             )}
             <select
@@ -156,12 +161,12 @@ export const PreviewSelectField: React.FC<PreviewFieldProps> = ({ field, registe
               size={showAsList ? (rows || 4) : undefined}
               defaultValue={defaultValue || ''}
               {...register(fieldName, {
-                required: field.required ? `${field.label} is required` : false,
+                required: field.required ? t('public.validation.required_field', { label: stripHtml(field.label) }) : false,
               })}
               className={selectClass}
-              style={showAsList ? { paddingRight: '1rem' } : {}}
+              style={{ ...(showAsList ? { paddingRight: '1rem' } : {}), ...publicSelectStyle }}
             >
-              {!multiple && !defaultValue && <option value="">Select an option</option>}
+              {!multiple && !defaultValue && <option value="">{t('public.select.default_option', 'Select an option')}</option>}
               {displayOptions.map((opt: any, index: number) => (
                 <option key={index} value={opt.value}>
                   {opt.label || opt.value}
@@ -184,11 +189,7 @@ export const PreviewSelectField: React.FC<PreviewFieldProps> = ({ field, registe
     return (
       <div className={`mb-4 w-full ${isRowLayout ? 'flex items-start gap-4' : ''}`} title={hoverText}>
         <div className={`${isRowLayout ? 'w-40 flex-shrink-0 pt-2' : 'mb-3'} ${labelAlignment === 'RIGHT' ? 'text-right' : ''}`}>
-          <p className={`block font-semibold text-gray-800 ${isPublic ? 'text-base' : 'text-sm'}`}>
-            {questionNumber && <span className="text-gray-500 mr-2">{questionNumber} <span className="text-gray-300">|</span></span>}
-            {field.label}
-            {field.required && <span className="text-red-500 ml-1">*</span>}
-          </p>
+          <PreviewLabel field={field} questionNumber={questionNumber} isPublic={isPublic} />
           {subLabel && subLabel !== 'Sublabel' && (
             <p className="mt-1 text-sm text-gray-500 font-normal">{subLabel}</p>
           )}
@@ -207,13 +208,23 @@ export const PreviewSelectField: React.FC<PreviewFieldProps> = ({ field, registe
                     id={`${fieldName}_${index}`}
                     value={opt.value}
                     {...register(fieldName, {
-                      required: field.required ? `${field.label} is required` : false,
+                      required: field.required ? t('public.validation.required_field', { label: stripHtml(field.label) }) : false,
                     })}
                     disabled={readOnly}
-                    className={`w-5 h-5 border-2 ${isPublic ? 'border-gray-300 text-black focus:ring-black' : 'border-gray-300 text-black focus:ring-2 focus:ring-black'} appearance-none rounded-full checked:bg-black checked:border-black cursor-pointer`}
+                    onClick={() => {
+                        if (currentValue === opt.value) {
+                            setValue?.(fieldName, null, { shouldValidate: true });
+                        }
+                    }}
+                    style={{
+                        borderColor: currentValue === opt.value ? 'var(--primary)' : 'var(--input-border)',
+                        backgroundColor: currentValue === opt.value ? 'var(--primary)' : 'transparent',
+                        boxShadow: currentValue === opt.value ? 'inset 0 0 0 3px var(--card-bg)' : 'none',
+                    }}
+                    className={`w-5 h-5 border-2 appearance-none rounded-full cursor-pointer transition-all duration-200`}
                   />
                 </div>
-                <span className={`font-medium text-gray-700 cursor-pointer ${isPublic && shrink ? 'text-sm' : 'text-sm'}`}>{opt.label || opt.value}</span>
+                <span className={`font-medium cursor-pointer ${isPublic && shrink ? 'text-sm' : 'text-sm'}`} style={isPublic ? { color: 'var(--text)' } : { color: '#374151' }}>{opt.label || opt.value}</span>
               </label>
             ))}
             {otherOption && (
@@ -223,14 +234,24 @@ export const PreviewSelectField: React.FC<PreviewFieldProps> = ({ field, registe
                     type="radio"
                     value="other"
                     {...register(fieldName, { required: field.required })}
-                    className={`w-5 h-5 border-2 border-gray-300 text-black focus:ring-black appearance-none rounded-full checked:bg-black checked:border-black cursor-pointer`}
+                    onClick={() => {
+                         if (currentValue === 'other') {
+                             setValue?.(fieldName, null, { shouldValidate: true });
+                         }
+                    }}
+                    style={{
+                        borderColor: currentValue === 'other' ? 'var(--primary)' : 'var(--input-border)',
+                        backgroundColor: currentValue === 'other' ? 'var(--primary)' : 'transparent',
+                        boxShadow: currentValue === 'other' ? 'inset 0 0 0 3px var(--card-bg)' : 'none',
+                    }}
+                    className={`w-5 h-5 border-2 appearance-none rounded-full cursor-pointer transition-all duration-200`}
                   />
                 </div>
-                <span className="text-sm font-medium text-gray-700 cursor-pointer whitespace-nowrap">Other:</span>
+                <span className="text-sm font-medium cursor-pointer whitespace-nowrap" style={isPublic ? { color: 'var(--text)' } : { color: '#374151' }}>{t('public.select.other', 'Other:')}</span>
                 <input 
                   type="text" 
                   className="flex-1 border-b border-gray-300 focus:border-black outline-none text-sm py-1 bg-transparent"
-                  placeholder="Please specify"
+                  placeholder={t('public.select.please_specify', "Please specify")}
                   disabled={readOnly}
                   onClick={(e) => e.stopPropagation()} 
                 />
@@ -247,7 +268,7 @@ export const PreviewSelectField: React.FC<PreviewFieldProps> = ({ field, registe
   }
 
   if (field.type === FieldType.CHECKBOX) {
-    const checkboxValue = watch(fieldName) || [];
+    const checkboxValue = currentValue || []; 
     const isChecked = (value: string) => {
       if (Array.isArray(checkboxValue)) {
         return checkboxValue.includes(value);
@@ -259,11 +280,7 @@ export const PreviewSelectField: React.FC<PreviewFieldProps> = ({ field, registe
     return (
       <div className={`mb-4 w-full ${isRowLayout ? 'flex items-start gap-4' : ''}`} title={hoverText}>
         <div className={`${isRowLayout ? 'w-40 flex-shrink-0 pt-2' : 'mb-3'} ${labelAlignment === 'RIGHT' ? 'text-right' : ''}`}>
-          <p className={`block font-semibold text-gray-800 ${isPublic ? 'text-base' : 'text-sm'}`}>
-            {questionNumber && <span className="text-gray-500 mr-2">{questionNumber} <span className="text-gray-300">|</span></span>}
-            {field.label}
-            {field.required && <span className="text-red-500 ml-1">*</span>}
-          </p>
+          <PreviewLabel field={field} questionNumber={questionNumber} isPublic={isPublic} />
           {subLabel && subLabel !== 'Sublabel' && (
             <p className="mt-1 text-sm text-gray-500 font-normal">{subLabel}</p>
           )}
@@ -282,16 +299,22 @@ export const PreviewSelectField: React.FC<PreviewFieldProps> = ({ field, registe
                     id={`${fieldName}_${index}`}
                     value={opt.value}
                     {...register(fieldName, {
-                      required: field.required ? `${field.label} is required` : false,
+                      required: field.required ? t('public.validation.required_field', { label: stripHtml(field.label) }) : false,
                       validate: (value) => {
-                        if (!value) return true;
-                        if (minSelections && value.length < minSelections) return `Please select at least ${minSelections} options`;
-                        if (maxSelections && value.length > maxSelections) return `Please select at most ${maxSelections} options`;
+                        if (!value || (Array.isArray(value) && value.length === 0)) {
+                          return field.required ? t('public.validation.required_field', { label: stripHtml(field.label) }) : true;
+                        }
+                        if (minSelections && value.length < minSelections) return t('public.validation.min_selections', { count: minSelections, defaultValue: `Please select at least ${minSelections} options` });
+                        if (maxSelections && value.length > maxSelections) return t('public.validation.max_selections', { count: maxSelections, defaultValue: `Please select at most ${maxSelections} options` });
                         return true;
                       }
                     })}
                     disabled={readOnly}
-                    className={`w-5 h-5 border-2 ${isPublic ? 'border-gray-300 text-black focus:ring-black' : 'border-gray-300 text-black focus:ring-2 focus:ring-black'} rounded appearance-none checked:bg-black checked:border-black cursor-pointer`}
+                    style={{
+                        borderColor: isChecked(opt.value) ? 'var(--primary)' : 'var(--input-border)',
+                        backgroundColor: isChecked(opt.value) ? 'var(--primary)' : 'transparent',
+                    }}
+                    className={`w-5 h-5 border-2 rounded appearance-none cursor-pointer transition-all duration-200`}
                   />
                   {isChecked(opt.value) && (
                     <svg className="absolute left-0.5 top-0.5 w-4 h-4 text-white pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
@@ -299,7 +322,7 @@ export const PreviewSelectField: React.FC<PreviewFieldProps> = ({ field, registe
                     </svg>
                   )}
                 </div>
-                <span className={`font-medium text-gray-700 cursor-pointer ${isPublic && shrink ? 'text-sm' : 'text-sm'}`}>{opt.label || opt.value}</span>
+                <span className={`font-medium cursor-pointer ${isPublic && shrink ? 'text-sm' : 'text-sm'}`} style={isPublic ? { color: 'var(--text)' } : { color: '#374151' }}>{opt.label || opt.value}</span>
               </label>
             ))}
             {otherOption && (
@@ -312,12 +335,12 @@ export const PreviewSelectField: React.FC<PreviewFieldProps> = ({ field, registe
                       required: field.required,
                       validate: (value) => {
                         if (!value) return true;
-                        if (minSelections && value.length < minSelections) return `Please select at least ${minSelections} options`;
-                        if (maxSelections && value.length > maxSelections) return `Please select at most ${maxSelections} options`;
+                        if (minSelections && value.length < minSelections) return t('public.validation.min_selections', { count: minSelections, defaultValue: `Please select at least ${minSelections} options` });
+                        if (maxSelections && value.length > maxSelections) return t('public.validation.max_selections', { count: maxSelections, defaultValue: `Please select at most ${maxSelections} options` });
                         return true;
                       }
                     })}
-                    className={`w-5 h-5 border-2 border-gray-300 text-black focus:ring-black rounded appearance-none checked:bg-black checked:border-black cursor-pointer`}
+                    className={`w-5 h-5 border-2 border-gray-300 text-primary focus:ring-primary rounded appearance-none checked:bg-primary checked:border-primary cursor-pointer`}
                   />
                   {isChecked('other') && (
                     <svg className="absolute left-0.5 top-0.5 w-4 h-4 text-white pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
@@ -325,11 +348,11 @@ export const PreviewSelectField: React.FC<PreviewFieldProps> = ({ field, registe
                     </svg>
                   )}
                 </div>
-                <span className="text-sm font-medium text-gray-700 cursor-pointer whitespace-nowrap">Other:</span>
+                <span className="text-sm font-medium cursor-pointer whitespace-nowrap" style={isPublic ? { color: 'var(--text)' } : { color: '#374151' }}>{t('public.select.other', 'Other:')}</span>
                 <input 
                   type="text" 
                   className="flex-1 border-b border-gray-300 focus:border-black outline-none text-sm py-1 bg-transparent"
-                  placeholder="Please specify"
+                  placeholder={t('public.select.please_specify', "Please specify")}
                   disabled={readOnly}
                   onClick={(e) => e.stopPropagation()} 
                 />

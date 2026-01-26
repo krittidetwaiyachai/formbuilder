@@ -85,7 +85,7 @@ export const MOCK_ANALYTICS = {
 export const MOCK_SUBMISSIONS = [
   {
     id: "sub1",
-    submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), // 2 hours ago
+    submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), 
     device: "desktop",
     data: {
       email: "alice@example.com",
@@ -95,7 +95,7 @@ export const MOCK_SUBMISSIONS = [
   },
   {
     id: "sub2",
-    submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(), // 1 day ago
+    submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(), 
     device: "mobile",
     data: {
       email: "bob@example.com",
@@ -105,7 +105,7 @@ export const MOCK_SUBMISSIONS = [
   },
   {
     id: "sub3",
-    submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(), // 2 days ago
+    submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(), 
     device: "desktop",
     data: {
       email: "charlie@example.com",
@@ -120,7 +120,7 @@ export const mockSubmissions = [
   {
     id: "sub1",
     formId: "f1",
-    submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), // 2 hours ago
+    submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), 
     device: "desktop",
     data: {
       email: "alice@example.com",
@@ -131,7 +131,7 @@ export const mockSubmissions = [
   {
     id: "sub2",
     formId: "f1",
-    submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(), // 1 day ago
+    submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(), 
     device: "mobile",
     data: {
       email: "bob@example.com",
@@ -142,7 +142,7 @@ export const mockSubmissions = [
   {
     id: "sub3",
     formId: "f1",
-    submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(), // 2 days ago
+    submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(), 
     device: "desktop",
     data: {
       email: "charlie@example.com",
@@ -162,7 +162,6 @@ export const mockActivityLogs: ActivityLog[] = [
     targetName: "Email Field",
     description: "Added a new email field",
     timestamp: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
-    // @ts-ignore
     formId: "f1"
   },
   {
@@ -173,8 +172,6 @@ export const mockActivityLogs: ActivityLog[] = [
     target: "settings",
     description: "Updated form theme",
     timestamp: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
-    // @ts-ignore
     formId: "f1"
   }
 ];
-

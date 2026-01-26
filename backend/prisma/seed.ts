@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('Seeding database...');
 
-  // Create Roles
+  
   const superAdminRole = await prisma.role.upsert({
     where: { name: RoleType.SUPER_ADMIN },
     update: {
@@ -71,7 +71,7 @@ async function main() {
     },
   });
 
-  // Create Users
+  
   const hashedPassword = await bcrypt.hash('password123', 10);
 
   const superAdmin = await prisma.user.upsert({
@@ -230,14 +230,14 @@ async function main() {
     },
   });
 
-  // ========================================
-  // TEST FORMS FOR EDITOR@EXAMPLE.COM
-  // ========================================
+  
+  
+  
 
-  // Delete existing test forms to avoid duplicates
+  
   console.log('Clearing existing test forms...');
   
-  // Delete ALL responses created for test forms created by editor
+  
   console.log('   Deleting all responses for editor test forms...');
   const deletedAllResponses = await prisma.formResponse.deleteMany({
     where: {
@@ -250,7 +250,7 @@ async function main() {
   });
   console.log(`   ✅ Deleted ${deletedAllResponses.count} responses from test forms`);
 
-  // Then delete the forms
+  
   const deletedForms = await prisma.form.deleteMany({
     where: {
       title: {
@@ -260,7 +260,7 @@ async function main() {
   });
   console.log(`   ✅ Deleted ${deletedForms.count} old forms`);
 
-  // Clean up orphaned response answers (where fieldId is null) AFTER deleting forms
+  
   console.log('   Cleaning up orphaned answers...');
   const orphanedAnswers = await prisma.responseAnswer.deleteMany({
     where: {
@@ -271,7 +271,7 @@ async function main() {
 
   console.log('Creating comprehensive test forms...');
 
-  // 1. Quiz System Test Form
+  
   await prisma.form.create({
     data: {
       title: '[TEST] Quiz System - General Knowledge',
@@ -352,7 +352,7 @@ async function main() {
     },
   });
 
-  // Get the quiz form we just created to add responses
+  
   const quizForm = await prisma.form.findFirst({
     where: {
       title: '🎓 [TEST] Quiz System - General Knowledge',
@@ -434,12 +434,12 @@ async function main() {
     console.log(`   Added ${sampleResponses.length} sample responses to Quiz form`);
   }
 
-  // ========================================
-  // ANALYTICS DEMO FORMS WITH RESPONSES
-  // ========================================
+  
+  
+  
   console.log('Creating Analytics Demo forms...');
 
-  // Analytics Demo 1: Customer Feedback (Normal Form)
+  
   const feedbackForm = await prisma.form.create({
     data: {
       title: '[TEST] Analytics Demo - Customer Feedback',
@@ -562,7 +562,7 @@ async function main() {
     });
   }
 
-  // --- Seed Bundles ---
+  
   console.log('Seeding bundles...');
   const bundlesData = [
     {
@@ -663,7 +663,7 @@ async function main() {
   for (const bundle of bundlesData) {
     const { fields, ...bundleData } = bundle;
     
-    // Check if bundle exists
+    
     const existing = await prisma.bundle.findUnique({
       where: { name_version: { name: bundle.name, version: 1 } }
     });
@@ -684,7 +684,7 @@ async function main() {
         }
       });
     } else {
-        // Update options if needed
+        
         await prisma.bundle.update({
             where: { id: existing.id },
             data: { 
@@ -697,7 +697,7 @@ async function main() {
 
   console.log(`   Created Customer Feedback form with ${feedbackResponses.length} responses`);
 
-  // Analytics Demo 2: IT Knowledge Quiz
+  
   const itQuizForm = await prisma.form.create({
     data: {
       title: '[TEST] Analytics Demo - IT Knowledge Quiz',
@@ -773,7 +773,7 @@ async function main() {
     }
   });
 
-  // Map fields by label to get their generated IDs
+  
   const q1 = itQuizForm.fields.find(f => f.label.includes('HTML'));
   const q2 = itQuizForm.fields.find(f => f.label.includes('CSS'));
   const q3 = itQuizForm.fields.find(f => f.label.includes('JavaScript'));
@@ -824,7 +824,7 @@ async function main() {
               },
             });
 
-            // Create answers individually to catch errors
+            
             const answersData = [
                 { fieldId: q1.id, value: resp.q1, isCorrect: resp.q1 === 'Hyper Text Markup Language' },
                 { fieldId: q2.id, value: resp.q2, isCorrect: resp.q2 === 'styling' },
@@ -850,7 +850,7 @@ async function main() {
                 }
             }
 
-            // Verify answers were actually saved
+            
             const savedAnswers = await prisma.responseAnswer.findMany({
                 where: { responseId: response.id }
             });
@@ -987,7 +987,7 @@ async function main() {
     },
   });
 
-  // 3. Multi-Page Form Test
+  
   await prisma.form.create({
     data: {
       title: '[TEST] Multi-Page Form - Comprehensive',
@@ -1097,7 +1097,7 @@ async function main() {
     },
   });
 
-  // 4. All Field Types Demo
+  
   await prisma.form.create({
     data: {
       title: '[TEST] All Field Types Showcase',
@@ -1253,7 +1253,7 @@ async function main() {
     },
   });
 
-  // 5. Field Groups Test
+  
   await prisma.form.create({
     data: {
       title: '[TEST] Field Groups - Nested Fields',
@@ -1329,7 +1329,7 @@ async function main() {
       createdById: editor.id,
       fields: {
         create: [
-          // ส่วนที่ 1 Header
+          
           {
             type: FieldType.HEADER,
             label: 'ส่วนที่ ๑ ข้อมูลทั่วไป',
@@ -1342,7 +1342,7 @@ async function main() {
             required: false,
             order: 1,
           },
-          // 1. เพศ
+          
           {
             type: FieldType.RADIO,
             label: '๑. เพศ',
@@ -1353,7 +1353,7 @@ async function main() {
               { label: 'หญิง', value: 'female' },
             ],
           },
-          // 2. อายุ
+          
           {
             type: FieldType.RADIO,
             label: '๒. อายุ',
@@ -1367,7 +1367,7 @@ async function main() {
               { label: '๕๐ ปีขึ้นไป', value: '>50' },
             ],
           },
-          // 3. การศึกษา
+          
           {
             type: FieldType.RADIO,
             label: '๓. การศึกษา',
@@ -1380,7 +1380,7 @@ async function main() {
               { label: 'ปริญญาเอก', value: 'doctorate' },
             ],
           },
-          // 4. ลูกค้า
+          
           {
             type: FieldType.RADIO,
             label: '๔. ลูกค้า',
@@ -1392,7 +1392,7 @@ async function main() {
               { label: 'หน่วยงานรัฐ', value: 'government' },
             ],
           },
-          // 5. ประเภทเอกสาร
+          
           {
             type: FieldType.CHECKBOX,
             label: '๕. ประเภทเอกสารที่เข้ามารับบริการ (เลือกตอบได้มากกว่า ๑ ประเภท)',
@@ -1407,7 +1407,7 @@ async function main() {
             ],
           },
           
-          // ส่วนที่ 2
+          
           {
             type: FieldType.HEADER,
             label: 'ส่วนที่ ๒ ความพึงพอใจต่อการใช้บริการ e-Timestamp',
@@ -1421,7 +1421,7 @@ async function main() {
             order: 8,
           },
           
-          // 2.1 เจ้าหน้าที่
+          
           {
             type: FieldType.MATRIX,
             label: '๒.๑ ความพึงพอใจต่อเจ้าหน้าที่หรือบุคลากรที่ให้บริการ e-Timestamp',
@@ -1444,7 +1444,7 @@ async function main() {
             }
           },
 
-          // 2.2 กระบวนการ
+          
           {
             type: FieldType.MATRIX,
             label: '๒.๒ ความพึงพอใจต่อกระบวนการ/ขั้นตอนการให้บริการ e-Timestamp',
@@ -1467,7 +1467,7 @@ async function main() {
             }
           },
 
-           // 2.3 สิ่งอำนวยความสะดวก
+           
           {
             type: FieldType.MATRIX,
             label: '๒.๓ ความพึงพอใจต่อสิ่งอำนวยความสะดวกบริการ e-Timestamp',
@@ -1489,7 +1489,7 @@ async function main() {
             }
           },
 
-           // 2.4 คุณภาพให้บริการ
+           
            {
             type: FieldType.MATRIX,
             label: '๒.๔ ความพึงพอใจด้านคุณภาพให้บริการ e-Timestamp',
@@ -1515,7 +1515,7 @@ async function main() {
             }
           },
 
-          // ส่วนที่ 3
+          
           {
              type: FieldType.HEADER,
              label: 'ส่วนที่ ๓ ข้อเสนอแนะ/ความคิดเห็น',
@@ -1544,14 +1544,14 @@ async function main() {
       createdById: editor.id,
       fields: {
         create: [
-          // --- ส่วนที่ 1 ---
+          
           {
             type: FieldType.HEADER,
             label: 'ส่วนที่ ๑ ข้อมูลสำหรับการปฏิบัติงาน',
             required: false,
             order: 0,
           },
-          // 1.1 สถานที่
+          
           {
             type: FieldType.CHECKBOX,
             label: '๑.๑ สถานที่',
@@ -1565,7 +1565,7 @@ async function main() {
               { label: 'เรือนจำกลางสมุทรปราการ', value: 'SamutPrakan' },
             ],
           },
-          // 1.2 รูปแบบการปฏิบัติงาน
+          
           {
             type: FieldType.RADIO,
             label: '๑.๒ รูปแบบของการปฏิบัติงาน รับและนำส่งจดหมาย',
@@ -1576,7 +1576,7 @@ async function main() {
               { label: 'แบบที่ 2: เจ้าหน้าที่ปรษณีย์เข้ามารับ-ส่งจดหมายตามรอบเวลา (ไม่มีพื้นที่ปฏิบัติงานประจำ)', value: 'Type2' },
             ],
           },
-          // 1.3 Kiosk
+          
           {
             type: FieldType.CHECKBOX,
             label: '๑.๓ จุดติดตั้งและจำนวนตู้บริการตนเอง (Kiosk)',
@@ -1587,14 +1587,14 @@ async function main() {
               { label: 'ติดตั้งในบริเวณที่ผู้ต้องขังเข้าใช้บริการได้', value: 'InmateAccess' },
             ],
           },
-          // 1.4 วันที่เริ่ม
+          
           {
             type: FieldType.DATE,
             label: '๑.๔ วันที่เป้าหมายในการเริ่มเปิดให้บริการ',
             required: true,
             order: 4,
           },
-          // 1.5 ผู้ประสานงาน 1
+          
           {
             type: FieldType.HEADER,
             label: '๑.๕ เจ้าหน้าที่ผู้ประสานงาน (คนที่ 1)',
@@ -1619,7 +1619,7 @@ async function main() {
             required: true,
             order: 8,
           },
-          // 1.5 ผู้ประสานงาน 2
+          
           {
             type: FieldType.HEADER,
             label: 'เจ้าหน้าที่ผู้ประสานงาน (คนที่ 2)',
@@ -1645,7 +1645,7 @@ async function main() {
             order: 12,
           },
           
-          // --- ส่วนที่ 2 ---
+          
           {
             type: FieldType.PAGE_BREAK,
             label: 'ส่วนที่ 2 - ข้อมูลผู้ต้องขัง',
@@ -1663,9 +1663,9 @@ async function main() {
             required: false,
             order: 15,
           },
-          // File upload fallback (if supported) or just Textarea
-          // Since I can't confirm FileUpload adds, I'll use Textarea for now or Repeater Manual
-          // Let's do Manual for 3 records to match image style
+          
+          
+          
           {
              type: FieldType.TEXT,
              label: 'ผู้ต้องขังคนที่ 1: เลขหมายเลข',
@@ -1684,7 +1684,7 @@ async function main() {
              required: false,
              order: 18,
           },
-          // Spacer
+          
           {
              type: FieldType.TEXT,
              label: 'ผู้ต้องขังคนที่ 2: เลขหมายเลข',
@@ -1704,7 +1704,7 @@ async function main() {
              order: 21,
           },
 
-           // --- ส่วนที่ 3 ---
+           
            {
             type: FieldType.PAGE_BREAK,
             label: 'ส่วนที่ 3 - ข้อมูลบุคคลภายนอก',
@@ -1757,9 +1757,9 @@ async function main() {
     },
   });
 
-  // ========================================
-  // COLLABORATION DEMO FORM WITH 10 EDITORS
-  // ========================================
+  
+  
+  
   console.log('Creating collaboration demo form with 10 collaborators...');
 
   const collaborationForm = await prisma.form.create({

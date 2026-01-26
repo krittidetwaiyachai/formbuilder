@@ -41,7 +41,7 @@ export const EmailField: React.FC<EmailFieldProps> = ({ field, fieldStyle, disab
            </div>
            <input
              type="email"
-             placeholder="Confirm Email"
+             placeholder={t('builder.email.confirm_placeholder')}
              readOnly
              tabIndex={-1}
              className={`w-full pl-12 pr-4 py-3.5 border ${fieldStyle.inputBorder} rounded-xl bg-blue-50/30 text-black text-base shadow-sm transition-all duration-300 ${disabledClass} group-hover/field:bg-white group-hover/field:shadow-md ${isReadOnly ? 'opacity-50' : ''}`}

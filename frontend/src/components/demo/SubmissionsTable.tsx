@@ -33,7 +33,7 @@ export default function SubmissionsTable() {
     });
   };
 
-  // Get all unique keys from submission data to create dynamic columns
+  
   const getAllDataKeys = (submissions: MockSubmission[]): string[] => {
     const keysSet = new Set<string>();
     submissions.forEach((submission) => {
@@ -44,7 +44,7 @@ export default function SubmissionsTable() {
 
   const dataKeys = getAllDataKeys(MOCK_SUBMISSIONS as unknown as MockSubmission[]);
 
-  // Format key for display (capitalize, add spaces)
+  
   const formatKey = (key: string): string => {
     return key
       .replace(/([A-Z])/g, " $1")

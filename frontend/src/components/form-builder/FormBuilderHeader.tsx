@@ -12,6 +12,8 @@ import { Button } from '@/components/ui/button';
 import QRCode from 'react-qr-code';
 import { useTranslation } from 'react-i18next';
 import UserAvatar from '@/components/common/UserAvatar';
+import Loader from '@/components/common/Loader';
+import { useToast } from '@/components/ui/toaster';
 
 interface FormBuilderHeaderProps {
   currentForm: Form | null;
@@ -20,6 +22,35 @@ interface FormBuilderHeaderProps {
   message: { type: 'success' | 'error'; text: string } | null;
   handleSave: (isAutoSave: boolean) => Promise<void>;
   updateForm: (updates: Partial<Form>) => void;
+}
+
+
+function fallbackCopyTextToClipboard(text: string, onSuccess?: () => void) {
+  const textArea = document.createElement("textarea");
+  textArea.value = text;
+  
+  
+  textArea.style.top = "0";
+  textArea.style.left = "0";
+  textArea.style.position = "fixed";
+  textArea.style.opacity = "0";
+
+  document.body.appendChild(textArea);
+  textArea.focus();
+  textArea.select();
+
+  try {
+    const successful = document.execCommand('copy');
+    if (successful) {
+        if (onSuccess) onSuccess();
+    } else {
+        console.error('Fallback: unable to copy');
+    }
+  } catch (err) {
+    console.error('Fallback: oops, unable to copy', err);
+  }
+
+  document.body.removeChild(textArea);
 }
 
 export default function FormBuilderHeader({
@@ -32,6 +63,7 @@ export default function FormBuilderHeader({
 }: FormBuilderHeaderProps) {
   const navigate = useNavigate();
   const { undo, redo, historyIndex, history } = useFormStore();
+  const { toast } = useToast();
   const { user: currentUser } = useAuthStore();
   const { t } = useTranslation();
   
@@ -39,12 +71,13 @@ export default function FormBuilderHeader({
   const [titleValue, setTitleValue] = useState('');
   const [isShareOpen, setIsShareOpen] = useState(false);
   const [isCollaboratorModalOpen, setIsCollaboratorModalOpen] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
 
   const titleEditRef = React.useRef<HTMLDivElement>(null);
 
 
 
-  // Handle click outside to cancel editing
+  
   useEffect(() => {
     if (isEditingTitle) {
       const handleClickOutside = (event: MouseEvent) => {
@@ -60,12 +93,13 @@ export default function FormBuilderHeader({
     }
   }, [isEditingTitle]);
 
-  // Sync title value when form updates
+  
   useEffect(() => {
     if (currentForm) {
       setTitleValue(currentForm.title);
     }
   }, [currentForm?.title]);
+
 
   const handleTitleEdit = () => {
     if (!currentForm) return;
@@ -88,10 +122,10 @@ export default function FormBuilderHeader({
   return (
     <div className="bg-white border-b border-gray-200">
       
-      {/* Main Action Bar (Row 2 on Mobile, Single Row on Desktop) */}
+      { }
       <div className="px-4 py-3 md:px-6 md:py-4 flex items-center justify-between gap-3">
         
-        {/* Left: Back + Title */}
+        { }
         <div className="flex items-center gap-3 md:gap-4 flex-1 min-w-0">
           <button
             onClick={() => navigate('/dashboard')}
@@ -126,7 +160,7 @@ export default function FormBuilderHeader({
             ) : (
               <div className="flex items-center gap-2 min-w-0 group cursor-pointer" onClick={handleTitleEdit}>
                 <h1 className="text-lg md:text-xl font-bold text-black truncate" >
-                  {currentForm?.title || 'Untitled Form'}
+                  {currentForm?.title || t('builder.header.untitled_form')}
                 </h1>
                 <Edit2 className="h-3.5 w-3.5 text-gray-400 group-hover:text-black opacity-0 group-hover:opacity-100 transition-all" />
               </div>
@@ -134,14 +168,14 @@ export default function FormBuilderHeader({
           </div>
         </div>
 
-        {/* Right: Actions */}
+        { }
         <div className="flex items-center gap-2 md:gap-3">
             
-           {/* Status Indicator (Mobile: Simple Check, Desktop: Detailed) */}
+           { }
            <div className="flex items-center">
              {saving ? (
                  <div className="w-8 h-8 flex items-center justify-center">
-                     <div className="animate-spin rounded-full h-4 w-4 border-2 border-gray-300 border-t-black"></div>
+                     <Loader size={16} />
                  </div>
              ) : (
                  <div className="w-8 h-8 flex items-center justify-center rounded-full bg-green-50 text-green-600">
@@ -160,9 +194,9 @@ export default function FormBuilderHeader({
 
            <div className="h-6 w-px bg-gray-200 mx-1 hidden md:block" />
 
-           {/* Desktop Only Controls */}
+           { }
            <div className="hidden md:flex items-center gap-2 group">
-               {/* Undo/Redo */}
+               { }
                <div className="flex items-center gap-1">
                     <button onClick={undo} disabled={historyIndex <= 0} className="p-1.5 text-gray-500 hover:text-black disabled:opacity-30 transition-colors">
                         <Undo2 className="h-4 w-4"/>
@@ -174,7 +208,7 @@ export default function FormBuilderHeader({
                
                <div className="h-6 w-px bg-gray-200 mx-1" />
                
-               {/* Collaborators Avatars */}
+               { }
                {currentUser && (
                    (() => {
                        const collaborators = currentForm?.collaborators || [];
@@ -186,7 +220,7 @@ export default function FormBuilderHeader({
                                <div 
                                    className="flex -space-x-3 overflow-hidden items-center cursor-pointer"
                                    onClick={() => setIsCollaboratorModalOpen(true)}
-                                   title="Manage access"
+                                   title={t('builder.header.manage_access')}
                                >
                                    {visibleUsers.map((user, index) => (
                                        <div key={user?.id || index} className="relative transition-transform hover:scale-110 hover:z-20" style={{ zIndex: index }}>
@@ -207,9 +241,9 @@ export default function FormBuilderHeader({
                )}
            </div>
 
-           {/* Primary Actions */}
+           { }
            <div className="flex items-center gap-2">
-               {/* Status Dropdown */}
+               { }
                {currentForm && (
                    <Select
                        value={currentForm.status}
@@ -218,26 +252,26 @@ export default function FormBuilderHeader({
                        <SelectTrigger className="h-9 w-[110px] md:w-[130px] bg-white border-gray-200">
                            <SelectValue />
                        </SelectTrigger>
-                       <SelectContent>
-                           <SelectItem value={FormStatus.DRAFT}>
-                               <div className="flex items-center gap-2">
-                                   <div className="w-2 h-2 rounded-full bg-yellow-500" />
-                                   <span>Draft</span>
-                               </div>
-                           </SelectItem>
-                           <SelectItem value={FormStatus.PUBLISHED}>
-                               <div className="flex items-center gap-2">
-                                   <div className="w-2 h-2 rounded-full bg-green-500" />
-                                   <span>Published</span>
-                               </div>
-                           </SelectItem>
-                           <SelectItem value={FormStatus.ARCHIVED}>
-                               <div className="flex items-center gap-2">
-                                   <div className="w-2 h-2 rounded-full bg-gray-500" />
-                                   <span>Archived</span>
-                               </div>
-                           </SelectItem>
-                       </SelectContent>
+                        <SelectContent>
+                            <SelectItem value={FormStatus.DRAFT}>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-2 h-2 rounded-full bg-yellow-500" />
+                                    <span>{t('common.status.draft')}</span>
+                                </div>
+                            </SelectItem>
+                            <SelectItem value={FormStatus.PUBLISHED}>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-2 h-2 rounded-full bg-green-500" />
+                                    <span>{t('common.status.published')}</span>
+                                </div>
+                            </SelectItem>
+                            <SelectItem value={FormStatus.ARCHIVED}>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-2 h-2 rounded-full bg-gray-500" />
+                                    <span>{t('common.status.archived')}</span>
+                                </div>
+                            </SelectItem>
+                        </SelectContent>
                    </Select>
                )}
                
@@ -265,7 +299,7 @@ export default function FormBuilderHeader({
 
         </div>
 
-        {/* Modals & Dialogs (Unchanged) */}
+        { }
         <Dialog open={isShareOpen} onOpenChange={setIsShareOpen}>
             <DialogContent className="sm:max-w-md bg-white">
               <button
@@ -273,7 +307,7 @@ export default function FormBuilderHeader({
                 onClick={() => setIsShareOpen(false)}
               >
                 <X className="h-4 w-4" />
-                <span className="sr-only">Close</span>
+                <span className="sr-only">{t('builder.header.close')}</span>
               </button>
               <DialogHeader>
                 <DialogTitle>{t('builder_header.share_title')}</DialogTitle>
@@ -295,21 +329,46 @@ export default function FormBuilderHeader({
                    size="sm"
                    className="px-3"
                    onClick={() => window.open(`${window.location.origin}/forms/${currentForm?.id}/view`, '_blank')}
-                   title="Open in new tab"
+                   title={t('builder.header.open_new_tab')}
                 >
                    <ExternalLink className="h-4 w-4" />
                 </Button>
-                <Button 
-                    type="submit" 
-                    size="sm" 
-                    className="px-3" 
-                    onClick={() => {
-                        navigator.clipboard.writeText(`${window.location.origin}/forms/${currentForm?.id}/view`);
-                    }}
-                >
-                  <span className="sr-only">Copy</span>
-                  <Copy className="h-4 w-4" />
-                </Button>
+                
+                <div className="relative">
+                    { }
+                    <div className={`absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-1 bg-black text-white text-xs rounded shadow-lg transition-all duration-200 pointer-events-none whitespace-nowrap ${isCopied ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}>
+                        {t('common.copied')}
+                        { }
+                        <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-black"></div>
+                    </div>
+
+                    <Button 
+                        type="button" 
+                        size="sm" 
+                        className="px-3" 
+                        onClick={() => {
+                            const url = `${window.location.origin}/forms/${currentForm?.id}/view`;
+                            
+                            const handleSuccess = () => {
+                                setIsCopied(true);
+                                setTimeout(() => setIsCopied(false), 2000);
+                            };
+
+                            if (navigator.clipboard && window.isSecureContext) {
+                                navigator.clipboard.writeText(url)
+                                    .then(handleSuccess)
+                                    .catch(() => {
+                                        fallbackCopyTextToClipboard(url, handleSuccess);
+                                    });
+                            } else {
+                                fallbackCopyTextToClipboard(url, handleSuccess);
+                            }
+                        }}
+                    >
+                        <span className="sr-only">{t('builder.header.copy')}</span>
+                        <Copy className="h-4 w-4" />
+                    </Button>
+                </div>
               </div>
               <div className="flex justify-center py-6">
                 <div className="bg-white p-4 rounded-xl border-2 border-dashed border-gray-200">

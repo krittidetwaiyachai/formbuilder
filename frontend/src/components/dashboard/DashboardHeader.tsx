@@ -1,11 +1,11 @@
-// d:\formbuilder\frontend\src\components\dashboard\DashboardHeader.tsx
+
 import { motion } from 'framer-motion';
 import { Plus, LogIn } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import UserAvatar from '@/components/common/UserAvatar';
 import { useAuthStore } from '@/store/authStore';
 import LanguageSwitcher from '@/components/common/LanguageSwitcher';
-// MobileProfileSheet is now managed by parent (Dashboard.tsx)
+
 
 interface DashboardHeaderProps {
   username?: string;
@@ -18,23 +18,23 @@ interface DashboardHeaderProps {
 export default function DashboardHeader({ username, onCreateForm, isCreating, onLogin, onProfileClick }: DashboardHeaderProps) {
   const { t } = useTranslation();
   const { user } = useAuthStore();
-  // Lifted state to parent
+  
   
   return (
     <>
       <div className="flex-shrink-0 z-20 bg-white md:border-b md:border-gray-200 relative">
-        {/* Mobile iOS-style Header */}
+        { }
         <div className="md:hidden px-5 pt-12 pb-4 safe-area-pt">
           <div className="flex items-center justify-between mb-4">
             {user ? (
               <div 
                 className="flex items-center gap-3 active:opacity-70 transition-opacity cursor-pointer"
-                onClick={onProfileClick} // Use prop
+                onClick={onProfileClick} 
               >
                 <UserAvatar user={user} className="h-10 w-10 ring-2 ring-gray-100" />
                 <div>
                   <p className="text-xs text-gray-500 font-medium">{t('dashboard.welcome_back')}</p>
-                  <p className="text-sm font-bold text-gray-900">{username || 'User'}</p>
+                  <p className="text-sm font-bold text-gray-900">{username || t('common.user')}</p>
                 </div>
               </div>
             ) : (
@@ -57,7 +57,7 @@ export default function DashboardHeader({ username, onCreateForm, isCreating, on
           </motion.h1>
         </div>
         
-        {/* Desktop Header (Original) */}
+        { }
         <div className="hidden md:block max-w-7xl mx-auto px-8 py-8">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 relative z-10">
             <div>
@@ -199,7 +199,7 @@ export default function DashboardHeader({ username, onCreateForm, isCreating, on
           </div>
         </div>
       </div>
-      {/* MobileProfileSheet removed from here */}
+      { }
     </>
   );
 }

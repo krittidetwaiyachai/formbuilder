@@ -20,6 +20,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+import { useTranslation } from "react-i18next";
+
 interface ElementButtonProps {
   type: FormElementType;
   label: string;
@@ -28,6 +30,7 @@ interface ElementButtonProps {
 
 
 function ElementButton({ type, label, icon }: ElementButtonProps) {
+  const { t } = useTranslation();
   const { addField } = useFormStore();
   
   const {
@@ -54,33 +57,38 @@ function ElementButton({ type, label, icon }: ElementButtonProps) {
   };
 
   const getDefaultLabel = (type: FormElementType): string => {
-    const labels: Record<FormElementType, string> = {
-      [FormElementType.TEXT]: "Text Input",
-      [FormElementType.EMAIL]: "Email",
-      [FormElementType.PHONE]: "Phone",
-      [FormElementType.NUMBER]: "Number",
-      [FormElementType.TEXTAREA]: "Textarea",
-      [FormElementType.DROPDOWN]: "Select",
-      [FormElementType.CHECKBOX]: "Checkbox",
-      [FormElementType.RADIO]: "Radio",
-      [FormElementType.DATE]: "Date",
-      [FormElementType.FILE]: "File Upload",
-      [FormElementType.RATE]: "Rating",
-      [FormElementType.HEADER]: "Heading",
-      [FormElementType.PARAGRAPH]: "Paragraph",
-      // Add missing keys if necessary or ensure all are covered
-      [FormElementType.SUBMIT]: "Submit",
-      [FormElementType.FULLNAME]: "Full Name",
-      [FormElementType.ADDRESS]: "Address",
-      [FormElementType.DIVIDER]: "Divider",
-      [FormElementType.SECTION_COLLAPSE]: "Section",
-      [FormElementType.PAGE_BREAK]: "Page Break",
-      [FormElementType.GROUP]: "Group",
-      [FormElementType.MATRIX]: "Matrix",
-      [FormElementType.TABLE]: "Table",
-      [FormElementType.TIME]: "Time",
+    
+    const typeKeyMap: Record<FormElementType, string> = {
+      [FormElementType.TEXT]: "short_text",
+      [FormElementType.EMAIL]: "email",
+      [FormElementType.PHONE]: "phone",
+      [FormElementType.NUMBER]: "number",
+      [FormElementType.TEXTAREA]: "long_text",
+      [FormElementType.DROPDOWN]: "dropdown",
+      [FormElementType.CHECKBOX]: "checkbox", 
+      [FormElementType.RADIO]: "radio", 
+      [FormElementType.DATE]: "date",
+      [FormElementType.FILE]: "file_upload",
+      [FormElementType.RATE]: "rating",
+      [FormElementType.HEADER]: "heading",
+      [FormElementType.PARAGRAPH]: "text_block",
+      [FormElementType.SUBMIT]: "submit",
+      [FormElementType.FULLNAME]: "full_name",
+      [FormElementType.ADDRESS]: "address",
+      [FormElementType.DIVIDER]: "separator",
+      [FormElementType.SECTION_COLLAPSE]: "group", 
+      [FormElementType.PAGE_BREAK]: "page_break",
+      [FormElementType.GROUP]: "group",
+      [FormElementType.MATRIX]: "matrix",
+      [FormElementType.TABLE]: "table",
+      [FormElementType.TIME]: "time",
     };
-    return labels[type] || "Field";
+
+    const suffix = typeKeyMap[type];
+    
+    
+    
+    return t(`builder.fields.${suffix}`, type === FormElementType.TEXT ? "Text Input" : "Field");
   };
 
   const createNewElement = () => {
@@ -89,8 +97,8 @@ function ElementButton({ type, label, icon }: ElementButtonProps) {
       type: type,
       label: getDefaultLabel(type),
       required: false,
-      order: 0, // Default order, will be updated by store
-      formId: "", // Default formId
+      order: 0, 
+      formId: "", 
       ...(needsOptions(type) && {
         options: [
           { id: "opt-1", label: "Option 1", value: "option-1" },
@@ -103,7 +111,7 @@ function ElementButton({ type, label, icon }: ElementButtonProps) {
   };
 
   const handleDoubleClick = () => {
-    // Note: ID generation is handled by the store if undefined
+    
     const { id, ...fieldData } = createNewElement();
     addField(fieldData);
   };
@@ -147,7 +155,7 @@ const elementTypes: Array<{
   },
   { type: FormElementType.RADIO, label: "Radio", icon: <Circle className="h-5 w-5" /> },
   { type: FormElementType.DATE, label: "Date", icon: <Calendar className="h-5 w-5" /> },
-  // { type: FormElementType.FILE, label: "File Upload", icon: <Upload className="h-5 w-5" /> }, // File upload missing in FieldType enum based on previous reads, checking...
+  
   { type: FormElementType.RATE, label: "Rating", icon: <Star className="h-5 w-5" /> },
   { type: FormElementType.HEADER, label: "Heading", icon: <Heading className="h-5 w-5" /> },
   {
@@ -158,25 +166,58 @@ const elementTypes: Array<{
 ];
 
 export default function ElementsSidebar() {
+  const { t } = useTranslation();
   return (
     <div className="w-64 border-r overflow-y-auto">
       <div className="p-4 border-b bg-white">
         <h2 className="text-sm font-semibold text-gray-700">
-          Form Elements
+          {t('builder.sidebar.fields', 'Form Elements')}
         </h2>
-        <p className="text-xs text-gray-500 mt-1">Drag to add</p>
+        <p className="text-xs text-gray-500 mt-1">{t('builder.sidebar.drag', 'Drag to add')}</p>
       </div>
       <div className="p-4 space-y-2">
         {elementTypes.map((item) => (
           <ElementButton
             key={item.type}
             type={item.type}
-            label={item.label}
+            label={t(`builder.fields.${getFieldKey(item.type)}`, item.label)}
             icon={item.icon}
           />
         ))}
       </div>
     </div>
   );
+}
+
+
+function getFieldKey(type: FormElementType): string {
+    const map: Record<FormElementType, string> = {
+      [FormElementType.TEXT]: "short_text",
+      [FormElementType.EMAIL]: "email",
+      [FormElementType.NUMBER]: "number",
+      [FormElementType.TEXTAREA]: "long_text",
+      [FormElementType.DROPDOWN]: "dropdown",
+      [FormElementType.CHECKBOX]: "multiple_choice", 
+      [FormElementType.RADIO]: "single_choice",
+       [FormElementType.DATE]: "date",
+       [FormElementType.RATE]: "rating",
+       [FormElementType.HEADER]: "heading",
+       [FormElementType.PARAGRAPH]: "text_block",
+       
+       [FormElementType.PHONE]: "phone",
+       [FormElementType.FULLNAME]: "full_name",
+       [FormElementType.ADDRESS]: "address",
+       [FormElementType.DIVIDER]: "separator",
+       [FormElementType.SECTION_COLLAPSE]: "group",
+       [FormElementType.PAGE_BREAK]: "page_break",
+       [FormElementType.GROUP]: "group",
+       [FormElementType.MATRIX]: "matrix",
+       [FormElementType.TABLE]: "table",
+       [FormElementType.TIME]: "time",
+       [FormElementType.FILE]: "file",
+       [FormElementType.SUBMIT]: "submit"
+
+    };
+    return map[type] || "short_text";
 }
 

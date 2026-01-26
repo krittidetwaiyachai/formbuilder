@@ -39,7 +39,7 @@ export default function AnalysisRenderer({
 }: AnalysisRendererProps) {
   const { t } = useTranslation();
 
-  // Calculate field responses
+  
   const fieldResponses: { value: any; count: number }[] = [];
   const valueCounts: Record<string, number> = {};
 
@@ -63,7 +63,7 @@ export default function AnalysisRenderer({
   const totalResponses = submissions.length;
   const uniqueValues = fieldResponses.length;
 
-  // Timeline data
+  
   const timelineData = submissions
     .map((submission) => ({
       date: new Date(submission.submittedAt).toLocaleDateString(),
@@ -213,7 +213,7 @@ export default function AnalysisRenderer({
                 cx="50%"
                 cy="50%"
                 labelLine={false}
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                label={({ name, percent }) => `${name} ${((percent || 0) * 100).toFixed(0)}%`}
                 outerRadius={120}
                 fill="#8884d8"
                 dataKey="value"
@@ -342,7 +342,7 @@ export default function AnalysisRenderer({
         );
 
       default:
-        return <div>Select an analysis type</div>;
+        return <div>{t('analytics.select_analysis_type')}</div>;
     }
   };
 

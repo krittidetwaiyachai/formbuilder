@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('Starting debug...');
 
-  // Find the form that contains field 'itq_1'
+  
   const form = await prisma.form.findFirst({
     where: {
       fields: {
@@ -28,7 +28,7 @@ async function main() {
   console.log(`Found Form: ${form.title} (${form.id})`);
   console.log(`Fields count: ${form.fields.length}`);
 
-  // Get responses for this form
+  
   const responses = await prisma.formResponse.findMany({
     where: {
       formId: form.id

@@ -1,6 +1,7 @@
 
 import { Form } from '@/types';
 import { Check, ThumbsUp, Heart, Star, Trophy, PartyPopper, CheckCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const iconMap: Record<string, any> = {
   check: CheckCircle,
@@ -16,7 +17,7 @@ interface ThankYouScreenEditorProps {
   updateForm: (updates: Partial<Form>) => void;
 }
 
-// Premium Icon Backgrounds
+
 const iconStyles: Record<string, string> = {
   green: 'bg-emerald-50 text-emerald-600 border-emerald-100',
   blue: 'bg-blue-50 text-blue-600 border-blue-100',
@@ -38,12 +39,13 @@ export default function ThankYouScreenEditor({ currentForm, updateForm }: ThankY
   const iconColor = settings?.iconColor || 'green';
   const IconComponent = iconMap[(settings as any)?.icon || 'check'] || Check;
 
-  const defaultTitle = 'Thank you!';
-  const defaultMessage = 'Your submission has been received.';
-
+  const { t } = useTranslation();
+  const defaultTitle = t('builder.thankyou.default_title');
+  const defaultMessage = t('builder.thankyou.default_message');
+  
   const renderContent = () => (
     <div className="flex flex-col items-center justify-center w-full text-center px-4">
-        {/* Inline Editable Title */}
+        { }
         <div className="relative group w-full mb-6">
           <input
             type="text"
@@ -56,17 +58,17 @@ export default function ThankYouScreenEditor({ currentForm, updateForm }: ThankY
                 ...settings!,
                  title: e.target.value,
                  message: settings?.message || '',
-                 buttonText: settings?.buttonText || 'Back to Home'
+                 buttonText: settings?.buttonText || t('builder.thankyou.back_to_home')
               }
             })}
-            placeholder="Enter title..."
+            placeholder={t('builder.thankyou.enter_title')}
           />
           <div className={`absolute -inset-2 border-2 border-transparent group-hover:border-dashed group-hover:border-gray-200 rounded-lg pointer-events-none transition-colors ${
              layout === 'cover' ? 'group-hover:border-white/50' : ''
           }`} />
         </div>
 
-        {/* Inline Editable Message */}
+        { }
         <div className="relative group w-full max-w-2xl">
           <textarea
             className={`block w-full text-center text-xl font-normal tracking-wide leading-relaxed bg-transparent border-none focus:ring-0 resize-none min-h-[80px] placeholder-gray-300 focus:placeholder-gray-200 ${
@@ -77,18 +79,18 @@ export default function ThankYouScreenEditor({ currentForm, updateForm }: ThankY
               thankYouSettings: {
                 ...settings!,
                 title: settings?.title || '',
-                buttonText: settings?.buttonText || 'Back to Home',
+                buttonText: settings?.buttonText || t('builder.thankyou.back_to_home'),
                 message: e.target.value
               }
             })}
-            placeholder="Enter message..."
+            placeholder={t('builder.thankyou.enter_message')}
           />
            <div className={`absolute -inset-2 border-2 border-transparent group-hover:border-dashed group-hover:border-gray-200 rounded-lg pointer-events-none transition-colors ${
              layout === 'cover' ? 'group-hover:border-white/50' : ''
           }`} />
         </div>
 
-        {/* Button Preview */}
+        { }
         {settings?.showButton && (
           <div className="mt-8 flex justify-center">
              <div className="relative group">
@@ -99,7 +101,7 @@ export default function ThankYouScreenEditor({ currentForm, updateForm }: ThankY
                       ? 'bg-white text-black hover:bg-white/90' 
                       : 'bg-black text-white hover:bg-gray-800'
                   }`}
-                  value={settings?.buttonText || 'Back to Home'}
+                  value={settings?.buttonText || t('builder.thankyou.back_to_home')}
                   onChange={(e) => updateForm({
                     thankYouSettings: {
                       ...settings!,
@@ -123,7 +125,7 @@ export default function ThankYouScreenEditor({ currentForm, updateForm }: ThankY
                 <div className="w-20 h-20 bg-white rounded-3xl shadow-sm flex items-center justify-center">
                     <Check className="w-8 h-8 text-emerald-500 opacity-50" />
                 </div>
-                <span className="text-sm font-medium tracking-widest text-gray-400 uppercase">Image Placeholder</span>
+                <span className="text-sm font-medium tracking-widest text-gray-400 uppercase">{t('builder.thankyou.image_placeholder')}</span>
             </div>
           )}
       </div>
@@ -131,7 +133,7 @@ export default function ThankYouScreenEditor({ currentForm, updateForm }: ThankY
   
   const successIcon = (
     <div className="relative mb-8">
-      {/* Background Ripple Effect - Visual Only */}
+      { }
       <div className={`absolute inset-0 rounded-full opacity-20 scale-110 ${
           iconColor === 'white' ? 'bg-gray-200' : iconStyles[iconColor]?.split(' ')[0]?.replace('bg-', 'bg-') || 'bg-emerald-200'
       }`} />
@@ -157,7 +159,7 @@ export default function ThankYouScreenEditor({ currentForm, updateForm }: ThankY
               footerText: e.target.value
             }
           })}
-          placeholder="Click to add footer text..."
+          placeholder={t('builder.thankyou.click_footer')}
         />
          <div className={`absolute -inset-2 border border-transparent group-hover:border-dashed group-hover:border-gray-200 rounded pointer-events-none transition-colors ${
              layout === 'cover' ? 'group-hover:border-white/30' : ''
@@ -174,17 +176,17 @@ export default function ThankYouScreenEditor({ currentForm, updateForm }: ThankY
           'flex-col'
       } relative min-h-[600px]`}>
         
-        {/* SIMPLE CENTERED */}
+        { }
         {layout === 'simple' && (
             <div className="flex flex-col items-center justify-center w-full py-16 px-8 relative">
-                 {/* Decorative background blobs */}
+                 { }
                  <div className="absolute top-0 right-0 w-64 h-64 bg-gray-50 rounded-full mix-blend-multiply filter blur-3xl opacity-50 translate-x-1/2 -translate-y-1/2" />
                  <div className="absolute bottom-0 left-0 w-64 h-64 bg-gray-50 rounded-full mix-blend-multiply filter blur-3xl opacity-50 -translate-x-1/2 translate-y-1/2" />
 
                  <div className="relative z-10 flex flex-col items-center w-full">
                     {bgImage ? (
                         <div className="w-48 h-48 mx-auto relative group mb-8">
-                            <img src={bgImage} alt="Success" className="w-full h-full object-contain drop-shadow-sm" />
+                            <img src={bgImage} alt={t('common.success')} className="w-full h-full object-contain drop-shadow-sm" />
                         </div>
                     ) : (
                         successIcon
@@ -194,7 +196,7 @@ export default function ThankYouScreenEditor({ currentForm, updateForm }: ThankY
             </div>
         )}
 
-        {/* SPLIT LAYOUTS */}
+        { }
         {(layout === 'split-left' || layout === 'split-right') && (
             <>
                 <div className="w-1/2 relative">
@@ -207,7 +209,7 @@ export default function ThankYouScreenEditor({ currentForm, updateForm }: ThankY
             </>
         )}
 
-        {/* COVER LAYOUT */}
+        { }
         {layout === 'cover' && (
             <div className="absolute inset-0 w-full h-full">
                 {bgImage ? (
@@ -226,7 +228,7 @@ export default function ThankYouScreenEditor({ currentForm, updateForm }: ThankY
             </div>
         )}
 
-        {/* Footer */}
+        { }
         {renderFooter()}
 
       </div>

@@ -37,7 +37,7 @@ export class EncryptionService {
   decrypt(encryptedText: string): string {
     const [ivHex, authTagHex, encrypted] = encryptedText.split(':');
     
-    // Validate format
+    
     if (!ivHex || !authTagHex || !encrypted) {
       throw new Error('Invalid encrypted format');
     }

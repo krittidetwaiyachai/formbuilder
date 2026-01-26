@@ -8,11 +8,11 @@ import {
   createColumnHelper,
 } from '@tanstack/react-table';
 import { adminApi, AdminUser, Role } from '@/lib/adminApi';
-import { Search, ChevronLeft, ChevronRight, Ban, CheckCircle, UserCog, Shield } from 'lucide-react';
+import { Search, ChevronLeft, ChevronRight, Ban, CheckCircle, UserCog } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { th } from 'date-fns/locale';
-import PermissionOverrideDialog from './PermissionOverrideDialog';
 import { useHasPermission } from '@/hooks/usePermissions';
+import { useTranslation } from 'react-i18next';
 
 const columnHelper = createColumnHelper<AdminUser>();
 
@@ -28,9 +28,9 @@ export default function UserTable({ onRefresh }: UserTableProps) {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [editingRole, setEditingRole] = useState<string | null>(null);
-  const [permissionOverrideUserId, setPermissionOverrideUserId] = useState<string | null>(null);
   
   const hasManageUsers = useHasPermission('MANAGE_USERS');
+  const { t } = useTranslation();
 
   const fetchUsers = async () => {
     try {
@@ -88,7 +88,7 @@ export default function UserTable({ onRefresh }: UserTableProps) {
   const columns = useMemo(
     () => [
       columnHelper.accessor('email', {
-        header: 'ผู้ใช้',
+        header: t('admin.users.table.user'),
         cell: (info) => {
           const user = info.row.original;
           return (
@@ -111,7 +111,7 @@ export default function UserTable({ onRefresh }: UserTableProps) {
         },
       }),
       columnHelper.accessor('role.name', {
-        header: 'Role',
+        header: t('admin.users.table.role'),
         cell: (info) => {
           const user = info.row.original;
           const isEditing = editingRole === user.id;
@@ -145,13 +145,13 @@ export default function UserTable({ onRefresh }: UserTableProps) {
         },
       }),
       columnHelper.accessor('provider', {
-        header: 'Provider',
+        header: t('admin.users.table.provider'),
         cell: (info) => (
           <span className="text-sm text-gray-600 capitalize">{info.getValue()}</span>
         ),
       }),
       columnHelper.accessor('isActive', {
-        header: 'สถานะ',
+        header: t('admin.users.table.status'),
         cell: (info) => (
           <span
             className={`px-3 py-1 rounded-full text-xs font-medium ${
@@ -160,15 +160,15 @@ export default function UserTable({ onRefresh }: UserTableProps) {
                 : 'bg-red-100 text-red-700'
             }`}
           >
-            {info.getValue() ? 'Active' : 'Banned'}
+            {info.getValue() ? t('admin.users.status.active') : t('admin.users.status.banned')}
           </span>
         ),
       }),
       columnHelper.accessor('lastActiveAt', {
-        header: 'เข้าใช้งานล่าสุด',
+        header: t('admin.users.table.last_active'),
         cell: (info) => {
           const value = info.getValue();
-          if (!value) return <span className="text-gray-400">ไม่ทราบ</span>;
+          if (!value) return <span className="text-gray-400">{t('admin.users.status.unknown')}</span>;
           return (
             <span className="text-sm text-gray-600">
               {formatDistanceToNow(new Date(value), { addSuffix: true, locale: th })}
@@ -191,23 +191,16 @@ export default function UserTable({ onRefresh }: UserTableProps) {
                     ? 'text-red-600 hover:bg-red-50'
                     : 'text-emerald-600 hover:bg-emerald-50'
                 }`}
-                title={user.isActive ? 'แบนผู้ใช้' : 'ปลดแบน'}
+                title={user.isActive ? t('admin.users.action.ban') : t('admin.users.action.unban')}
               >
                 {user.isActive ? <Ban className="w-4 h-4" /> : <CheckCircle className="w-4 h-4" />}
               </button>
               <button
                 onClick={() => setEditingRole(user.id)}
                 className="p-2 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors"
-                title="เปลี่ยน Role"
+                title={t('admin.users.action.change_role')}
               >
                 <UserCog className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => setPermissionOverrideUserId(user.id)}
-                className="p-2 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors"
-                title="Override Permissions"
-              >
-                <Shield className="w-4 h-4" />
               </button>
             </div>
           );
@@ -235,7 +228,7 @@ export default function UserTable({ onRefresh }: UserTableProps) {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
           <input
             type="text"
-            placeholder="ค้นหาผู้ใช้..."
+            placeholder={t('admin.users.search_placeholder')}
             value={globalFilter}
             onChange={(e) => {
               setGlobalFilter(e.target.value);
@@ -276,7 +269,7 @@ export default function UserTable({ onRefresh }: UserTableProps) {
             ) : users.length === 0 ? (
               <tr>
                 <td colSpan={columns.length} className="px-6 py-12 text-center text-gray-400">
-                  ไม่พบผู้ใช้
+                  {t('admin.users.no_users')}
                 </td>
               </tr>
             ) : (
@@ -296,7 +289,7 @@ export default function UserTable({ onRefresh }: UserTableProps) {
 
       <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
         <p className="text-sm text-gray-500">
-          หน้า {page} จาก {totalPages}
+          {t('admin.users.page_info', { page, total: totalPages })}
         </p>
         <div className="flex items-center gap-2">
           <button
@@ -317,16 +310,7 @@ export default function UserTable({ onRefresh }: UserTableProps) {
       </div>
     </div>
 
-      {permissionOverrideUserId && (
-        <PermissionOverrideDialog
-          userId={permissionOverrideUserId}
-          onClose={() => setPermissionOverrideUserId(null)}
-          onSave={() => {
-            fetchUsers();
-            onRefresh?.();
-          }}
-        />
-      )}
+
     </>
   );
 }

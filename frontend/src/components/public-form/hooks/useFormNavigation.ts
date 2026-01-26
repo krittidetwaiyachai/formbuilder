@@ -49,10 +49,8 @@ export function useFormNavigation({
   const validateCurrentField = useCallback(async () => {
     if (isCardLayout && currentField) {
       const fieldName = `field_${currentField.id}`;
-      if (currentField.validation?.required) {
-        const result = await trigger(fieldName);
-        return result;
-      }
+      const result = await trigger(fieldName);
+      return result;
     }
     return true;
   }, [isCardLayout, currentField, trigger]);

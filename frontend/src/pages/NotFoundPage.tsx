@@ -8,7 +8,7 @@ const NotFoundPage: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   
-  // Mouse tracking for subtle parallax
+  
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   
@@ -35,7 +35,7 @@ const NotFoundPage: React.FC = () => {
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-[#0a0a0a] text-white overflow-hidden relative selection:bg-indigo-500/30 font-sans">
         
-      {/* 1. Subtle Indigo Background Glow */}
+      { }
       <div 
         className="absolute inset-0 z-0 transition-opacity duration-500 pointer-events-none"
         style={{
@@ -43,12 +43,12 @@ const NotFoundPage: React.FC = () => {
         }}
       />
       
-      {/* 2. Professional Grid Pattern */}
+      { }
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none z-0 opacity-50" />
 
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen w-full px-4">
         
-        {/* 3. 404 Background Text - Clean & Bold */}
+        { }
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
              <motion.h1 
                 style={{ x: x404, y: y404 }}
@@ -61,14 +61,14 @@ const NotFoundPage: React.FC = () => {
              </motion.h1>
         </div>
 
-        {/* 4. Main Content Card */}
+        { }
         <motion.div 
             className="relative z-20 flex flex-col items-center text-center max-w-xl w-full"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ type: "spring", damping: 20, stiffness: 100, delay: 0.1 }}
         >
-            {/* Icon */}
+            { }
              <motion.div 
                 className="mb-8 p-4 rounded-3xl bg-indigo-500/10 border border-indigo-500/20 backdrop-blur-sm shadow-[0_0_30px_-10px_rgba(79,70,229,0.3)]"
                 initial={{ scale: 0.8, opacity: 0 }}
@@ -78,7 +78,7 @@ const NotFoundPage: React.FC = () => {
                 <AlertCircle className="w-12 h-12 text-indigo-400" strokeWidth={1.5} />
              </motion.div>
 
-            {/* Text */}
+            { }
             <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tight mb-4 drop-shadow-xl">
                 {t('error.404.title')}
             </h2>
@@ -86,7 +86,7 @@ const NotFoundPage: React.FC = () => {
                 {t('error.404.message')}
             </p>
 
-            {/* Action Buttons */}
+            { }
             <div className="flex flex-col sm:flex-row gap-4">
                 <button
                     onClick={() => navigate('/')}

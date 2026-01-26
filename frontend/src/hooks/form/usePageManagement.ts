@@ -1,5 +1,4 @@
 
-
 import { Field, FieldType, Form, PageSettings } from '@/types';
 import { useTranslation } from 'react-i18next';
 
@@ -8,7 +7,7 @@ import { generateUUID } from '@/utils/uuid';
 
 interface UsePageManagementProps {
   currentForm: Form | null;
-  activeFields: Field[]; // Use local optimistic fields
+  activeFields: Field[]; 
   setActiveFields: (fields: Field[]) => void;
   setCurrentPage: (page: number) => void;
   currentPage: number;
@@ -25,7 +24,6 @@ export function usePageManagement({
     const { updateForm } = useFormStore();
     const id = currentForm?.id;
 
-    // Helper to ensure pageSettings are synced with fields
     const syncPageSettings = (fields: Field[], currentSettings: PageSettings[] | undefined) => {
         const pageCount = fields.filter(f => f.type === FieldType.PAGE_BREAK).length + 1;
         let newSettings = currentSettings ? [...currentSettings] : [];
@@ -78,29 +76,29 @@ export function usePageManagement({
         updateForm({
             welcomeSettings: {
                 isActive: true,
-                title: '', // Fresh start
+                title: '', 
                 description: '',
                 buttonText: 'Start',
                 showStartButton: true,
-                layout: 'simple', // Reset layout too
+                layout: 'simple', 
                 backgroundImage: undefined
             }
         });
-        setCurrentPage(-1); // Switch to Welcome Screen
+        setCurrentPage(-1); 
     };
     
     const handleAddThankYou = () => {
         updateForm({
             thankYouSettings: {
                 isActive: true,
-                title: 'Thank You', // Default title as requested
+                title: 'Thank You', 
                 message: '',
                 buttonText: 'Back to Home',
-                layout: 'simple', // Reset layout too
+                layout: 'simple', 
                 backgroundImage: undefined
             }
         });
-        setCurrentPage(-2); // Switch to Thank You Screen
+        setCurrentPage(-2); 
     };
 
     const handleDeletePage = (pageIndex: number) => {
@@ -115,16 +113,13 @@ export function usePageManagement({
             return;
     }
     
-    // Content Page Deletion
     const pageBreaks = activeFields.filter(f => f.type === FieldType.PAGE_BREAK);
     
-    // Validation: Cannot delete the last remaining page
     if (pageBreaks.length === 0) {
         alert(t('builder.cannot_delete_last_page'));
         return;
     }
     
-    // Chunk strategy
     let tempFields = [...activeFields];
     const chunks: Field[][] = [];
     let currentBatch: Field[] = [];
@@ -141,15 +136,11 @@ export function usePageManagement({
     
     if (pageIndex >= chunks.length) return;
 
-    if (confirm('Are you sure you want to delete this page? All fields in it will be removed.')) {
-        
-        // Remove the chunk
         chunks.splice(pageIndex, 1);
         
         const finalFields: Field[] = [];
         const oldPageBreaks = activeFields.filter(f => f.type === FieldType.PAGE_BREAK);
         
-        // We need (chunks.length - 1) breaks.
         const breaksNeeded = Math.max(0, chunks.length - 1);
         const breaksToUse = oldPageBreaks.slice(0, breaksNeeded);
         
@@ -160,7 +151,6 @@ export function usePageManagement({
             }
         });
     
-        // Update Page Settings
         const newPageSettings = [...(currentForm?.pageSettings || [])];
         if (pageIndex < newPageSettings.length) {
             newPageSettings.splice(pageIndex, 1);
@@ -174,21 +164,17 @@ export function usePageManagement({
             pageSettings: newPageSettings
         });
         
-        // Adjust navigation
         if (currentPage >= pageIndex && currentPage > 0) {
             setCurrentPage(currentPage - 1);
         } else if (currentPage >= chunks.length) { 
             setCurrentPage(Math.max(0, chunks.length - 1));
         }
-    }
     };
 
     const handleRenamePage = (pageIndex: number, newTitle: string) => {
         const newPageSettings = [...(currentForm?.pageSettings || [])];
         
-        // Ensure entry exists (lazy init or sync)
             if (newPageSettings.length <= pageIndex) {
-                // Should have been synced, but if not:
                 for(let i=newPageSettings.length; i<=pageIndex; i++) {
                     newPageSettings.push({ id: generateUUID(), title: `Page ${i+1}` });
                 }
@@ -203,7 +189,6 @@ export function usePageManagement({
     const handleReorderPages = (oldIndex: number, newIndex: number) => {
         if (oldIndex === newIndex) return;
     
-        /* --- Field Reordering (Chunk Strategy) --- */
         let tempFields = [...activeFields];
         const chunks: Field[][] = [];
         let currentBatch: Field[] = [];
@@ -220,23 +205,19 @@ export function usePageManagement({
         
         if (oldIndex >= chunks.length || newIndex >= chunks.length) return;
     
-        // Move content chunk
         const movedChunk = chunks[oldIndex];
         chunks.splice(oldIndex, 1);
         chunks.splice(newIndex, 0, movedChunk);
         
-        // Reconstruct Fields
         const finalFields: Field[] = [];
         const breaks = tempFields.filter(f => f.type === FieldType.PAGE_BREAK);
         
-        // We reuse breaks in order
         chunks.forEach((chunk, i) => {
             finalFields.push(...chunk);
             if (i < chunks.length - 1) {
                 if (i < breaks.length) {
                         finalFields.push(breaks[i]);
                 } else {
-                        // Create new break if needed (shouldn't happen)
                         finalFields.push({
                         id: generateUUID(),
                         formId: id!,
@@ -251,19 +232,18 @@ export function usePageManagement({
         
         const fieldsWithOrder = finalFields.map((f, i) => ({ ...f, order: i }));
         
-        /* --- Page Settings Reordering --- */
         let newPageSettings = [...(currentForm?.pageSettings || [])];
-        // Sync length if needed
         if (newPageSettings.length < chunks.length) {
                 newPageSettings = syncPageSettings(activeFields, newPageSettings);
         }
         
-        // Ensure we have enough settings for the move
         const movedSetting = newPageSettings[oldIndex] || { id: generateUUID(), title: `Page ${oldIndex+1}` }; 
-        if (newPageSettings[oldIndex]) {
+        
+        if (oldIndex < newPageSettings.length) {
             newPageSettings.splice(oldIndex, 1);
-            newPageSettings.splice(newIndex, 0, movedSetting);
         }
+        
+        newPageSettings.splice(newIndex, 0, movedSetting);
     
         setActiveFields(fieldsWithOrder);
         updateForm({ 

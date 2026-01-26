@@ -34,7 +34,7 @@ export default function FolderFilters({
 
   return (
     <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide pt-2 -mx-1 px-1">
-      {/* Create Folder Button */}
+      { }
       {onCreateFolder && (
         <>
           <motion.button
@@ -50,7 +50,7 @@ export default function FolderFilters({
         </>
       )}
 
-      {/* All Button */}
+      { }
       <motion.button
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
@@ -65,7 +65,7 @@ export default function FolderFilters({
         {t('dashboard.folder.all')}
       </motion.button>
       
-      {/* Ungrouped Button */}
+      { }
       <motion.button
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
@@ -80,7 +80,7 @@ export default function FolderFilters({
         {t('dashboard.folder.ungrouped')}
       </motion.button>
 
-      {/* Folder Buttons - Only show when showIndividualFolders is true */}
+      { }
       {showIndividualFolders && folders.map((folder, index) => (
         <motion.button
           key={folder.id}

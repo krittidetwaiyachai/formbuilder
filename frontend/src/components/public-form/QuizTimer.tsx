@@ -16,42 +16,37 @@ export default function QuizTimer({ timeLimitMinutes, onTimeUp, startTime }: Qui
   const hasCalledOnTimeUp = useRef(false);
 
   useEffect(() => {
-    if (!startTime) {
-      // If no start time provided, start counting from now
-      setTimeRemaining(timeLimitMinutes * 60 * 1000);
+    let targetTime: number;
+
+    if (startTime) {
+      targetTime = startTime.getTime() + (timeLimitMinutes * 60 * 1000);
     } else {
-      // Calculate remaining time based on start time
-      const elapsed = Date.now() - startTime.getTime();
-      const remaining = (timeLimitMinutes * 60 * 1000) - elapsed;
-      setTimeRemaining(Math.max(0, remaining));
-    }
-  }, [timeLimitMinutes, startTime]);
-
-  useEffect(() => {
-    if (timeRemaining <= 0 && !isExpired && !hasCalledOnTimeUp.current) {
-      setIsExpired(true);
-      hasCalledOnTimeUp.current = true;
-      onTimeUp();
-      return;
+      targetTime = Date.now() + (timeLimitMinutes * 60 * 1000);
     }
 
-    if (isExpired) return;
+    const checkTime = () => {
+        if (hasCalledOnTimeUp.current) return;
 
-    const interval = setInterval(() => {
-      setTimeRemaining((prev) => {
-        const newTime = prev - 1000;
-        if (newTime <= 0 && !hasCalledOnTimeUp.current) {
-          setIsExpired(true);
-          hasCalledOnTimeUp.current = true;
-          onTimeUp();
-          return 0;
+        const now = Date.now();
+        const diff = targetTime - now;
+
+        if (diff <= 0) {
+            setTimeRemaining(0);
+            if (!isExpired) {
+               setIsExpired(true);
+               hasCalledOnTimeUp.current = true;
+               onTimeUp();
+            }
+        } else {
+            setTimeRemaining(diff);
         }
-        return newTime;
-      });
-    }, 1000);
+    };
 
+    checkTime();
+
+    const interval = setInterval(checkTime, 1000);
     return () => clearInterval(interval);
-  }, [timeRemaining, isExpired, onTimeUp]);
+  }, [timeLimitMinutes, startTime, onTimeUp, isExpired]);
 
   const formatTime = (ms: number): string => {
     const totalSeconds = Math.floor(ms / 1000);
@@ -89,7 +84,6 @@ export default function QuizTimer({ timeLimitMinutes, onTimeUp, startTime }: Qui
   return (
     <div className={`flex items-center bg-white rounded-full border border-gray-200 shadow-[0_8px_24px_rgba(0,0,0,0.08)] transition-all duration-300 ${isCollapsed ? 'p-2' : 'px-4 py-2 gap-3'}`}>
       
-      {/* Icon & Time Section */}
       <div className={`flex items-center gap-2 ${isCollapsed ? 'cursor-pointer' : ''}`} onClick={() => isCollapsed && setIsCollapsed(false)}>
         <Clock className={`w-5 h-5 ${statusColor} ${isDanger ? 'animate-pulse' : ''}`} />
         
@@ -107,19 +101,17 @@ export default function QuizTimer({ timeLimitMinutes, onTimeUp, startTime }: Qui
         )}
       </div>
 
-      {/* Separator */}
       {!isCollapsed && (
         <div className="w-px h-6 bg-gray-100 mx-1" />
       )}
 
-      {/* Toggle Button */}
       <button 
         onClick={(e) => {
           e.stopPropagation();
           setIsCollapsed(!isCollapsed);
         }}
         className="p-1.5 hover:bg-gray-50 rounded-full text-gray-400 hover:text-gray-600 transition-colors focus:outline-none"
-        title={isCollapsed ? "Show Timer" : "Hide Timer"}
+        title={isCollapsed ? t('public.timer.show_timer') : t('public.timer.hide_timer')}
       >
         {isCollapsed ? (
           <Eye className="w-4 h-4" />
@@ -131,4 +123,3 @@ export default function QuizTimer({ timeLimitMinutes, onTimeUp, startTime }: Qui
     </div>
   );
 }
-

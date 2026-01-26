@@ -2,6 +2,7 @@ import React, { useState, useRef, useCallback } from 'react';
 import { Field } from '@/types';
 import { Plus, X, GripVertical } from 'lucide-react';
 import { useFormStore } from '@/store/formStore';
+import { useTranslation } from 'react-i18next';
 
 interface RadioFieldProps {
   field: Field;
@@ -26,6 +27,7 @@ export const RadioField: React.FC<RadioFieldProps> = ({
   const { updateField: storeUpdateField, selectedFieldId } = useFormStore();
   const updateField = propUpdateField || storeUpdateField;
   const isSelected = propIsSelected !== undefined ? propIsSelected : (selectedFieldId === field.id);
+  const { t } = useTranslation();
 
   const [newOptionText, setNewOptionText] = useState('');
   const [dragIndex, setDragIndex] = useState<number | null>(null);
@@ -33,18 +35,18 @@ export const RadioField: React.FC<RadioFieldProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  // Robust getOptions to handle Object structure
+  
   const getOptionsRobust = (): { label: string; value: string }[] => {
        let rawOptions = field.options;
        if (!rawOptions) return [];
        if (Array.isArray(rawOptions)) {
-           // Legacy Array: Convert to object array if needed
+           
             if (rawOptions.length > 0 && typeof rawOptions[0] === 'object') {
                 return rawOptions as unknown as { label: string; value: string }[];
             }
            return rawOptions.map(o => typeof o === 'string' ? {label:o, value:o} : o);
        }
-       // Object wrapper
+       
        if (rawOptions.items && Array.isArray(rawOptions.items)) {
            return rawOptions.items.map((o: any) => typeof o === 'string' ? {label:o, value:o} : o);
        }
@@ -256,14 +258,14 @@ export const RadioField: React.FC<RadioFieldProps> = ({
               onKeyDown={handleKeyDown}
               onBlur={handleAddOption}
               className="flex-1 bg-transparent text-sm text-gray-700 focus:outline-none placeholder:text-gray-400"
-              placeholder="Add option..."
+              placeholder={t('common.options.add_option')}
             />
           </div>
         </div>
         
         {options.length === 0 && (
           <p className="text-xs text-gray-400 text-center py-2">
-            No options yet. Type above to add.
+            {t('common.options.no_options')}
           </p>
         )}
         
@@ -285,7 +287,7 @@ export const RadioField: React.FC<RadioFieldProps> = ({
       )) : (
         <div className="flex items-center gap-4 p-3 text-gray-400 italic">
           <div className="w-6 h-6 border-2 border-gray-200 rounded-full"></div>
-          <span>Click to add options</span>
+          <span>{t('common.options.click_to_add')}</span>
         </div>
       )}
       {otherOption && (
@@ -293,8 +295,8 @@ export const RadioField: React.FC<RadioFieldProps> = ({
           <div className="relative flex items-center justify-center shrink-0">
             <div className="w-6 h-6 border-2 border-pink-200 rounded-full group-hover/field:border-pink-500 transition-colors"></div>
           </div>
-          <span className="text-base font-medium text-gray-700">Other</span>
-          <div className="ml-2 px-2 py-1 border-b border-gray-300 w-full text-xs text-gray-400 italic">type here...</div>
+          <span className="text-base font-medium text-gray-700">{t('common.options.other')}</span>
+          <div className="ml-2 px-2 py-1 border-b border-gray-300 w-full text-xs text-gray-400 italic">{t('common.options.type_here')}</div>
         </div>
       )}
       

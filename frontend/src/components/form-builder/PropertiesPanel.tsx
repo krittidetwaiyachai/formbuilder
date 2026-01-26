@@ -6,7 +6,7 @@ import { Settings, GitBranch } from 'lucide-react';
 import LogicSidebarList from './LogicSidebarList';
 import { useTranslation } from 'react-i18next';
 
-// Property Components
+
 import { DateProperties } from '@/components/field-properties/advanced/DateProperties';
 import { FullNameProperties } from '@/components/field-properties/text/FullNameProperties';
 import { EmailProperties } from '@/components/field-properties/text/EmailProperties';
@@ -26,7 +26,7 @@ import { RateProperties } from '@/components/field-properties/advanced/RatePrope
 import { MatrixProperties } from '@/components/field-properties/advanced/MatrixProperties';
 import { TableProperties } from '@/components/field-properties/advanced/TableProperties';
 
-// Extracted Shared/Specific Components
+
 import { SpecialPageProperties } from './properties/SpecialPageProperties';
 import { FormSettingsProperties } from './properties/FormSettingsProperties';
 import { CommonFieldProperties } from './properties/CommonFieldProperties';
@@ -66,7 +66,7 @@ export default function PropertiesPanel({ currentPage = 0 }: PropertiesPanelProp
 
   if (!currentForm) return null;
 
-  // Render Special Page Properties (Welcome / Thank You)
+  
   if (currentPage < 0) {
      return (
        <div ref={panelRef} className="w-full bg-white flex flex-col h-full border-l border-gray-200">
@@ -83,7 +83,7 @@ export default function PropertiesPanel({ currentPage = 0 }: PropertiesPanelProp
 
   return (
     <div ref={panelRef} className="w-full bg-white flex flex-col h-full" style={{ overscrollBehavior: 'none' }} onKeyDown={(e) => {
-      // Prevent Ctrl+A (Cmd+A on Mac) in properties panel, but allow it in input/textarea
+      
       if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
         const target = e.target as HTMLElement;
         if (target.tagName !== 'INPUT' && target.tagName !== 'TEXTAREA' && !target.isContentEditable) {
@@ -92,7 +92,7 @@ export default function PropertiesPanel({ currentPage = 0 }: PropertiesPanelProp
         }
       }
     }}>
-      {/* Top Section - Tabs */}
+      { }
       <div className="border-b border-gray-100 bg-white px-4 py-3 sticky top-0 z-10">
         <div className="flex p-1 bg-gray-100 rounded-xl">
           {selectedField && (
@@ -135,7 +135,7 @@ export default function PropertiesPanel({ currentPage = 0 }: PropertiesPanelProp
         </div>
       </div>
 
-      {/* Content Section */}
+      { }
       <div className="flex-1 overflow-y-auto px-1 py-2">
         {activeTab === 'properties' && (
           <>
@@ -263,7 +263,7 @@ export default function PropertiesPanel({ currentPage = 0 }: PropertiesPanelProp
                     duplicatesField={addField}
                   />
                 ) : (
-                  // Fallback for generic fields if any
+                  
                   <CommonFieldProperties 
                     field={selectedField}
                     currentForm={currentForm}
@@ -271,12 +271,9 @@ export default function PropertiesPanel({ currentPage = 0 }: PropertiesPanelProp
                   />
                 )}
                 
-                {/* Fallback Rendering for custom fields relying on generic logic previously */}
-                {/* This is a visual check: if not in the 'excluded' list of CommonFieldProperties, render it */}
-                {/* Actually, the switch statement handles specific Components. 
-                    The CommonFieldProperties is used in the 'else' block above. 
-                    So we don't need to double render it.
-                */}
+                { }
+                { }
+                { }
               </div>
             ) : null}
           </>
@@ -285,11 +282,11 @@ export default function PropertiesPanel({ currentPage = 0 }: PropertiesPanelProp
         {activeTab === 'theme' && (
           <div className="space-y-4">
             <h3 className="text-sm font-semibold text-black mb-4">{t('builder.properties.theme_settings')}</h3>
-            <p className="text-sm text-gray-600">Theme customization coming soon...</p>
+            <p className="text-sm text-gray-600">{t('builder.properties.theme_coming_soon')}</p>
           </div>
         )}
 
-        {/* Removed per-field logic properties - only show LogicSidebarList */}
+        { }
 
         {activeTab === 'logic' && (
            <LogicSidebarList />

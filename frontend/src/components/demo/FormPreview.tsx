@@ -9,10 +9,12 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent } from "@/components/ui/card"; // Added back Card and CardContent
-import { Star } from "lucide-react"; // Added back Star
+import { Card, CardContent } from "@/components/ui/card"; 
+import { Star } from "lucide-react";
+import { useTranslation } from 'react-i18next';
 
 export default function FormPreview() {
+  const { t } = useTranslation();
   const renderElement = (element: any) => {
     switch (element.type) {
       case FieldType.HEADER:
@@ -84,7 +86,7 @@ export default function FormPreview() {
             </Label>
             <Select>
               <SelectTrigger id={element.id}>
-                <SelectValue placeholder="Select an option" />
+                <SelectValue placeholder={t('common.select_option')} />
               </SelectTrigger>
               <SelectContent>
                 {element.options?.map((opt: any) => (

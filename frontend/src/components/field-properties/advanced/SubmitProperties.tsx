@@ -42,12 +42,12 @@ export const SubmitProperties: React.FC<SubmitPropertiesProps> = ({ field, updat
 
   return (
     <div className="space-y-4">
-      {/* Tabs */}
+      { }
       <PropertiesTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {activeTab === 'general' && (
         <div className="space-y-6">
-           {/* Button Text */}
+           { }
            <div>
               <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.button_text')}
@@ -63,7 +63,7 @@ export const SubmitProperties: React.FC<SubmitPropertiesProps> = ({ field, updat
               </p>
             </div>
 
-             {/* Duplicate Field */}
+             { }
              <button
                type="button"
                onClick={() => duplicatesField({
@@ -86,7 +86,7 @@ export const SubmitProperties: React.FC<SubmitPropertiesProps> = ({ field, updat
 
       {activeTab === 'options' && (
         <div className="space-y-6">
-             {/* Button Alignment */}
+             { }
             <div>
               <label className="block text-sm font-medium text-black mb-2">
                 {t('builder.properties.button_alignment')}
@@ -111,7 +111,7 @@ export const SubmitProperties: React.FC<SubmitPropertiesProps> = ({ field, updat
               </p>
             </div>
 
-             {/* Reset Button */}
+             { }
              <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.reset_button')}
@@ -130,7 +130,7 @@ export const SubmitProperties: React.FC<SubmitPropertiesProps> = ({ field, updat
                 </p>
             </div>
 
-            {/* Print Button */}
+            { }
              <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.print_button')}
@@ -149,7 +149,7 @@ export const SubmitProperties: React.FC<SubmitPropertiesProps> = ({ field, updat
                 </p>
             </div>
             
-             {/* Save and Continue Later */}
+             { }
              <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.save_continue')}
@@ -172,7 +172,7 @@ export const SubmitProperties: React.FC<SubmitPropertiesProps> = ({ field, updat
 
       {activeTab === 'advanced' && (
         <div className="space-y-6">
-             {/* Shrink */}
+             { }
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.shrink')}
@@ -191,7 +191,7 @@ export const SubmitProperties: React.FC<SubmitPropertiesProps> = ({ field, updat
               </p>
             </div>
 
-            {/* Hide field */}
+            { }
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.hide_field')}

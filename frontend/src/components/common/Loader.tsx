@@ -1,8 +1,8 @@
 export default function Loader({ className = '', size = 48 }: { className?: string; size?: number | string }) {
   const sizeStyle = typeof size === 'number' ? `${size}px` : size;
-  // Reduce font-size to scale the em-based shadows correctly. 
-  // Original was 48px size with ~16px font-size (ratio ~3).
-  // Let's use size/4 to keep it thin and elegant.
+  
+  
+  
   const fontStyle = typeof size === 'number' ? `${size / 4}px` : '12px';
   
   return (

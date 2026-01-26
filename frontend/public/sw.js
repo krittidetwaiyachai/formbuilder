@@ -1,5 +1,5 @@
-// Empty service worker to prevent errors
-// This will be unregistered automatically
+
+
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();

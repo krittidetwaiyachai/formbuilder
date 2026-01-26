@@ -225,7 +225,7 @@ export const DropdownField: React.FC<DropdownFieldProps> = ({
                   value={opt.label}
                   onChange={(e) => handleUpdateOption(idx, e.target.value)}
                   className="flex-1 bg-transparent text-sm text-gray-700 focus:outline-none"
-                  placeholder={`Option ${idx + 1}`}
+                  placeholder={t('builder.dropdown.option_placeholder', { index: idx + 1 })}
                 />
                 <button
                   type="button"
@@ -256,14 +256,14 @@ export const DropdownField: React.FC<DropdownFieldProps> = ({
               onKeyDown={handleKeyDown}
               onBlur={handleAddOption}
               className="flex-1 bg-transparent text-sm text-gray-700 focus:outline-none placeholder:text-gray-400"
-              placeholder="Add option..."
+              placeholder={t('builder.dropdown.add_option_placeholder')}
             />
           </div>
         </div>
         
         {options.length === 0 && (
           <p className="text-xs text-gray-400 text-center py-2">
-            No options yet. Type above to add.
+            {t('builder.dropdown.no_options')}
           </p>
         )}
         
@@ -285,13 +285,13 @@ export const DropdownField: React.FC<DropdownFieldProps> = ({
               ))}
               {options.length > (rows || 4) && (
                 <div className="px-3 py-1 text-xs text-gray-400 italic">
-                  ... {options.length - (rows || 4)} more options
+                  {t('builder.dropdown.more_options', { count: options.length - (rows || 4) })}
                 </div>
               )}
             </>
           ) : (
             <div className="px-3 py-2 text-sm text-gray-400 italic">
-              Click to add options
+              {t('builder.dropdown.click_to_add')}
             </div>
           )}
         </div>
@@ -306,9 +306,9 @@ export const DropdownField: React.FC<DropdownFieldProps> = ({
         <ChevronDown className={`h-5 w-5 ${fieldStyle.iconColor} opacity-80`} />
       </div>
       <div className={`w-full px-4 py-3.5 border ${fieldStyle.inputBorder} rounded-xl bg-pink-50/30 text-black text-base shadow-sm transition-all duration-300 ${disabledClass} pointer-events-none group-hover/field:bg-white group-hover/field:shadow-md flex items-center justify-between`}>
-        <span className="text-gray-500">{field.placeholder || t('builder.placeholder.dropdown')}</span>
+        <span className="text-gray-500">{field.placeholder || t('builder.sidebar.select_option')}</span>
         {options.length > 0 && (
-          <span className="text-xs text-gray-400 mr-6">{options.length} options</span>
+          <span className="text-xs text-gray-400 mr-6">{t('builder.dropdown.options_count', { count: options.length })}</span>
         )}
       </div>
 

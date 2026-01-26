@@ -42,7 +42,7 @@ export function MatrixProperties({ field, updateField, duplicatesField }: Matrix
     handleOptionUpdate('columns', newCols);
   };
 
-  // --- Row/Col Helpers ---
+  
   const addRow = () => {
     const newId = `r${Date.now()}`;
     updateRows([...rows, { id: newId, label: `${t('builder.properties.question')} ${rows.length + 1}` }]);
@@ -95,18 +95,18 @@ export function MatrixProperties({ field, updateField, duplicatesField }: Matrix
 
   return (
     <div className="space-y-4">
-      {/* Tabs */}
-      {/* Tabs */}
+      { }
+      { }
       <PropertiesTabs 
         activeTab={activeTab} 
         setActiveTab={setActiveTab} 
         tabs={['general', 'fields', 'advanced']} 
       />
 
-      {/* GENERAL TAB */}
+      { }
       {activeTab === 'general' && (
         <div className="space-y-4">
-          {/* Field Label */}
+          { }
           <div>
             <label className="block text-sm font-medium text-black mb-1">
               {t('builder.properties.field_label')}
@@ -119,7 +119,7 @@ export function MatrixProperties({ field, updateField, duplicatesField }: Matrix
             />
           </div>
 
-          {/* Required */}
+          { }
           <div>
              <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.required')}
@@ -138,7 +138,7 @@ export function MatrixProperties({ field, updateField, duplicatesField }: Matrix
               </p>
           </div>
 
-          {/* Sublabel */}
+          { }
           <div>
             <label className="block text-sm font-medium text-black mb-1">
               {t('builder.properties.sublabel')}
@@ -154,12 +154,12 @@ export function MatrixProperties({ field, updateField, duplicatesField }: Matrix
             </p>
           </div>
 
-          {/* Duplicate Field */}
+          { }
           <button
             type="button"
             onClick={() => duplicatesField({
                ...field,
-               id: undefined, // Create new ID
+               id: undefined, 
             } as any)}
             className="w-full mt-4 px-3 py-2 text-sm font-medium text-black bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
           >
@@ -169,11 +169,11 @@ export function MatrixProperties({ field, updateField, duplicatesField }: Matrix
         </div>
       )}
 
-      {/* FIELDS TAB (Rows/Cols/Type) */}
+      { }
       {activeTab === 'fields' && (
         <div className="space-y-6">
           
-          {/* Input Type */}
+          { }
           <div>
             <label className="block text-sm font-medium text-black mb-2">{t('builder.properties.input_type')}</label>
             <div className="flex bg-gray-100 p-1 rounded-lg">
@@ -196,7 +196,7 @@ export function MatrixProperties({ field, updateField, duplicatesField }: Matrix
             </div>
           </div>
 
-          {/* Rows Editor */}
+          { }
           <div>
               <div className="flex items-center justify-between mb-2">
                   <label className="text-sm font-medium text-black">{t('builder.properties.rows')}</label>
@@ -220,7 +220,7 @@ export function MatrixProperties({ field, updateField, duplicatesField }: Matrix
                                               {...provided.draggableProps}
                                               className="flex items-center gap-2 group"
                                           >
-                                              <div {...provided.dragHandleProps} className="text-gray-300 cursor-move hover:text-gray-500">
+                                            <div {...provided.dragHandleProps} className="text-gray-300 cursor-move hover:text-gray-500" style={{ touchAction: 'none' }}>
                                                   <GripVertical className="w-4 h-4" />
                                               </div>
                                               <input
@@ -249,7 +249,7 @@ export function MatrixProperties({ field, updateField, duplicatesField }: Matrix
               </DragDropContext>
           </div>
 
-          {/* Columns Editor */}
+          { }
           <div>
               <div className="flex items-center justify-between mb-2">
                   <label className="text-sm font-medium text-black">{t('builder.properties.columns')}</label>
@@ -273,7 +273,7 @@ export function MatrixProperties({ field, updateField, duplicatesField }: Matrix
                                               {...provided.draggableProps}
                                               className="flex items-center gap-2 group"
                                           >
-                                              <div {...provided.dragHandleProps} className="text-gray-300 cursor-move hover:text-gray-500">
+                                              <div {...provided.dragHandleProps} className="text-gray-300 cursor-move hover:text-gray-500" style={{ touchAction: 'none' }}>
                                                   <GripVertical className="w-4 h-4" />
                                               </div>
                                               <input
@@ -304,10 +304,10 @@ export function MatrixProperties({ field, updateField, duplicatesField }: Matrix
         </div>
       )}
 
-      {/* ADVANCED TAB */}
+      { }
       {activeTab === 'advanced' && (
         <div className="space-y-4">
-            {/* Hover Text */}
+            { }
             <div>
               <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.hover_text')}
@@ -323,7 +323,7 @@ export function MatrixProperties({ field, updateField, duplicatesField }: Matrix
               </p>
             </div>
 
-             {/* Shrink */}
+             { }
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.shrink')}
@@ -342,7 +342,7 @@ export function MatrixProperties({ field, updateField, duplicatesField }: Matrix
               </p>
             </div>
             
-            {/* Hide field */}
+            { }
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.hide_field')}

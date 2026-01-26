@@ -55,16 +55,16 @@ export default function DesignerElementCard({
           isSelected && "border-black border-[3px] shadow-xl scale-[1.01] ring-2 ring-black/5 z-20 pt-4 pb-2 px-3"
         )}
         onMouseDown={(e) => {
-          // Don't trigger onClick if clicking on a contenteditable element
+          
           const target = e.target as HTMLElement;
           if (target.isContentEditable || target.closest('[contenteditable="true"]')) {
-            // Don't preventDefault - let the contentEditable element handle it naturally
+            
             e.stopPropagation();
             return;
           }
         }}
         onClick={(e) => {
-          // Don't trigger onClick if clicking on a contenteditable element
+          
           const target = e.target as HTMLElement;
           if (target.isContentEditable || target.closest('[contenteditable="true"]')) {
             e.stopPropagation();

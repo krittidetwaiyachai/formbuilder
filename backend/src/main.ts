@@ -9,8 +9,8 @@ import { join } from 'path';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   
-  // Serve static assets from frontend/public
-  // Go up one level from backend CWD to reach module root, then frontend
+  
+  
   app.useStaticAssets(join(process.cwd(), '..', 'frontend', 'public'), {
     prefix: '/', 
   });
@@ -20,7 +20,7 @@ async function bootstrap() {
     contentSecurityPolicy: false,
   }));
   
-  // Enable CORS - allow all origins in development
+  
   const allowedOrigins = process.env.FRONTEND_URL?.split(',') || [];
   console.log('Allowed Origins:', allowedOrigins);
   app.enableCors({
@@ -29,7 +29,7 @@ async function bootstrap() {
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   });
-  // Global validation pipe
+  
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

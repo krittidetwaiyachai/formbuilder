@@ -75,6 +75,10 @@ export interface Field {
   content?: string;
   headingImage?: string;
   isPII?: boolean;
+  explanation?: string;
+  imageUrl?: string;
+  imageWidth?: string;
+  videoUrl?: string; 
 }
 
 export interface FieldCondition {
@@ -125,9 +129,9 @@ export interface Form {
     showExplanation?: boolean;
     shuffleQuestions?: boolean;
     requireSignIn?: boolean;
-    timeLimit?: number; // Time limit in minutes
-    startTime?: string; // ISO date string for when quiz opens
-    endTime?: string; // ISO date string for when quiz closes
+    timeLimit?: number; 
+    startTime?: string; 
+    endTime?: string; 
   };
   createdById: string;
   createdAt: string;
@@ -183,6 +187,7 @@ export interface FormSettings {
   showPageNumbers?: boolean;
   redirectUrl?: string;
   emailNotifications?: boolean;
+  shuffleQuestions?: boolean;
 }
 
 export interface FormTheme {
@@ -197,9 +202,9 @@ export interface FormTheme {
 }
 
 export interface PageSettings {
-  id: string; // Unique ID for the page (could be UUID or simple generated ID)
+  id: string; 
   title: string;
-  // We can add more specific page settings here later (e.g., hidden, logic)
+  
 }
 
 export interface WelcomeScreenSettings {

@@ -8,5 +8,9 @@ export default {
   "error.503.title": "ปรับปรุงระบบ",
   "error.503.message": "กำลังปรับปรุงระบบ เร็วๆ นี้",
   "error.back_home": "กลับหน้าหลัก",
-  "error.go_back": "ย้อนกลับ"
+  "error.go_back": "ย้อนกลับ",
+  "error.footer.security": "โปรโตคอลความปลอดภัย • ระดับการเข้าถึง: จำกัด",
+  "error.footer.diagnostic": "การวินิจฉัยระบบ • สถานะ: วิกฤต",
+  "error.footer.upgrade": "การอัปเกรดระบบ • เวลาที่คาดการณ์: ไม่ทราบ",
+  "error.footer.default": "FormBuilder • ข้อผิดพลาด 404"
 };

@@ -53,7 +53,7 @@ export function useDashboardForms() {
     try {
       setIsCreating(true);
       const res = await api.post('/forms', {
-        title: 'Untitled Form',
+        title: t('common.untitled_form'),
         description: '',
       });
       navigate(`/forms/${res.data.form.id}/builder`);
@@ -82,8 +82,8 @@ export function useDashboardForms() {
       console.error('Failed to delete form:', error);
       toast({
         variant: 'error',
-        title: 'Error',
-        description: 'Failed to delete form. Please try again.',
+        title: t('dashboard.toast.error'),
+        description: t('dashboard.toast.error_delete'),
       });
     }
   };

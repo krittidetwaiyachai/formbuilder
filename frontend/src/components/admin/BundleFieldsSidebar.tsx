@@ -169,46 +169,46 @@ function SidebarCategory({ category, isCollapsed, startIndex }: { category: { na
       <div className="space-y-2">
         <div className="w-full h-px bg-gray-200 my-1" />
         {category.fields.map((field, index) => {
-          // Replicate closely the logic from FieldSidebar.tsx
-          // 1. Visual (Underlying)
-          // 2. Draggable (Overlay)
+          
+          
+          
           
           return (
             <div key={field.type} className="relative z-0 select-none">
-                {/* 1. Underlying Visual */}
+                { }
                 <div className="relative z-0">
                     <FieldTypeButton config={field} isCollapsed={true} />
                 </div>
 
-                {/* 2. Draggable Overlay */}
+                { }
                 <Draggable draggableId={`sidebar-${field.type}`} index={startIndex + index}>
                   {(provided, snapshot) => (
                       <div
                         ref={provided.innerRef}
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}
-                        // Important: When dragging, this element moves with the mouse.
-                        // We set opacity: 0 effectively if we rely on a separate drag overlay,
-                        // BUT here in bundles we don't have a separate custom DragOverlay yet.
-                        // So we MUST show the content.
-                        // Builder uses: snapshot.isDragging ? { opacity: 0 } : { }
-                        // And likely relies on a DragOverlay in the parent.
-                        // Since I don't have DragOverlay setup in BundleEditor, I will keep opacity visible.
-                        // Wait, user wants "EXACTLY like builder".
-                        // Builder:
-                        // style={ snapshot.isDragging ? { ...style, opacity: 0 } : style }
-                        // className={ ... snapshot.isDragging ? 'opacity-0' : 'absolute inset-0' }
                         
-                        // IF I do that, dragging will be invisible unless I add DragOverlay.
-                        // I will add DragOverlay to BundleEditor.tsx in next step.
-                        // For now, let's setup the sidebar to be ready for DragOverlay (i.e. hide when dragging).
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
                         
                         className={cn(
                           "z-10 w-full h-full touch-none",
-                          // Hide draggable element itself to prevent double rendering.
-                          // It remains interactive but invisible.
-                          // Underlying visual provides the static look.
-                          // renderClone provides the dragged look.
+                          
+                          
+                          
+                          
                           snapshot.isDragging ? "opacity-0 fixed" : "absolute inset-0 opacity-0"
                         )}
                         style={
@@ -248,12 +248,12 @@ function SidebarCategory({ category, isCollapsed, startIndex }: { category: { na
         <div className="p-2 space-y-2 bg-gray-50/50 border-t border-gray-100">
           {category.fields.map((field, index) => (
             <div key={field.type} className="relative z-0 select-none">
-               {/* 1. Underlying Visual */}
+               { }
                <div className="relative z-0">
                   <FieldTypeButton config={field} isCollapsed={false} />
                </div>
 
-               {/* 2. Draggable Overlay */}
+               { }
                <Draggable draggableId={`sidebar-${field.type}`} index={startIndex + index}>
                   {(provided, snapshot) => (
                      <div
@@ -262,7 +262,7 @@ function SidebarCategory({ category, isCollapsed, startIndex }: { category: { na
                         {...provided.dragHandleProps}
                         className={cn(
                           "z-10 w-full h-full touch-none",
-                          // FIX: Same fix for expanded view
+                          
                           snapshot.isDragging ? "opacity-0 fixed" : "absolute inset-0 opacity-0"
                         )}
                         style={
@@ -309,12 +309,12 @@ export default function BundleFieldsSidebar() {
       <Droppable 
         droppableId="BUNDLE-SIDEBAR" 
         isDropDisabled={true}
-        // Use renderClone to create the drag preview.
-        // This ensures the original item stays in the list (if we render logic for it),
-        // and this clone is what follows the mouse.
+        
+        
+        
         renderClone={(provided, _snapshot, rubric) => {
-          // Find the field config based on rubric.draggableId
-          // draggableId format: `sidebar-${field.type}`
+          
+          
           const fieldType = rubric.draggableId.replace('sidebar-', '') as FieldType;
           const field = fieldCategories.flatMap(c => c.fields).find(f => f.type === fieldType);
           
@@ -326,9 +326,9 @@ export default function BundleFieldsSidebar() {
                {...provided.draggableProps}
                {...provided.dragHandleProps}
                style={provided.draggableProps.style}
-               className="z-[9999]" // High z-index for the drag preview
+               className="z-[9999]" 
              >
-                <div className="w-[300px]"> {/* Force width to match sidebar if needed, or let component decide */}
+                <div className="w-[300px]"> { }
                   <BundleSidebarDragPreview fieldConfig={field} />
                 </div>
              </div>
@@ -354,7 +354,7 @@ export default function BundleFieldsSidebar() {
               );
             })}
             
-            {/* Hide placeholder to prevent layout shift as we keep original item visible */}
+            { }
             <div className="hidden">
               {provided.placeholder}
             </div>

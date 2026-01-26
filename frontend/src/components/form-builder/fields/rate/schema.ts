@@ -6,7 +6,7 @@ export const rateDefaultValues = {
   required: false,
   options: {
     scale: 5,
-    icon: 'STAR', // STAR, HEART, THUMB
+    icon: 'STAR', 
     width: 'FULL',
     labelAlignment: 'TOP',
   },

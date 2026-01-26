@@ -39,18 +39,14 @@ export default function DesignerElementWrapper({
 
   const elementRef = React.useRef<HTMLDivElement | null>(null);
 
-  // Force lock position during drag
   React.useLayoutEffect(() => {
     if (!elementRef.current) return;
     
     const element = elementRef.current;
     
-    // Only run lock logic if actually dragging this element
     if (isDragging) {
-      // Lock position by continuously resetting transform
       const lockPosition = () => {
         if (element && isDragging) {
-          // Force remove any transform
           const computedStyle = window.getComputedStyle(element);
           if (computedStyle.transform && computedStyle.transform !== 'none') {
             element.style.transform = 'none';
@@ -60,14 +56,12 @@ export default function DesignerElementWrapper({
         }
       };
       
-      // Use MutationObserver to watch for transform changes
       const observer = new MutationObserver(lockPosition);
       observer.observe(element, {
         attributes: true,
         attributeFilter: ['style'],
       });
       
-      // Also use requestAnimationFrame as backup
       const rafId = requestAnimationFrame(function animate() {
         lockPosition();
         if (isDragging) {
@@ -87,10 +81,8 @@ export default function DesignerElementWrapper({
     transition: isDragging ? 'none' : transition,
     opacity: isDragging ? 0.3 : 1,
     visibility: 'visible',
-    // touchAction: 'none', // Removed to allow text selection and scrolling
   };
 
-  // Create custom listeners that ignore contentEditable elements and specific form/text tags
   const customListeners = React.useMemo(() => {
     if (!listeners) return {};
     
@@ -101,11 +93,9 @@ export default function DesignerElementWrapper({
         customHandlers[key] = (e: any) => {
           const target = e.target as HTMLElement;
           
-          // Prevent drag if target is interacting with content
           if (
             target.isContentEditable || 
             target.closest('[contenteditable="true"]') ||
-            // Also prevent drag on these specific tags to allow click-to-select/edit to work reliably
             ['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON', 'LABEL', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'P'].includes(target.tagName)
           ) {
             return;
@@ -138,10 +128,8 @@ export default function DesignerElementWrapper({
         isSelected={isSelected}
         isDragging={isDragging}
         onClick={(e) => {
-          // Don't trigger onClick if clicking on a contenteditable element
           const target = e.target as HTMLElement;
           if (target.isContentEditable || target.closest('[contenteditable="true"]')) {
-            // Let the child handle validation/selection via onFocus
             return;
           }
           e.stopPropagation();

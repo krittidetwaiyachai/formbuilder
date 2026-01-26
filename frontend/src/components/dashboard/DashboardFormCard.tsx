@@ -43,8 +43,9 @@ export default function DashboardFormCard({
       className={`group bg-white rounded-2xl border border-gray-100 relative overflow-hidden flex flex-col hover:border-gray-200 hover:shadow-xl hover:shadow-gray-200/50 transition-all duration-300 cursor-pointer ${
         compact ? 'text-sm' : ''
       }`}
+      style={{ WebkitTouchCallout: 'none', userSelect: 'none' }}
     >
-      {/* Clean Header */}
+      { }
       <div className={`${compact ? 'h-16' : 'h-24'} bg-gray-50/50 border-b border-gray-100 relative overflow-hidden group-hover:bg-gray-50 transition-colors`}>
         <div className="absolute top-3 left-3 z-10">
           <div className="flex items-center gap-2">
@@ -134,22 +135,22 @@ export default function DashboardFormCard({
           </div>
         </div>
 
-        {/* Stats Row */}
+        { }
         {!compact && (
         <div className="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-gray-100">
            <div className="flex items-center gap-2 text-xs text-gray-500 font-medium">
              <Inbox className="w-3.5 h-3.5 text-gray-400" />
-             <span>{form.responseCount || form._count?.responses || 0} Responses</span>
+             <span>{form.responseCount || form._count?.responses || 0} {t('dashboard.stats.responses', 'Responses')}</span>
            </div>
            <div className="flex items-center gap-2 text-xs text-gray-500 font-medium">
              <Eye className="w-3.5 h-3.5 text-gray-400" />
-             <span>{form.viewCount || 0} Views</span>
+             <span>{form.viewCount || 0} {t('dashboard.stats.views', 'Views')}</span>
            </div>
         </div>
         )}
       </div>
 
-      {/* Modern Actions Footer */}
+      { }
       <div className="p-3 bg-gray-50/30 border-t border-gray-100 grid grid-cols-2 gap-2" onClick={(e) => e.stopPropagation()}>
         <button
           onClick={(e) => {

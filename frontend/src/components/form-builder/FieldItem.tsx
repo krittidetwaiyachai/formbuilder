@@ -1,7 +1,7 @@
 import React, { useRef, useState, useMemo } from 'react';
 import { DraggableProvided } from '@hello-pangea/dnd';
 import { Field, FieldType } from '@/types';
-import { Trash2, ChevronRight, EyeOff, Settings } from 'lucide-react';
+import { Trash2, ChevronRight, EyeOff, Settings, Image, Video } from 'lucide-react';
 import { useFormStore } from '@/store/formStore';
 import { ShortTextField } from './fields/short-text';
 import { EmailField } from './fields/email';
@@ -27,6 +27,8 @@ import InlineQuizBar from './InlineQuizBar';
 import { RichTextEditor } from '@/components/ui/RichTextEditor';
 import { RichTextToolbar } from '@/components/ui/RichTextToolbar';
 import { useTranslation } from 'react-i18next';
+import { sanitize } from '@/utils/sanitization';
+import { FloatingActionMenu } from './FloatingActionMenu';
 
 interface FieldItemProps {
   field: Field;
@@ -43,6 +45,7 @@ interface FieldItemProps {
   disableHover?: boolean;
   allFields?: Field[];
   hideDragHandle?: boolean;
+  isMultiSelecting?: boolean;
 }
 
 function FieldItem({ 
@@ -59,7 +62,8 @@ function FieldItem({
   isDragging = false,
   disableHover = false,
   allFields = [],
-  hideDragHandle = false
+  hideDragHandle = false,
+  isMultiSelecting = false
 }: FieldItemProps) {
   const deleteField = useFormStore((state) => state.deleteField);
   const updateField = useFormStore((state) => state.updateField);
@@ -70,20 +74,18 @@ function FieldItem({
   const isFocusingRef = useRef(false);
   const { t } = useTranslation();
 
-
-  
   const subLabelRef = useRef<HTMLDivElement>(null);
-  const [subLabelHtml, setSubLabelHtml] = useState({ __html: field.options?.subLabel || (isSelected ? t('common.sublabel') : '') });
-
-
+  const [subLabelHtml, setSubLabelHtml] = useState({ __html: sanitize(field.options?.subLabel) || (isSelected ? t('common.sublabel') : '') });
+  
+  const [mediaInputMode, setMediaInputMode] = useState<'image' | 'video' | null>(null);
 
   React.useEffect(() => {
      const currentText = subLabelRef.current?.textContent;
      const newSubLabel = field.options?.subLabel || (isSelected ? t('common.sublabel') : '');
      if (currentText !== newSubLabel) {
-         setSubLabelHtml({ __html: newSubLabel });
+         setSubLabelHtml({ __html: sanitize(newSubLabel) });
      }
-  }, [field.options?.subLabel, isSelected]);
+  }, [field.options?.subLabel, isSelected, t]);
 
   const handleContextMenu = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -107,7 +109,6 @@ function FieldItem({
     deleteField(field.id);
   };
   
-
   const getFieldStyle = () => {
     switch (field.type) {
       case FieldType.TEXT:
@@ -241,13 +242,13 @@ function FieldItem({
       case FieldType.RATE:
         return <RateField field={field} fieldStyle={fieldStyle} />;
       case FieldType.HEADER:
-        return <HeaderField field={field} fieldStyle={fieldStyle} isSelected={isSelected} onSelect={onSelect} />;
+        return <HeaderField field={field} fieldStyle={fieldStyle} isSelected={isSelected} onSelect={onSelect} isMultiSelecting={isMultiSelecting} />;
       case FieldType.FULLNAME:
         return <FullNameField field={field} fieldStyle={fieldStyle} />;
       case FieldType.ADDRESS:
         return <AddressField field={field} fieldStyle={fieldStyle} />;
       case FieldType.PARAGRAPH:
-        return <ParagraphField field={field} fieldStyle={fieldStyle} isSelected={isSelected} onSelect={onSelect} />;
+        return <ParagraphField field={field} fieldStyle={fieldStyle} isSelected={isSelected} onSelect={onSelect} isMultiSelecting={isMultiSelecting} />;
       case FieldType.DIVIDER:
         return <DividerField field={field} fieldStyle={fieldStyle} />;
       case FieldType.SECTION_COLLAPSE:
@@ -323,7 +324,7 @@ function FieldItem({
               <div className={`font-medium text-base truncate ${fieldStyle.iconColor}`}>{field.label || t('common.untitled_field')}</div>
           </div>
           <div className="h-8 w-full bg-gray-50 rounded border border-gray-100 flex items-center px-3 text-xs text-gray-400 font-medium select-none">
-              {field.type} Field
+              {t(`builder.fields.${field.type.toLowerCase()}`, field.type)} {t('common.field')}
           </div>
       </div>
     );
@@ -358,12 +359,11 @@ function FieldItem({
                }
             }}
             className={`relative group/field isolate flex-1 min-w-0 bg-white ${fieldStyle.bgGradient} ${isPageBreak ? '' : 'border rounded-2xl'} transition-colors duration-200 ${field.type === FieldType.HEADER ? 'cursor-text' : 'cursor-pointer'} ${
-              isSelected && !isOverlay ? `ring-2 ring-black shadow-lg z-10 border-transparent ${fieldStyle.cardBorder}` : 
+              isSelected && !isOverlay ? `ring-2 ring-black shadow-lg z-40 border-transparent ${fieldStyle.cardBorder}` : 
               isNewFromSidebar ? `border-blue-500 ring-4 ring-blue-500/10 shadow-blue-100/50 ${fieldStyle.cardBorder}` : 
-              `${isPageBreak ? '' : 'border-gray-200'} ${fieldStyle.cardBorder} ${isPageBreak ? '' : (disableHover ? '' : 'hover:border-gray-300 hover:shadow-md')}`
+              `${isPageBreak ? '' : 'border-gray-200'} ${fieldStyle.cardBorder} ${isPageBreak ? '' : (disableHover ? '' : 'hover:border-gray-300 hover:shadow-md hover:z-30')}`
             } ${isDragging ? 'shadow-2xl rotate-1 w-[320px] !bg-white !opacity-100 z-[9999]' : ''} ${isHidden ? 'opacity-50' : ''}`}
           >
-            {/* ... Content of FieldItem (Drag Handle, Label, etc.) */}
             {!hideDragHandle && (
               <div
                 {...provided?.dragHandleProps}
@@ -374,7 +374,25 @@ function FieldItem({
                 <div className={`w-12 h-1.5 rounded-full transition-colors ${isSelected ? 'bg-gray-400' : 'bg-gray-200 hover:bg-gray-300'}`}></div>
               </div>
             )}
-            {/* Hidden Indicator */}
+
+            {!isOverlay && !isDragging && (
+                <div className={`absolute top-0 bottom-0 -right-14 w-14 flex items-center justify-center z-50 transition-all duration-200 ${
+                    isSelected 
+                        ? 'opacity-100 translate-x-0' 
+                        : 'opacity-0 -translate-x-2 pointer-events-none group-hover/field:opacity-100 group-hover/field:translate-x-0 group-hover/field:pointer-events-auto'
+                }`}>
+                     <button
+                         onClick={(e) => {
+                             e.stopPropagation();
+                             deleteField(field.id);
+                         }}
+                         className="h-10 w-10 flex items-center justify-center bg-white text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full shadow-sm border border-gray-200 transition-all hover:scale-110 hover:shadow-md"
+                         title={t('common.delete_field')}
+                     >
+                         <Trash2 className="h-5 w-5" />
+                     </button>
+                </div>
+            )}
             {(field.validation?.hidden || field.options?.hidden) && !isOverlay && !isDragging && (
                 <div className="absolute top-2 right-2 z-20 bg-gray-100/80 p-1 rounded-full text-gray-500 backdrop-blur-sm" title={t('common.field_hidden')}>
                     <EyeOff className="h-4 w-4" />
@@ -382,7 +400,133 @@ function FieldItem({
             )}
 
             <div className={`${isDragging ? 'px-4 py-6' : 'px-4 pb-4 pt-6'}`} style={(!isDragging && (field.type === FieldType.HEADER || field.type === FieldType.PARAGRAPH || field.type === FieldType.DIVIDER)) ? { pointerEvents: 'auto' } : {}}>
-              {/* ... Field Content Rendering */}
+              {isSelected && !isOverlay && !isDragging && (
+                  <div className="mb-4 flex flex-col gap-3">
+                      <div className="flex items-center justify-end gap-1 pb-2 border-b border-gray-100">
+                          <button
+                              onClick={(e) => {
+                                  e.stopPropagation();
+                                  setMediaInputMode(prev => prev === 'image' ? null : 'image');
+                              }}
+                              className={`p-2 rounded-full transition-colors ${mediaInputMode === 'image' || field.imageUrl ? 'bg-blue-50 text-blue-600' : 'text-gray-400 hover:bg-gray-100 hover:text-gray-600'}`}
+                              title={t('builder.media.insert_image')}
+                          >
+                              <Image className="h-4 w-4" />
+                          </button>
+                          <button
+                              onClick={(e) => {
+                                  e.stopPropagation();
+                                  setMediaInputMode(prev => prev === 'video' ? null : 'video');
+                              }}
+                              className={`p-2 rounded-full transition-colors ${mediaInputMode === 'video' || field.videoUrl ? 'bg-blue-50 text-blue-600' : 'text-gray-400 hover:bg-gray-100 hover:text-gray-600'}`}
+                              title={t('builder.media.insert_video')}
+                          >
+                              <Video className="h-4 w-4" />
+                          </button>
+                      </div>
+
+                      {(mediaInputMode === 'image' || mediaInputMode === 'video') && (
+                          <div className="flex items-center gap-2 animate-in slide-in-from-top-2 fade-in duration-200">
+                               <input
+                                  autoFocus
+                                  type="text"
+                                  placeholder={mediaInputMode === 'image' ? t('builder.media.paste_image_url') : t('builder.media.paste_youtube_url')}
+                                  className="flex-1 text-sm border-b border-blue-500 focus:outline-none py-1 bg-transparent"
+                                  defaultValue={mediaInputMode === 'image' ? field.imageUrl : field.videoUrl}
+                                  onKeyDown={(e) => {
+                                      if (e.key === 'Enter') {
+                                          const val = e.currentTarget.value;
+                                          if (mediaInputMode === 'image') {
+                                              updateField(field.id, { imageUrl: val });
+                                              if (val && !field.imageWidth) updateField(field.id, { imageWidth: '100%' });
+                                          } else {
+                                              updateField(field.id, { videoUrl: val });
+                                          }
+                                          setMediaInputMode(null);
+                                      } else if (e.key === 'Escape') {
+                                          setMediaInputMode(null);
+                                      }
+                                  }}
+                                  onBlur={(e) => {
+                                      const val = e.currentTarget.value;
+                                       if (mediaInputMode === 'image') {
+                                          if (val !== field.imageUrl) {
+                                              updateField(field.id, { imageUrl: val });
+                                              if (val && !field.imageWidth) updateField(field.id, { imageWidth: '100%' });
+                                          }
+                                      } else {
+                                          if (val !== field.videoUrl) updateField(field.id, { videoUrl: val });
+                                      }
+                                      setMediaInputMode(null);
+                                  }}
+                               />
+                               <button onClick={() => setMediaInputMode(null)} className="text-xs text-gray-400 hover:text-gray-600">
+                                  {t('builder.media.cancel')}
+                               </button>
+                          </div>
+                      )}
+                  </div>
+              )}
+              
+              {!isOverlay && !isDragging && (field.imageUrl || field.videoUrl) && (
+                  <div className="flex flex-col items-center gap-3 my-4">
+                      {field.imageUrl && (
+                          <div className="relative group/media">
+                              <img 
+                                  src={field.imageUrl} 
+                                  alt="Preview" 
+                                  className="rounded-lg object-contain bg-gray-50 max-h-64"
+                                  style={{ maxWidth: field.imageWidth || '100%' }}
+                                  onError={(e) => {
+                                      (e.target as HTMLImageElement).style.display = 'none';
+                                  }}
+                              />
+                              <button
+                                  onClick={(e) => {
+                                      e.stopPropagation();
+                                      updateField(field.id, { imageUrl: '', imageWidth: '' });
+                                  }}
+                                  className="absolute top-1 right-1 bg-black/50 hover:bg-black/70 text-white rounded-full p-1 opacity-0 group-hover/media:opacity-100 transition-opacity"
+                                  title={t('builder.media.remove_image')}
+                              >
+                                  <Trash2 className="h-3 w-3" />
+                              </button>
+                          </div>
+                      )}
+
+                      {field.videoUrl && (() => {
+                          const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+                          const match = field.videoUrl?.match(regExp);
+                          const videoId = (match && match[2].length === 11) ? match[2] : null;
+
+                          if (videoId) {
+                              return (
+                                  <div className="relative group/media w-full max-w-md overflow-hidden rounded-xl bg-black/5 aspect-video">
+                                      <iframe 
+                                          src={`https://www.youtube.com/embed/${videoId}`}
+                                          title="YouTube video player"
+                                          frameBorder="0" 
+                                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                          allowFullScreen
+                                          className="absolute top-0 left-0 w-full h-full rounded-xl"
+                                      />
+                                      <button
+                                          onClick={(e) => {
+                                              e.stopPropagation();
+                                              updateField(field.id, { videoUrl: '' });
+                                          }}
+                                          className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white rounded-full p-1.5 opacity-0 group-hover/media:opacity-100 transition-opacity z-10"
+                                          title={t('builder.media.remove_video')}
+                                      >
+                                          <Trash2 className="h-3 w-3" />
+                                      </button>
+                                  </div>
+                              );
+                          }
+                          return null;
+                      })()}
+                  </div>
+              )}
               {field.type === FieldType.HEADER || field.type === FieldType.PARAGRAPH || field.type === FieldType.DIVIDER || field.type === FieldType.PAGE_BREAK ? (
                  <div 
                    onMouseDown={(e) => {
@@ -411,7 +555,7 @@ function FieldItem({
 
                      return (
                        <>
-                          {isSelected && (
+                          {isSelected && !isMultiSelecting && (
                               <div className="absolute -top-12 left-0 right-0 z-[60] flex justify-center">
                                   <RichTextToolbar id={`toolbar-label-${field.id}`} />
                               </div>
@@ -421,7 +565,7 @@ function FieldItem({
                              <div className={`${isRowLayout ? 'w-48 flex-shrink-0 pt-3' : (isDragging ? 'mb-1' : 'mb-3')} ${labelAlignment === 'RIGHT' ? 'text-right' : ''} ${isCenterAligned ? 'text-center' : ''}`}>
                                 <div className={`flex flex-col gap-2 ${labelAlignment === 'RIGHT' ? 'items-end' : isCenterAligned ? 'items-center' : 'items-start'}`}>
                                     <div className="w-full relative group/editor">
-                                       {isSelected ? (
+                                       {isSelected && !isMultiSelecting ? (
                                           <RichTextEditor
                                             theme="snow"
                                             value={field.label || ''}
@@ -434,7 +578,7 @@ function FieldItem({
                                            <div className={`flex items-start gap-1 ${labelAlignment === 'RIGHT' ? 'justify-end' : isCenterAligned ? 'justify-center' : ''}`}>
                                              <div
                                                className={`font-medium text-black outline-none cursor-text break-words max-w-full ql-editor !p-0 ${labelAlignment === 'RIGHT' ? 'text-right' : ''} ${isCenterAligned ? 'text-center' : ''}`}
-                                               dangerouslySetInnerHTML={{ __html: field.label || t('common.question') }}
+                                               dangerouslySetInnerHTML={{ __html: sanitize(field.label || t('common.question')) }}
                                              />
                                            {field.required && (
                                               <span className="text-red-500 select-none -mt-1 text-lg leading-none">*</span>
@@ -448,12 +592,12 @@ function FieldItem({
                           <div className={`flex-1 min-w-0 w-full max-w-full pb-3 scrollbar-visible ${field.type === FieldType.GROUP ? 'overflow-visible' : 'overflow-x-auto'}`}>
                             {(isOverlay || isDragging) ? (
                                 <div className="h-10 bg-gray-50 rounded border border-gray-100 flex items-center px-3 text-xs text-gray-400 font-medium select-none">
-                                    {field.type === FieldType.TEXTAREA ? t('common.long_text') : field.type === FieldType.ADDRESS ? t('common.address') : `${field.type} ${t('common.field')}`}
+                                    {field.type === FieldType.TEXTAREA ? t('common.long_text') : field.type === FieldType.ADDRESS ? t('common.address') : `${t(`builder.fields.${field.type.toLowerCase()}`, field.type)} ${t('common.field')}`}
                                 </div>
                             ) : (
                                 <>
                                     {renderFieldPreview()}
-                                     {![FieldType.HEADER, FieldType.PARAGRAPH, FieldType.DIVIDER, FieldType.SUBMIT, FieldType.PAGE_BREAK, FieldType.GROUP, FieldType.SECTION_COLLAPSE].includes(field.type) && (isSelected || (field.options?.subLabel && field.options.subLabel !== 'Sublabel')) && (
+                                     {![FieldType.HEADER, FieldType.PARAGRAPH, FieldType.DIVIDER, FieldType.SUBMIT, FieldType.PAGE_BREAK, FieldType.GROUP, FieldType.SECTION_COLLAPSE].includes(field.type) && (isSelected || (field.options?.subLabel && field.options.subLabel !== t('common.sublabel') && field.options.subLabel !== 'Sublabel')) && (
                                        <div
                                            ref={subLabelRef}
                                            contentEditable={isSelected}
@@ -509,7 +653,6 @@ function FieldItem({
                )}
             </div>
              
-            {/* Inline Quiz Bar */}
             {isSelected && currentForm?.isQuiz && !isOverlay && !isDragging && (
               <InlineQuizBar
                 field={field}
@@ -518,31 +661,9 @@ function FieldItem({
                 onUpdate={updateField}
               />
             )}
+            
           </div>
-          {!isOverlay && !isDragging && !field.groupId && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                if (isSelected && window.innerWidth < 768 && onOpenProperties) {
-                  onOpenProperties();
-                } else {
-                  handleDelete(e);
-                }
-              }}
-              className={`flex-shrink-0 p-1 transition-colors ${
-                isSelected && window.innerWidth < 768 
-                  ? 'text-purple-500 hover:text-purple-700 bg-purple-50 rounded-full' 
-                  : 'text-gray-400 hover:text-black'
-              }`}
-              title={isSelected && window.innerWidth < 768 ? t('common.settings') : t('common.delete_field')}
-            >
-              {isSelected && window.innerWidth < 768 ? (
-                <Settings className="h-4 w-4" />
-              ) : (
-                <Trash2 className="h-4 w-4" />
-              )}
-            </button>
-          )}
+
         </div>
     </>
   );

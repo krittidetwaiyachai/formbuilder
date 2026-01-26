@@ -13,7 +13,10 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/custom-select';
 import Loader from '@/components/common/Loader';
 
+import { useTranslation } from 'react-i18next';
+
 export default function BundleEditor() {
+  const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'error'>('saved');
@@ -36,7 +39,6 @@ export default function BundleEditor() {
     setSelectedFieldId
   } = useBundleEditorStore();
 
-  // Handle click outside to cancel editing
   useEffect(() => {
     if (isEditingTitle) {
       const handleClickOutside = (event: MouseEvent) => {
@@ -49,7 +51,6 @@ export default function BundleEditor() {
     }
   }, [isEditingTitle]);
 
-  // Sync title value
   useEffect(() => {
     if (bundle) setTitleValue(bundle.name);
   }, [bundle?.name]);
@@ -66,13 +67,10 @@ export default function BundleEditor() {
     setIsEditingTitle(false);
   };
   
-  // Autosave Effect
-
   useEffect(() => {
     if (isDirty) {
         setSaveStatus('saving');
         const timer = setTimeout(async () => {
-             // ... existing autosave ...
             try {
                 await saveBundle();
                 setSaveStatus('saved');
@@ -81,13 +79,12 @@ export default function BundleEditor() {
                 console.error("Autosave failed", error);
                 setSaveStatus('error');
             }
-        }, 1000); // 1s debounce
+        }, 1000); 
 
         return () => clearTimeout(timer);
     }
   }, [isDirty, saveBundle]); 
 
-  // Keyboard Shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
         if ((e.metaKey || e.ctrlKey) && e.key === 'z') {
@@ -108,7 +105,7 @@ export default function BundleEditor() {
       if (id === 'new') {
         setBundle({
           id: '',
-          name: 'New Bundle',
+          name: t('admin.editor.untitled'),
           description: '',
           isPII: false,
           isActive: true,
@@ -117,7 +114,6 @@ export default function BundleEditor() {
       } else if (id) {
         try {
           const response = await api.get(`/bundles/${id}`);
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const { sensitivityLevel, ...cleanData } = response.data;
           
           setBundle({
@@ -178,29 +174,27 @@ export default function BundleEditor() {
 
   const getLabelForType = (type: FieldType): string => {
     switch (type) {
-      case FieldType.TEXT: return 'Short Text';
-      case FieldType.TEXTAREA: return 'Long Text';
-      case FieldType.NUMBER: return 'Number';
-      case FieldType.EMAIL: return 'Email';
-      case FieldType.PHONE: return 'Phone';
-      case FieldType.DATE: return 'Date';
-      case FieldType.TIME: return 'Time';
-      case FieldType.RADIO: return 'Single Choice';
-      case FieldType.CHECKBOX: return 'Multiple Choice';
-      case FieldType.DROPDOWN: return 'Dropdown';
-      case FieldType.HEADER: return 'Header';
-      case FieldType.PARAGRAPH: return 'Paragraph';
-      case FieldType.DIVIDER: return 'Separator';
-      case FieldType.RATE: return 'Rating';
-      case FieldType.ADDRESS: return 'Address';
-      case FieldType.FULLNAME: return 'Full Name';
-      case FieldType.MATRIX: return 'Input Matrix';
-      case FieldType.TABLE: return 'Input Table';
+      case FieldType.TEXT: return t('admin.editor.field.short_text');
+      case FieldType.TEXTAREA: return t('admin.editor.field.long_text');
+      case FieldType.NUMBER: return t('admin.editor.field.number');
+      case FieldType.EMAIL: return t('admin.editor.field.email');
+      case FieldType.PHONE: return t('admin.editor.field.phone');
+      case FieldType.DATE: return t('admin.editor.field.date');
+      case FieldType.TIME: return t('admin.editor.field.time');
+      case FieldType.RADIO: return t('admin.editor.field.single_choice');
+      case FieldType.CHECKBOX: return t('admin.editor.field.multiple_choice');
+      case FieldType.DROPDOWN: return t('admin.editor.field.dropdown');
+      case FieldType.HEADER: return t('admin.editor.field.header');
+      case FieldType.PARAGRAPH: return t('admin.editor.field.paragraph');
+      case FieldType.DIVIDER: return t('admin.editor.field.separator');
+      case FieldType.RATE: return t('admin.editor.field.rating');
+      case FieldType.ADDRESS: return t('admin.editor.field.address');
+      case FieldType.FULLNAME: return t('admin.editor.field.fullname');
+      case FieldType.MATRIX: return t('admin.editor.field.matrix');
+      case FieldType.TABLE: return t('admin.editor.field.table');
       default: return 'Field';
     }
   };
-
-
 
   if (!bundle) {
     return (
@@ -215,7 +209,6 @@ export default function BundleEditor() {
       <div className="h-screen flex flex-col bg-gray-50">
         <header className="bg-white border-b border-gray-200">
           <div className="px-4 py-3 md:px-6 md:py-4 flex items-center justify-between gap-3">
-            {/* Left: Back + Title */}
             <div className="flex items-center gap-3 md:gap-4 flex-1 min-w-0">
               <Link to="/admin/bundles">
                 <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-500 hover:text-black rounded-full transition-colors">
@@ -245,24 +238,22 @@ export default function BundleEditor() {
                    </div>
                  ) : (
                    <div className="flex items-center gap-2 min-w-0 group cursor-pointer" onClick={() => setIsEditingTitle(true)}>
-                     <h1 className="text-lg md:text-xl font-bold text-black truncate leading-tight">{bundle?.name || 'Untitled Bundle'}</h1>
+                     <h1 className="text-lg md:text-xl font-bold text-black truncate leading-tight">{bundle?.name || t('admin.editor.untitled')}</h1>
                      <Edit2 className="h-3.5 w-3.5 text-gray-400 group-hover:text-black opacity-0 group-hover:opacity-100 transition-all" />
                    </div>
                  )}
               </div>
             </div>
 
-            {/* Right: Actions */}
             <div className="flex items-center gap-2 md:gap-3">
                  
-               {/* Status Indicator */}
                <div className="flex items-center">
                  {saveStatus === 'saving' ? (
                      <div className="w-8 h-8 flex items-center justify-center">
                          <Loader size={20} />
                      </div>
                  ) : saveStatus === 'error' ? (
-                      <div className="w-8 h-8 flex items-center justify-center rounded-full bg-red-50 text-red-600" title="Save Failed">
+                      <div className="w-8 h-8 flex items-center justify-center rounded-full bg-red-50 text-red-600" title={t('admin.editor.save_failed')}>
                           <X className="h-4 w-4" />
                       </div>
                  ) : (
@@ -271,9 +262,9 @@ export default function BundleEditor() {
                      </div>
                  )}
                  <span className="hidden md:inline text-xs text-gray-400 ml-2">
-                     {saveStatus === 'saving' ? 'Saving...' : saveStatus === 'error' ? 'Save Failed' : (
+                     {saveStatus === 'saving' ? t('admin.editor.saving') : saveStatus === 'error' ? t('admin.editor.save_failed') : (
                          <span>
-                             All saved
+                             {t('admin.editor.saved')}
                              {lastSaved && ` at ${lastSaved.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}`}
                          </span>
                      )}
@@ -282,13 +273,12 @@ export default function BundleEditor() {
 
                <div className="h-6 w-px bg-gray-200 mx-1 hidden md:block" />
 
-               {/* Undo/Redo */}
                <div className="hidden md:flex items-center gap-1">
                     <button 
                         onClick={undo} 
                         disabled={history.past.length === 0} 
                         className="p-1.5 text-gray-500 hover:text-black disabled:opacity-30 transition-colors"
-                        title="Undo (Ctrl+Z)"
+                        title={t('admin.editor.undo_shortcut')}
                     >
                         <Undo2 className="h-4 w-4"/>
                     </button>
@@ -296,18 +286,15 @@ export default function BundleEditor() {
                         onClick={redo} 
                         disabled={history.future.length === 0} 
                         className="p-1.5 text-gray-500 hover:text-black disabled:opacity-30 transition-colors"
-                        title="Redo (Ctrl+Shift+Z)"
+                        title={t('admin.editor.redo_shortcut')}
                     >
                         <Redo2 className="h-4 w-4"/>
                     </button>
                </div>
                
-
                <div className="h-6 w-px bg-gray-200 mx-1" />
 
-               {/* Primary Actions */}
                <div className="flex items-center gap-2">
-                   {/* Status Dropdown */}
                    <Select
                        value={bundle?.isActive ? 'published' : 'draft'}
                        onValueChange={(value) => updateBundleMeta({ isActive: value === 'published' })}
@@ -319,13 +306,13 @@ export default function BundleEditor() {
                            <SelectItem value="draft">
                                <div className="flex items-center gap-2">
                                    <div className="w-2 h-2 rounded-full bg-yellow-500" />
-                                   <span>Draft</span>
+                                   <span>{t('admin.editor.status_draft')}</span>
                                </div>
                            </SelectItem>
                            <SelectItem value="published">
                                <div className="flex items-center gap-2">
                                    <div className="w-2 h-2 rounded-full bg-green-500" />
-                                   <span>Published</span>
+                                   <span>{t('admin.editor.status_published')}</span>
                                </div>
                            </SelectItem>
                        </SelectContent>
@@ -338,7 +325,6 @@ export default function BundleEditor() {
           <div className="flex-1 flex overflow-hidden">
             <BundleFieldsSidebar />
             
-            {/* Canvas Wrapper detecting background clicks */}
             <div 
                 className="flex-1 relative flex flex-col h-full overflow-hidden" 
                 onClick={() => setSelectedFieldId(null)}
@@ -352,55 +338,3 @@ export default function BundleEditor() {
     </DragDropContext>
   );
 }
-
-// Minimal Portal Overlay for Hello-Pangea/DnD
-// Since hello-pangea/dnd doesn't expose a clean <DragOverlay> like dnd-kit,
-// we usually rely on the Draggable itself being the preview (position: fixed).
-// However, if we want "Copy" behavior where the original stays in place, 
-// we normally hide the original and show a clone, OR keep original and show Draggable.
-//
-// In BundleFieldsSidebar.tsx, we set the draggable to opacity-0 when dragging (per FieldSidebar.tsx logic).
-// This implies we need something ELSE to be visible.
-//
-// FieldSidebar.tsx actually uses `snapshot.isDragging ? opacity: 0 : ...` 
-// AND relies on `renderClone` provided by `Droppable`?
-//
-// Wait, FieldSidebar.tsx code I viewed:
-// <Draggable ...>
-//   {... className={snapshot.isDragging ? 'opacity-0' : 'absolute inset-0'}}
-// </Draggable>
-//
-// If it is opacity-0, it is INVISIBLE.
-// The only way it shows up is if `renderClone` is used in the `Droppable`.
-//
-// Let's check if I can add `renderClone` to the Sidebar Droppable in BundleFieldsSidebar.
-// If I can't (because it's inside another file), I might need to implement a Portal Overlay here.
-//
-// ACTUALLY, simpler solution:
-// In BundleFieldsSidebar, drag the COPY.
-//
-// But if I want to "Fix" the animation jitter, matching FieldSidebar is best.
-// FieldSidebar seemingly relies on `renderClone` which I might have missed in `FormEdit` or `FieldSidebar`.
-//
-// Let's try to add a Manual Portal Overlay here that listens to "onDragStart" / "onDragUpdate".
-// But `DragDropContext` doesn't give us current mouse position easily to render a custom overlay manually outside of the library.
-//
-// CORRECT PATH:
-// The `Draggable` in `BundleFieldsSidebar` itself IS the overlay when it moves.
-// If we set it to `opacity-0`, we see nothing.
-//
-// User said: "It looked like double rendering".
-// This means my previous attempt (Visual + Draggable) WAS working, but they were slightly misaligned or double-bordered.
-//
-// The cleanest way is:
-// 1. Sidebar Item = Static Visual.
-// 2. When Dragging, we spawn a Clone.
-//
-// `hello-pangea/dnd` supports `renderClone` on `<Droppable>`.
-// I should use THAT in `BundleFieldsSidebar.tsx`.
-//
-// But since I am here in BundleEditor.tsx, let's revert the "comment" addition and assume I will fix it in BundleFieldsSidebar.
-//
-// Wait, I can't revert easily without writing code.
-// I will just close the file cleanly.
-

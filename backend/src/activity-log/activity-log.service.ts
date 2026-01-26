@@ -17,7 +17,7 @@ export class ActivityLogService {
       });
     } catch (error) {
       console.error('Failed to create activity log:', error);
-      // Don't throw, logging shouldn't block main actions
+      
     }
   }
 
@@ -33,7 +33,7 @@ export class ActivityLogService {
     
     const where: any = { formId };
     
-    // Action filter  
+    
     if (action && action !== 'ALL') {
       if (action === 'CREATED') {
         where.OR = [
@@ -69,7 +69,7 @@ export class ActivityLogService {
       }
     }
 
-    // User filter
+    
     if (userId) {
       where.userId = userId;
     }
@@ -109,22 +109,19 @@ export class ActivityLogService {
   }
 
   async getFormEditors(formId: string) {
-    const editors = await this.prisma.activityLog.findMany({
-      where: { formId },
-      select: {
-        user: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            email: true,
-            photoUrl: true,
-          },
-        },
-      },
-      distinct: ['userId'],
-    });
-
-    return editors.map(log => log.user);
+    const editors = await this.prisma.$queryRaw<Array<{
+      id: string;
+      firstName: string | null;
+      lastName: string | null;
+      email: string;
+      photoUrl: string | null;
+    }>>`
+      SELECT DISTINCT u.id, u."firstName", u."lastName", u.email, u."photoUrl"
+      FROM "ActivityLog" al
+      JOIN "User" u ON al."userId" = u.id
+      WHERE al."formId" = ${formId}
+      LIMIT 50
+    `;
+    return editors;
   }
 }

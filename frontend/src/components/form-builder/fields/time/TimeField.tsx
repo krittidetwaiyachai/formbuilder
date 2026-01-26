@@ -17,7 +17,7 @@ interface TimeFieldProps {
 export const TimeField: React.FC<TimeFieldProps> = ({ field, fieldStyle, disabledClass = "opacity-60 cursor-pointer" }) => {
   const { t } = useTranslation();
   const options = field.options || {};
-  const timeFormat = options.timeFormat || 'AMPM'; // '24HOUR' | 'AMPM'
+  const timeFormat = options.timeFormat || 'AMPM'; 
   const subLabelHour = options.subLabelHour || t('builder.time.hour');
   const subLabelMinutes = options.subLabelMinutes || t('builder.time.minutes');
   const timeRange = options.timeRange || false;
@@ -27,7 +27,7 @@ export const TimeField: React.FC<TimeFieldProps> = ({ field, fieldStyle, disable
            <div>
                <input
                 type="text"
-                placeholder="HH"
+                placeholder={t('builder.time.placeholder_hh')}
                 readOnly
                 className={`w-16 px-3 py-3 border ${fieldStyle.inputBorder} rounded-lg bg-gray-50/50 text-center text-sm shadow-sm ${disabledClass} pointer-events-none`}
                />
@@ -37,7 +37,7 @@ export const TimeField: React.FC<TimeFieldProps> = ({ field, fieldStyle, disable
            <div>
                <input
                 type="text"
-                placeholder="MM"
+                placeholder={t('builder.time.placeholder_mm')}
                 readOnly
                 className={`w-16 px-3 py-3 border ${fieldStyle.inputBorder} rounded-lg bg-gray-50/50 text-center text-sm shadow-sm ${disabledClass} pointer-events-none`}
                />

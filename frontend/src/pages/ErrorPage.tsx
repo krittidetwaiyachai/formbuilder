@@ -19,7 +19,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
   const navigate = useNavigate();
   const { t } = useTranslation();
   
-  // Configuration based on error code
+  
   const getErrorConfig = (code: number) => {
     switch (code) {
         case 403:
@@ -31,7 +31,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
                 bgGlow: "rgba(225, 29, 72, 0.15)",
                 borderColor: "border-rose-500/20",
                 iconBg: "bg-rose-500/10",
-                footer: "Security Protocol • Access Level: Restricted"
+                footer: t('error.footer.security', 'Security Protocol • Access Level: Restricted')
             };
         case 500:
             return {
@@ -42,7 +42,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
                 bgGlow: "rgba(251, 191, 36, 0.15)",
                 borderColor: "border-amber-500/20",
                 iconBg: "bg-amber-500/10",
-                footer: "System Diagnostic • Status: Critical"
+                footer: t('error.footer.diagnostic', 'System Diagnostic • Status: Critical')
             };
         case 503:
             return {
@@ -53,7 +53,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
                 bgGlow: "rgba(34, 211, 238, 0.15)",
                 borderColor: "border-cyan-500/20",
                 iconBg: "bg-cyan-500/10",
-                footer: "System Upgrade • Estimating Time: Unknown"
+                footer: t('error.footer.upgrade', 'System Upgrade • Estimating Time: Unknown')
             };
         case 404:
         default:
@@ -65,7 +65,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
                 bgGlow: "rgba(79, 70, 229, 0.15)",
                 borderColor: "border-indigo-500/20",
                 iconBg: "bg-indigo-500/10",
-                footer: "FormBuilder • 404 Error"
+                footer: t('error.footer.default', 'FormBuilder • 404 Error')
             };
     }
   };
@@ -75,7 +75,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
   const displayTitle = title || config.defaultTitle;
   const displayMessage = message || config.defaultMessage;
 
-  // Mouse tracking
+  
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   
@@ -102,7 +102,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-[#0a0a0a] text-white overflow-hidden relative selection:bg-indigo-500/30 font-sans">
         
-      {/* 1. Background Glow */}
+      { }
       <div 
         className="absolute inset-0 z-0 transition-opacity duration-500 pointer-events-none"
         style={{
@@ -110,12 +110,12 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
         }}
       />
       
-      {/* 2. Grid Pattern */}
+      { }
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none z-0 opacity-50" />
 
       <div className="relative z-10 flex flex-col items-center justify-center min-h-[100dvh] w-full px-4 py-8">
         
-        {/* 3. Error Code Background */}
+        { }
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
              <motion.h1 
                 style={{ x: xContent, y: yContent, fontSize: 'clamp(6rem, 15vw, 20rem)' }}
@@ -128,14 +128,14 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
              </motion.h1>
         </div>
 
-        {/* 4. Main Content Card */}
+        { }
         <motion.div 
             className="relative z-20 flex flex-col items-center text-center max-w-lg w-full scale-[0.85] md:scale-90 2xl:scale-100 origin-center"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ type: "spring", damping: 20, stiffness: 100, delay: 0.1 }}
         >
-            {/* Icon */}
+            { }
              <motion.div 
                 className={`mb-6 p-4 rounded-3xl ${config.iconBg} border ${config.borderColor} backdrop-blur-sm shadow-2xl`}
                 initial={{ scale: 0.8, opacity: 0 }}
@@ -145,7 +145,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
                 <Icon className={`w-8 h-8 md:w-12 md:h-12 ${config.color}`} strokeWidth={1.5} />
              </motion.div>
 
-            {/* Text */}
+            { }
             <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tight mb-3 md:mb-4 drop-shadow-xl">
                 {displayTitle}
             </h2>
@@ -153,7 +153,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
                 {displayMessage}
             </p>
 
-            {/* Action Buttons */}
+            { }
             <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
                 <button
                     onClick={() => navigate('/')}
@@ -174,7 +174,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
         </motion.div>
       </div>
       
-      {/* 5. Footer */}
+      { }
       <motion.div 
          initial={{ opacity: 0 }}
          animate={{ opacity: 1 }}

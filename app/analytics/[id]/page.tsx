@@ -14,7 +14,7 @@ export default function AnalyticsPage({ params }: { params: { id: string } }) {
   const form = mockForms.find((f) => f.id === params.id);
   const submissions = mockSubmissions.filter((s) => s.formId === params.id);
 
-  // Mock data for charts
+  
   const viewsData = [
     { date: "Jan 15", views: 45, submissions: 12 },
     { date: "Jan 16", views: 52, submissions: 15 },
@@ -34,7 +34,7 @@ export default function AnalyticsPage({ params }: { params: { id: string } }) {
   const totalViews = form?.viewCount || 0;
   const totalSubmissions = form?.responseCount || 0;
   const submissionRate = totalViews > 0 ? ((totalSubmissions / totalViews) * 100).toFixed(1) : "0";
-  const bounceRate = "32.5"; // Mock data
+  const bounceRate = "32.5"; 
 
   const latestSubmissions = submissions.slice(0, 5);
 
@@ -49,7 +49,7 @@ export default function AnalyticsPage({ params }: { params: { id: string } }) {
         </p>
       </div>
 
-      {/* Stats Cards */}
+      { }
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -104,9 +104,9 @@ export default function AnalyticsPage({ params }: { params: { id: string } }) {
         </Card>
       </div>
 
-      {/* Charts Row */}
+      { }
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        {/* Bar Chart */}
+        { }
         <Card>
           <CardHeader>
             <CardTitle>Views vs Submissions</CardTitle>
@@ -127,7 +127,7 @@ export default function AnalyticsPage({ params }: { params: { id: string } }) {
           </CardContent>
         </Card>
 
-        {/* Pie Chart */}
+        { }
         <Card>
           <CardHeader>
             <CardTitle>Device Breakdown</CardTitle>
@@ -157,7 +157,7 @@ export default function AnalyticsPage({ params }: { params: { id: string } }) {
         </Card>
       </div>
 
-      {/* Tabs for different views */}
+      { }
       <Tabs defaultValue="submissions" className="space-y-6">
         <div className="flex items-center justify-between">
           <TabsList>
@@ -279,7 +279,7 @@ export default function AnalyticsPage({ params }: { params: { id: string } }) {
                   });
                 });
 
-                // Calculate top values
+                
                 Object.keys(fieldSummary).forEach((key) => {
                   const valueCounts: Record<string, number> = {};
                   submissions.forEach((submission) => {

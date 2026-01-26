@@ -39,6 +39,22 @@ export function ToasterProvider({ children }: { children: React.ReactNode }) {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
+  
+  React.useEffect(() => {
+    const handlePermissionDenied = (event: Event) => {
+        const customEvent = event as CustomEvent;
+        toast({
+            title: "Access Denied",
+            description: customEvent.detail?.message || "You do not have permission to perform this action.",
+            variant: "error",
+            duration: 4000,
+        });
+    };
+
+    window.addEventListener('permission-denied', handlePermissionDenied);
+    return () => window.removeEventListener('permission-denied', handlePermissionDenied);
+  }, [toast]);
+
   return (
     <ToasterContext.Provider value={{ toasts, toast, dismiss }}>
       {children}

@@ -42,12 +42,12 @@ export const RateProperties: React.FC<RatePropertiesProps> = ({ field, updateFie
 
   return (
     <div className="space-y-4">
-      {/* Tabs */}
+      { }
       <PropertiesTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {activeTab === 'general' && (
         <div className="space-y-4">
-           {/* Field Label */}
+           { }
            <div>
               <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.field_label')}
@@ -60,7 +60,7 @@ export const RateProperties: React.FC<RatePropertiesProps> = ({ field, updateFie
               />
             </div>
 
-            {/* Label Alignment */}
+            { }
             <div>
               <label className="block text-sm font-medium text-black mb-2">
                 {t('builder.properties.label_alignment')}
@@ -83,7 +83,7 @@ export const RateProperties: React.FC<RatePropertiesProps> = ({ field, updateFie
 
             </div>
 
-            {/* Required */}
+            { }
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                   {t('builder.properties.required')}
@@ -102,7 +102,7 @@ export const RateProperties: React.FC<RatePropertiesProps> = ({ field, updateFie
               </p>
             </div>
 
-            {/* Sub Label */}
+            { }
              <div>
               <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.sublabel')}
@@ -118,7 +118,7 @@ export const RateProperties: React.FC<RatePropertiesProps> = ({ field, updateFie
               </p>
             </div>
 
-             {/* Duplicate Field */}
+             { }
              <button
                type="button"
                onClick={() => duplicatesField({
@@ -141,7 +141,7 @@ export const RateProperties: React.FC<RatePropertiesProps> = ({ field, updateFie
 
       {activeTab === 'options' && (
         <div className="space-y-6">
-            {/* Rating Icon */}
+            { }
             <div>
                 <label className="block text-sm font-medium text-black mb-2">
                     {t('builder.properties.rating_icon')}
@@ -167,7 +167,7 @@ export const RateProperties: React.FC<RatePropertiesProps> = ({ field, updateFie
                 </p>
             </div>
 
-            {/* Rating Amount */}
+            { }
              <div>
               <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.rating_amount')}
@@ -194,7 +194,7 @@ export const RateProperties: React.FC<RatePropertiesProps> = ({ field, updateFie
 
       {activeTab === 'advanced' && (
         <div className="space-y-6">
-             {/* Default Value */}
+             { }
              <div>
               <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.rating_default_value')}
@@ -219,7 +219,7 @@ export const RateProperties: React.FC<RatePropertiesProps> = ({ field, updateFie
               </p>
             </div>
 
-             {/* Hover Text */}
+             { }
              <div>
               <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.hover_text')}
@@ -235,7 +235,7 @@ export const RateProperties: React.FC<RatePropertiesProps> = ({ field, updateFie
               </p>
             </div>
 
-             {/* Shrink */}
+             { }
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.shrink')}
@@ -254,7 +254,7 @@ export const RateProperties: React.FC<RatePropertiesProps> = ({ field, updateFie
               </p>
             </div>
             
-            {/* Hide field */}
+            { }
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.hide_field')}

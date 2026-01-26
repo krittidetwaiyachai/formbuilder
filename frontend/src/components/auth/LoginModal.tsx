@@ -62,7 +62,7 @@ export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalPro
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-0 md:p-4 bg-black/80 backdrop-blur-xl">
-      {/* Mobile: Full Screen */}
+      { }
       <div className="md:hidden fixed inset-0 bg-white z-50 overflow-y-auto">
         <div className="min-h-screen px-6 pt-14 pb-10 safe-area-pt safe-area-pb">
           <button 
@@ -138,7 +138,7 @@ export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalPro
         </div>
       </div>
 
-      {/* Desktop: Modal */}
+      { }
       <div className="hidden md:block relative bg-white rounded-3xl shadow-2xl w-full max-w-5xl h-[600px] overflow-hidden animate-in fade-in zoom-in duration-500">
         <button 
           onClick={onClose}
@@ -237,7 +237,7 @@ export default function LoginModal({ isOpen, onClose, onSuccess }: LoginModalPro
               </form>
 
               <p className="mt-8 text-xs text-black/40 text-center leading-relaxed">
-                Protected by bye
+                {t('auth.protected_by')}
               </p>
             </div>
           </div>

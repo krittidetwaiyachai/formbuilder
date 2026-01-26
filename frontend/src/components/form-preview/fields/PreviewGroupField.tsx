@@ -1,6 +1,7 @@
 import { Field } from '@/types';
 import { ChevronDown, ChevronRight, Layers } from 'lucide-react';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface PreviewGroupFieldProps {
   field: Field;
@@ -8,6 +9,7 @@ interface PreviewGroupFieldProps {
 }
 
 export function PreviewGroupField({ field, children }: PreviewGroupFieldProps) {
+  const { t } = useTranslation();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
@@ -47,7 +49,7 @@ export function PreviewGroupField({ field, children }: PreviewGroupFieldProps) {
         <div style={{ padding: '16px 20px' }}>
           {children || (
             <p style={{ color: '#9ca3af', fontSize: '14px', margin: 0 }}>
-              No fields in this group
+              {t('public.group.no_fields', 'No fields in this group')}
             </p>
           )}
         </div>

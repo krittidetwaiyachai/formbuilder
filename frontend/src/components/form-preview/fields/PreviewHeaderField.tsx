@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { Field, FieldType } from '@/types';
 import { FileX, ChevronRight, X, ZoomIn } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface PreviewFieldProps {
   field: Field;
 }
 
 export const PreviewHeaderField: React.FC<PreviewFieldProps> = ({ field }) => {
+  const { t } = useTranslation();
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [modalImageSrc, setModalImageSrc] = useState('');
 
@@ -77,8 +79,11 @@ export const PreviewHeaderField: React.FC<PreviewFieldProps> = ({ field }) => {
               headerAlignment === 'CENTER' ? 'items-center' : 
               headerAlignment === 'RIGHT' ? 'items-end' : 'items-start'
             }` : ''}>
-              <h2 className={`${getHeaderSizeClass()} font-bold ${hasBackgroundImage ? 'text-white' : 'bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent'} ${getHeaderAlignmentClass()} leading-tight tracking-tight pb-1`}>
-                <div className="ql-editor !p-0 !min-h-0 [&>p]:!m-0" dangerouslySetInnerHTML={{ __html: field.label || 'Heading' }} />
+              <h2 
+                className={`${getHeaderSizeClass()} font-bold ${hasBackgroundImage ? 'text-white' : 'text-transparent bg-clip-text'} ${getHeaderAlignmentClass()} leading-tight tracking-tight pb-1`}
+                style={!hasBackgroundImage ? { color: 'var(--text)' } : {}}
+              >
+                <div className="ql-editor !p-0 !min-h-0 [&>p]:!m-0" dangerouslySetInnerHTML={{ __html: field.label || t('public.placeholder.default_heading', 'Heading') }} />
               </h2>
               {headerSubheading && (
                 <div className={`text-base mt-3 ${hasBackgroundImage ? 'text-white/90' : 'text-gray-600'} ${getHeaderAlignmentClass()}`}>
@@ -130,8 +135,8 @@ export const PreviewHeaderField: React.FC<PreviewFieldProps> = ({ field }) => {
   if (field.type === FieldType.PARAGRAPH) {
       return (
         <div className="mb-4">
-          <p className="text-gray-700 text-sm leading-relaxed">
-            {field.placeholder || field.label || 'This is a paragraph. You can add descriptive text here to provide instructions or additional information to your form users.'}
+          <p className="text-sm leading-relaxed" style={{ color: 'var(--text)', opacity: 0.85 }}>
+            {field.placeholder || field.label || t('public.placeholder.default_paragraph', 'This is a paragraph. You can add descriptive text here to provide instructions or additional information to your form users.')}
           </p>
         </div>
       );
@@ -140,7 +145,7 @@ export const PreviewHeaderField: React.FC<PreviewFieldProps> = ({ field }) => {
   if (field.type === FieldType.DIVIDER) {
       return (
         <div className="my-6">
-          <hr className="border-t-2 border-gray-300" />
+          <hr className="border-t-2" style={{ borderColor: 'var(--divider, transparent)' }} />
         </div>
       );
   }
@@ -150,16 +155,20 @@ export const PreviewHeaderField: React.FC<PreviewFieldProps> = ({ field }) => {
       return (
         <div className="mb-4">
           <div
-            className="border-2 border-gray-300 rounded-lg p-4 max-w-md cursor-pointer hover:border-gray-400 transition-colors"
+            className="border rounded-lg p-4 max-w-md cursor-pointer transition-colors hover:bg-black/5"
+            style={{ borderColor: 'var(--divider, transparent)', borderWidth: '1px' }}
             onClick={() => setIsCollapsed(!isCollapsed)}
           >
             <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-black">{field.label || 'Section Title'}</h3>
-              <ChevronRight className={`h-5 w-5 text-gray-400 transition-transform ${isCollapsed ? '' : 'rotate-90'}`} />
+              <h3 className="font-semibold" style={{ color: 'var(--text)' }}>{field.label || t('public.placeholder.section_title', 'Section Title')}</h3>
+              <ChevronRight 
+                className={`h-5 w-5 transition-transform ${isCollapsed ? '' : 'rotate-90'}`} 
+                style={{ color: 'var(--text)', opacity: 0.6 }}
+              />
             </div>
             {!isCollapsed && (
-              <div className="mt-4 pt-4 border-t border-gray-200">
-                <p className="text-sm text-gray-600">Section content goes here...</p>
+              <div className="mt-4 pt-4 border-t" style={{ borderColor: 'var(--divider, transparent)' }}>
+                <p className="text-sm" style={{ color: 'var(--text)', opacity: 0.8 }}>{t('public.placeholder.section_content', 'Section content goes here...')}</p>
               </div>
             )}
           </div>
@@ -172,7 +181,7 @@ export const PreviewHeaderField: React.FC<PreviewFieldProps> = ({ field }) => {
         <div className="my-8 border-t-2 border-dashed border-gray-400">
           <div className="flex items-center justify-center gap-2 text-gray-500 mt-4">
             <FileX className="h-5 w-5" />
-            <span className="text-sm font-medium">Page Break</span>
+            <span className="text-sm font-medium">{t('public.label.page_break', 'Page Break')}</span>
           </div>
         </div>
       );

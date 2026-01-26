@@ -27,7 +27,7 @@ export const LongTextField: React.FC<LongTextFieldProps> = ({ field, fieldStyle,
     return (
       <div className="relative max-w-full group" title={hoverText} style={width === 'FIXED' && customWidth ? { maxWidth: `${customWidth}px` } : {}}>
         <div className={`w-full border ${fieldStyle.inputBorder} rounded-xl overflow-hidden bg-white shadow-sm resize-none transition-all duration-300 ${disabledClass} pointer-events-none group-hover/field:shadow-md`}>
-           {/* Toolbar */}
+           { }
            <div className="bg-slate-50 border-b border-slate-200 px-3 py-2 flex items-center gap-2 flex-wrap">
               <div className="flex items-center gap-1 border-r border-slate-200 pr-2">
                  <Bold className="w-4 h-4 text-slate-500" />
@@ -53,11 +53,11 @@ export const LongTextField: React.FC<LongTextFieldProps> = ({ field, fieldStyle,
 
               <div className="flex items-center gap-1">
                   <div className="h-6 w-16 bg-white border border-slate-300 rounded text-[10px] flex items-center px-1 text-slate-500">
-                    Normal
+                    {t('builder.long_text.rich_text_normal')}
                   </div>
               </div>
            </div>
-           {/* Content */}
+           { }
            <div className="p-4 min-h-[100px] text-slate-400 text-base">
               {field.placeholder || defaultPlaceholder}
            </div>

@@ -11,7 +11,12 @@ import {
   useSensor,
   useSensors,
   DragEndEvent,
+  DragStartEvent,
+  DragOverlay,
+  defaultDropAnimationSideEffects,
+  DropAnimation,
 } from '@dnd-kit/core';
+import { restrictToHorizontalAxis } from '@dnd-kit/modifiers';
 import {
   SortableContext,
   sortableKeyboardCoordinates,
@@ -35,17 +40,23 @@ interface PageNavigationProps {
   className?: string;
 }
 
-interface SortablePageTabProps {
+interface PageTabProps {
   pageIndex: number;
   currentPage: number;
   totalContentPages: number;
   pageTitle: string;
-  onPageChange: (page: number) => void;
+  onPageChange?: (page: number) => void; 
   onDeletePage?: (pageIndex: number) => void;
   onRenamePage?: (pageIndex: number, newTitle: string) => void;
+  isDragging?: boolean;
+  isOverlay?: boolean;
+  style?: React.CSSProperties;
+  dragListeners?: any;
+  dragAttributes?: any;
 }
 
-function SortablePageTab({
+
+const PageTab = React.forwardRef<HTMLDivElement, PageTabProps>(({
   pageIndex,
   currentPage,
   totalContentPages,
@@ -53,7 +64,103 @@ function SortablePageTab({
   onPageChange,
   onDeletePage,
   onRenamePage,
-}: SortablePageTabProps) {
+  isDragging,
+  isOverlay,
+  style,
+  dragListeners,
+  dragAttributes,
+}, ref) => {
+    const [isEditing, setIsEditing] = useState(false);
+    const [editValue, setEditValue] = useState(pageTitle);
+
+    const { t } = useTranslation();
+
+    useEffect(() => {
+        setEditValue(pageTitle);
+    }, [pageTitle]);
+
+    const handleDoubleClick = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (!isOverlay) setIsEditing(true);
+    };
+
+    const handleRename = () => {
+        setIsEditing(false);
+        if (editValue.trim() && editValue !== pageTitle) {
+            onRenamePage?.(pageIndex, editValue);
+        } else {
+            setEditValue(pageTitle);
+        }
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') handleRename();
+        else if (e.key === 'Escape') {
+            setIsEditing(false);
+            setEditValue(pageTitle);
+        }
+    };
+
+    return (
+        <div
+            ref={ref}
+            style={style}
+            className={`group relative flex items-center px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap flex-shrink-0 cursor-pointer border ${
+                currentPage === pageIndex
+                ? 'bg-black text-white border-black shadow-sm'
+                : 'bg-white text-gray-600 border-transparent hover:bg-gray-50'
+            } ${isDragging ? 'opacity-0' : ''} ${isOverlay ? 'shadow-2xl scale-105 cursor-grabbing opacity-100 z-50' : ''}`}
+            onClick={() => !isEditing && !isOverlay && onPageChange?.(pageIndex)}
+            {...dragAttributes}
+        >
+             <div 
+                {...dragListeners} 
+                className="mr-2 cursor-grab active:cursor-grabbing hover:opacity-70 touch-none"
+                onClick={(e) => e.stopPropagation()} 
+             >
+                <GripVertical className={`w-3 h-3 ${currentPage === pageIndex ? 'text-gray-400' : 'text-gray-300'}`} />
+             </div>
+
+            <FileText className={`w-4 h-4 mr-2 ${currentPage === pageIndex ? 'text-gray-300' : 'text-gray-400'}`} />
+            
+            {isEditing ? (
+                <input
+                    autoFocus
+                    value={editValue}
+                    onChange={(e) => setEditValue(e.target.value)}
+                    onBlur={handleRename}
+                    onKeyDown={handleKeyDown}
+                    onClick={(e) => e.stopPropagation()}
+                    className="bg-transparent border-b border-white/50 text-white focus:outline-none w-20 px-0.5"
+                />
+            ) : (
+                <span onDoubleClick={handleDoubleClick} title={t('builder.navigation.double_click_rename')}>
+                    {pageTitle}
+                </span>
+            )}
+
+            {totalContentPages > 1 && (
+                <span
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onDeletePage?.(pageIndex);
+                    }}
+                    className="ml-2 w-4 h-4 flex items-center justify-center rounded-full hover:bg-white/20 hover:text-white transition-colors opacity-0 group-hover:opacity-100"
+                    title={t('builder.navigation.delete_page')}
+                >
+                    <X className={`w-3 h-3 ${currentPage === pageIndex ? 'text-gray-400' : 'text-gray-400'}`} />
+                </span>
+            )}
+        </div>
+    );
+});
+
+
+interface SortablePageTabProps extends PageTabProps {
+    id: string; 
+}
+
+function SortablePageTab(props: SortablePageTabProps) {
   const {
     attributes,
     listeners,
@@ -61,96 +168,26 @@ function SortablePageTab({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: `page-${pageIndex}` });
+  } = useSortable({ id: props.id }); 
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
   };
 
-  const [isEditing, setIsEditing] = useState(false);
-  const [editValue, setEditValue] = useState(pageTitle);
-
-  useEffect(() => {
-    setEditValue(pageTitle);
-  }, [pageTitle]);
-
-  const handleDoubleClick = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Stop propagation to prevent drag
-    setIsEditing(true);
-  };
-
-  const handleRename = () => {
-    setIsEditing(false);
-    if (editValue.trim() && editValue !== pageTitle) {
-      onRenamePage?.(pageIndex, editValue);
-    } else {
-      setEditValue(pageTitle);
-    }
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleRename();
-    } else if (e.key === 'Escape') {
-      setIsEditing(false);
-      setEditValue(pageTitle);
-    }
-  };
-
   return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      className={`group relative flex items-center px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap flex-shrink-0 cursor-pointer border ${
-        currentPage === pageIndex
-          ? 'bg-black text-white border-black shadow-sm'
-          : 'bg-white text-gray-600 border-transparent hover:bg-gray-50'
-      } ${isDragging ? 'opacity-50' : ''}`}
-      onClick={() => !isEditing && onPageChange(pageIndex)}
-      {...attributes}
-    >
-      <div 
-        {...listeners} 
-        className="mr-2 cursor-grab active:cursor-grabbing hover:opacity-70 touch-none"
-        onClick={(e) => e.stopPropagation()} 
-      >
-         <GripVertical className={`w-3 h-3 ${currentPage === pageIndex ? 'text-gray-400' : 'text-gray-300'}`} />
-      </div>
-
-      <FileText className={`w-4 h-4 mr-2 ${currentPage === pageIndex ? 'text-gray-300' : 'text-gray-400'}`} />
-      
-      {isEditing ? (
-        <input
-          autoFocus
-          value={editValue}
-          onChange={(e) => setEditValue(e.target.value)}
-          onBlur={handleRename}
-          onKeyDown={handleKeyDown}
-          onClick={(e) => e.stopPropagation()}
-          className="bg-transparent border-b border-white/50 text-white focus:outline-none w-20 px-0.5"
-        />
-      ) : (
-        <span onDoubleClick={handleDoubleClick} title="Double click to rename">
-          {pageTitle}
-        </span>
-      )}
-
-      {totalContentPages > 1 && (
-        <span
-          onClick={(e) => {
-            e.stopPropagation();
-            onDeletePage?.(pageIndex);
-          }}
-          className="ml-2 w-4 h-4 flex items-center justify-center rounded-full hover:bg-white/20 hover:text-white transition-colors opacity-0 group-hover:opacity-100"
-          title="Delete page"
-        >
-          <X className={`w-3 h-3 ${currentPage === pageIndex ? 'text-gray-400' : 'text-gray-400'}`} />
-        </span>
-      )}
-    </div>
+      <PageTab 
+          {...props}
+          ref={setNodeRef}
+          style={style}
+          isDragging={isDragging}
+          dragAttributes={attributes}
+          dragListeners={listeners}
+      />
   );
 }
+
+const dropAnimation: DropAnimation | null = null;
 
 export default function PageNavigation({
   fields,
@@ -162,7 +199,7 @@ export default function PageNavigation({
   onDeletePage,
   onRenamePage,
   onReorderPages,
-  pageSettings = [], // New Prop
+  pageSettings = [], 
   hasWelcome = true,
   hasThankYou = true,
   className = '',
@@ -172,9 +209,9 @@ export default function PageNavigation({
   const totalContentPages = pageBreaks.length + 1;
   const contentPages = Array.from({ length: totalContentPages }, (_, i) => i);
 
-  // Helper to get page title
+  
   const getPageTitle = (index: number) => {
-    // Priority: pageSettings > Legacy (Page 1) > Default
+    
     if (pageSettings && pageSettings[index]) {
         return pageSettings[index].title;
     }
@@ -190,11 +227,12 @@ export default function PageNavigation({
 
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [showMobileAddMenu, setShowMobileAddMenu] = useState(false);
+  const [activeDragId, setActiveDragId] = useState<string | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
         activationConstraint: {
-            distance: 8,
+            distance: 4, 
         }
     }),
     useSensor(KeyboardSensor, {
@@ -223,15 +261,31 @@ export default function PageNavigation({
     }
   };
 
+  const handleDragStart = (event: DragStartEvent) => {
+      setActiveDragId(event.active.id as string);
+      
+      
+      const currentIds = contentPages.map((_, i) => pageSettings[i]?.id || `page-idx-${i}`);
+      const dragIndex = currentIds.indexOf(event.active.id as string);
+      
+      if (dragIndex !== -1 && dragIndex !== currentPage) {
+          onPageChange(dragIndex);
+      }
+  }
+
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
+    setActiveDragId(null);
     
     if (over && active.id !== over.id) {
-        // active.id is 'page-0', 'page-1'
-        const oldIndex = parseInt((active.id as string).replace('page-', ''));
-        const newIndex = parseInt((over.id as string).replace('page-', ''));
         
-        if (!isNaN(oldIndex) && !isNaN(newIndex)) {
+        
+        const currentIds = contentPages.map((_, i) => pageSettings[i]?.id || `page-idx-${i}`);
+        
+        const oldIndex = currentIds.indexOf(active.id as string);
+        const newIndex = currentIds.indexOf(over.id as string);
+        
+        if (oldIndex !== -1 && newIndex !== -1) {
             onReorderPages?.(oldIndex, newIndex);
         }
     }
@@ -239,15 +293,13 @@ export default function PageNavigation({
 
   return (
     <>
-      {/* Desktop View */}
       <div className={`hidden md:flex bg-white border-t border-gray-200 shadow-lg items-center justify-between px-4 h-16 ${className}`}>
-        {/* Navigation Controls (Prev/Next Page) */}
         <div className="flex items-center space-x-1 mr-4 text-gray-400 flex-shrink-0 border-r border-gray-200 pr-4 h-8">
             <button
             onClick={handlePrevPage}
             disabled={currentOrderedIndex <= 0}
             className="p-1.5 hover:bg-gray-100 rounded-md disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
-            title="Previous Page"
+            title={t('builder.pagination.prev')}
             >
             <ChevronLeft className="w-5 h-5" />
             </button>
@@ -257,7 +309,7 @@ export default function PageNavigation({
                 currentOrderedIndex === -1 || currentOrderedIndex >= orderedPages.length - 1
             }
             className="p-1.5 hover:bg-gray-100 rounded-md disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
-            title="Next Page"
+            title={t('builder.pagination.next')}
             >
             <ChevronRight className="w-5 h-5" />
             </button>
@@ -265,10 +317,12 @@ export default function PageNavigation({
 
         <div
             ref={containerRef}
-            className="flex flex-1 items-center space-x-2 overflow-x-auto p-1 min-w-0 max-w-[800px] no-scrollbar [&::-webkit-scrollbar]:hidden mask-linear-fade"
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            className={`flex flex-1 items-center space-x-2 overflow-x-auto p-1 min-w-0 max-w-[800px] 
+            [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar]:block 
+            [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300 hover:[&::-webkit-scrollbar-thumb]:bg-gray-400 
+            [&::-webkit-scrollbar-track]:bg-transparent pb-2`}
+            style={{ scrollbarWidth: 'thin' }}
         >
-            {/* Welcome Page Tab */}
             {hasWelcome && (
             <button
                 onClick={() => onPageChange(-1)}
@@ -292,45 +346,69 @@ export default function PageNavigation({
                     onDeletePage?.(-1);
                 }}
                 className="ml-2 w-4 h-4 flex items-center justify-center rounded-full hover:bg-white/20 transition-colors opacity-0 group-hover:opacity-100"
-                title="Delete page"
+                title={t('builder.pagination.delete_page')}
                 >
-                <X className="w-3 h-3" />
+                    <X className="w-3 h-3" />
                 </span>
             </button>
             )}
 
             {hasWelcome && <div className="w-px h-5 bg-gray-200 mx-1 flex-shrink-0" />}
 
-            {/* Content Pages (Draggable) */}
+            { }
             <DndContext
                 sensors={sensors}
                 collisionDetection={closestCenter}
+                onDragStart={handleDragStart}
                 onDragEnd={handleDragEnd}
+                modifiers={[restrictToHorizontalAxis]}
             >
                 <SortableContext 
-                    items={contentPages.map(id => `page-${id}`)}
+                    items={contentPages.map((_, i) => pageSettings?.[i]?.id || `page-idx-${i}`)}
                     strategy={horizontalListSortingStrategy}
                 >
                     <div className="flex items-center space-x-2">
-                    {contentPages.map((pageIndex) => (
-                        <SortablePageTab
-                            key={pageIndex}
-                            pageIndex={pageIndex}
-                            currentPage={currentPage}
-                            totalContentPages={totalContentPages}
-                            pageTitle={getPageTitle(pageIndex)}
-                            onPageChange={onPageChange}
-                            onDeletePage={onDeletePage}
-                            onRenamePage={onRenamePage}
-                        />
-                    ))}
+                    {contentPages.map((pageIndex) => {
+                        const pageId = pageSettings?.[pageIndex]?.id || `page-idx-${pageIndex}`;
+                        return (
+                            <SortablePageTab
+                                key={pageId}
+                                id={pageId}
+                                pageIndex={pageIndex}
+                                currentPage={currentPage}
+                                totalContentPages={totalContentPages}
+                                pageTitle={getPageTitle(pageIndex)}
+                                onPageChange={onPageChange}
+                                onDeletePage={onDeletePage}
+                                onRenamePage={onRenamePage}
+                            />
+                        );
+                    })}
                     </div>
                 </SortableContext>
+                <DragOverlay dropAnimation={dropAnimation}>
+                    {activeDragId ? (
+                        <PageTab
+                            pageIndex={orderedPages.findIndex(idx => (pageSettings?.[idx]?.id || `page-idx-${idx}`) === activeDragId)} 
+                            currentPage={orderedPages.findIndex(idx => (pageSettings?.[idx]?.id || `page-idx-${idx}`) === activeDragId)} 
+                            totalContentPages={totalContentPages}
+                            pageTitle={
+                                (() => {
+                                    
+                                    const setting = pageSettings?.find(s => s.id === activeDragId);
+                                    if (setting) return setting.title;
+                                    
+                                    return t('builder.pagination.page_generic'); 
+                                })()
+                            }
+                            isOverlay={true}
+                        />
+                    ) : null}
+                </DragOverlay>
             </DndContext>
 
             {hasThankYou && <div className="w-px h-5 bg-gray-200 mx-1 flex-shrink-0" />}
 
-            {/* Thank You Page Tab */}
             {hasThankYou && (
             <button
                 onClick={() => onPageChange(-2)}
@@ -354,7 +432,7 @@ export default function PageNavigation({
                     onDeletePage?.(-2);
                 }}
                 className="ml-2 w-4 h-4 flex items-center justify-center rounded-full hover:bg-white/20 transition-colors opacity-0 group-hover:opacity-100"
-                title="Delete page"
+                title={t('builder.pagination.delete_page')}
                 >
                 <X className="w-3 h-3" />
                 </span>
@@ -371,9 +449,7 @@ export default function PageNavigation({
             {t('builder.pagination.add_page')}
             </button>
 
-            {/* Dropdown Menu */}
             <div className="absolute bottom-full right-0 mb-2 w-52 bg-white rounded-xl shadow-xl border border-gray-100 py-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-bottom-right scale-95 group-hover:scale-100">
-            {/* Standard Page - Always Available */}
             <button
                 onClick={onAddPage}
                 className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-black flex items-center transition-colors first:rounded-t-xl"
@@ -382,7 +458,6 @@ export default function PageNavigation({
                 {t('builder.pagination.page_generic')}
             </button>
 
-            {/* Welcome Page Option */}
             <button
                 onClick={() => !hasWelcome && onAddWelcome?.()}
                 disabled={hasWelcome}
@@ -398,7 +473,6 @@ export default function PageNavigation({
                 {hasWelcome ? `${t('builder.pagination.welcome_page')} ${t('builder.pagination.added')}` : t('builder.pagination.welcome_page')}
             </button>
 
-            {/* End Page Option */}
             <button
                 onClick={() => !hasThankYou && onAddThankYou?.()}
                 disabled={hasThankYou}
@@ -417,11 +491,9 @@ export default function PageNavigation({
         </div>
       </div>
 
-      {/* Mobile View */}
       <div className={`md:hidden fixed bottom-0 left-0 right-0 z-[1000] bg-white border-t border-gray-200 shadow-[0_-4px_20px_-5px_rgba(0,0,0,0.1)] px-3 h-16 flex items-center justify-between pb-safesafe ${className}`}>
         
         <div className="flex items-center gap-1">
-             {/* Delete Button */}
             <button
                 onClick={(e) => {
                     e.stopPropagation();
@@ -431,12 +503,11 @@ export default function PageNavigation({
                 }}
                 disabled={currentPage >= 0 && totalContentPages <= 1}
                 className="w-10 h-10 flex items-center justify-center rounded-full text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-gray-400 disabled:cursor-not-allowed"
-                title={currentPage >= 0 && totalContentPages <= 1 ? "ไม่สามารถลบหน้าสุดท้ายได้" : "Delete Page"}
+                title={currentPage >= 0 && totalContentPages <= 1 ? t('builder.pagination.last_page_delete_error') : t('builder.pagination.delete_page')}
             >
                 <Trash2 className="w-5 h-5" />
             </button>
 
-            {/* Previous Button */}
             <button
                 onClick={handlePrevPage}
                 disabled={currentOrderedIndex <= 0}
@@ -446,7 +517,6 @@ export default function PageNavigation({
             </button>
         </div>
 
-        {/* Center: Page Selector */}
         <div className="flex-1 px-2 relative flex justify-center min-w-0">
             <div className="relative inline-flex items-center justify-center max-w-full">
                 <select
@@ -470,7 +540,7 @@ export default function PageNavigation({
                     </span>
                     {orderedPages.length > 1 && (
                         <div className="flex items-center gap-1 opacity-70 flex-shrink-0">
-                            <span className="text-[10px] uppercase font-bold tracking-wider">More</span>
+                            <span className="text-[10px] uppercase font-bold tracking-wider">{t('builder.pagination.more')}</span>
                             <ChevronDown className="w-3 h-3" />
                         </div>
                     )}
@@ -478,7 +548,6 @@ export default function PageNavigation({
             </div>
         </div>
 
-        {/* Next & Add Buttons */}
         <div className="flex items-center gap-1 relative">
              <button
                 onClick={handleNextPage}
@@ -498,12 +567,10 @@ export default function PageNavigation({
                     <Plus className={`w-5 h-5 transition-transform duration-200 ${showMobileAddMenu ? 'rotate-45' : ''}`} />
                 </button>
 
-                {/* Mobile Add Menu */}
                 {showMobileAddMenu && createPortal(
                     <>
                         <div className="fixed inset-0 z-[9999]" onClick={() => setShowMobileAddMenu(false)} />
                         <div className="fixed bottom-24 right-4 w-64 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 z-[9999] overflow-hidden animate-in slide-in-from-bottom-2 fade-in duration-200">
-                             {/* Standard Page */}
                             <button
                                 onClick={() => { onAddPage(); setShowMobileAddMenu(false); }}
                                 className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-black flex items-center transition-colors border-b border-gray-50"
@@ -513,11 +580,10 @@ export default function PageNavigation({
                                 </div>
                                 <div>
                                     <div className="font-medium">{t('builder.pagination.page_generic')}</div>
-                                    <div className="text-xs text-gray-400">Add a new blank page</div>
+                                    <div className="text-xs text-gray-400">{t('builder.pagination.add_new_blank')}</div>
                                 </div>
                             </button>
 
-                            {/* Welcome Page */}
                             <button
                                 onClick={() => { if(!hasWelcome) { onAddWelcome?.(); setShowMobileAddMenu(false); } }}
                                 disabled={hasWelcome}
@@ -532,12 +598,11 @@ export default function PageNavigation({
                                 </div>
                                 <div className="flex-1">
                                     <div className="font-medium">{t('builder.pagination.welcome_page')}</div>
-                                    <div className="text-xs text-gray-400">{hasWelcome ? 'Already added' : 'Start with intro'}</div>
+                                    <div className="text-xs text-gray-400">{hasWelcome ? t('builder.pagination.already_added') : t('builder.pagination.active_intro')}</div>
                                 </div>
                                 {hasWelcome && <CheckCircle2 className="w-4 h-4 text-green-500 ml-2" />}
                             </button>
 
-                            {/* End Page */}
                             <button
                                 onClick={() => { if(!hasThankYou) { onAddThankYou?.(); setShowMobileAddMenu(false); } }}
                                 disabled={hasThankYou}
@@ -552,7 +617,7 @@ export default function PageNavigation({
                                 </div>
                                 <div className="flex-1">
                                     <div className="font-medium">{t('builder.pagination.end_page')}</div>
-                                    <div className="text-xs text-gray-400">{hasThankYou ? 'Already added' : 'End with success'}</div>
+                                    <div className="text-xs text-gray-400">{hasThankYou ? t('builder.pagination.already_added') : t('builder.pagination.active_success')}</div>
                                 </div>
                                 {hasThankYou && <CheckCircle2 className="w-4 h-4 text-green-500 ml-2" />}
                             </button>
