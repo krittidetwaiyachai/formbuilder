@@ -52,8 +52,9 @@ export default function DesignerElementCard({
         className={cn(
           "relative border rounded-lg bg-white cursor-pointer transition-all duration-200",
           !isSelected && "hover:border-primary pt-3 pb-2 px-3",
-          isSelected && "border-black border-[3px] shadow-xl scale-[1.01] ring-2 ring-black/5 z-20 pt-4 pb-2 px-3"
+          isSelected && "border-[3px] shadow-xl scale-[1.01] ring-2 ring-black/5 z-20 pt-4 pb-2 px-3"
         )}
+        style={isSelected ? { borderColor: 'var(--primary, #000)' } : undefined}
         onMouseDown={(e) => {
           
           const target = e.target as HTMLElement;

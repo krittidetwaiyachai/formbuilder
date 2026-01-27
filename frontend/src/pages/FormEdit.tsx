@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef, useMemo } from 'react';
 import { useParams, useSearchParams, useNavigate, useBeforeUnload } from 'react-router-dom';
+import { io } from 'socket.io-client';
 import { useTranslation } from 'react-i18next';
 import { generateUUID } from '@/utils/uuid';
 import { DragDropContext } from '@hello-pangea/dnd';
@@ -57,6 +58,7 @@ export default function FormBuilderPage() {
     redo,
     historyIndex,
     history,
+    setSocket,
   } = useFormStore();
   
   const [saving, setSaving] = useState(false);
@@ -183,20 +185,9 @@ export default function FormBuilderPage() {
         });
       } else {
         loadForm(id).catch((error: any) => {
+           console.error('Error loading form:', error);
            if (error.code === 'ERR_NETWORK' || error.message?.includes('CONNECTION_REFUSED')) {
-             console.warn(t('builder.warning.temp_form'));
-             setCurrentForm({
-               id: id,
-               title: 'Untitled Form',
-               status: FormStatus.DRAFT,
-               isQuiz: false,
-               fields: [],
-               conditions: [],
-               createdAt: new Date().toISOString(),
-               updatedAt: new Date().toISOString(),
-               createdById: '',
-               pageSettings: [{ id: generateUUID(), title: 'Page 1' }]
-             });
+             setLoadingError(t('builder.toast.load_error') + ' (Network Error)');
            } else if (error.response?.status === 403) {
              setLoadingError(t('builder.access_denied_msg'));
            } else {
@@ -206,6 +197,49 @@ export default function FormBuilderPage() {
       }
     }
   }, [id, isNewForm, loadForm, setCurrentForm]);
+
+  // Socket connection
+  useEffect(() => {
+    if (!id || id.startsWith('temp-')) return;
+    
+    const socketUrl = import.meta.env.VITE_API_URL;
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+    let baseUrl: string;
+    
+    if (socketUrl) {
+      baseUrl = socketUrl.replace('/api', '');
+    } else if (backendUrl) {
+      baseUrl = backendUrl.replace('/api', '');
+    } else {
+      baseUrl = window.location.origin;
+    }
+
+    // Connect to the 'forms' namespace
+    const socket = io(`${baseUrl}/forms`, {
+      path: '/socket.io',
+      transports: ['websocket', 'polling'],
+    });
+
+    socket.on('connect', () => {
+      console.log('Connected to form gateway');
+      socket.emit('join_form', id);
+    });
+
+    socket.on('form_updated', (data: any) => {
+      // Update form state without emitting back to socket
+      // Using a function update to ensure we have latest state if needed, 
+      // but here we just push the data from server
+      updateForm(data, false); 
+    });
+
+    setSocket(socket);
+
+    return () => {
+      socket.emit('leave_form', id);
+      socket.disconnect();
+      setSocket(null);
+    };
+  }, [id, setSocket, updateForm]);
 
   
   useEffect(() => {

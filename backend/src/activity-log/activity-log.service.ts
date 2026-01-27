@@ -1,24 +1,21 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class ActivityLogService {
+  private readonly logger = new Logger(ActivityLogService.name);
+
   constructor(private prisma: PrismaService) {}
 
   async log(formId: string, userId: string, action: string, details?: any) {
-    try {
-      await this.prisma.activityLog.create({
-        data: {
-          formId,
-          userId,
-          action,
-          details,
-        },
-      });
-    } catch (error) {
-      console.error('Failed to create activity log:', error);
-      
-    }
+    await this.prisma.activityLog.create({
+      data: {
+        formId,
+        userId,
+        action,
+        details,
+      },
+    });
   }
 
   async getFormActivity(

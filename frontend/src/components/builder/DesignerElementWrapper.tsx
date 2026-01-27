@@ -13,12 +13,14 @@ interface DesignerElementWrapperProps {
   index?: number;
 }
 
-export default function DesignerElementWrapper({
+function DesignerElementWrapperComponent({
   element,
   index,
 }: DesignerElementWrapperProps) {
-  const { selectedFieldId, selectField, deleteField } =
-    useFormStore();
+  const selectedFieldId = useFormStore((state) => state.selectedFieldId);
+  const selectField = useFormStore((state) => state.selectField);
+  const deleteField = useFormStore((state) => state.deleteField);
+  
   const isSelected = selectedFieldId === element.id;
 
   const {
@@ -33,7 +35,7 @@ export default function DesignerElementWrapper({
     data: {
       source: "canvas",
       elementId: element.id,
-    index: index,
+      index: index,
     },
   });
 
@@ -143,3 +145,11 @@ export default function DesignerElementWrapper({
     </div>
   );
 }
+
+export default React.memo(DesignerElementWrapperComponent, (prev, next) => {
+    
+    return (
+        prev.element === next.element && 
+        prev.index === next.index
+    );
+});

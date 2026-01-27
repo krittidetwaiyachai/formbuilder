@@ -2,13 +2,16 @@ import axios from 'axios';
 import { useAuthStore } from '@/store/authStore';
 
 const API_URL = import.meta.env.VITE_API_URL || '/api';
+const RETRY_MAX_ATTEMPTS = 5;
+const REQUEST_TIMEOUT_MS = 30000;
+const RETRY_BASE_DELAY_MS = 1000;
 
 export const api = axios.create({
   baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 30000,
+  timeout: REQUEST_TIMEOUT_MS,
 });
 
 api.interceptors.request.use((config) => {
@@ -28,10 +31,10 @@ api.interceptors.response.use(
       originalRequest._retry = true;
       const retryCount = originalRequest._retryCount || 0;
       
-      if (retryCount < 5) { 
+      if (retryCount < RETRY_MAX_ATTEMPTS) { 
         originalRequest._retryCount = retryCount + 1;
         
-        const waitTime = Math.pow(2, retryCount) * 1000 + Math.random() * 1000;
+        const waitTime = Math.pow(2, retryCount) * RETRY_BASE_DELAY_MS + Math.random() * 1000;
         
         await new Promise(resolve => setTimeout(resolve, waitTime));
         return api(originalRequest);

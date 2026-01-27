@@ -20,6 +20,7 @@ export interface FormSlice {
   setActiveSidebarTab: (tab: 'properties' | 'theme' | 'settings' | 'logic' | 'builder') => void;
   setShouldScrollToQuizSettings: (shouldScroll: boolean) => void;
   setFocusedLogicRuleId: (id: string | null) => void;
+  setSocket: (socket: Socket | null) => void;
 }
 
 export const createFormSlice: StateCreator<FormBuilderState, [], [], FormSlice> = (set, get) => ({
@@ -49,20 +50,27 @@ export const createFormSlice: StateCreator<FormBuilderState, [], [], FormSlice> 
   setActiveSidebarTab: (tab) => set({ activeSidebarTab: tab }),
   setShouldScrollToQuizSettings: (shouldScroll) => set({ shouldScrollToQuizSettings: shouldScroll }),
   setFocusedLogicRuleId: (id) => set({ focusedLogicRuleId: id }),
+  setSocket: (socket) => set({ socket }),
 
   loadForm: async (formId) => {
-      try {
-          const response = await api.get(`/forms/${formId}`);
-          set({ currentForm: response.data });
-      } catch (error) {
-          console.error("Failed to load form", error);
-      }
+      const response = await api.get(`/forms/${formId}`);
+      
+      const formData = response.data.form || response.data;
+      set({ currentForm: formData });
   },
 
   saveForm: async () => {
       const { currentForm } = get();
       if (!currentForm) return;
-      return await api.put(`/forms/${currentForm.id}`, currentForm);
+
+      const { 
+          id, createdAt, updatedAt, createdBy, createdById, 
+          responseCount, viewCount, collaborators, _count,
+          ...payload 
+      } = currentForm as any;
+
+      const response = await api.patch(`/forms/${currentForm.id}`, payload);
+      return response.data;
   }
 });
 

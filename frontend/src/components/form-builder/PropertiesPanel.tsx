@@ -38,8 +38,13 @@ interface PropertiesPanelProps {
 export default function PropertiesPanel({ currentPage = 0 }: PropertiesPanelProps) {
   const { t } = useTranslation();
   const panelRef = useRef<HTMLDivElement>(null);
-  const { currentForm, selectedFieldId, updateField, updateForm, addField, activeSidebarTab, setActiveSidebarTab } = useFormStore();
+  const { currentForm, selectedFieldId, updateForm, updateField, addField, activeSidebarTab, setActiveSidebarTab } = useFormStore();
+  
   const selectedField = currentForm?.fields?.find((f) => f.id === selectedFieldId);
+  
+  
+  
+  
   const activeTab = activeSidebarTab;
   const setActiveTab = setActiveSidebarTab;
 
@@ -48,7 +53,7 @@ export default function PropertiesPanel({ currentPage = 0 }: PropertiesPanelProp
 
   useEffect(() => {
     if (currentForm) {
-      setFormTitle(currentForm.title);
+      setFormTitle(currentForm.title || '');
       setFormDescription(currentForm.description || '');
     }
   }, [currentForm]);

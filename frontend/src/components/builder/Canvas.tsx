@@ -7,18 +7,18 @@ import { useFormStore } from "@/store/formStore";
 import DesignerElementWrapper from "./DesignerElementWrapper";
 import { cn } from "@/lib/utils";
 import { DEFAULT_THEME } from "@/config/themeDefaults";
+import { useTranslation } from "react-i18next";
 
 interface CanvasProps {
   activeId?: string | null;
 }
 
-import { useTranslation } from "react-i18next";
-
 export default function Canvas({ activeId }: CanvasProps) {
   const { t } = useTranslation();
-  const { currentForm } = useFormStore();
-  const elements = currentForm?.fields || [];
-  const theme = currentForm?.settings;
+  
+  const elements = useFormStore((state) => state.currentForm?.fields || []);
+  const theme = useFormStore((state) => state.currentForm?.settings);
+  
   const canvasRef = React.useRef<HTMLDivElement>(null);
   const scrollPositionRef = React.useRef<{ x: number; y: number } | null>(null);
   const isDragging = activeId !== null;
@@ -125,6 +125,7 @@ export default function Canvas({ activeId }: CanvasProps) {
     return radiusMap[radius] || "rounded-lg";
   };
 
+  const primaryColor = theme?.primaryColor || DEFAULT_THEME.primaryColor;
 
   return (
     <div 
@@ -139,7 +140,7 @@ export default function Canvas({ activeId }: CanvasProps) {
       <div
         ref={setNodeRef}
         className={cn(
-          "min-h-[600px] max-w-2xl mx-auto shadow-sm p-8 space-y-4 relative",
+          "min-h-[600px] max-w-2xl mx-auto shadow-sm p-8 space-y-4 relative theme-aware-focus",
           getBorderRadius(),
           isOver && "ring-2 ring-primary ring-offset-2"
         )}
@@ -147,7 +148,8 @@ export default function Canvas({ activeId }: CanvasProps) {
           ...getBackgroundStyle(),
           color: theme?.textColor || DEFAULT_THEME.textColor,
           fontFamily: theme?.fontFamily || DEFAULT_THEME.fontFamily,
-        }}
+          '--primary': primaryColor,
+        } as React.CSSProperties}
       >
         {elements.length > 0 ? (
           <SortableContext
@@ -173,5 +175,3 @@ export default function Canvas({ activeId }: CanvasProps) {
     </div>
   );
 }
-
-

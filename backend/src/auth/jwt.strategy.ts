@@ -16,7 +16,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       secretOrKey: (() => {
         const secret = configService.get<string>('JWT_SECRET');
         if (!secret) {
-          if (process.env.NODE_ENV === 'production') {
+          if (configService.get<string>('NODE_ENV') === 'production') {
             throw new Error('JWT_SECRET environment variable is not defined!');
           }
           console.warn('WARNING: JWT_SECRET is not defined, using default insecure secret');

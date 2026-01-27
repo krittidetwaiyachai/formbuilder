@@ -70,6 +70,42 @@ export class CreateFieldDto {
   @IsOptional()
   @IsString()
   videoUrl?: string;
+
+  @IsOptional()
+  @IsString()
+  formId?: string;
+
+  @IsOptional()
+  @IsString()
+  helperText?: string;
+
+  @IsOptional()
+  @IsNumber()
+  rows?: number;
+
+  @IsOptional()
+  @IsString()
+  accept?: string;
+
+  @IsOptional()
+  @IsNumber()
+  max?: number;
+
+  @IsOptional()
+  @IsNumber()
+  min?: number;
+
+  @IsOptional()
+  @IsString()
+  content?: string;
+
+  @IsOptional()
+  @IsString()
+  headingImage?: string;
+
+  @IsOptional()
+  @IsString()
+  explanation?: string;
 }
 
 export class CreateFieldConditionDto {
@@ -146,6 +182,14 @@ export class CreateLogicRuleDto {
 export class CreateFormDto {
   @IsString()
   title: string;
+
+  @IsOptional()
+  @IsString()
+  folderId?: string;
+
+  @IsOptional()
+  @IsString()
+  logoUrl?: string;
 
   @IsOptional()
   @IsString()

@@ -179,7 +179,7 @@ export function FormSettingsProperties({
                 {t('settings.general.status')}
               </label>
               <Select
-                value={currentForm.status}
+                value={currentForm.status || 'DRAFT'}
                 onValueChange={(value) => handleFormUpdate('status', value)}
               >
                 <SelectTrigger className="w-full bg-white border-gray-400">

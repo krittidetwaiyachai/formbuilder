@@ -118,7 +118,7 @@ export function PublicFormLayout({
       )}
 
       <motion.div 
-        className={`relative z-10 w-full mx-auto ${isMobileView ? 'max-w-full px-4' : isTabletView ? 'max-w-2xl px-6' : 'max-w-3xl'} ${isCardLayout ? 'flex-1 flex flex-col justify-center py-4' : isMobileView ? 'pt-6 pb-8 px-4' : 'pt-20 pb-12 px-4'}`}
+        className={`relative z-10 w-full mx-auto theme-aware-focus ${isMobileView ? 'max-w-full px-4' : isTabletView ? 'max-w-2xl px-6' : 'max-w-3xl'} ${isCardLayout ? 'flex-1 flex flex-col justify-center py-4' : isMobileView ? 'pt-6 pb-8 px-4' : 'pt-20 pb-12 px-4'}`}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}

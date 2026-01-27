@@ -15,6 +15,7 @@ import { EventsModule } from './events/events.module';
 import { CommonModule } from './common/common.module';
 import { CustomThrottlerGuard } from './common/guards/custom-throttler.guard';
 import { AdminModule } from './admin/admin.module';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -46,6 +47,11 @@ import { AdminModule } from './admin/admin.module';
       provide: APP_GUARD,
       useClass: CustomThrottlerGuard,
     },
+    {
+      provide: APP_GUARD,
+      useClass: CustomThrottlerGuard,
+    },
   ],
+  controllers: [AppController],
 })
 export class AppModule {}

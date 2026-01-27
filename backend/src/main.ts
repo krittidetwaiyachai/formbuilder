@@ -1,5 +1,6 @@
 import { NestFactory, Reflector } from '@nestjs/core';
-import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
+import { ClassSerializerInterceptor, ValidationPipe, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app.module';
 import helmet from 'helmet';
 
@@ -20,9 +21,10 @@ async function bootstrap() {
     contentSecurityPolicy: false,
   }));
   
-  
-  const allowedOrigins = process.env.FRONTEND_URL?.split(',') || [];
-  console.log('Allowed Origins:', allowedOrigins);
+  const configService = app.get(ConfigService);
+  const logger = new Logger('Bootstrap'); 
+  const allowedOrigins = configService.get<string>('FRONTEND_URL')?.split(',') || [];
+
   app.enableCors({
     origin: allowedOrigins.length > 0 ? allowedOrigins : ['http://localhost:5173'],
     credentials: true,
@@ -33,7 +35,6 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
-      forbidNonWhitelisted: true,
       transform: true,
     }),
   );
@@ -42,9 +43,12 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
 
-  const port = process.env.PORT || 3000;
+  const port = configService.get<number>('PORT') || 3000;
   await app.listen(port);
-  console.log(`🚀 Application is running on: http://localhost:${port}`);
+  logger.log(`🚀 Application is running on: http://localhost:${port}`);
+  if (allowedOrigins.length > 0) {
+      logger.log(`Allowed Origins: ${allowedOrigins.join(', ')}`);
+  }
 }
-
+ 
 bootstrap();
