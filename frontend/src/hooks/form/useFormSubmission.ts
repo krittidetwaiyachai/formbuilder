@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import api from '@/lib/api';
-import { Form } from '@/types';
+import { Form, FieldType } from '@/types';
 import { getBrowserFingerprint } from '@/utils/fingerprint';
 import { useToast } from '@/components/ui/toaster';
 
@@ -20,14 +20,14 @@ export function useFormSubmission({ form, isPreview = false }: UseFormSubmission
     setSubmitting(true);
 
     if (isPreview) {
-      
+
       setTimeout(() => {
         if (form.isQuiz) {
           let mockScore = 0;
           let total = 0;
           if (form.quizSettings?.showScore) {
             total = form.fields?.length || 0;
-            mockScore = total; 
+            mockScore = total;
           }
           setScore({ score: mockScore, totalScore: total });
         }
@@ -40,7 +40,29 @@ export function useFormSubmission({ form, isPreview = false }: UseFormSubmission
     try {
       const answers = form.fields?.map((field) => {
         const fieldName = `field_${field.id}`;
-        const value = data[fieldName];
+        let value = data[fieldName];
+
+        if (field.type === FieldType.FULLNAME) {
+          const parts = [
+            data[`${fieldName}_prefix`],
+            data[`${fieldName}_first`],
+            data[`${fieldName}_middle`],
+            data[`${fieldName}_last`],
+            data[`${fieldName}_suffix`]
+          ].filter(Boolean);
+          value = parts.join(' ');
+        } else if (field.type === FieldType.ADDRESS) {
+          const parts = [
+            data[`${fieldName}_street`],
+            data[`${fieldName}_street2`],
+            data[`${fieldName}_city`],
+            data[`${fieldName}_state`],
+            data[`${fieldName}_zip`],
+            data[`${fieldName}_country`]
+          ].filter(Boolean);
+          value = parts.join(', ');
+        }
+
         return {
           fieldId: field.id,
           value: Array.isArray(value) ? value.join(', ') : String(value || ''),

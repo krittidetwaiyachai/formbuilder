@@ -33,7 +33,12 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom'],
+          'ui-libs': ['lucide-react', 'framer-motion'],
+          'charts': ['recharts'],
+          'editor': ['react-quill'],
+        },
       },
     },
   },

@@ -7,6 +7,8 @@ import { useTranslation } from 'react-i18next';
 import ConfirmDialog from '@/components/ui/ConfirmDialog';
 import { useFormStore } from '@/store/formStore';
 
+import { ActiveUser } from '@/types/collaboration';
+
 interface CanvasAreaProps {
   visibleFields: Field[];
   currentForm: Form | null;
@@ -16,6 +18,7 @@ interface CanvasAreaProps {
   onToggleSelect?: (id: string) => void;
   onOpenProperties?: () => void;
   additionalSelectedIds?: string[];
+  getFieldUsers?: (fieldId: string) => ActiveUser[];
 }
 
 export default function CanvasArea({ 
@@ -27,6 +30,7 @@ export default function CanvasArea({
   onToggleSelect,
   onOpenProperties,
   additionalSelectedIds = [],
+  getFieldUsers,
 }: CanvasAreaProps) {
   
   const { t } = useTranslation();
@@ -87,6 +91,7 @@ export default function CanvasArea({
                         isDragging={draggableSnapshot.isDragging}
                         disableHover={snapshot.isDraggingOver}
                         allFields={visibleFields}
+                        collaboratingUsers={getFieldUsers?.(field.id)}
                       />
                     )}
                   </Draggable>

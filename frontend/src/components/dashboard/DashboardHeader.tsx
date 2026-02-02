@@ -19,6 +19,20 @@ export default function DashboardHeader({ username, onCreateForm, isCreating, on
   const { t } = useTranslation();
   const { user } = useAuthStore();
   
+  const handleScroll = () => {
+    const element = document.getElementById('dashboard-content');
+    if (element) {
+      const headerOffset = 80;
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+  
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
+  
   
   return (
     <>
@@ -197,6 +211,8 @@ export default function DashboardHeader({ username, onCreateForm, isCreating, on
               `}</style>
             </div>
           </div>
+
+          
         </div>
       </div>
       { }

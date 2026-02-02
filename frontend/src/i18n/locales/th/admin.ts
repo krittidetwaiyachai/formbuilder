@@ -1,7 +1,7 @@
 export default {
   "admin.bundles.delete_confirm": "ลบ Bundle?",
   "admin.bundles.delete_confirm_desc": "ต้องการลบ Bundle นี้หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้",
-  
+
   "admin.dashboard.title": "แดชบอร์ด",
   "admin.dashboard.subtitle": "ภาพรวมระบบ Form Builder",
   "admin.dashboard.monthly_submissions": "สถิติการตอบกลับย้อนหลัง 6 เดือน",
@@ -36,8 +36,8 @@ export default {
   "admin.editor.saving": "กำลังบันทึก...",
   "admin.editor.saved": "บันทึกแล้ว",
   "admin.editor.save_failed": "บันทึกไม่สำเร็จ",
-  "admin.editor.status_draft": "สถานะ: ร่าง",
-  "admin.editor.status_published": "สถานะ: เผยแพร่",
+  "admin.editor.status_draft": "ร่าง",
+  "admin.editor.status_published": "เผยแพร่",
   "admin.editor.field.short_text": "ข้อความสั้น",
   "admin.editor.field.long_text": "ข้อความยาว",
   "admin.editor.field.number": "ตัวเลข",

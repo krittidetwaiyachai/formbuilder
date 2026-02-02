@@ -114,8 +114,8 @@ export class ActivityLogService {
       photoUrl: string | null;
     }>>`
       SELECT DISTINCT u.id, u."firstName", u."lastName", u.email, u."photoUrl"
-      FROM "ActivityLog" al
-      JOIN "User" u ON al."userId" = u.id
+      FROM "activity_logs" al
+      JOIN "users" u ON al."userId" = u.id
       WHERE al."formId" = ${formId}
       LIMIT 50
     `;

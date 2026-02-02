@@ -8,12 +8,16 @@ import { FileQuestion } from 'lucide-react';
 import PublicFormRenderer from '@/components/public-form/PublicFormRenderer';
 import Loader from '@/components/common/Loader';
 
+import { useSmoothScroll } from '@/hooks/useSmoothScroll';
+
 export default function PublicForm() {
   const { id } = useParams<{ id: string }>();
   const { t } = useTranslation();
   
   const [form, setForm] = useState<Form | null>(null);
   const [loading, setLoading] = useState(true);
+
+  useSmoothScroll(null, { enabled: !loading });
 
   useEffect(() => {
     if (form?.settings?.backgroundColor) {
@@ -113,14 +117,16 @@ export default function PublicForm() {
       <div 
         className="fixed inset-0 z-0 transition-colors duration-500"
         style={{ 
-          backgroundColor: form.settings?.backgroundColor || '#ffffff',
-          backgroundImage: form.settings?.backgroundType === 'image' && form.settings?.backgroundImage ? `url(${form.settings.backgroundImage})` : 'none',
+          background: form.settings?.backgroundType === 'gradient' ? form.settings.backgroundColor : undefined,
+          backgroundColor: form.settings?.backgroundType !== 'gradient' ? (form.settings?.backgroundColor || '#ffffff') : undefined,
+          backgroundImage: form.settings?.backgroundType === 'image' && form.settings?.backgroundImage ? `url(${form.settings.backgroundImage})` : undefined,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
         }}
       />
       <div 
+        id="public-form-scroll-container"
         className="relative z-10 min-h-screen w-full overflow-y-auto overflow-x-hidden"
         style={{ fontFamily: form.settings?.fontFamily || 'inherit' }}
       >

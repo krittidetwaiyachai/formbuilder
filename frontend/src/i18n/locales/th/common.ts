@@ -29,7 +29,7 @@ export default {
   "common.copied": "คัดลอกแล้ว",
   "common.copied_to_clipboard": "คัดลอกลิงก์แล้ว",
 
-  
+
   "common.address.street": "บ้านเลขที่ / หมู่บ้าน / ซอย / ถนน",
   "common.address.street2": "แขวง / ตำบล",
   "common.address.city": "เขต / อำเภอ",
@@ -39,24 +39,28 @@ export default {
   "common.address.country": "ประเทศ",
   "common.address.select_country": "เลือกประเทศ",
 
-  
+
   "common.fullname.prefix": "คำนำหน้า",
   "common.fullname.first": "ชื่อจริง",
   "common.fullname.middle": "ชื่อกลาง",
   "common.fullname.last": "นามสกุล",
   "common.fullname.suffix": "คำต่อท้าย",
 
-  
+
   "common.options.add_option": "เพิ่มตัวเลือก...",
   "common.options.click_to_add": "คลิกเพื่อเพิ่มตัวเลือก",
   "common.options.other": "อื่นๆ",
   "common.options.type_here": "พิมพ์ที่นี่...",
   "common.options.no_options": "ยังไม่มีตัวเลือก. พิมพ์ด้านบนเพื่อเพิ่ม.",
 
-  
+
   "common.date.month": "เดือน",
   "common.date.day": "วัน",
   "common.date.year": "ปี",
+  "common.ok": "ตกลง",
+  "common.today": "วันนี้",
+  "common.hour": "ชั่วโมง",
+  "common.min": "นาที",
   "common.time.time": "เวลา",
   "common.time.select_time": "เลือกเวลา...",
   "common.time.hour_placeholder": "ชม.",

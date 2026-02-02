@@ -15,18 +15,18 @@ export default {
   "builder.access_denied": "Access Denied",
   "builder.access_denied_msg": "You don't have permission to access this form.",
   "builder.back_to_dashboard": "Back to Dashboard",
-  
+
   "builder.field_bundles": "Field Bundles",
   "builder.bundles_subtitle": "Common Sets",
   "builder.bundles_description": "Choose a pre-built template to add to your form",
   "builder.bundles_click": "Click on a template to add it to your form",
-  
+
   "builder.categories.text": "Text Fields",
   "builder.categories.choice": "Choice Fields",
   "builder.categories.datetime": "Date & Time",
   "builder.categories.rating": "Rating",
   "builder.categories.layout": "Layout",
-  
+
   "builder.fields.short_text": "Short Text",
   "builder.fields.long_text": "Long Text",
   "builder.fields.email": "Email",
@@ -47,7 +47,7 @@ export default {
   "builder.fields.separator": "Separator",
   "builder.fields.page_break": "Page Break",
   "builder.fields.group": "Field Group",
-  
+
   "builder.tabs.properties": "Properties",
   "builder.tabs.logic": "Logic",
   "builder.tabs.settings": "Settings",
@@ -57,7 +57,7 @@ export default {
   "builder.tabs.columns": "Columns",
   "builder.tabs.surveying": "Surveying",
   "builder.tabs.fields": "Fields",
-  
+
   "builder_header.saving": "Saving...",
   "builder_header.loading": "Loading...",
   "builder_header.all_saved": "All changes saved at",
@@ -70,7 +70,7 @@ export default {
   "builder_header.undo": "Undo",
   "builder_header.redo": "Redo",
   "builder_header.invite_collaborators": "Invite collaborators",
-  
+
   "builder.logic.title": "Conditional Logic",
   "builder.logic.subtitle": "Create rules to show or hide fields based on user input",
   "builder.logic.add_rule": "Add Rule",
@@ -95,11 +95,11 @@ export default {
   "builder.logic.sidebar_subtitle": "Create conditions in the Logic canvas",
   "builder.logic.no_conditions": "No Conditions Yet",
   "builder.logic.delete_confirm": "Are you sure you want to delete this rule?",
-  "builder.logic.delete_confirm_desc": "This action cannot be undone.",
+  "builder.logic.delete_confirm_desc": "You can press Ctrl+Z to undo.",
   "builder.logic.click_expand": "Click a rule to expand details",
   "builder.logic.conditions": "Conditions",
   "builder.logic.actions": "Actions",
-  
+
   "builder.logic.op.equals": "Equals",
   "builder.logic.op.not_equals": "Not Equals",
   "builder.logic.op.contains": "Contains",
@@ -223,7 +223,7 @@ export default {
   "builder.placeholder.date": "Pick a date...",
   "builder.placeholder.time": "Pick a time...",
   "builder.placeholder.header_subheading": "Add a subheading...",
-  
+
   "builder.media.insert_image": "Insert Image",
   "builder.media.insert_video": "Insert Video",
   "builder.media.paste_image_url": "Paste image URL...",
@@ -241,7 +241,7 @@ export default {
   "builder.toast.element_deleted_desc": "The element has been removed from your form.",
   "builder.toast.element_duplicated": "Element duplicated",
   "builder.toast.element_duplicated_desc": "The element has been duplicated.",
-  
+
   "builder.toast.save_success": "Form saved successfully",
   "builder.toast.save_error": "Failed to save form",
   "builder.toast.load_error": "Failed to load form.",

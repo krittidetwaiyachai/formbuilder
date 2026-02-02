@@ -45,7 +45,7 @@ export const ParagraphField: React.FC<ParagraphFieldProps> = ({
 
   return (
     <div 
-      className={`relative w-full transition-all duration-200 group
+      className={`relative w-full transition-all duration-200 group overflow-visible
         ${isSelected ? '' : 'border-transparent hover:border-gray-200'}
         ${isSelected ? 'cursor-default' : 'cursor-pointer'}
         rounded-lg
@@ -58,7 +58,7 @@ export const ParagraphField: React.FC<ParagraphFieldProps> = ({
         }}
     > 
         {isSelected && !isMultiSelecting && (
-          <div className="absolute -top-12 left-0 right-0 z-[60] flex justify-center">
+          <div className="absolute -top-32 left-0 right-0 z-[70] flex justify-center">
              <RichTextToolbar id={`toolbar-${field.id}`} />
           </div>
         )}
@@ -72,7 +72,7 @@ export const ParagraphField: React.FC<ParagraphFieldProps> = ({
                   onChange={(value) => updateField(field.id, { label: value })}
                   placeholder={t('builder.header.slash_command')}
                   modules={modules}
-                  className="text-sm text-black leading-relaxed borderless animate-slide-down min-h-32"
+                  className="text-sm text-black leading-relaxed borderless animate-slide-down min-h-[3em]"
                />
              </React.Suspense>
            </div>

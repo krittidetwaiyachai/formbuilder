@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { dataStore } from "@/lib/data-store";
-import { Form } from "@/types";
+import { Form, FormStatus } from "@/types";
 import { ActivityLog } from "@/types/collaboration";
 
 export async function POST(
@@ -19,10 +19,10 @@ export async function POST(
       );
     }
     
-    const newStatus = publish ? "PUBLISHED" : "DRAFT";
+    const newStatus = publish ? FormStatus.PUBLISHED : FormStatus.DRAFT;
     dataStore.forms[formIndex] = {
       ...dataStore.forms[formIndex],
-      status: newStatus as any,
+      status: newStatus,
       updatedAt: new Date().toISOString(),
     };
     

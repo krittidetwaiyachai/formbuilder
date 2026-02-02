@@ -37,6 +37,7 @@ import {
 import { AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import Loader from '@/components/common/Loader';
+import { useSmoothScroll } from '@/hooks/useSmoothScroll';
 
 interface SidebarFieldConfig {
   type: FieldType;
@@ -626,6 +627,8 @@ export default function FieldSidebar({ onFieldSelected, className, variant }: Fi
   const { t } = useTranslation();
   const isTouch = useIsTouchDevice();
 
+  useSmoothScroll('field-sidebar-scroll-container');
+
   const visualVariant = variant || (className ? 'grid' : 'list');
 
   const handleFieldSelect = () => {
@@ -695,7 +698,7 @@ export default function FieldSidebar({ onFieldSelected, className, variant }: Fi
             </AnimatePresence>
        </div>
  
-       <div className={`flex-1 overflow-y-auto ${isCollapsed ? 'p-2' : 'p-4'} space-y-6 scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-transparent`}>
+       <div id="field-sidebar-scroll-container" className={`flex-1 overflow-y-auto ${isCollapsed ? 'p-2' : 'p-4'} space-y-6 scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-transparent`}>
          <Droppable 
            droppableId="SIDEBAR" 
            isDropDisabled={true}

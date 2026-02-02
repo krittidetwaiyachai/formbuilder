@@ -7,6 +7,7 @@ export default {
   "public.already_submitted_title": "ส่งฟอร์มแล้ว",
   "public.already_submitted_desc": "คุณได้ส่งคำตอบสำหรับฟอร์มนี้ไปแล้ว",
   "public.thank_you": "ขอบคุณที่ร่วมตอบแบบสอบถาม!",
+  "public.thank_you.back_to_home": "กลับหน้าหลัก",
   "public.quiz_unavailable_title": "แบบทดสอบไม่พร้อมใช้งาน",
   "public.email_label": "อีเมล",
   "public.email_required": "กรุณาระบุอีเมล",
@@ -108,7 +109,7 @@ export default {
   "public.rte.size_large": "ใหญ่",
   "public.rte.size_huge": "ใหญ่มาก",
   "public.rte.enter_url": "ใส่ URL",
-  
+
   "public.preview.desktop": "เดสก์ท็อป",
   "public.preview.tablet": "แท็บเล็ต",
   "public.preview.mobile": "มือถือ",

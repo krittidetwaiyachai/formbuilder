@@ -16,6 +16,7 @@ import { CommonModule } from './common/common.module';
 import { CustomThrottlerGuard } from './common/guards/custom-throttler.guard';
 import { AdminModule } from './admin/admin.module';
 import { AppController } from './app.controller';
+import { CollaborationModule } from './collaboration/collaboration.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { AppController } from './app.controller';
     EventsModule,
     CommonModule,
     AdminModule,
+    CollaborationModule,
   ],
   providers: [
     {
@@ -54,4 +56,4 @@ import { AppController } from './app.controller';
   ],
   controllers: [AppController],
 })
-export class AppModule {}
+export class AppModule { }

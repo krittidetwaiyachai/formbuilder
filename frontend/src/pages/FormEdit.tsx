@@ -25,14 +25,15 @@ import { ArrowUp, Settings } from 'lucide-react';
 import { useFormShortcuts } from '@/hooks/form/useFormShortcuts';
 import { LiquidFab } from '@/components/ui/LiquidFab';
 import ConfirmDialog from '@/components/ui/ConfirmDialog';
+import { useCollaboration } from '@/hooks/useCollaboration';
 
 import ThemeSelectionModal from '@/components/builder/ThemeSelectionModal';
+import { SmoothScrollProvider } from '@/contexts/SmoothScrollContext';
 
 export default function FormBuilderPage() {
   const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
-  
-  
+
   const [isThemeModalOpen, setIsThemeModalOpen] = useState(false);
   
   
@@ -109,6 +110,21 @@ export default function FormBuilderPage() {
 
   const previousFormStrRef = useRef<string>('');
   const firstRenderRef = useRef(true);
+
+  const { selectField: notifySelectField, deselectField: notifyDeselectField, getFieldUsers } = useCollaboration({ 
+    formId: id || '', 
+    enabled: !!id && !id.startsWith('temp-') 
+  });
+
+
+
+  useEffect(() => {
+    if (selectedFieldId) {
+      notifySelectField(selectedFieldId);
+    } else {
+      notifyDeselectField();
+    }
+  }, [selectedFieldId, notifySelectField, notifyDeselectField]);
 
   
   const handleSave = async (isAutoSave = false, silent = false, checkDebounce = false) => {
@@ -198,7 +214,7 @@ export default function FormBuilderPage() {
     }
   }, [id, isNewForm, loadForm, setCurrentForm]);
 
-  // Socket connection
+  
   useEffect(() => {
     if (!id || id.startsWith('temp-')) return;
     
@@ -214,21 +230,20 @@ export default function FormBuilderPage() {
       baseUrl = window.location.origin;
     }
 
-    // Connect to the 'forms' namespace
+    
     const socket = io(`${baseUrl}/forms`, {
       path: '/socket.io',
       transports: ['websocket', 'polling'],
     });
 
     socket.on('connect', () => {
-      console.log('Connected to form gateway');
       socket.emit('join_form', id);
     });
 
     socket.on('form_updated', (data: any) => {
-      // Update form state without emitting back to socket
-      // Using a function update to ensure we have latest state if needed, 
-      // but here we just push the data from server
+      
+      
+      
       updateForm(data, false); 
     });
 
@@ -770,9 +785,11 @@ export default function FormBuilderPage() {
                   `}</style>
               </div>
               
+              <SmoothScrollProvider targetId="builder-canvas-scroll-container">
               <div 
+                id="builder-canvas-scroll-container"
                 ref={scrollContainerRef}
-                className={`canvas-scroll-container flex-1 flex flex-col ${currentPage < 0 ? 'overflow-hidden' : 'overflow-y-auto'} px-4 md:px-8 pt-0 pb-0 scrollbar-hide relative scroll-smooth`}
+                className={`canvas-scroll-container flex-1 flex flex-col ${currentPage < 0 ? 'overflow-hidden' : 'overflow-y-auto'} px-4 md:px-8 pt-0 pb-0 scrollbar-hide relative`}
                 style={{ overscrollBehaviorX: 'none' }}
                 onScroll={(e) => {
                   const target = e.target as HTMLDivElement;
@@ -817,6 +834,7 @@ export default function FormBuilderPage() {
                           onToggleSelect={toggleFieldSelection}
                           onOpenProperties={() => openMobileDrawer('properties')}
                           additionalSelectedIds={additionalSelectedIds}
+                          getFieldUsers={getFieldUsers}
                         />
                       </>
                     )}
@@ -828,6 +846,7 @@ export default function FormBuilderPage() {
                 </div>
 
               </div>
+              </SmoothScrollProvider>
 
               { }
               <button

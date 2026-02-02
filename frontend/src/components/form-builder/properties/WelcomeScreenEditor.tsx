@@ -1,6 +1,13 @@
 
 import { Form } from '@/types';
-import { Check, ThumbsUp, Heart, Star, Trophy, PartyPopper, Rocket, Sparkles } from 'lucide-react';
+import { 
+  Check, ThumbsUp, Heart, Star, Trophy, PartyPopper, Rocket, Sparkles,
+  Bell, Bookmark, Calendar, Clock, Gift, Globe, Home, Lightbulb,
+  Mail, MessageSquare, Music, Shield, Sun, Target, Zap, Award,
+  Crown, Diamond, Flame, Key, Coffee, Camera, Compass, Flag,
+  Headphones, MapPin, Mic, Package, Palette, Plane, Play, Users,
+  Wallet, Wifi, CheckCircle, Send, Smile, ThumbsDown, Eye, Cake
+} from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
@@ -13,6 +20,46 @@ const iconMap: Record<string, any> = {
   party: PartyPopper,
   rocket: Rocket,
   sparkles: Sparkles,
+  bell: Bell,
+  bookmark: Bookmark,
+  calendar: Calendar,
+  clock: Clock,
+  gift: Gift,
+  globe: Globe,
+  home: Home,
+  lightbulb: Lightbulb,
+  mail: Mail,
+  message: MessageSquare,
+  music: Music,
+  shield: Shield,
+  sun: Sun,
+  target: Target,
+  zap: Zap,
+  award: Award,
+  crown: Crown,
+  diamond: Diamond,
+  flame: Flame,
+  key: Key,
+  coffee: Coffee,
+  camera: Camera,
+  compass: Compass,
+  flag: Flag,
+  headphones: Headphones,
+  mapPin: MapPin,
+  mic: Mic,
+  package: Package,
+  palette: Palette,
+  plane: Plane,
+  play: Play,
+  users: Users,
+  wallet: Wallet,
+  wifi: Wifi,
+  checkCircle: CheckCircle,
+  send: Send,
+  smile: Smile,
+  thumbsDown: ThumbsDown,
+  eye: Eye,
+  cake: Cake,
 };
 
 

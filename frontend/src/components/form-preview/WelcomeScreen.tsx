@@ -122,12 +122,12 @@ export default function WelcomeScreen({ settings, onStart, viewMode = 'desktop' 
       } relative ${
           (isMobile || isTablet)
             ? 'min-h-full rounded-none max-w-full' 
-            : 'min-h-[650px] rounded-[2.5rem] max-w-6xl my-8 border'
+            : 'min-h-[500px] rounded-[2.5rem] max-w-3xl my-8 border'
       }`}
       style={{ 
-        backgroundColor: 'var(--card-bg, rgba(255,255,255,0.9))', 
+        backgroundColor: 'rgba(255, 255, 255, 0.85)', 
         borderColor: 'var(--card-border, rgba(0,0,0,0.05))',
-        backdropFilter: 'blur(16px)'
+        backdropFilter: 'blur(20px)'
       }}
     >
       

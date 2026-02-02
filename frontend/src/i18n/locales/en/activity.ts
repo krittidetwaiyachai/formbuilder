@@ -151,7 +151,8 @@ export default {
       "from_group": "from Fieldgroup ( {{group}} )",
       "canvas": "Canvas",
       "location": "Location",
-      "settings_updated": "Settings modified:"
+      "settings_updated": "Settings modified:",
+      "theme_changed": "Theme changed:"
     },
     "values": {
       "enable": "Enable",
@@ -162,7 +163,8 @@ export default {
       "immediately": "Immediately after submission",
       "manual": "Later, after manual review",
       "auto": "Auto",
-      "plain_text": "Plain Text"
+      "plain_text": "Plain Text",
+      "custom": "Custom"
     }
   }
 };

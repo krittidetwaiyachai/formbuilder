@@ -24,11 +24,13 @@ import { GroupField } from './fields/group/GroupField';
 import { MatrixField } from './fields/matrix/MatrixField';
 import { TableField } from './fields/table/TableField';
 import InlineQuizBar from './InlineQuizBar';
-import { RichTextEditor } from '@/components/ui/RichTextEditor';
+const RichTextEditor = React.lazy(() => import('@/components/ui/RichTextEditor').then(module => ({ default: module.RichTextEditor })));
 import { RichTextToolbar } from '@/components/ui/RichTextToolbar';
 import { useTranslation } from 'react-i18next';
 import { sanitize } from '@/utils/sanitization';
 import { FloatingActionMenu } from './FloatingActionMenu';
+
+import { ActiveUser } from '@/types/collaboration';
 
 interface FieldItemProps {
   field: Field;
@@ -46,6 +48,8 @@ interface FieldItemProps {
   allFields?: Field[];
   hideDragHandle?: boolean;
   isMultiSelecting?: boolean;
+  collaboratingUsers?: ActiveUser[];
+  hideDeleteAction?: boolean;
 }
 
 function FieldItem({ 
@@ -63,7 +67,9 @@ function FieldItem({
   disableHover = false,
   allFields = [],
   hideDragHandle = false,
-  isMultiSelecting = false
+  isMultiSelecting = false,
+  collaboratingUsers = [],
+  hideDeleteAction = false
 }: FieldItemProps) {
   const deleteField = useFormStore((state) => state.deleteField);
   const updateField = useFormStore((state) => state.updateField);
@@ -340,7 +346,10 @@ function FieldItem({
           <div
             ref={provided?.innerRef}
             {...provided?.draggableProps}
-            style={style}
+            style={{
+              ...style,
+              ...(collaboratingUsers.length > 0 ? { borderColor: collaboratingUsers[0].color, boxShadow: `0 0 0 2px ${collaboratingUsers[0].color}` } : {})
+            }}
             data-field-id={field.id}
             onContextMenu={handleContextMenu}
             onMouseDown={() => {
@@ -360,6 +369,7 @@ function FieldItem({
             }}
             className={`relative group/field isolate flex-1 min-w-0 bg-white ${fieldStyle.bgGradient} ${isPageBreak ? '' : 'border rounded-2xl'} transition-colors duration-200 ${field.type === FieldType.HEADER ? 'cursor-text' : 'cursor-pointer'} ${
               isSelected && !isOverlay ? `ring-2 ring-black shadow-lg z-40 border-transparent ${fieldStyle.cardBorder}` : 
+              collaboratingUsers.length > 0 ? `ring-2 shadow-lg z-30 border-transparent` : 
               isNewFromSidebar ? `border-blue-500 ring-4 ring-blue-500/10 shadow-blue-100/50 ${fieldStyle.cardBorder}` : 
               `${isPageBreak ? '' : 'border-gray-200'} ${fieldStyle.cardBorder} ${isPageBreak ? '' : (disableHover ? '' : 'hover:border-gray-300 hover:shadow-md hover:z-30')}`
             } ${isDragging ? 'shadow-2xl rotate-1 w-[320px] !bg-white !opacity-100 z-[9999]' : ''} ${isHidden ? 'opacity-50' : ''}`}
@@ -375,8 +385,29 @@ function FieldItem({
               </div>
             )}
 
-            {!isOverlay && !isDragging && (
-                <div className={`absolute top-0 bottom-0 -right-14 w-14 flex items-center justify-center z-50 transition-all duration-200 ${
+            {collaboratingUsers.length > 0 && !isDragging && (
+              <div className="absolute -top-8 left-4 flex flex-row gap-1 z-50 animate-in fade-in slide-in-from-top-2">
+                {collaboratingUsers.slice(0, 2).map((user) => (
+                  <div 
+                    key={user.id}
+                    className="px-2 py-1 rounded-md text-xs font-medium text-white shadow-md flex items-center gap-1 min-w-[30px] justify-center"
+                    style={{ backgroundColor: user.color }}
+                  >
+                    <span>{user.name}</span>
+                  </div>
+                ))}
+                {collaboratingUsers.length > 2 && (
+                  <div 
+                    className="px-2 py-1 rounded-md text-xs font-medium text-white shadow-md flex items-center bg-gray-600"
+                  >
+                    <span>+{collaboratingUsers.length - 2}</span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {!isOverlay && !isDragging && !hideDeleteAction && (
+                <div className={`hidden md:flex absolute top-0 bottom-0 -right-14 w-14 items-center justify-center z-50 transition-all duration-200 ${
                     isSelected 
                         ? 'opacity-100 translate-x-0' 
                         : 'opacity-0 -translate-x-2 pointer-events-none group-hover/field:opacity-100 group-hover/field:translate-x-0 group-hover/field:pointer-events-auto'
@@ -399,29 +430,43 @@ function FieldItem({
                 </div>
             )}
 
-            <div className={`${isDragging ? 'px-4 py-6' : 'px-4 pb-4 pt-6'}`} style={(!isDragging && (field.type === FieldType.HEADER || field.type === FieldType.PARAGRAPH || field.type === FieldType.DIVIDER)) ? { pointerEvents: 'auto' } : {}}>
+            <div className={`${isDragging ? 'px-4 py-6' : 'px-4 pb-4 pt-6'} ${(field.type === FieldType.HEADER || field.type === FieldType.PARAGRAPH) ? 'overflow-visible' : ''}`} style={(!isDragging && (field.type === FieldType.HEADER || field.type === FieldType.PARAGRAPH || field.type === FieldType.DIVIDER)) ? { pointerEvents: 'auto' } : {}}>
               {isSelected && !isOverlay && !isDragging && (
                   <div className="mb-4 flex flex-col gap-3">
                       <div className="flex items-center justify-end gap-1 pb-2 border-b border-gray-100">
+                          {field.type !== FieldType.GROUP && (
+                              <>
+                                  <button
+                                      onClick={(e) => {
+                                          e.stopPropagation();
+                                          setMediaInputMode(prev => prev === 'image' ? null : 'image');
+                                      }}
+                                      className={`p-2 rounded-full transition-colors ${mediaInputMode === 'image' || field.imageUrl ? 'bg-blue-50 text-blue-600' : 'text-gray-400 hover:bg-gray-100 hover:text-gray-600'}`}
+                                      title={t('builder.media.insert_image')}
+                                  >
+                                      <Image className="h-4 w-4" />
+                                  </button>
+                                  <button
+                                      onClick={(e) => {
+                                          e.stopPropagation();
+                                          setMediaInputMode(prev => prev === 'video' ? null : 'video');
+                                      }}
+                                      className={`p-2 rounded-full transition-colors ${mediaInputMode === 'video' || field.videoUrl ? 'bg-blue-50 text-blue-600' : 'text-gray-400 hover:bg-gray-100 hover:text-gray-600'}`}
+                                      title={t('builder.media.insert_video')}
+                                  >
+                                      <Video className="h-4 w-4" />
+                                  </button>
+                              </>
+                          )}
                           <button
                               onClick={(e) => {
                                   e.stopPropagation();
-                                  setMediaInputMode(prev => prev === 'image' ? null : 'image');
+                                  deleteField(field.id);
                               }}
-                              className={`p-2 rounded-full transition-colors ${mediaInputMode === 'image' || field.imageUrl ? 'bg-blue-50 text-blue-600' : 'text-gray-400 hover:bg-gray-100 hover:text-gray-600'}`}
-                              title={t('builder.media.insert_image')}
+                              className="md:hidden p-2 rounded-full transition-colors text-gray-400 hover:bg-red-50 hover:text-red-600"
+                              title={t('common.delete_field')}
                           >
-                              <Image className="h-4 w-4" />
-                          </button>
-                          <button
-                              onClick={(e) => {
-                                  e.stopPropagation();
-                                  setMediaInputMode(prev => prev === 'video' ? null : 'video');
-                              }}
-                              className={`p-2 rounded-full transition-colors ${mediaInputMode === 'video' || field.videoUrl ? 'bg-blue-50 text-blue-600' : 'text-gray-400 hover:bg-gray-100 hover:text-gray-600'}`}
-                              title={t('builder.media.insert_video')}
-                          >
-                              <Video className="h-4 w-4" />
+                              <Trash2 className="h-4 w-4" />
                           </button>
                       </div>
 
@@ -547,33 +592,40 @@ function FieldItem({
                      const isRowLayout = labelAlignment === 'LEFT' || labelAlignment === 'RIGHT';
                      const isCenterAligned = labelAlignment === 'CENTER';
                      
-                     const modules = useMemo(() => ({
-                       toolbar: {
-                         container: `#toolbar-label-${field.id}`,
+                     const modules = useMemo(() => {
+                       if (field.type === FieldType.GROUP) {
+                           return { toolbar: false };
                        }
-                     }), [field.id]);
+                       return {
+                           toolbar: {
+                               container: `#toolbar-label-${field.id}`,
+                           }
+                       };
+                     }, [field.id, field.type]);
 
                      return (
                        <>
-                          {isSelected && !isMultiSelecting && (
-                              <div className="absolute -top-12 left-0 right-0 z-[60] flex justify-center">
-                                  <RichTextToolbar id={`toolbar-label-${field.id}`} />
-                              </div>
-                          )}
+                           {isSelected && !isMultiSelecting && field.type !== FieldType.GROUP && (
+                               <div className="absolute -top-12 left-0 right-0 z-[60] flex justify-center">
+                                   <RichTextToolbar id={`toolbar-label-${field.id}`} />
+                               </div>
+                           )}
 
                           <div className={`${isRowLayout ? 'flex items-start gap-6 relative' : ''}`}>
                              <div className={`${isRowLayout ? 'w-48 flex-shrink-0 pt-3' : (isDragging ? 'mb-1' : 'mb-3')} ${labelAlignment === 'RIGHT' ? 'text-right' : ''} ${isCenterAligned ? 'text-center' : ''}`}>
                                 <div className={`flex flex-col gap-2 ${labelAlignment === 'RIGHT' ? 'items-end' : isCenterAligned ? 'items-center' : 'items-start'}`}>
                                     <div className="w-full relative group/editor">
                                        {isSelected && !isMultiSelecting ? (
-                                          <RichTextEditor
-                                            theme="snow"
-                                            value={field.label || ''}
-                                            onChange={(value) => updateField(field.id, { label: value })}
-                                            placeholder={t('common.question')}
-                                            modules={modules}
-                                            className={`text-base font-medium text-black leading-tight borderless animate-slide-down min-h-[1.5em] ${labelAlignment === 'RIGHT' ? 'text-right' : ''} ${isCenterAligned ? 'text-center' : ''}`}
-                                          />
+                                          <React.Suspense fallback={<div className="h-6 bg-gray-50 animate-pulse rounded w-full" />}>
+                                            <RichTextEditor
+                                              theme="snow"
+                                              value={field.label || ''}
+                                              onChange={(value) => updateField(field.id, { label: value })}
+                                              placeholder={t('common.question')}
+                                              modules={modules}
+                                              className={`text-base font-medium text-black leading-tight borderless animate-slide-down min-h-[1.5em] ${labelAlignment === 'RIGHT' ? 'text-right' : ''} ${isCenterAligned ? 'text-center' : ''}`}
+                                            />
+                                          </React.Suspense>
                                        ) : (
                                            <div className={`flex items-start gap-1 ${labelAlignment === 'RIGHT' ? 'justify-end' : isCenterAligned ? 'justify-center' : ''}`}>
                                              <div

@@ -75,7 +75,7 @@ export default function FormFieldRenderer({
     
     case FieldType.DATE:
     case FieldType.TIME:
-      return <PreviewDateField {...commonProps} />;
+      return <PreviewDateField {...commonProps} control={control} />;
     
     case FieldType.RATE:
       if (!watch || !setValue) return null;

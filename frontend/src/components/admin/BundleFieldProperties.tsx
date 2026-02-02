@@ -44,22 +44,99 @@ const ICON_OPTIONS = [
     { label: 'Education', value: 'GraduationCap' },
     { label: 'Star', value: 'Star' },
     { label: 'Secure', value: 'Lock' },
+    { label: 'Home', value: 'Home' },
+    { label: 'Heart', value: 'Heart' },
+    { label: 'Shopping', value: 'ShoppingCart' },
+    { label: 'Mail', value: 'Mail' },
+    { label: 'Phone', value: 'Phone' },
+    { label: 'Location', value: 'MapPin' },
+    { label: 'File', value: 'FileText' },
+    { label: 'Folder', value: 'Folder' },
+    { label: 'Settings', value: 'SettingsIcon' },
+    { label: 'Search', value: 'Search' },
+    { label: 'Camera', value: 'Camera' },
+    { label: 'Music', value: 'Music' },
+    { label: 'Video', value: 'Video' },
+    { label: 'Globe', value: 'Globe' },
+    { label: 'Zap', value: 'Zap' },
+    { label: 'Award', value: 'Award' },
+    { label: 'Target', value: 'Target' },
+    { label: 'Code', value: 'Code' },
+    { label: 'Rocket', value: 'Rocket' },
+    { label: 'Coffee', value: 'Coffee' },
+    { label: 'Gift', value: 'Gift' },
+    { label: 'Truck', value: 'Truck' },
+    { label: 'Headphones', value: 'Headphones' },
+    { label: 'Gamepad', value: 'Gamepad2' },
+    { label: 'Lightbulb', value: 'Lightbulb' },
+    { label: 'Clipboard', value: 'ClipboardList' },
+    { label: 'Bell', value: 'Bell' },
+    { label: 'Bookmark', value: 'Bookmark' },
+    { label: 'Calendar', value: 'Calendar' },
+    { label: 'Clock', value: 'Clock' },
+    { label: 'Cloud', value: 'Cloud' },
+    { label: 'Compass', value: 'Compass' },
+    { label: 'Crown', value: 'Crown' },
+    { label: 'Database', value: 'Database' },
+    { label: 'Diamond', value: 'Diamond' },
+    { label: 'Download', value: 'Download' },
+    { label: 'Edit', value: 'Edit' },
+    { label: 'Eye', value: 'Eye' },
+    { label: 'Flag', value: 'Flag' },
+    { label: 'Flame', value: 'Flame' },
+    { label: 'Image', value: 'Image' },
+    { label: 'Inbox', value: 'Inbox' },
+    { label: 'Key', value: 'Key' },
+    { label: 'Link', value: 'Link' },
+    { label: 'Mic', value: 'Mic' },
+    { label: 'Monitor', value: 'Monitor' },
+    { label: 'Package', value: 'Package' },
+    { label: 'Palette', value: 'Palette' },
+    { label: 'Paperclip', value: 'Paperclip' },
+    { label: 'Pencil', value: 'Pencil' },
+    { label: 'Percent', value: 'Percent' },
+    { label: 'Plane', value: 'Plane' },
+    { label: 'Play', value: 'Play' },
+    { label: 'Plug', value: 'Plug' },
+    { label: 'Printer', value: 'Printer' },
+    { label: 'QRCode', value: 'QrCode' },
+    { label: 'Shield', value: 'Shield' },
+    { label: 'Sparkles', value: 'Sparkles' },
+    { label: 'Sun', value: 'Sun' },
+    { label: 'Tag', value: 'Tag' },
+    { label: 'ThumbsUp', value: 'ThumbsUp' },
+    { label: 'Timer', value: 'Timer' },
+    { label: 'Trash', value: 'Trash2' },
+    { label: 'Trophy', value: 'Trophy' },
+    { label: 'Umbrella', value: 'Umbrella' },
+    { label: 'Upload', value: 'Upload' },
+    { label: 'Users', value: 'Users' },
+    { label: 'Wallet', value: 'Wallet' },
+    { label: 'Watch', value: 'Watch' },
+    { label: 'Wifi', value: 'Wifi' },
+    { label: 'Wrench', value: 'Wrench' },
 ];
 
 import {
-  Layers,
-  User,
-  Briefcase,
-  CalendarCheck,
-  MessageSquare,
-  Share2,
-  GraduationCap,
-  Star,
-  Lock
+  Layers, User, Briefcase, CalendarCheck, MessageSquare, Share2, GraduationCap, Star, Lock,
+  Home, Heart, ShoppingCart, Mail, Phone, MapPin, FileText, Folder, Settings as SettingsIcon, Search,
+  Camera, Music, Video, Globe, Zap, Award, Target, Code, Rocket, Coffee, Gift, Truck,
+  Headphones, Gamepad2, Lightbulb, ClipboardList,
+  Bell, Bookmark, Calendar, Clock, Cloud, Compass, Crown, Database, Diamond, Download,
+  Edit, Eye, Flag, Flame, Image, Inbox, Key, Link, Mic, Monitor, Package, Palette, Paperclip,
+  Pencil, Percent, Plane, Play, Plug, Printer, QrCode, Shield, Sparkles, Sun, Tag, ThumbsUp,
+  Timer, Trash2, Trophy, Umbrella, Upload, Users, Wallet, Watch, Wifi, Wrench,
 } from 'lucide-react';
 
 const IconMap: Record<string, any> = {
-  Layers, User, Briefcase, CalendarCheck, MessageSquare, Share2, GraduationCap, Star, Lock
+  Layers, User, Briefcase, CalendarCheck, MessageSquare, Share2, GraduationCap, Star, Lock,
+  Home, Heart, ShoppingCart, Mail, Phone, MapPin, FileText, Folder, SettingsIcon, Search,
+  Camera, Music, Video, Globe, Zap, Award, Target, Code, Rocket, Coffee, Gift, Truck,
+  Headphones, Gamepad2, Lightbulb, ClipboardList,
+  Bell, Bookmark, Calendar, Clock, Cloud, Compass, Crown, Database, Diamond, Download,
+  Edit, Eye, Flag, Flame, Image, Inbox, Key, Link, Mic, Monitor, Package, Palette, Paperclip,
+  Pencil, Percent, Plane, Play, Plug, Printer, QrCode, Shield, Sparkles, Sun, Tag, ThumbsUp,
+  Timer, Trash2, Trophy, Umbrella, Upload, Users, Wallet, Watch, Wifi, Wrench,
 };
 
 function BundleSettings({ bundle, updateBundleMeta }: { bundle: any; updateBundleMeta: any }) {
@@ -100,27 +177,29 @@ function BundleSettings({ bundle, updateBundleMeta }: { bundle: any; updateBundl
                     { }
                     <div>
                         <label className="block text-sm font-medium text-black mb-2">Icon</label>
-                        <div className="grid grid-cols-5 gap-2">
-                            {ICON_OPTIONS.map((iconOpt) => {
-                                const IconComponent = IconMap[iconOpt.value] || Layers;
-                                const isSelected = (bundle.options?.icon || 'Layers') === iconOpt.value;
-                                return (
-                                    <button
-                                        key={iconOpt.value}
-                                        onClick={() => updateBundleMeta({ options: { ...bundle.options, icon: iconOpt.value } })}
-                                        className={`
-                                            w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-200
-                                            ${isSelected 
-                                                ? 'bg-black text-white shadow-md scale-105' 
-                                                : 'bg-gray-50 text-gray-500 hover:bg-gray-100 hover:text-gray-700'
-                                            }
-                                        `}
-                                        title={iconOpt.label}
-                                    >
-                                        <IconComponent className="w-5 h-5" />
-                                    </button>
-                                );
-                            })}
+                        <div className="max-h-48 overflow-y-auto rounded-lg border border-gray-100 p-2">
+                            <div className="grid grid-cols-6 gap-1.5">
+                                {ICON_OPTIONS.map((iconOpt) => {
+                                    const IconComponent = IconMap[iconOpt.value] || Layers;
+                                    const isSelected = (bundle.options?.icon || 'Layers') === iconOpt.value;
+                                    return (
+                                        <button
+                                            key={iconOpt.value}
+                                            onClick={() => updateBundleMeta({ options: { ...bundle.options, icon: iconOpt.value } })}
+                                            className={`
+                                                w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-200
+                                                ${isSelected 
+                                                    ? 'bg-black text-white shadow-md scale-105' 
+                                                    : 'bg-gray-50 text-gray-500 hover:bg-gray-100 hover:text-gray-700'
+                                                }
+                                            `}
+                                            title={iconOpt.label}
+                                        >
+                                            <IconComponent className="w-4 h-4" />
+                                        </button>
+                                    );
+                                })}
+                            </div>
                         </div>
                     </div>
 

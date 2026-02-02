@@ -1,11 +1,10 @@
 "use client";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import ActivityLog from "@/components/builder/ActivityLog";
-import { mockForms, mockActivityLogs } from "@/lib/mock-data";
+import { mockForms, mockActivityLogs } from "../../../lib/mock-data";
 
 export default function ActivityPage({ params }: { params: { id: string } }) {
   const router = useRouter();

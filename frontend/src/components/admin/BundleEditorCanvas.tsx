@@ -201,7 +201,7 @@ export function BundleFieldCard({
     )}>
        
        {isSelected && !isLayoutField && !isOverlay && (
-            <div className="absolute -top-12 left-0 right-0 z-[60] flex justify-center pointer-events-none">
+            <div className="relative mb-2 md:mb-0 md:absolute md:-top-12 md:left-0 md:right-0 z-[60] flex justify-center pointer-events-none">
                 <div className="pointer-events-auto">
                     <RichTextToolbar id={`toolbar-label-${field.id}`} />
                 </div>

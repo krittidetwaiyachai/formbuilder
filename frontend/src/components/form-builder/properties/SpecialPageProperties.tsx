@@ -2,17 +2,13 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Form } from '@/types';
 import { 
-  Check, 
-  Palette,
-  ExternalLink,
-  ChevronDown,
-  ThumbsUp,
-  Heart,
-  Star,
-  Trophy,
-  PartyPopper,
-  Rocket,
-  Sparkles
+  Check, Palette, ExternalLink, ChevronDown,
+  ThumbsUp, Heart, Star, Trophy, PartyPopper, Rocket, Sparkles,
+  Bell, Bookmark, Calendar, Clock, Gift, Globe, Home, Lightbulb,
+  Mail, MessageSquare, Music, Shield, Sun, Target, Zap, Award,
+  Crown, Diamond, Flame, Key, Coffee, Camera, Compass, Flag,
+  Headphones, MapPin, Mic, Package, Play, Users, Wallet, Wifi,
+  CheckCircle, Send, Smile, Eye, Cake
 } from 'lucide-react';
 
 interface SpecialPagePropertiesProps {
@@ -35,14 +31,51 @@ export function SpecialPageProperties({ currentPage, currentForm, handleFormUpda
   };
 
   const availableIcons = [
-    { id: 'rocket', label: t('builder.special.icon.rocket'), icon: Rocket },
-    { id: 'sparkles', label: t('builder.special.icon.sparkles'), icon: Sparkles },
-    { id: 'check', label: t('builder.special.icon.check'), icon: Check },
-    { id: 'thumbsUp', label: t('builder.special.icon.thumbs_up'), icon: ThumbsUp },
-    { id: 'heart', label: t('builder.special.icon.heart'), icon: Heart },
-    { id: 'star', label: t('builder.special.icon.star'), icon: Star },
-    { id: 'trophy', label: t('builder.special.icon.trophy'), icon: Trophy },
-    { id: 'party', label: t('builder.special.icon.party'), icon: PartyPopper },
+    { id: 'rocket', icon: Rocket },
+    { id: 'sparkles', icon: Sparkles },
+    { id: 'check', icon: Check },
+    { id: 'thumbsUp', icon: ThumbsUp },
+    { id: 'heart', icon: Heart },
+    { id: 'star', icon: Star },
+    { id: 'trophy', icon: Trophy },
+    { id: 'party', icon: PartyPopper },
+    { id: 'bell', icon: Bell },
+    { id: 'bookmark', icon: Bookmark },
+    { id: 'calendar', icon: Calendar },
+    { id: 'clock', icon: Clock },
+    { id: 'gift', icon: Gift },
+    { id: 'globe', icon: Globe },
+    { id: 'home', icon: Home },
+    { id: 'lightbulb', icon: Lightbulb },
+    { id: 'mail', icon: Mail },
+    { id: 'message', icon: MessageSquare },
+    { id: 'music', icon: Music },
+    { id: 'shield', icon: Shield },
+    { id: 'sun', icon: Sun },
+    { id: 'target', icon: Target },
+    { id: 'zap', icon: Zap },
+    { id: 'award', icon: Award },
+    { id: 'crown', icon: Crown },
+    { id: 'diamond', icon: Diamond },
+    { id: 'flame', icon: Flame },
+    { id: 'key', icon: Key },
+    { id: 'coffee', icon: Coffee },
+    { id: 'camera', icon: Camera },
+    { id: 'compass', icon: Compass },
+    { id: 'flag', icon: Flag },
+    { id: 'headphones', icon: Headphones },
+    { id: 'mapPin', icon: MapPin },
+    { id: 'mic', icon: Mic },
+    { id: 'package', icon: Package },
+    { id: 'play', icon: Play },
+    { id: 'users', icon: Users },
+    { id: 'wallet', icon: Wallet },
+    { id: 'wifi', icon: Wifi },
+    { id: 'checkCircle', icon: CheckCircle },
+    { id: 'send', icon: Send },
+    { id: 'smile', icon: Smile },
+    { id: 'eye', icon: Eye },
+    { id: 'cake', icon: Cake },
   ] as const;
 
   const iconColors = [
@@ -86,10 +119,10 @@ export function SpecialPageProperties({ currentPage, currentForm, handleFormUpda
           {expandedSections.style && (
             <div className="mt-3 space-y-4 animate-in fade-in slide-in-from-top-1 duration-200">
               
-              { }
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-2">{t('builder.special_page.icon')}</label>
-                <div className="grid grid-cols-6 gap-2">
+                <div className="max-h-40 overflow-y-auto rounded-lg border border-gray-100 p-2">
+                  <div className="grid grid-cols-6 gap-1.5">
                   {availableIcons.map(item => (
                     <button
                       key={item.id}
@@ -100,11 +133,12 @@ export function SpecialPageProperties({ currentPage, currentForm, handleFormUpda
                           ? 'border-black bg-gray-50 text-black' 
                           : 'border-slate-200 text-slate-400 hover:border-slate-300 hover:text-slate-600'}
                       `}
-                      title={item.label}
+                      title={item.id}
                     >
                       <item.icon className="w-4 h-4" />
                     </button>
                   ))}
+                  </div>
                 </div>
               </div>
 
@@ -225,7 +259,7 @@ export function SpecialPageProperties({ currentPage, currentForm, handleFormUpda
                       <input
                         type="text"
                         className="w-full px-3 py-2 border border-gray-200 rounded-md text-sm focus:border-black focus:ring-1 focus:ring-black outline-none transition-all"
-                        placeholder={t('builder.special_page.back_to_home')}
+                        placeholder={t('public.thank_you.back_to_home')}
                         value={currentForm.thankYouSettings?.buttonText || ''}
                         onChange={(e) => updateSetting('buttonText', e.target.value)}
                         onKeyDown={(e) => e.stopPropagation()}

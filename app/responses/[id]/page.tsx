@@ -3,10 +3,10 @@
 import { useState } from "react";
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import { mockSubmissions, mockForms } from "@/lib/mock-data";
+import { mockSubmissions, mockForms } from "../../../lib/mock-data";
 import FieldAnalyticsSelector from "@/components/analytics/FieldAnalyticsSelector";
 import AnalysisRenderer from "@/components/analytics/AnalysisRenderer";
 
@@ -19,11 +19,11 @@ export default function ResponsesPage({ params }: { params: { id: string } }) {
   const [selectedAnalysis, setSelectedAnalysis] = useState<string>("ranking");
 
   
-  const availableFields = Array.from(
+  const availableFields = React.useMemo(() => Array.from(
     new Set(
       submissions.flatMap((submission) => Object.keys(submission.data))
     )
-  );
+  ), [submissions]);
 
   const handleAnalysisChange = (field: string, analysisType: string) => {
     setSelectedField(field);
@@ -33,9 +33,10 @@ export default function ResponsesPage({ params }: { params: { id: string } }) {
   React.useEffect(() => {
     if (availableFields.length > 0 && !selectedField) {
       const firstField = availableFields[0];
-      handleAnalysisChange(firstField, "ranking");
+      setSelectedField(firstField);
+      setSelectedAnalysis("ranking");
     }
-  }, [availableFields.length]);
+  }, [availableFields, selectedField]);
 
   if (!form) {
     return (

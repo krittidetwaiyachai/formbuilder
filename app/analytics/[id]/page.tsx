@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { mockForms, mockSubmissions } from "@/lib/mock-data";
+import { mockForms, mockSubmissions } from "../../../lib/mock-data";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { Eye, MessageSquare, TrendingDown, TrendingUp, List, BarChart3 } from "lucide-react";
 import Link from "next/link";
@@ -268,12 +268,14 @@ export default function AnalyticsPage({ params }: { params: { id: string } }) {
             </CardHeader>
             <CardContent>
               {(() => {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const fieldSummary: Record<string, { total: number; unique: number; topValue: any }> = {};
                 
                 submissions.forEach((submission) => {
-                  Object.entries(submission.data).forEach(([key, value]) => {
+                  Object.entries(submission.data).forEach(([key]) => {
                     if (!fieldSummary[key]) {
-                      fieldSummary[key] = { total: 0, unique: 0, topValue: null };
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      fieldSummary[key] = { total: 0, unique: 0, topValue: null as any };
                     }
                     fieldSummary[key].total += 1;
                   });
@@ -283,6 +285,7 @@ export default function AnalyticsPage({ params }: { params: { id: string } }) {
                 Object.keys(fieldSummary).forEach((key) => {
                   const valueCounts: Record<string, number> = {};
                   submissions.forEach((submission) => {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     const value = (submission.data as Record<string, any>)[key];
                     const values = Array.isArray(value) ? value : [value];
                     values.forEach((v) => {

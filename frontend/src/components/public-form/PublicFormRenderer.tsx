@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Form, FormStatus } from '@/types';
 import { Lock, FileQuestion, CheckCircle } from 'lucide-react';
 import Loader from '@/components/common/Loader';
@@ -10,7 +10,6 @@ import { CardLayout } from './CardLayout';
 import { FormNavigation } from './FormNavigation';
 import { usePublicFormLogic } from './hooks/usePublicFormLogic';
 import { PublicFormLayout } from './PublicFormLayout';
-import { AnimatePresence } from 'framer-motion';
 import { sanitize } from '@/utils/sanitization';
 
 interface PublicFormRendererProps {
@@ -145,29 +144,90 @@ export default function PublicFormRenderer(props: PublicFormRendererProps) {
   }
 
   if (submitted) {
-    const showScore = form.isQuiz && form.quizSettings?.showScore && score;
-    return (
-      <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundImage: form.settings?.backgroundImage ? `url(${form.settings.backgroundImage})` : undefined, backgroundSize: 'cover' }}>
-        <div className="relative z-10 w-full flex justify-center">
-            <ThankYouScreen 
-              settings={form.thankYouSettings} 
-              globalSettings={form.settings} 
-              score={score}
-              showScore={!!showScore}
-              allowViewMissedQuestions={!!form.quizSettings?.allowViewMissedQuestions}
-              showExplanation={!!form.quizSettings?.showExplanation}
-              quizReview={quizReview}
-              isQuiz={form.isQuiz}
-              viewMode={viewMode}
-            />
-        </div>
-      </div>
-    );
+      if (form.thankYouSettings?.isActive) {
+        const showScore = form.isQuiz && form.quizSettings?.showScore && score;
+        return (
+          <div 
+            className="min-h-screen flex items-center justify-center p-4" 
+            style={{ 
+              backgroundColor: form.settings?.backgroundColor || '#ffffff',
+              backgroundImage: form.settings?.backgroundImage ? `url(${form.settings.backgroundImage})` : undefined,
+              backgroundSize: '350px',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat'
+            }}
+          >
+            <div className="relative z-10 w-full flex justify-center">
+                <ThankYouScreen 
+                  settings={form.thankYouSettings} 
+                  globalSettings={form.settings} 
+                  score={score}
+                  showScore={!!showScore}
+                  allowViewMissedQuestions={!!(form.isQuiz && form.quizSettings?.allowViewMissedQuestions)}
+                  showExplanation={!!(form.isQuiz && form.quizSettings?.showExplanation)}
+                  quizReview={quizReview}
+                  isQuiz={form.isQuiz}
+                  viewMode={viewMode}
+                />
+            </div>
+          </div>
+        );
+      } else {
+        
+        return (
+          <div 
+            className="min-h-screen flex items-center justify-center px-4" 
+            style={{ 
+              backgroundColor: form.settings?.backgroundColor || '#ffffff',
+              backgroundImage: form.settings?.backgroundImage ? `url(${form.settings.backgroundImage})` : undefined,
+              backgroundSize: '350px',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat'
+            }}
+          >
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+              className="max-w-3xl w-full min-h-[500px] rounded-[2.5rem] shadow-xl overflow-hidden flex flex-col border relative z-10"
+              style={{ backgroundColor: 'rgba(255, 255, 255, 0.85)', borderColor: 'var(--card-border)', color: 'var(--text)', backdropFilter: 'blur(20px)' }}
+            >
+              <div className="flex flex-col items-center justify-center w-full min-h-[inherit] relative p-10">
+                <div className="absolute top-0 left-0 w-64 h-64 rounded-full mix-blend-multiply filter blur-3xl opacity-20 -translate-x-1/2 -translate-y-1/2" style={{ backgroundColor: 'var(--primary)' }} />
+                <div className="absolute bottom-0 right-0 w-64 h-64 rounded-full mix-blend-multiply filter blur-3xl opacity-20 translate-x-1/2 translate-y-1/2" style={{ backgroundColor: 'var(--primary)' }} />
+                
+                <motion.div
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
+                  className="w-28 h-28 rounded-3xl flex items-center justify-center border-4 border-white shadow-xl mb-8 relative z-10"
+                  style={{ backgroundColor: 'color-mix(in srgb, var(--primary) 15%, white)' }}
+                >
+                  <CheckCircle className="w-12 h-12" strokeWidth={1.5} style={{ color: 'var(--primary)' }} />
+                </motion.div>
+                <h2 className="text-4xl md:text-6xl font-bold tracking-tight mb-6 relative z-10" style={{ color: 'var(--text)' }}>
+                  {t('public.thank_you.title', 'Thank you!')}
+                </h2>
+                <p className="text-xl font-normal leading-relaxed max-w-xl mx-auto relative z-10" style={{ color: 'var(--text)', opacity: 0.7 }}>
+                  {t('public.thank_you.message', 'Your submission has been received.')}
+                </p>
+              </div>
+            </motion.div>
+          </div>
+        );
+      }
   }
 
   if (showWelcome && isWelcomeScreenActive) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundImage: form.settings?.backgroundImage ? `url(${form.settings.backgroundImage})` : undefined, backgroundSize: 'cover' }}>
+      <div 
+        className="min-h-screen flex items-center justify-center p-4" 
+        style={{ 
+          backgroundColor: form.settings?.backgroundColor || '#ffffff',
+          backgroundImage: form.settings?.backgroundImage ? `url(${form.settings.backgroundImage})` : undefined,
+          backgroundSize: '350px',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        }}
+      >
         <div className="relative z-10 w-full flex justify-center">
             <WelcomeScreen settings={form.welcomeSettings} onStart={() => setShowWelcome(false)} viewMode={viewMode} />
         </div>
@@ -244,8 +304,8 @@ export default function PublicFormRenderer(props: PublicFormRendererProps) {
                     )}
                 </div>
 
-                <div className={`${isCardLayout ? `flex-1 overflow-y-auto ${isMobileView ? 'p-4' : isTabletView ? 'p-5' : 'p-6'}` : `flex flex-col ${isMobileView ? 'p-4' : 'rounded-xl shadow-sm border p-6 md:p-8 backdrop-blur-md'}`} ${isMobileView ? 'min-h-[150px]' : 'min-h-[200px] md:min-h-[300px]'}`}
-                    style={!isCardLayout && !isMobileView ? { backgroundColor: 'var(--card-bg)', borderColor: 'var(--card-border)' } : {}}
+                <div className={`${isCardLayout ? `flex-1 overflow-y-auto ${isMobileView ? 'p-4' : isTabletView ? 'p-5' : 'p-6'}` : `flex flex-col rounded-xl shadow-sm border backdrop-blur-md ${isMobileView ? 'p-4' : 'p-6 md:p-8'}`}`}
+                    style={!isCardLayout ? { backgroundColor: 'var(--card-bg)', borderColor: 'var(--card-border)' } : {}}
                 >
                     {isCardLayout ? (
                         <CardLayout currentField={currentField} currentCardIndex={currentCardIndex} register={register} errors={errors} watch={watch} setValue={setValue} control={control} form={form} />

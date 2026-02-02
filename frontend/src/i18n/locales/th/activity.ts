@@ -169,7 +169,8 @@ export default {
       "from_group": "จากกลุ่ม ( {{group}} )",
       "canvas": "หน้าฟอร์ม (Canvas)",
       "location": "ตำแหน่ง",
-      "settings_updated": "แก้ไขการตั้งค่า:"
+      "settings_updated": "แก้ไขการตั้งค่า:",
+      "theme_changed": "เปลี่ยนธีม:"
     },
     "values": {
       "enable": "เปิดใช้งาน",
@@ -180,7 +181,8 @@ export default {
       "immediately": "ทันทีหลังจากส่ง",
       "manual": "ภายหลัง (ตรวจสอบเอง)",
       "auto": "อัตโนมัติ",
-      "plain_text": "ข้อความธรรมดา"
+      "plain_text": "ข้อความธรรมดา",
+      "custom": "กำหนดเอง"
     }
   }
 };

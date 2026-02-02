@@ -1,6 +1,13 @@
 
 import { Form } from '@/types';
-import { Check, ThumbsUp, Heart, Star, Trophy, PartyPopper, CheckCircle } from 'lucide-react';
+import { 
+  Check, ThumbsUp, Heart, Star, Trophy, PartyPopper, CheckCircle,
+  Bell, Bookmark, Calendar, Clock, Gift, Globe, Home, Lightbulb,
+  Mail, MessageSquare, Music, Shield, Sun, Target, Zap, Award,
+  Crown, Diamond, Flame, Key, Coffee, Camera, Compass, Flag,
+  Headphones, MapPin, Mic, Package, Palette, Plane, Play, Users,
+  Wallet, Wifi, Rocket, Sparkles, Send, Smile, ThumbsDown, Eye, Cake
+} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 const iconMap: Record<string, any> = {
@@ -10,6 +17,47 @@ const iconMap: Record<string, any> = {
   star: Star,
   trophy: Trophy,
   party: PartyPopper,
+  bell: Bell,
+  bookmark: Bookmark,
+  calendar: Calendar,
+  clock: Clock,
+  gift: Gift,
+  globe: Globe,
+  home: Home,
+  lightbulb: Lightbulb,
+  mail: Mail,
+  message: MessageSquare,
+  music: Music,
+  shield: Shield,
+  sun: Sun,
+  target: Target,
+  zap: Zap,
+  award: Award,
+  crown: Crown,
+  diamond: Diamond,
+  flame: Flame,
+  key: Key,
+  coffee: Coffee,
+  camera: Camera,
+  compass: Compass,
+  flag: Flag,
+  headphones: Headphones,
+  mapPin: MapPin,
+  mic: Mic,
+  package: Package,
+  palette: Palette,
+  plane: Plane,
+  play: Play,
+  users: Users,
+  wallet: Wallet,
+  wifi: Wifi,
+  rocket: Rocket,
+  sparkles: Sparkles,
+  send: Send,
+  smile: Smile,
+  thumbsDown: ThumbsDown,
+  eye: Eye,
+  cake: Cake,
 };
 
 interface ThankYouScreenEditorProps {
@@ -58,7 +106,7 @@ export default function ThankYouScreenEditor({ currentForm, updateForm }: ThankY
                 ...settings!,
                  title: e.target.value,
                  message: settings?.message || '',
-                 buttonText: settings?.buttonText || t('builder.thankyou.back_to_home')
+                 buttonText: settings?.buttonText || t('public.thank_you.back_to_home')
               }
             })}
             placeholder={t('builder.thankyou.enter_title')}
@@ -79,7 +127,7 @@ export default function ThankYouScreenEditor({ currentForm, updateForm }: ThankY
               thankYouSettings: {
                 ...settings!,
                 title: settings?.title || '',
-                buttonText: settings?.buttonText || t('builder.thankyou.back_to_home'),
+                buttonText: settings?.buttonText || t('public.thank_you.back_to_home'),
                 message: e.target.value
               }
             })}
@@ -101,7 +149,7 @@ export default function ThankYouScreenEditor({ currentForm, updateForm }: ThankY
                       ? 'bg-white text-black hover:bg-white/90' 
                       : 'bg-black text-white hover:bg-gray-800'
                   }`}
-                  value={settings?.buttonText || t('builder.thankyou.back_to_home')}
+                  value={settings?.buttonText || t('public.thank_you.back_to_home')}
                   onChange={(e) => updateForm({
                     thankYouSettings: {
                       ...settings!,

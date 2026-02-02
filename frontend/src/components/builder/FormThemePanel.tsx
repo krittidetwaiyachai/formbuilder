@@ -86,7 +86,7 @@ export default function FormThemePanel({ theme, onThemeChange }: FormThemePanelP
   const applyPreset = (presetName: string) => {
     const preset = presetThemes[presetName];
     if (preset) {
-      onThemeChange(preset);
+      onThemeChange({ ...preset, themeName: presetName });
     }
   };
 

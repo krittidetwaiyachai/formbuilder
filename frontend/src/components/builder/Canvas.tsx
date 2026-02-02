@@ -149,7 +149,7 @@ export default function Canvas({ activeId }: CanvasProps) {
           color: theme?.textColor || DEFAULT_THEME.textColor,
           fontFamily: theme?.fontFamily || DEFAULT_THEME.fontFamily,
           '--primary': primaryColor,
-        } as React.CSSProperties}
+        } as React.CSSProperties & { '--primary': string }}
       >
         {elements.length > 0 ? (
           <SortableContext

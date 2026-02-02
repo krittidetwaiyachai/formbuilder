@@ -136,7 +136,7 @@ export const HeaderField: React.FC<HeaderFieldProps> = ({
       className={`relative w-full transition-all duration-200 group
         ${isSelected ? '' : 'border-transparent hover:border-gray-200'}
         ${isSelected ? 'cursor-default' : 'cursor-pointer'}
-        ${hasBackgroundImage ? 'overflow-hidden rounded-lg min-h-[200px]' : 'rounded-lg'}
+        ${hasBackgroundImage ? 'overflow-hidden rounded-lg min-h-[200px]' : 'overflow-visible rounded-lg'}
       `}
       onClick={(e) => {
          e.stopPropagation();
@@ -163,7 +163,7 @@ export const HeaderField: React.FC<HeaderFieldProps> = ({
         }` : ''}>
         
         {isSelected && !isMultiSelecting && (
-          <div className="absolute -top-12 left-0 right-0 z-[60] flex justify-center">
+          <div className="absolute -top-32 left-0 right-0 z-[70] flex justify-center">
             <div style={{ display: activeInput === 'heading' ? 'block' : 'none' }}>
               <RichTextToolbar id={`toolbar-heading-${field.id}`} />
             </div>
@@ -172,6 +172,7 @@ export const HeaderField: React.FC<HeaderFieldProps> = ({
             </div>
           </div>
         )}
+
 
         {isSelected && !isMultiSelecting ? (
           <div className="relative group/editor">

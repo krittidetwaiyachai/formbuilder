@@ -78,7 +78,7 @@ export interface Field {
   explanation?: string;
   imageUrl?: string;
   imageWidth?: string;
-  videoUrl?: string; 
+  videoUrl?: string;
 }
 
 export interface FieldCondition {
@@ -129,9 +129,9 @@ export interface Form {
     showExplanation?: boolean;
     shuffleQuestions?: boolean;
     requireSignIn?: boolean;
-    timeLimit?: number; 
-    startTime?: string; 
-    endTime?: string; 
+    timeLimit?: number;
+    startTime?: string;
+    endTime?: string;
   };
   createdById: string;
   createdAt: string;
@@ -188,6 +188,7 @@ export interface FormSettings {
   redirectUrl?: string;
   emailNotifications?: boolean;
   shuffleQuestions?: boolean;
+  themeName?: string;
 }
 
 export interface FormTheme {
@@ -199,12 +200,13 @@ export interface FormTheme {
   borderRadius: 'none' | 'small' | 'medium' | 'large';
   fontFamily: string;
   backgroundImage?: string;
+  themeName?: string;
 }
 
 export interface PageSettings {
-  id: string; 
+  id: string;
   title: string;
-  
+
 }
 
 export interface WelcomeScreenSettings {

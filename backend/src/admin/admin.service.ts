@@ -3,23 +3,23 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class AdminService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async getStats() {
     const now = new Date();
     const startOfThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-    
-    const [userCount, formCount, submissionCount, thisMonthSubmissions, lastMonthSubmissions, recentActivity] = await Promise.all([
+
+    const [userCount, formCount, submissionCount, thisMonthUsers, lastMonthUsers, recentActivity] = await Promise.all([
       this.prisma.user.count(),
       this.prisma.form.count(),
       this.prisma.formResponse.count(),
-      this.prisma.formResponse.count({
+      this.prisma.user.count({
         where: {
           createdAt: { gte: startOfThisMonth },
         },
       }),
-      this.prisma.formResponse.count({
+      this.prisma.user.count({
         where: {
           createdAt: {
             gte: startOfLastMonth,
@@ -51,13 +51,13 @@ export class AdminService {
     ]);
 
     let growthRate = 0;
-    if (lastMonthSubmissions > 0) {
-      growthRate = ((thisMonthSubmissions - lastMonthSubmissions) / lastMonthSubmissions) * 100;
-    } else if (thisMonthSubmissions > 0) {
-      growthRate = 100; 
+    if (lastMonthUsers > 0) {
+      growthRate = ((thisMonthUsers - lastMonthUsers) / lastMonthUsers) * 100;
+    } else if (thisMonthUsers > 0) {
+      growthRate = 100;
     }
 
-    
+
     const sixMonthsAgo = new Date();
     sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5);
     sixMonthsAgo.setDate(1);
@@ -77,14 +77,14 @@ export class AdminService {
 
     const monthlyStats = [];
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    
+
     for (let i = 0; i < 6; i++) {
       const d = new Date();
       d.setMonth(d.getMonth() - i);
       const monthKey = `${months[d.getMonth()]} ${d.getFullYear()}`;
       const monthStart = new Date(d.getFullYear(), d.getMonth(), 1);
       const monthEnd = new Date(d.getFullYear(), d.getMonth() + 1, 0);
-      
+
       const count = monthlyStatsRaw.filter(
         item => item.createdAt >= monthStart && item.createdAt <= monthEnd
       ).length;
@@ -95,7 +95,7 @@ export class AdminService {
       });
     }
 
-    
+
     const monthlyFormsRaw = await this.prisma.form.groupBy({
       by: ['createdAt'],
       where: {
@@ -109,14 +109,14 @@ export class AdminService {
     });
 
     const monthlyForms = [];
-    
+
     for (let i = 0; i < 6; i++) {
       const d = new Date();
       d.setMonth(d.getMonth() - i);
       const monthKey = `${months[d.getMonth()]} ${d.getFullYear()}`;
       const monthStart = new Date(d.getFullYear(), d.getMonth(), 1);
       const monthEnd = new Date(d.getFullYear(), d.getMonth() + 1, 0);
-      
+
       const count = monthlyFormsRaw.filter(
         item => item.createdAt >= monthStart && item.createdAt <= monthEnd
       ).length;
@@ -127,7 +127,7 @@ export class AdminService {
       });
     }
 
-    
+
     const popularFormsRaw = await this.prisma.formResponse.groupBy({
       by: ['formId'],
       _count: {

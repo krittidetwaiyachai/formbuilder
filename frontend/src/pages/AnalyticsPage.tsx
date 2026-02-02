@@ -18,8 +18,9 @@ import { AnalyticsHeader } from './analytics/components/AnalyticsHeader';
 import { AnalyticsSummaryCards } from './analytics/components/AnalyticsSummaryCards';
 import { ResponseTrendChart } from './analytics/components/ResponseTrendChart';
 import { QuizStatsCards } from './analytics/components/QuizStatsCards';
-import { FieldAnalytics } from './analytics/components/FieldAnalytics';
+import { FieldDistributionWidget, FieldDetailedAnalysis } from './analytics/components/FieldAnalytics';
 import { ResponseViewer } from './analytics/components/ResponseViewer';
+import { useSmoothScroll } from '@/hooks/useSmoothScroll';
 
 export default function AnalyticsPage() {
   const { t } = useTranslation();
@@ -61,6 +62,8 @@ export default function AnalyticsPage() {
   const [selectedField, setSelectedField] = useState<string>('all');
   const [exporting, setExporting] = useState(false);
   const [exportProgress, setExportProgress] = useState(0);
+
+  useSmoothScroll(undefined, { enabled: !showResponseViewer });
 
   
   useEffect(() => {
@@ -222,7 +225,16 @@ export default function AnalyticsPage() {
                 onCopy={copyChartToClipboard} 
                 copySuccess={copySuccess} 
               />
-              { }
+              <FieldDistributionWidget 
+                form={form} 
+                fieldStats={fieldStats} 
+                totalResponses={totalResponses}
+                selectedField={selectedField}
+                onFieldChange={setSelectedField}
+                initialSelectedField={selectedField}
+                onCopy={copyChartToClipboard}
+                copySuccess={copySuccess}
+              />
             </div>
 
              {form?.isQuiz && (
@@ -233,10 +245,12 @@ export default function AnalyticsPage() {
                 />
              )}
 
-            <FieldAnalytics 
+            <FieldDetailedAnalysis 
                 form={form} 
                 fieldStats={fieldStats} 
                 totalResponses={totalResponses}
+                selectedField={selectedField}
+                onFieldChange={setSelectedField}
                 initialSelectedField={selectedField}
                 onCopy={copyChartToClipboard}
                 copySuccess={copySuccess}

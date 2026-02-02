@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { DropResult, DragStart } from '@hello-pangea/dnd';
-import { Field, FieldType, Form } from '@/types';
-import { generateUUID } from '@/utils/uuid';
+import React, { useState } from "react";
+import { DropResult, DragStart } from "@hello-pangea/dnd";
+import { Field, FieldType, Form } from "@/types";
+import { generateUUID } from "@/utils/uuid";
 
 interface UseFormDragAndDropProps {
   id: string;
@@ -22,11 +22,10 @@ export function useFormDragAndDrop({
   selectField,
   currentPage,
 }: UseFormDragAndDropProps) {
-
   const [isDragging, setIsDragging] = useState(false);
 
   const activeFieldsRef = React.useRef(activeFields);
-  
+
   React.useEffect(() => {
     activeFieldsRef.current = activeFields;
   }, [activeFields]);
@@ -42,83 +41,150 @@ export function useFormDragAndDrop({
     if (combine) {
       const targetFieldId = combine.draggableId;
       const currentFields = activeFieldsRef.current;
-      const targetField = currentFields.find(f => f.id === targetFieldId);
-      
+      const targetField = currentFields.find((f) => f.id === targetFieldId);
+
       if (targetField && targetField.type === FieldType.GROUP) {
-        if (draggableId.startsWith('sidebar-')) {
-             const type = draggableId.replace('sidebar-', '') as FieldType;
-             if (type === FieldType.GROUP) return;
+        if (draggableId.startsWith("sidebar-")) {
+          const type = draggableId.replace("sidebar-", "") as FieldType;
+          if (type === FieldType.GROUP) return;
 
-             const newField: Field = {
-                id: generateUUID(),
-                formId: id,
-                type: type,
-                label: getLabelForType(type),
-                required: false,
-                order: 9999, 
-                groupId: targetFieldId,
-                options: {},
-             };
-             
-             if (newField.type === FieldType.RADIO || newField.type === FieldType.CHECKBOX || newField.type === FieldType.DROPDOWN) {
-                newField.options = {
-                    subLabel: 'Sublabel',
-                    options: [
-                        { id: generateUUID(), label: 'Option 1', value: 'Option 1' },
-                        { id: generateUUID(), label: 'Option 2', value: 'Option 2' },
-                        { id: generateUUID(), label: 'Option 3', value: 'Option 3' },
-                    ]
-                };
-             } else if (
-                newField.type === FieldType.TEXT || 
-                newField.type === FieldType.TEXTAREA ||
-                newField.type === FieldType.NUMBER ||
-                newField.type === FieldType.EMAIL ||
-                newField.type === FieldType.PHONE ||
-                newField.type === FieldType.DATE ||
-                newField.type === FieldType.TIME ||
-                newField.type === FieldType.RATE
-             ) {
-                newField.options = { subLabel: 'Sublabel' };
-             }
+          const newField: Field = {
+            id: generateUUID(),
+            formId: id,
+            type: type,
+            label: getLabelForType(type),
+            required: false,
+            order: 9999,
+            groupId: targetFieldId,
+            options: {},
+          };
 
-             const groupChildren = currentFields.filter(f => f.groupId === targetFieldId);
-             let insertIndex = -1;
-             
-             if (groupChildren.length > 0) {
-                 const lastChild = groupChildren[groupChildren.length - 1];
-                 const lastIndex = currentFields.findIndex(f => f.id === lastChild.id);
-                 if (lastIndex !== -1) insertIndex = lastIndex + 1;
-             } else {
-                 const groupIndex = currentFields.findIndex(f => f.id === targetFieldId);
-                 if (groupIndex !== -1) insertIndex = groupIndex + 1;
-             }
+          if (
+            newField.type === FieldType.RADIO ||
+            newField.type === FieldType.CHECKBOX ||
+            newField.type === FieldType.DROPDOWN
+          ) {
+            newField.options = {
+              subLabel: "Sublabel",
+              options: [
+                { id: generateUUID(), label: "Option 1", value: "Option 1" },
+                { id: generateUUID(), label: "Option 2", value: "Option 2" },
+                { id: generateUUID(), label: "Option 3", value: "Option 3" },
+              ],
+            };
+          } else if (
+            newField.type === FieldType.TEXT ||
+            newField.type === FieldType.TEXTAREA ||
+            newField.type === FieldType.NUMBER ||
+            newField.type === FieldType.EMAIL ||
+            newField.type === FieldType.PHONE ||
+            newField.type === FieldType.DATE ||
+            newField.type === FieldType.TIME ||
+            newField.type === FieldType.RATE
+          ) {
+            newField.options = { subLabel: "Sublabel" };
+          }
 
-             if (insertIndex === -1) insertIndex = currentFields.length;
+          const groupChildren = currentFields.filter(
+            (f) => f.groupId === targetFieldId,
+          );
+          let insertIndex = -1;
 
-             const newFields = [...currentFields];
-             newFields.splice(insertIndex, 0, newField);
-             
-             const ordered = newFields.map((f, i) => ({ ...f, order: i }));
-             
-             setActiveFields(ordered);
-             updateForm({ fields: ordered });
-             selectField(newField.id);
-             return;
+          if (groupChildren.length > 0) {
+            const lastChild = groupChildren[groupChildren.length - 1];
+            const lastIndex = currentFields.findIndex(
+              (f) => f.id === lastChild.id,
+            );
+            if (lastIndex !== -1) insertIndex = lastIndex + 1;
+          } else {
+            const groupIndex = currentFields.findIndex(
+              (f) => f.id === targetFieldId,
+            );
+            if (groupIndex !== -1) insertIndex = groupIndex + 1;
+          }
+
+          if (insertIndex === -1) insertIndex = currentFields.length;
+
+          const newFields = [...currentFields];
+          newFields.splice(insertIndex, 0, newField);
+
+          const ordered = newFields.map((f, i) => ({ ...f, order: i }));
+
+          setActiveFields(ordered);
+          updateForm({ fields: ordered });
+          selectField(newField.id);
+          return;
         }
 
         const movedFieldId = draggableId;
-        const movedField = currentFields.find(f => f.id === movedFieldId);
-        
-        if (movedField && movedField.type !== FieldType.GROUP && movedField.type !== FieldType.PAGE_BREAK) {
-          const newFields = currentFields.map(f => 
-            f.id === movedFieldId ? { ...f, groupId: targetFieldId } : f
+        const movedField = currentFields.find((f) => f.id === movedFieldId);
+
+        if (
+          movedField &&
+          movedField.type !== FieldType.GROUP &&
+          movedField.type !== FieldType.PAGE_BREAK
+        ) {
+          const newFields = currentFields.map((f) =>
+            f.id === movedFieldId ? { ...f, groupId: targetFieldId } : f,
           );
-          
+
           setActiveFields(newFields);
           updateForm({ fields: newFields });
           return;
         }
+      }
+
+      if (targetField && draggableId.startsWith("sidebar-")) {
+        const type = draggableId.replace("sidebar-", "") as FieldType;
+
+        const newField: Field = {
+          id: generateUUID(),
+          formId: id,
+          type: type,
+          label: getLabelForType(type),
+          required: false,
+          order: 0,
+          options: type === FieldType.GROUP ? { collapsible: true } : {},
+        };
+
+        if (
+          newField.type === FieldType.RADIO ||
+          newField.type === FieldType.CHECKBOX ||
+          newField.type === FieldType.DROPDOWN
+        ) {
+          newField.options = {
+            subLabel: "",
+            options: [
+              { id: generateUUID(), label: "Option 1", value: "Option 1" },
+              { id: generateUUID(), label: "Option 2", value: "Option 2" },
+              { id: generateUUID(), label: "Option 3", value: "Option 3" },
+            ],
+          };
+        } else if (
+          newField.type === FieldType.TEXT ||
+          newField.type === FieldType.TEXTAREA ||
+          newField.type === FieldType.NUMBER ||
+          newField.type === FieldType.EMAIL ||
+          newField.type === FieldType.PHONE ||
+          newField.type === FieldType.DATE ||
+          newField.type === FieldType.TIME ||
+          newField.type === FieldType.RATE
+        ) {
+          newField.options = { subLabel: "" };
+        }
+
+        const targetIndex = currentFields.findIndex((f) => f.id === targetFieldId);
+        const insertIndex = targetIndex !== -1 ? targetIndex : currentFields.length;
+
+        const newFields = [...currentFields];
+        newFields.splice(insertIndex, 0, newField);
+
+        const ordered = newFields.map((f, i) => ({ ...f, order: i }));
+
+        setActiveFields(ordered);
+        updateForm({ fields: ordered });
+        selectField(newField.id);
+        return;
       }
     }
 
@@ -132,101 +198,169 @@ export function useFormDragAndDrop({
     ) {
       return;
     }
-    
+
     const currentFields = activeFieldsRef.current;
-    const isFromSidebar = source.droppableId === 'SIDEBAR';
-    const isToCanvas = destination.droppableId === 'CANVAS';
-    const isToGroup = destination.droppableId.startsWith('GROUP-');
-    const isFromGroup = source.droppableId.startsWith('GROUP-');
-    const isFromCanvas = source.droppableId === 'CANVAS';
+    const isFromSidebar = source.droppableId === "SIDEBAR";
+    const isToCanvas = destination.droppableId === "CANVAS";
+    const isToGroup = destination.droppableId.startsWith("GROUP-");
+    const isFromGroup = source.droppableId.startsWith("GROUP-");
+    const isFromCanvas = source.droppableId === "CANVAS";
 
     const getPageOffset = () => {
-        if (currentPage <= 0) return 0;
-        
-        let foundBreaks = 0;
-        for (let i = 0; i < currentFields.length; i++) {
-            if (currentFields[i].type === FieldType.PAGE_BREAK) {
-                foundBreaks++;
-                if (foundBreaks === currentPage) {
-                    return i + 1;
-                }
-            }
+      if (currentPage <= 0) return 0;
+
+      let foundBreaks = 0;
+      for (let i = 0; i < currentFields.length; i++) {
+        if (currentFields[i].type === FieldType.PAGE_BREAK) {
+          foundBreaks++;
+          if (foundBreaks === currentPage) {
+            return i + 1;
+          }
         }
-        return currentFields.length; 
+      }
+      return currentFields.length;
+    };
+
+    const findGlobalIndex = (
+      fields: Field[],
+      pageIndex: number,
+      visualIndex: number,
+    ): number => {
+      let startIndex = 0;
+
+      if (pageIndex > 0) {
+        let foundBreaks = 0;
+        for (let i = 0; i < fields.length; i++) {
+          if (fields[i].type === FieldType.PAGE_BREAK) {
+            foundBreaks++;
+            if (foundBreaks === pageIndex) {
+              startIndex = i + 1;
+              break;
+            }
+          }
+        }
+      }
+
+      let currentVisualIndex = 0;
+      let i = startIndex;
+
+      while (i < fields.length) {
+        const f = fields[i];
+
+        if (f.type === FieldType.PAGE_BREAK) {
+          if (currentVisualIndex === visualIndex) return i;
+          currentVisualIndex++;
+
+          if (currentVisualIndex === visualIndex) return i + 1;
+          break;
+        }
+
+        if (!f.groupId || f.type === FieldType.GROUP) {
+          if (currentVisualIndex === visualIndex) {
+            return i;
+          }
+          currentVisualIndex++;
+
+          if (f.type === FieldType.GROUP) {
+            let j = i + 1;
+            while (j < fields.length && fields[j].groupId === f.id) {
+              j++;
+            }
+
+            i = j - 1;
+          }
+        }
+
+        i++;
+      }
+
+      return i;
     };
 
     if (isFromCanvas && isToCanvas) {
-      const pageOffset = getPageOffset();
-      const newFields = Array.from(currentFields);
-      
-      const globalSourceIndex = pageOffset + source.index;
-      const globalDestinationIndex = pageOffset + destination.index;
+      const movedField = currentFields.find((f) => f.id === draggableId);
+      if (!movedField) return;
 
-      const [movedField] = newFields.splice(globalSourceIndex, 1);
-      newFields.splice(globalDestinationIndex, 0, movedField);
-      
+      const fieldsWithoutMoved = currentFields.filter(
+        (f) => f.id !== draggableId,
+      );
+
+      const insertIndex = findGlobalIndex(
+        fieldsWithoutMoved,
+        currentPage,
+        destination.index,
+      );
+
+      const newFields = [...fieldsWithoutMoved];
+      newFields.splice(insertIndex, 0, movedField);
+
       const ordered = newFields.map((f, i) => ({ ...f, order: i }));
-      
+
       setActiveFields(ordered);
       updateForm({ fields: ordered });
       return;
     }
 
     if (isFromSidebar && isToCanvas) {
-       const type = draggableId.replace('sidebar-', '') as FieldType;
-       
-       const newField: Field = {
-           id: generateUUID(),
-           formId: id,
-           type: type,
-           label: getLabelForType(type),
-           required: false,
-           order: destination.index,
-           options: type === FieldType.GROUP ? { collapsible: true } : [],
-       };
+      const type = draggableId.replace("sidebar-", "") as FieldType;
 
-       if (newField.type === FieldType.RADIO || newField.type === FieldType.CHECKBOX || newField.type === FieldType.DROPDOWN) {
-            newField.options = {
-                subLabel: '',
-                options: [
-                    { id: generateUUID(), label: 'Option 1', value: 'Option 1' },
-                    { id: generateUUID(), label: 'Option 2', value: 'Option 2' },
-                    { id: generateUUID(), label: 'Option 3', value: 'Option 3' },
-                ]
-            };
-       } else if (
-           newField.type === FieldType.TEXT || 
-           newField.type === FieldType.TEXTAREA ||
-           newField.type === FieldType.NUMBER ||
-           newField.type === FieldType.EMAIL ||
-           newField.type === FieldType.PHONE ||
-           newField.type === FieldType.DATE ||
-           newField.type === FieldType.TIME ||
-           newField.type === FieldType.RATE
-       ) {
-            newField.options = { subLabel: '' };
-       }
+      const newField: Field = {
+        id: generateUUID(),
+        formId: id,
+        type: type,
+        label: getLabelForType(type),
+        required: false,
+        order: 0,
+        options: type === FieldType.GROUP ? { collapsible: true } : [],
+      };
 
-       const pageOffset = getPageOffset();
-       const globalDestinationIndex = pageOffset + destination.index;
-       
-       newField.order = globalDestinationIndex; 
+      if (
+        newField.type === FieldType.RADIO ||
+        newField.type === FieldType.CHECKBOX ||
+        newField.type === FieldType.DROPDOWN
+      ) {
+        newField.options = {
+          subLabel: "",
+          options: [
+            { id: generateUUID(), label: "Option 1", value: "Option 1" },
+            { id: generateUUID(), label: "Option 2", value: "Option 2" },
+            { id: generateUUID(), label: "Option 3", value: "Option 3" },
+          ],
+        };
+      } else if (
+        newField.type === FieldType.TEXT ||
+        newField.type === FieldType.TEXTAREA ||
+        newField.type === FieldType.NUMBER ||
+        newField.type === FieldType.EMAIL ||
+        newField.type === FieldType.PHONE ||
+        newField.type === FieldType.DATE ||
+        newField.type === FieldType.TIME ||
+        newField.type === FieldType.RATE
+      ) {
+        newField.options = { subLabel: "" };
+      }
 
-       const newFields = Array.from(currentFields);
-       newFields.splice(globalDestinationIndex, 0, newField);
-       
-       const ordered = newFields.map((f, i) => ({ ...f, order: i }));
-       
-       setActiveFields(ordered);
-       updateForm({ fields: ordered });
-       selectField(newField.id);
-       return;
+      const insertIndex = findGlobalIndex(
+        currentFields,
+        currentPage,
+        destination.index,
+      );
+
+      const newFields = [...currentFields];
+      newFields.splice(insertIndex, 0, newField);
+
+      const ordered = newFields.map((f, i) => ({ ...f, order: i }));
+
+      setActiveFields(ordered);
+      updateForm({ fields: ordered });
+      selectField(newField.id);
+      return;
     }
 
     if (isFromSidebar && isToGroup) {
-      const groupId = destination.droppableId.replace('GROUP-', '');
-      const type = draggableId.replace('sidebar-', '') as FieldType;
-      
+      const groupId = destination.droppableId.replace("GROUP-", "");
+      const type = draggableId.replace("sidebar-", "") as FieldType;
+
       if (type === FieldType.GROUP) {
         return;
       }
@@ -237,22 +371,26 @@ export function useFormDragAndDrop({
         type: type,
         label: getLabelForType(type),
         required: false,
-        order: 0, 
+        order: 0,
         groupId: groupId,
         options: {},
       };
 
-      if (newField.type === FieldType.RADIO || newField.type === FieldType.CHECKBOX || newField.type === FieldType.DROPDOWN) {
+      if (
+        newField.type === FieldType.RADIO ||
+        newField.type === FieldType.CHECKBOX ||
+        newField.type === FieldType.DROPDOWN
+      ) {
         newField.options = {
-          subLabel: 'Sublabel',
+          subLabel: "Sublabel",
           options: [
-            { id: generateUUID(), label: 'Option 1', value: 'Option 1' },
-            { id: generateUUID(), label: 'Option 2', value: 'Option 2' },
-            { id: generateUUID(), label: 'Option 3', value: 'Option 3' },
-          ]
+            { id: generateUUID(), label: "Option 1", value: "Option 1" },
+            { id: generateUUID(), label: "Option 2", value: "Option 2" },
+            { id: generateUUID(), label: "Option 3", value: "Option 3" },
+          ],
         };
       } else if (
-        newField.type === FieldType.TEXT || 
+        newField.type === FieldType.TEXT ||
         newField.type === FieldType.TEXTAREA ||
         newField.type === FieldType.NUMBER ||
         newField.type === FieldType.EMAIL ||
@@ -261,31 +399,33 @@ export function useFormDragAndDrop({
         newField.type === FieldType.TIME ||
         newField.type === FieldType.RATE
       ) {
-        newField.options = { subLabel: 'Sublabel' };
+        newField.options = { subLabel: "Sublabel" };
       }
 
       const groupChildren = currentFields
-          .filter(f => f.groupId === groupId)
-          .sort((a, b) => a.order - b.order);
+        .filter((f) => f.groupId === groupId)
+        .sort((a, b) => a.order - b.order);
 
       let insertIndex = -1;
 
       if (groupChildren.length === 0) {
-          const groupIndex = currentFields.findIndex(f => f.id === groupId);
-          if (groupIndex !== -1) insertIndex = groupIndex + 1;
+        const groupIndex = currentFields.findIndex((f) => f.id === groupId);
+        if (groupIndex !== -1) insertIndex = groupIndex + 1;
       } else {
-          if (destination.index < groupChildren.length) {
-              const targetChild = groupChildren[destination.index];
-              insertIndex = currentFields.findIndex(f => f.id === targetChild.id);
-          } else {
-              const lastChild = groupChildren[groupChildren.length - 1];
-              const lastChildIndex = currentFields.findIndex(f => f.id === lastChild.id);
-              if (lastChildIndex !== -1) insertIndex = lastChildIndex + 1;
-          }
+        if (destination.index < groupChildren.length) {
+          const targetChild = groupChildren[destination.index];
+          insertIndex = currentFields.findIndex((f) => f.id === targetChild.id);
+        } else {
+          const lastChild = groupChildren[groupChildren.length - 1];
+          const lastChildIndex = currentFields.findIndex(
+            (f) => f.id === lastChild.id,
+          );
+          if (lastChildIndex !== -1) insertIndex = lastChildIndex + 1;
+        }
       }
 
       if (insertIndex === -1) {
-         insertIndex = currentFields.length;
+        insertIndex = currentFields.length;
       }
 
       const newFields = [...currentFields];
@@ -300,13 +440,13 @@ export function useFormDragAndDrop({
     }
 
     if (isFromCanvas && isToGroup) {
-      const groupId = destination.droppableId.replace('GROUP-', '');
+      const groupId = destination.droppableId.replace("GROUP-", "");
       const movedFieldId = draggableId;
-      
-      const newFields = currentFields.map(f => 
-        f.id === movedFieldId ? { ...f, groupId: groupId } : f
+
+      const newFields = currentFields.map((f) =>
+        f.id === movedFieldId ? { ...f, groupId: groupId } : f,
       );
-      
+
       setActiveFields(newFields);
       updateForm({ fields: newFields });
       return;
@@ -314,19 +454,21 @@ export function useFormDragAndDrop({
 
     if (isFromGroup && isToCanvas) {
       const movedFieldId = draggableId;
-      
-      const newFields = currentFields.map(f => 
-        f.id === movedFieldId ? { ...f, groupId: undefined } : f
+
+      const newFields = currentFields.map((f) =>
+        f.id === movedFieldId ? { ...f, groupId: undefined } : f,
       );
-      
-      const reordered = Array.from(newFields.filter(f => !f.groupId || f.type === FieldType.GROUP));
-      const fieldToMove = reordered.find(f => f.id === movedFieldId);
+
+      const reordered = Array.from(
+        newFields.filter((f) => !f.groupId || f.type === FieldType.GROUP),
+      );
+      const fieldToMove = reordered.find((f) => f.id === movedFieldId);
       if (fieldToMove) {
         const fromIndex = reordered.indexOf(fieldToMove);
         reordered.splice(fromIndex, 1);
         reordered.splice(destination.index, 0, fieldToMove);
       }
-      
+
       const ordered = newFields.map((f, i) => ({ ...f, order: i }));
       setActiveFields(ordered);
       updateForm({ fields: ordered });
@@ -334,34 +476,37 @@ export function useFormDragAndDrop({
     }
 
     if (isFromGroup && isToGroup) {
-      const sourceGroupId = source.droppableId.replace('GROUP-', '');
-      const destGroupId = destination.droppableId.replace('GROUP-', '');
+      const sourceGroupId = source.droppableId.replace("GROUP-", "");
+      const destGroupId = destination.droppableId.replace("GROUP-", "");
       const movedFieldId = draggableId;
-      
+
       if (sourceGroupId === destGroupId) {
         const groupChildren = currentFields
-          .filter(f => f.groupId === sourceGroupId)
+          .filter((f) => f.groupId === sourceGroupId)
           .sort((a, b) => a.order - b.order);
-        
+
         const [movedField] = groupChildren.splice(source.index, 1);
         groupChildren.splice(destination.index, 0, movedField);
-        
-        const updatedChildren = groupChildren.map((f, i) => ({ ...f, order: i }));
-        
-        const newFields = currentFields.map(f => {
-          const updated = updatedChildren.find(u => u.id === f.id);
+
+        const updatedChildren = groupChildren.map((f, i) => ({
+          ...f,
+          order: i,
+        }));
+
+        const newFields = currentFields.map((f) => {
+          const updated = updatedChildren.find((u) => u.id === f.id);
           return updated ? updated : f;
         });
-        
+
         setActiveFields(newFields);
         updateForm({ fields: newFields });
         return;
       }
-      
-      const newFields = currentFields.map(f => 
-        f.id === movedFieldId ? { ...f, groupId: destGroupId } : f
+
+      const newFields = currentFields.map((f) =>
+        f.id === movedFieldId ? { ...f, groupId: destGroupId } : f,
       );
-      
+
       setActiveFields(newFields);
       updateForm({ fields: newFields });
       return;
@@ -369,27 +514,56 @@ export function useFormDragAndDrop({
   };
 
   const getLabelForType = (type: FieldType): string => {
-      switch (type) {
-          case FieldType.TEXT: return 'Short Text';
-          case FieldType.TEXTAREA: return 'Long Text';
-          case FieldType.NUMBER: return 'Number';
-          case FieldType.EMAIL: return 'Email';
-          case FieldType.PHONE: return 'Phone';
-          case FieldType.DATE: return 'Date';
-          case FieldType.TIME: return 'Time';
-          case FieldType.RADIO: return 'Single Choice';
-          case FieldType.CHECKBOX: return 'Multiple Choice';
-          case FieldType.DROPDOWN: return 'Dropdown';
-          case FieldType.HEADER: return 'Header';
-          case FieldType.PARAGRAPH: return 'Paragraph';
-          case FieldType.DIVIDER: return 'Separator';
-          case FieldType.PAGE_BREAK: return 'Page Break';
-          case FieldType.RATE: return 'Rating';
-          case FieldType.ADDRESS: return 'Address';
-          case FieldType.SUBMIT: return 'Submit Button';
-          case FieldType.GROUP: return 'Field Group';
-          default: return 'Field';
-      }
+    switch (type) {
+      case FieldType.TEXT:
+        return "Short Text";
+      case FieldType.TEXTAREA:
+        return "Long Text";
+      case FieldType.NUMBER:
+        return "Number";
+      case FieldType.EMAIL:
+        return "Email";
+      case FieldType.PHONE:
+        return "Phone";
+      case FieldType.DATE:
+        return "Date";
+      case FieldType.TIME:
+        return "Time";
+      case FieldType.RADIO:
+        return "Single Choice";
+      case FieldType.CHECKBOX:
+        return "Multiple Choice";
+      case FieldType.DROPDOWN:
+        return "Dropdown";
+      case FieldType.HEADER:
+        return "Header";
+      case FieldType.PARAGRAPH:
+        return "Paragraph";
+      case FieldType.DIVIDER:
+        return "Separator";
+      case FieldType.PAGE_BREAK:
+        return "Page Break";
+      case FieldType.RATE:
+        return "Rating";
+      case FieldType.ADDRESS:
+        return "Address";
+      case FieldType.FULLNAME:
+        return "Full Name";
+      case FieldType.FILE:
+        return "File Upload";
+      case FieldType.MATRIX:
+        return "Matrix";
+      case FieldType.TABLE:
+        return "Table";
+      case FieldType.SECTION_COLLAPSE:
+        return "Section";
+      case FieldType.SUBMIT:
+        return "Submit Button";
+      case FieldType.GROUP:
+        return "Field Group";
+      default:
+        return "Field";
+    }
   };
 
   return { onDragEnd, onDragStart, isDragging };

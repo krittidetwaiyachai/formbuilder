@@ -1,5 +1,5 @@
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Check, CheckCircle, Facebook, Twitter, Linkedin, ThumbsUp, Heart, Star, Trophy, PartyPopper } from 'lucide-react';
 import { FormSettings, ThankYouScreenSettings } from '@/types';
@@ -57,13 +57,24 @@ export default function ThankYouScreen({ settings, globalSettings, score, showSc
   const title = settings?.title ?? defaultTitle;
   const message = globalSettings?.successMessage || settings?.message || defaultMessage;
 
+  const [countdown, setCountdown] = useState(settings?.redirectDelay || 3);
+
   useEffect(() => {
     if (settings?.autoRedirect && settings?.redirectUrl) {
-      const delay = (settings?.redirectDelay || 3) * 1000;
-      const timer = setTimeout(() => {
-        window.location.href = settings.redirectUrl!;
-      }, delay);
-      return () => clearTimeout(timer);
+      setCountdown(settings.redirectDelay || 3);
+      
+      const interval = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            clearInterval(interval);
+            window.location.href = settings.redirectUrl!;
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      return () => clearInterval(interval);
     }
   }, [settings?.autoRedirect, settings?.redirectUrl, settings?.redirectDelay]);
 
@@ -128,7 +139,7 @@ export default function ThankYouScreen({ settings, globalSettings, score, showSc
       </motion.p>
 
       { }
-      {settings?.showButton && settings?.buttonText && (
+      {settings?.showButton && (
         <motion.a
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -141,7 +152,7 @@ export default function ThankYouScreen({ settings, globalSettings, score, showSc
           }`}
           style={!isCover ? { backgroundColor: 'var(--primary)', borderRadius: 'var(--radius)' } : {}}
         >
-          {settings.buttonText}
+          {settings.buttonText || t('public.thank_you.back_to_home')}
         </motion.a>
       )}
 
@@ -193,7 +204,7 @@ export default function ThankYouScreen({ settings, globalSettings, score, showSc
           className={`flex items-center gap-2 text-sm font-medium mt-4 ${isCover ? 'text-white/70' : 'text-gray-400'}`}
         >
            <Loader size={16} />
-           <span>{t('public.redirecting_in', { seconds: settings?.redirectDelay || 3 })}</span>
+           <span>{t('public.redirecting_in', { seconds: countdown })}</span>
         </motion.div>
       )}
     </div>
@@ -254,12 +265,12 @@ export default function ThankYouScreen({ settings, globalSettings, score, showSc
       } relative ${
           (isMobile || isTablet)
             ? 'min-h-full rounded-none max-w-full' 
-            : `${layout === 'simple' ? 'max-w-4xl' : 'max-w-6xl'} ${isQuiz ? 'min-h-full' : 'min-h-[500px]'} rounded-[2.5rem] my-8 border`
+            : `max-w-3xl ${isQuiz ? 'min-h-full' : 'min-h-[500px]'} rounded-[2.5rem] my-8 border`
       }`}
       style={{ 
-        backgroundColor: 'var(--card-bg, rgba(255,255,255,0.9))', 
+        backgroundColor: 'rgba(255, 255, 255, 0.85)', 
         borderColor: 'var(--card-border, rgba(0,0,0,0.05))',
-        backdropFilter: 'blur(16px)'
+        backdropFilter: 'blur(20px)'
       }}
     >
       

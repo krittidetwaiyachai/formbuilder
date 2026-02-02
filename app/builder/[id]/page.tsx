@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import * as React from "react";
-import { DndContext, DragEndEvent, DragOverEvent, PointerSensor, MouseSensor, TouchSensor, useSensor, useSensors, DragStartEvent, DragOverlay } from "@dnd-kit/core";
-import { restrictToVerticalAxis, restrictToParentElement } from "@dnd-kit/modifiers";
+import { DndContext, DragEndEvent, MouseSensor, TouchSensor, useSensor, useSensors, DragStartEvent, DragOverlay } from "@dnd-kit/core";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { useBuilderStore } from "@/hooks/useBuilderStore";
 import ElementsSidebar from "@/components/builder/ElementsSidebar";
 import Canvas from "@/components/builder/Canvas";
@@ -12,11 +12,13 @@ import DesignerElementCard from "@/components/builder/DesignerElementCard";
 import FormThemePanel from "@/components/builder/FormThemePanel";
 import FormSettingsPanel from "@/components/builder/FormSettingsPanel";
 import ActiveEditors from "@/components/builder/ActiveEditors";
+import { FormTheme, FormSettings, FormElement } from "../../../types/form";
+import { ActiveEditor } from "../../../types/collaboration";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Save, Eye, Send, Settings, Palette, ArrowLeft, Copy, Undo2, Redo2, Type, Mail, Hash, FileText, List, CheckSquare, Circle, Calendar, Upload, Star, Heading, AlignLeft } from "lucide-react";
+import { Save, Eye, Send, Settings, Palette, ArrowLeft, Undo2, Redo2, Type, Mail, Hash, FileText, List, CheckSquare, Circle, Calendar, Upload, Star, Heading, AlignLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { mockActiveEditors } from "@/lib/mock-data";
+import { mockActiveEditors } from "../../../lib/mock-data";
 import { useToast } from "@/components/ui/toaster";
 import { Tooltip } from "@/components/ui/tooltip";
 import {
@@ -44,8 +46,8 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
     reorderFields,
   } = useBuilderStore();
 
-  const elements = currentForm?.fields || [];
-  
+  const currentFormFields = currentForm?.fields;
+  const elements = React.useMemo(() => currentFormFields || [], [currentFormFields]);
 
   const theme = currentForm?.settings ? {
     primaryColor: currentForm.settings.primaryColor || '#0f172a',
@@ -60,31 +62,32 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
 
   const settings = currentForm?.settings;
 
-
   const removeElement = deleteField;
   const duplicateElement = duplicateField;
   const reorderElements = reorderFields;
   
-  const setTheme = (newTheme: any) => {
+  const setTheme = (newTheme: Partial<FormTheme>) => {
       if (currentForm) {
           updateForm({ settings: { ...currentForm.settings, ...newTheme } });
       }
   };
 
-  const setSettings = (newSettings: any) => {
+  const setSettings = (newSettings: Partial<FormSettings>) => {
       if (currentForm) {
           updateForm({ settings: { ...currentForm.settings, ...newSettings } });
       }
   };
 
-  const addElement = (el: any) => {
-      const { id, ...rest } = el; 
-      addField(rest);
+  const addElement = (el: FormElement) => {
+      const { ...rest } = el; 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      addField(rest as any);
   };
 
-  const addElementAt = (el: any, index: number) => {
-      const { id, ...rest } = el;
-      addField({ ...rest, order: index });
+  const addElementAt = (el: FormElement, index: number) => {
+      const { ...rest } = el;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      addField({ ...rest, order: index } as any);
   };
   const [activeTab, setActiveTab] = useState<"properties" | "theme" | "settings">("properties");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -199,14 +202,14 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
   };
 
 
-  const handleSave = () => {
+  const handleSave = React.useCallback(() => {
     console.log("Saving form:", { id: params.id, elements });
     toast({
       title: "Form saved",
       description: "Your form has been saved successfully.",
       variant: "success",
     });
-  };
+  }, [params.id, elements, toast]);
 
   const handlePreview = () => {
     router.push(`/preview/${params.id}`);
@@ -221,10 +224,10 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
     });
   };
 
-  const handleDeleteElement = (id: string) => {
+  const handleDeleteElement = React.useCallback((id: string) => {
     setElementToDelete(id);
     setDeleteDialogOpen(true);
-  };
+  }, []);
 
   const confirmDelete = () => {
     if (elementToDelete) {
@@ -239,32 +242,32 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
     }
   };
 
-  const handleUndo = () => {
+  const handleUndo = React.useCallback(() => {
     undo();
     toast({
       title: "Undone",
       description: "Last action has been undone.",
       variant: "default",
     });
-  };
+  }, [undo, toast]);
 
-  const handleRedo = () => {
+  const handleRedo = React.useCallback(() => {
     redo();
     toast({
       title: "Redone",
       description: "Action has been redone.",
       variant: "default",
     });
-  };
+  }, [redo, toast]);
 
-  const handleDuplicate = (id: string) => {
+  const handleDuplicate = React.useCallback((id: string) => {
     duplicateElement(id);
     toast({
       title: "Element duplicated",
       description: "The element has been duplicated.",
       variant: "default",
     });
-  };
+  }, [duplicateElement, toast]);
 
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -305,9 +308,11 @@ export default function BuilderPage({ params }: { params: { id: string } }) {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [historyIndex, history.length, elements]);
+  }, [historyIndex, history.length, elements, handleUndo, handleRedo, handleDeleteElement, handleDuplicate, handleSave]);
 
-  const activeEditors = (mockActiveEditors as any)[params.id] || [];
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  const activeEditors = ((mockActiveEditors as unknown) as Record<string, ActiveEditor[]>)[params.id] || [];
+  /* eslint-enable @typescript-eslint/no-explicit-any */
 
   return (
     <div 

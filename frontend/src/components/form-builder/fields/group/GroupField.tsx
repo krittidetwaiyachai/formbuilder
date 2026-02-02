@@ -229,6 +229,7 @@ export function GroupField({
                           allFields={allFields}
                           disableHover={false}
                           hideDragHandle={true}
+                          hideDeleteAction={true}
                         />
                       </motion.div>
                     ))}

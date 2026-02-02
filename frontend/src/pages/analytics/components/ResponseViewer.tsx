@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronDown, ChevronUp, Trash2, CheckCircle2, XCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Form, FormResponse } from '@/types';
 import Loader from '@/components/common/Loader';
 import { useHasPermission } from '@/hooks/usePermissions';
+import { useSmoothScroll } from '@/hooks/useSmoothScroll';
 
 interface ResponseViewerProps {
   isOpen: boolean;
@@ -42,6 +43,24 @@ export const ResponseViewer: React.FC<ResponseViewerProps> = ({
   const canDelete = useHasPermission('DELETE_RESPONSES');
   const [selectedResponse, setSelectedResponse] = useState<FormResponse | null>(null);
 
+  // Smooth scroll only inside the popup container
+  useSmoothScroll('response-viewer-scroll-container', { enabled: isOpen });
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const originalBodyOverflow = document.body.style.overflow;
+    const originalHtmlOverflow = document.documentElement.style.overflow;
+
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = originalBodyOverflow;
+      document.documentElement.style.overflow = originalHtmlOverflow;
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (
@@ -50,7 +69,7 @@ export const ResponseViewer: React.FC<ResponseViewerProps> = ({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 overscroll-contain overflow-y-auto"
         onClick={onClose}
       >
         <motion.div
@@ -91,7 +110,10 @@ export const ResponseViewer: React.FC<ResponseViewerProps> = ({
             </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-6 bg-gray-50 scrollbar-visible">
+          <div
+            id="response-viewer-scroll-container"
+            className="flex-1 overflow-y-auto p-6 bg-gray-50 scrollbar-visible"
+          >
             <div className="space-y-4">
               {responses.map((response, index) => {
                 const nameField = form?.fields?.find(f => f.label.toLowerCase().includes('name') || f.label.includes('ชื่อ'));

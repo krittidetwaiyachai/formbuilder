@@ -58,21 +58,23 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
       const quill = quillRef.current.getEditor();
       const toolbar = quill.getModule('toolbar');
       
-      toolbar.addHandler('link', function(value: any) {
-        if (value) {
-          const range = quill.getSelection();
-          if (range && range.length > 0) {
-            pendingLinkHandlerRef.current = (url: string | false) => {
-              if (url) {
-                quill.format('link', url);
+      if (toolbar) {
+          toolbar.addHandler('link', function(value: any) {
+            if (value) {
+              const range = quill.getSelection();
+              if (range && range.length > 0) {
+                pendingLinkHandlerRef.current = (url: string | false) => {
+                  if (url) {
+                    quill.format('link', url);
+                  }
+                };
+                setShowLinkDialog(true);
               }
-            };
-            setShowLinkDialog(true);
-          }
-        } else {
-          quill.format('link', false);
-        }
-      });
+            } else {
+              quill.format('link', false);
+            }
+          });
+      }
     }
   }, []);
 

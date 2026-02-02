@@ -91,5 +91,9 @@ export default {
   "analytics.export_success": "Export Complete",
   "analytics.export_success_desc": "CSV file downloaded successfully",
   "analytics.select_analysis_type": "Select an analysis type",
-  "analytics.export_failed_desc": "Failed to export data"
+  "analytics.export_failed_desc": "Failed to export data",
+  "analytics.chart_copied_desc": "Chart image copied to clipboard. You can paste it (Ctrl+V) now.",
+  "analytics.copy_failed": "Copy Failed",
+  "analytics.copy_failed_desc": "Failed to copy chart image",
+  "analytics.clipboard_unavailable_desc": "Clipboard access not supported (likely due to insecure context). Downloading image instead."
 };

@@ -11,11 +11,13 @@ import {
   FileText
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useSmoothScroll } from '@/hooks/useSmoothScroll';
 
 
 
 
 export default function AdminLayout() {
+  useSmoothScroll('admin-scroll-container');
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -104,7 +106,7 @@ export default function AdminLayout() {
         </div>
       </aside>
 
-      <main className="flex-1 overflow-auto">
+      <main id="admin-scroll-container" className="flex-1 overflow-y-auto h-screen">
         <Outlet />
       </main>
     </div>

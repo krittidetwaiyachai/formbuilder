@@ -49,13 +49,15 @@ export const ResponseTrendChart: React.FC<ResponseTrendChartProps> = ({ data, on
               tick={{ fontSize: 11, fill: '#64748b' }} 
               axisLine={false}
               tickLine={false}
-              minTickGap={30}
+              minTickGap={10} 
+              interval="preserveStartEnd"
             />
             <YAxis 
               tick={{ fontSize: 11, fill: '#64748b' }} 
               axisLine={false}
               tickLine={false}
               allowDecimals={false}
+              domain={[0, 'auto']}
             />
             <Tooltip
               contentStyle={{
@@ -70,7 +72,7 @@ export const ResponseTrendChart: React.FC<ResponseTrendChartProps> = ({ data, on
               labelStyle={{ color: '#64748b', marginBottom: '4px', fontSize: '12px' }}
             />
             <Area 
-              type="monotone" 
+              type="monotoneX" 
               dataKey="count" 
               stroke="#8b5cf6" 
               strokeWidth={3}
@@ -78,6 +80,7 @@ export const ResponseTrendChart: React.FC<ResponseTrendChartProps> = ({ data, on
               fill="url(#colorResponses)" 
               name={t('analytics.view_responses')}
               activeDot={{ r: 6, stroke: '#fff', strokeWidth: 3, fill: '#8b5cf6' }}
+              connectNulls
             />
           </AreaChart>
         </ResponsiveContainer>

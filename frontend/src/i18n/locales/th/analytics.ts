@@ -91,5 +91,9 @@ export default {
   "analytics.export_success": "ส่งออกสำเร็จ",
   "analytics.export_success_desc": "ดาวน์โหลดไฟล์ CSV เรียบร้อยแล้ว",
   "analytics.select_analysis_type": "เลือกประเภทการวิเคราะห์",
-  "analytics.export_failed_desc": "ไม่สามารถส่งออกข้อมูลได้"
+  "analytics.export_failed_desc": "ไม่สามารถส่งออกข้อมูลได้",
+  "analytics.chart_copied_desc": "รูปภาพกราฟถูกคัดลอกไปยังคลิปบอร์ดแล้ว คุณสามารถกดวาง (Ctrl+V) ได้เลย",
+  "analytics.copy_failed": "คัดลอกไม่สำเร็จ",
+  "analytics.copy_failed_desc": "มีความผิดพลาดในการคัดลอกรูปภาพ",
+  "analytics.clipboard_unavailable_desc": "เบราว์เซอร์ไม่รองรับการคัดลอกอัตโนมัติ (อาจเพราะไม่ได้ใช้ HTTPS) ระบบจึงดาวน์โหลดไฟล์ให้แทนครับ"
 };

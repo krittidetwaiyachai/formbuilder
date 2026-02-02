@@ -80,13 +80,16 @@ export const PreviewHeaderField: React.FC<PreviewFieldProps> = ({ field }) => {
               headerAlignment === 'RIGHT' ? 'items-end' : 'items-start'
             }` : ''}>
               <h2 
-                className={`${getHeaderSizeClass()} font-bold ${hasBackgroundImage ? 'text-white' : 'text-transparent bg-clip-text'} ${getHeaderAlignmentClass()} leading-tight tracking-tight pb-1`}
-                style={!hasBackgroundImage ? { color: 'var(--text)' } : {}}
+                className={`${getHeaderSizeClass()} font-bold ${hasBackgroundImage ? 'text-white' : ''} ${getHeaderAlignmentClass()} leading-tight tracking-tight pb-1`}
+                style={!hasBackgroundImage ? { color: 'var(--text-color)' } : {}}
               >
                 <div className="ql-editor !p-0 !min-h-0 [&>p]:!m-0" dangerouslySetInnerHTML={{ __html: field.label || t('public.placeholder.default_heading', 'Heading') }} />
               </h2>
               {headerSubheading && (
-                <div className={`text-base mt-3 ${hasBackgroundImage ? 'text-white/90' : 'text-gray-600'} ${getHeaderAlignmentClass()}`}>
+                <div 
+                    className={`text-base mt-3 ${getHeaderAlignmentClass()}`}
+                    style={{ color: hasBackgroundImage ? 'rgba(255,255,255,0.9)' : 'var(--text-color)', opacity: hasBackgroundImage ? 1 : 0.8 }}
+                >
                   <div className="ql-editor !p-0 !min-h-0 [&>p]:!m-0" dangerouslySetInnerHTML={{ __html: headerSubheading }} />
                 </div>
               )}

@@ -12,6 +12,8 @@ async function bootstrap() {
   
   
   
+  app.use(require('compression')());
+  
   app.useStaticAssets(join(process.cwd(), '..', 'frontend', 'public'), {
     prefix: '/', 
   });

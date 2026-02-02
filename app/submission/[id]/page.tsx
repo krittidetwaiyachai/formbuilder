@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Calendar, Monitor, Tablet, Smartphone } from "lucide-react";
-import { mockSubmissions, mockForms } from "@/lib/mock-data";
+import { mockSubmissions, mockForms } from "../../../lib/mock-data";
 import { Badge } from "@/components/ui/badge";
 
 export default function SubmissionDetailPage({ params }: { params: { id: string } }) {

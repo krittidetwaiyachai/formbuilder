@@ -1,17 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import DeviceFrame from "@/components/form-preview/DeviceFrame";
 import FormElementRenderer from "@/components/builder/FormElementRenderer";
 import { useBuilderStore } from "@/hooks/useBuilderStore";
 import { Monitor, Tablet, Smartphone, ArrowLeft } from "lucide-react";
-import { mockForms } from "@/lib/mock-data";
+import { FormTheme } from "@/types";
+import { mockForms } from "../../../lib/mock-data";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Tooltip } from "@/components/ui/tooltip";
 
-const getBackgroundStyle = (theme?: any) => {
+const getBackgroundStyle = (theme?: { backgroundType?: string; backgroundColor?: string; backgroundImage?: string; primaryColor?: string }) => {
   if (!theme) return {};
   
   if (theme.backgroundType === "color") {
@@ -31,17 +32,6 @@ const getBackgroundStyle = (theme?: any) => {
   return {};
 };
 
-const getBorderRadius = (theme?: any) => {
-  if (!theme) return "rounded-lg";
-  const radiusMap: Record<string, string> = {
-    none: "rounded-none",
-    small: "rounded-sm",
-    medium: "rounded-lg",
-    large: "rounded-xl",
-  };
-  return radiusMap[theme.borderRadius] || "rounded-lg";
-};
-
 export default function PreviewPage({ params }: { params: { id: string } }) {
   const router = useRouter();
   const [device, setDevice] = useState<"desktop" | "tablet" | "mobile">(
@@ -50,25 +40,18 @@ export default function PreviewPage({ params }: { params: { id: string } }) {
   const { currentForm } = useBuilderStore();
   const elements = currentForm?.fields || [];
   
-  const theme: {
-    primaryColor: string;
-    backgroundColor: string;
-    backgroundType: 'color' | 'image' | 'gradient';
-    textColor: string;
-    buttonStyle: 'filled' | 'outlined' | 'ghost';
-    borderRadius: string;
-    fontFamily: string;
-    backgroundImage?: string;
-  } | undefined = currentForm?.settings ? {
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  const theme: FormTheme | undefined = currentForm?.settings ? {
     primaryColor: currentForm.settings.primaryColor || '#0f172a',
     backgroundColor: currentForm.settings.backgroundColor || '#ffffff',
-    backgroundType: currentForm.settings.backgroundType || 'color',
+    backgroundType: (currentForm.settings.backgroundType as any) || 'color',
     textColor: currentForm.settings.textColor || '#0f172a',
     buttonStyle: 'filled',
-    borderRadius: currentForm.settings.borderRadius || 'medium',
+    borderRadius: (currentForm.settings.borderRadius as any) || 'medium',
     fontFamily: currentForm.settings.fontFamily || 'Inter',
     backgroundImage: currentForm.settings.backgroundImage,
   } : undefined;
+  /* eslint-enable @typescript-eslint/no-explicit-any */
   
   
   
@@ -192,6 +175,7 @@ export default function PreviewPage({ params }: { params: { id: string } }) {
           }}
         >
           {previewElements.map((element) => (
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             <FormElementRenderer key={element.id} element={element as any} />
           ))}
           <div className="pt-4">

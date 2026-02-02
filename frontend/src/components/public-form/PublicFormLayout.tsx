@@ -41,7 +41,12 @@ export function PublicFormLayout({
 }: PublicFormLayoutProps) {
 
   return (
-    <div className={`min-h-screen ${isCardLayout ? 'min-h-screen flex flex-col' : ''} ${isMobileView ? 'text-sm' : ''}`}>
+    <div 
+        className={`min-h-screen ${isCardLayout ? 'min-h-screen flex flex-col' : ''} ${isMobileView ? 'text-sm' : ''}`}
+        style={{ background: form.settings?.backgroundColor || '#ffffff' }}
+    >
+
+
       {(() => {
         const fontFamily = form.settings?.fontFamily || '';
         const primaryColor = form.settings?.primaryColor || '';
@@ -92,12 +97,14 @@ export function PublicFormLayout({
         );
       })()}
 
-      {form.settings?.backgroundImage && (
+      {form.settings?.backgroundType === 'image' && form.settings?.backgroundImage && (
          <div 
            className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-50 pointer-events-none"
            style={{ backgroundImage: `url(${form.settings.backgroundImage})` }}
          />
       )}
+
+
 
       {form.isQuiz && quizStartTime && !submitted && (form.quizSettings?.timeLimit || 0) > 0 && (
           <div className="fixed bottom-6 right-6 z-50">
@@ -126,6 +133,11 @@ export function PublicFormLayout({
             '--primary': form.settings?.primaryColor || '#000000',
             '--background': form.settings?.backgroundColor || '#ffffff',
             '--text': form.settings?.textColor || '#000000',
+            '--text-color': form.settings?.textColor || '#000000',
+            '--card-bg': 'rgba(255,255,255,0.95)',
+            '--card-border': 'rgba(0,0,0,0.1)',
+            '--divider': 'rgba(0,0,0,0.1)',
+            '--input-bg': 'rgba(0,0,0,0.05)',
             '--font-family': form.settings?.fontFamily || 'Inter',
             '--radius': form.settings?.borderRadius === 'none' ? '0px' : 
                         form.settings?.borderRadius === 'small' ? '0.25rem' : 

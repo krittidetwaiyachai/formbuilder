@@ -6,6 +6,7 @@ import { Plus, Trash2, ArrowLeft, Check, Edit2, X, AlertTriangle } from 'lucide-
 import { Input } from '@/components/ui/input';
 import { useTranslation } from 'react-i18next';
 import ConfirmDialog from '@/components/ui/ConfirmDialog';
+import { useBuilderScroll } from '@/contexts/SmoothScrollContext';
 
 export default function LogicCanvas() {
   const { t } = useTranslation();
@@ -90,14 +91,20 @@ export default function LogicCanvas() {
       requestAnimationFrame(animateScroll);
   };
 
+  const { scrollTo } = useBuilderScroll();
+
   useEffect(() => {
-    if (focusedLogicRuleId && ruleRefs.current[focusedLogicRuleId]) {
-      const el = ruleRefs.current[focusedLogicRuleId];
-      if (el) {
-          scrollToSmoothly(el, 600); 
-      }
+    if (focusedLogicRuleId) {
+      const scrollToRule = () => {
+        const el = ruleRefs.current[focusedLogicRuleId];
+        if (el) {
+          scrollTo(el, { offset: -200, duration: 0.8 });
+        }
+      };
+      
+      setTimeout(scrollToRule, 200);
     }
-  }, [focusedLogicRuleId]);
+  }, [focusedLogicRuleId, scrollTo]);
   
   const fields = currentForm?.fields || [];
   const logicRules = currentForm?.logicRules || [];
@@ -110,7 +117,7 @@ export default function LogicCanvas() {
   if (fields.length < 2) {
     const missingCount = 2 - fields.length;
     return (
-      <div className="min-h-full flex items-center justify-center p-4">
+      <div className="flex items-center justify-center p-4">
         <div className="text-center py-12 px-8 bg-amber-50/50 border-2 border-dashed border-amber-200 rounded-2xl max-w-md w-full animate-in fade-in zoom-in-95 duration-300">
           <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 ring-4 ring-amber-50 shadow-sm">
             <AlertTriangle className="w-8 h-8 text-amber-500" />
@@ -146,7 +153,7 @@ export default function LogicCanvas() {
   };
 
   return (
-    <div className="min-h-full py-6 px-4">
+    <div className="py-6 px-4">
       <div className="max-w-2xl mx-auto">
         { }
         <div className="flex items-center justify-between mb-8">

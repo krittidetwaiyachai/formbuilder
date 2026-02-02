@@ -81,8 +81,7 @@ export const createFieldSlice: StateCreator<FormBuilderState, [], [], FieldSlice
         }
     }
 
-    const templateResult = generateGroupTemplate(template, currentForm.id, insertIndex);
-    const newFields = [templateResult.groupField, ...templateResult.childFields];
+    const newFields = generateGroupTemplate(template, currentForm.id);
 
     const currentAllFields = currentForm.fields || [];
     const updatedFields = currentAllFields.map(f => {
@@ -98,7 +97,10 @@ export const createFieldSlice: StateCreator<FormBuilderState, [], [], FieldSlice
     const newForm = { ...currentForm, fields: updatedFields };
     set({ currentForm: newForm });
     
-    get().selectField(templateResult.groupField.id);
+    const groupField = newFields.find(f => f.type === FieldType.GROUP);
+    if (groupField) {
+        get().selectField(groupField.id);
+    }
     
     get().emitChange(newForm);
     get().saveToHistory();

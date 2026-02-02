@@ -1,7 +1,8 @@
 
-import { ReactNode, useState } from 'react';
+import { ReactNode, useState, useRef, useEffect } from 'react';
 import { RotateCcw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import Lenis from 'lenis';
 
 type DeviceType = 'desktop' | 'tablet' | 'mobile';
 
@@ -13,6 +14,39 @@ interface DeviceFrameProps {
 export default function DeviceFrame({ device, children }: DeviceFrameProps) {
   const { t } = useTranslation();
   const [orientation, setOrientation] = useState<'portrait' | 'landscape'>('portrait');
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const lenisRef = useRef<Lenis | null>(null);
+
+  useEffect(() => {
+    if (!scrollContainerRef.current) return;
+
+    const lenis = new Lenis({
+      wrapper: scrollContainerRef.current,
+      content: scrollContainerRef.current.firstElementChild as HTMLElement,
+      duration: 0.8,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+      wheelMultiplier: 0.8,
+      touchMultiplier: 1.5,
+    });
+
+    lenisRef.current = lenis;
+
+    let rafId: number;
+    const raf = (time: number) => {
+      lenis.raf(time);
+      rafId = requestAnimationFrame(raf);
+    };
+    rafId = requestAnimationFrame(raf);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      lenis.destroy();
+      lenisRef.current = null;
+    };
+  }, [device, orientation]);
 
   
   
@@ -69,8 +103,11 @@ export default function DeviceFrame({ device, children }: DeviceFrameProps) {
            </div>
            
            { }
-           <div className="h-[800px] overflow-y-auto bg-white relative">
-              {children}
+           <div 
+              ref={scrollContainerRef}
+              className="h-[800px] overflow-y-scroll overscroll-contain bg-white relative"
+           >
+              <div>{children}</div>
            </div>
         </div>
       </div>
@@ -92,30 +129,20 @@ export default function DeviceFrame({ device, children }: DeviceFrameProps) {
           className="relative transition-all duration-500 ease-in-out"
           style={getDeviceStyle()}
         >
-            { }
-            <div 
-              className={`absolute inset-0 bg-gray-900 shadow-2xl pointer-events-none custom-device-shadow ${device === 'mobile' ? 'rounded-[3rem]' : 'rounded-[2rem]'}`}
-              style={{
-                 
-              }}
-            >
-               { }
-            </div>
+
 
             { }
             <div 
-               className={`absolute bg-gray-50 overflow-hidden ${device === 'mobile' ? 'rounded-[2.5rem] top-[6px] bottom-[6px] left-[6px] right-[6px]' : 'rounded-[1.5rem] top-[12px] bottom-[12px] left-[12px] right-[12px]'}`}
+               className={`absolute overflow-hidden shadow-2xl bg-white ${device === 'mobile' ? 'rounded-[2.5rem] top-[6px] bottom-[6px] left-[6px] right-[6px] border-[6px] border-gray-900' : 'rounded-[1.5rem] top-[12px] bottom-[12px] left-[12px] right-[12px] border-[12px] border-gray-900'}`}
                style={{ transform: 'translateZ(0)' }}
             >
                { }
                <div 
-                  className={`w-full h-full overflow-y-auto overflow-x-hidden select-none ${device === 'mobile' ? 'pt-10 pb-8' : 'pt-6 pb-4'}`}
-                  style={{ 
-                    scrollbarWidth: 'thin',
-                    scrollbarColor: '#cbd5e1 transparent'
-                  }}
+                  ref={scrollContainerRef}
+                  className={`w-full h-full overflow-y-auto overflow-x-hidden select-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] ${device === 'mobile' ? 'pt-10 pb-8' : 'pt-6 pb-4'}`}
+                  style={{ scrollbarWidth: 'none' }}
                >
-                  {children}
+                  <div>{children}</div>
                </div>
             </div>
             

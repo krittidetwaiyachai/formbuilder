@@ -5,6 +5,7 @@ import { Settings, GitBranch } from 'lucide-react';
 
 import LogicSidebarList from './LogicSidebarList';
 import { useTranslation } from 'react-i18next';
+import { useSmoothScroll } from '@/hooks/useSmoothScroll';
 
 
 import { DateProperties } from '@/components/field-properties/advanced/DateProperties';
@@ -40,6 +41,8 @@ export default function PropertiesPanel({ currentPage = 0 }: PropertiesPanelProp
   const panelRef = useRef<HTMLDivElement>(null);
   const { currentForm, selectedFieldId, updateForm, updateField, addField, activeSidebarTab, setActiveSidebarTab } = useFormStore();
   
+  useSmoothScroll('properties-panel-scroll-container');
+
   const selectedField = currentForm?.fields?.find((f) => f.id === selectedFieldId);
   
   
@@ -141,7 +144,7 @@ export default function PropertiesPanel({ currentPage = 0 }: PropertiesPanelProp
       </div>
 
       { }
-      <div className="flex-1 overflow-y-auto px-1 py-2">
+      <div id="properties-panel-scroll-container" className="flex-1 overflow-y-auto px-1 py-2">
         {activeTab === 'properties' && (
           <>
             {!selectedField ? (

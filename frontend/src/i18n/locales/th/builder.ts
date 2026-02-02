@@ -15,18 +15,18 @@ export default {
   "builder.access_denied": "การเข้าถึงถูกปฏิเสธ",
   "builder.access_denied_msg": "คุณไม่มีสิทธิ์ในการเข้าถึงฟอร์มนี้",
   "builder.back_to_dashboard": "กลับไปหน้าแดชบอร์ด",
-  
+
   "builder.field_bundles": "ชุดฟิลด์",
   "builder.bundles_subtitle": "ชุดสำเร็จรูป",
   "builder.bundles_description": "เลือกเทมเพลตสำเร็จรูปเพื่อเพิ่มในฟอร์ม",
   "builder.bundles_click": "คลิกเทมเพลตเพื่อเพิ่มในฟอร์ม",
-  
+
   "builder.categories.text": "ฟิลด์ข้อความ",
   "builder.categories.choice": "ฟิลด์ตัวเลือก",
   "builder.categories.datetime": "วันที่และเวลา",
   "builder.categories.rating": "คะแนน",
   "builder.categories.layout": "เลย์เอาต์",
-  
+
   "builder.fields.short_text": "ข้อความสั้น",
   "builder.fields.long_text": "ข้อความยาว",
   "builder.fields.email": "อีเมล",
@@ -47,7 +47,7 @@ export default {
   "builder.fields.separator": "เส้นแบ่ง",
   "builder.fields.page_break": "แบ่งหน้า",
   "builder.fields.group": "กลุ่มฟิลด์",
-  
+
   "builder.tabs.properties": "คุณสมบัติ",
   "builder.tabs.logic": "ตรรกะ",
   "builder.tabs.settings": "ตั้งค่า",
@@ -57,7 +57,7 @@ export default {
   "builder.tabs.columns": "คอลัมน์",
   "builder.tabs.surveying": "การสำรวจ",
   "builder.tabs.fields": "ฟิลด์",
-  
+
   "builder_header.saving": "กำลังบันทึก...",
   "builder_header.loading": "กำลังโหลด...",
   "builder_header.all_saved": "บันทึกทั้งหมดเรียบร้อยเมื่อ",
@@ -70,36 +70,36 @@ export default {
   "builder_header.undo": "ย้อนกลับ",
   "builder_header.redo": "ทำซ้ำ",
   "builder_header.invite_collaborators": "เชิญผู้ร่วมงาน",
-  
-  "builder.logic.title": "ตรรกะแบบมีเงื่อนไข", 
-  "builder.logic.subtitle": "สร้างกฎเพื่อแสดงหรือซ่อนฟิลด์ตามข้อมูลที่ผู้ใช้ระบุ", 
-  "builder.logic.add_rule": "เพิ่มกฎ", 
-  "builder.logic.no_rules_title": "ยังไม่มีกฎทางตรรกะ", 
-  "builder.logic.create_first": "สร้างกฎแรกของคุณ", 
-  "builder.logic.how_it_works": "หลักการทำงาน:", 
+
+  "builder.logic.title": "ตรรกะแบบมีเงื่อนไข",
+  "builder.logic.subtitle": "สร้างกฎเพื่อแสดงหรือซ่อนฟิลด์ตามข้อมูลที่ผู้ใช้ระบุ",
+  "builder.logic.add_rule": "เพิ่มกฎ",
+  "builder.logic.no_rules_title": "ยังไม่มีกฎทางตรรกะ",
+  "builder.logic.create_first": "สร้างกฎแรกของคุณ",
+  "builder.logic.how_it_works": "หลักการทำงาน:",
   "builder.logic.how_show": "แสดง: ฟิลด์เป้าหมายจะถูกซ่อนโดยค่าเริ่มต้น และจะปรากฏเมื่อตรงตามเงื่อนไข",
   "builder.logic.how_hide": "ซ่อน: ฟิลด์เป้าหมายจะแสดงโดยค่าเริ่มต้น และจะหายไปเมื่อตรงตามเงื่อนไข",
   "builder.logic.how_and": "และ (AND): เงื่อนไขทั้งหมดต้องเป็นจริง",
   "builder.logic.how_or": "หรือ (OR): เงื่อนไขอย่างน้อยหนึ่งข้อเป็นจริง",
-  "builder.logic.if": "ถ้า", 
-  "builder.logic.then": "แล้ว", 
-  "builder.logic.select_field": "เลือกฟิลด์", 
-  "builder.logic.value_placeholder": "ค่า", 
-  "builder.logic.add_condition": "เพิ่มเงื่อนไข", 
-  "builder.logic.show_hide": "แสดง / ซ่อน", 
-  "builder.logic.add_action": "เพิ่มการกระทำ", 
-  "builder.logic.not_enough_fields": "ฟิลด์ไม่เพียงพอ", 
+  "builder.logic.if": "ถ้า",
+  "builder.logic.then": "แล้ว",
+  "builder.logic.select_field": "เลือกฟิลด์",
+  "builder.logic.value_placeholder": "ค่า",
+  "builder.logic.add_condition": "เพิ่มเงื่อนไข",
+  "builder.logic.show_hide": "แสดง / ซ่อน",
+  "builder.logic.add_action": "เพิ่มการกระทำ",
+  "builder.logic.not_enough_fields": "ฟิลด์ไม่เพียงพอ",
   "builder.logic.not_enough_desc": "ตรรกะแบบมีเงื่อนไขต้องการอย่างน้อย 2 ฟิลด์ (ฟิลด์trigger และฟิลด์เป้าหมาย)",
   "builder.logic.please_add": "กรุณาเพิ่มอีก {{count}} ฟิลด์",
-  "builder.logic.sidebar_title": "เงื่อนไขทั้งหมด", 
+  "builder.logic.sidebar_title": "เงื่อนไขทั้งหมด",
   "builder.logic.sidebar_subtitle": "สร้างเงื่อนไขในหน้า Canvas",
-  "builder.logic.no_conditions": "ยังไม่มีเงื่อนไข", 
-  "builder.logic.delete_confirm": "คุณแน่ใจหรือไม่ว่าต้องการลบกฎนี้?", 
-  "builder.logic.delete_confirm_desc": "การกระทำนี้ไม่สามารถย้อนกลับได้", 
-  "builder.logic.click_expand": "คลิกที่กฎเพื่อดูรายละเอียด", 
-  "builder.logic.conditions": "เงื่อนไข", 
-  "builder.logic.actions": "การกระทำ", 
-  
+  "builder.logic.no_conditions": "ยังไม่มีเงื่อนไข",
+  "builder.logic.delete_confirm": "คุณแน่ใจหรือไม่ว่าต้องการลบกฎนี้?",
+  "builder.logic.delete_confirm_desc": "สามารถกด Ctrl+Z เพื่อย้อนกลับได้",
+  "builder.logic.click_expand": "คลิกที่กฎเพื่อดูรายละเอียด",
+  "builder.logic.conditions": "เงื่อนไข",
+  "builder.logic.actions": "การกระทำ",
+
   "builder.logic.op.equals": "เท่ากับ",
   "builder.logic.op.not_equals": "ไม่เท่ากับ",
   "builder.logic.op.contains": "ประกอบด้วย",
@@ -110,7 +110,7 @@ export default {
   "builder.logic.rules_count_label": "กฎ",
   "builder.logic.and": "และ",
   "builder.logic.or": "หรือ",
-  
+
   "builder.quiz.mode": "โหมดแบบทดสอบ",
   "builder.quiz.total": "คะแนนรวม:",
   "builder.quiz.used": "ใช้ไป:",
@@ -126,7 +126,7 @@ export default {
   "builder.quiz.options": "ตัวเลือก",
   "builder.quiz.answers": "คำตอบ",
   "builder.quiz.remaining": "คงเหลือ:",
-  
+
   "builder.pagination.page": "หน้า {{index}}",
   "builder.pagination.page_generic": "หน้า",
   "builder.pagination.welcome_page": "หน้าต้อนรับ",
@@ -137,7 +137,7 @@ export default {
   "builder.pagination.added": "(เพิ่มแล้ว)",
   "builder.pagination.delete_page_title": "ลบหน้านี้?",
   "builder.pagination.delete_page_desc": "คุณแน่ใจหรือไม่ว่าต้องการลบหน้านี้? ฟิลด์ทั้งหมดในหน้านี้จะถูกลบไปด้วย",
-  
+
   "builder.special_page.appearance": "รูปลักษณ์",
   "builder.special_page.icon": "ไอคอน",
   "builder.special_page.icon_color": "สีไอคอน",
@@ -158,7 +158,7 @@ export default {
   "builder.properties.element_properties": "คุณสมบัติองค์ประกอบ",
   "builder.properties.tooltip_duplicate": "ทำซ้ำ (Ctrl+D)",
   "builder.properties.tooltip_delete": "ลบ (Delete)",
-  
+
   "builder.theme.title": "ธีมของฟอร์ม",
   "builder.theme.settings_title": "ตั้งค่าธีม",
   "builder.insert_link": "แทรกลิงก์",
@@ -170,12 +170,12 @@ export default {
   "builder.theme.background_type": "ประเภทพื้นหลัง",
   "builder.theme.bg_color": "สีพื้นหลัง",
   "builder.theme.bg_image": "รูปภาพพื้นหลัง",
-  "builder.theme.bg_gradient": "ไล่สี", 
+  "builder.theme.bg_gradient": "ไล่สี",
   "builder.theme.text_color": "สีข้อความ",
   "builder.theme.btn_style": "สไตล์ปุ่ม",
   "builder.theme.border_radius": "ความโค้งมุม",
   "builder.theme.font_family": "แบบอักษร",
-  
+
   "builder.theme.type_color": "สีล้วน",
   "builder.theme.type_gradient": "ไล่สี",
   "builder.theme.type_image": "รูปภาพ",
@@ -209,7 +209,7 @@ export default {
   "builder.properties.max_value": "ค่ามากสุด",
   "builder.properties.max_rating": "คะแนนสูงสุด",
   "builder.properties.rows": "จำนวนแถว",
-  
+
   "builder.element.delete_confirm": "ลบองค์ประกอบ?",
   "builder.element.delete_confirm_desc": "คุณแน่ใจหรือไม่ว่าต้องการลบองค์ประกอบนี้? การกระทำนี้ไม่สามารถย้อนกลับได้",
   "builder.field.delete_confirm": "ลบฟิลด์?",

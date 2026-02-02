@@ -68,6 +68,9 @@ export interface FormSchema {
   updatedAt: string;
   responseCount?: number;
   viewCount?: number;
+  isQuiz?: boolean;
+  createdById?: string;
+  quizSettings?: any;
 }
 
 export interface FormSubmission {

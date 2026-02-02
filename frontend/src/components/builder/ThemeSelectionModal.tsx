@@ -247,6 +247,7 @@ import { useTranslation } from "react-i18next";
 export default function ThemeSelectionModal({ isOpen, onClose, currentTheme, onThemeSelect }: ThemeSelectionModalProps) {
   const { t } = useTranslation();
   const [workingTheme, setWorkingTheme] = useState<FormTheme>(currentTheme);
+  const [selectedThemeName, setSelectedThemeName] = useState<string | undefined>(currentTheme?.themeName);
 
   
   React.useEffect(() => {
@@ -302,6 +303,7 @@ export default function ThemeSelectionModal({ isOpen, onClose, currentTheme, onT
                                 key={name}
                                 onClick={() => {
                                     setWorkingTheme(theme);
+                                    setSelectedThemeName(name);
                                 }}
                                 className="group relative flex flex-col text-left bg-white border-2 border-gray-200 rounded-xl overflow-hidden hover:border-black hover:shadow-xl transition-all duration-200 ring-offset-2 focus:ring-2 focus:ring-black"
                             >
@@ -368,6 +370,7 @@ export default function ThemeSelectionModal({ isOpen, onClose, currentTheme, onT
                                 key={name}
                                 onClick={() => {
                                     setWorkingTheme(theme);
+                                    setSelectedThemeName(name);
                                 }}
                                 className="group relative flex flex-col text-left rounded-xl transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-1 transform-gpu"
                                 style={{ 
@@ -496,6 +499,7 @@ export default function ThemeSelectionModal({ isOpen, onClose, currentTheme, onT
                                 key={name}
                                 onClick={() => {
                                     setWorkingTheme(theme);
+                                    setSelectedThemeName(name);
                                 }}
                                 className="group relative flex flex-col text-left border-2 border-gray-200 rounded-xl overflow-hidden hover:border-black hover:shadow-xl transition-all duration-200 ring-offset-2 focus:ring-2 focus:ring-black"
                                 style={{ backgroundColor: cardBg }}
@@ -558,7 +562,7 @@ export default function ThemeSelectionModal({ isOpen, onClose, currentTheme, onT
          { }
         <div className="px-6 py-4 border-t border-gray-200 bg-white flex justify-end gap-3 shrink-0">
              <Button variant="outline" onClick={onClose}>{t('dashboard.theme.close', 'Close')}</Button>
-             <Button onClick={() => { onThemeSelect(workingTheme); onClose(); }} className="bg-black hover:bg-gray-800 text-white">{t('dashboard.theme.done', 'Done')}</Button>
+             <Button onClick={() => { onThemeSelect({ ...workingTheme, themeName: selectedThemeName }); onClose(); }} className="bg-black hover:bg-gray-800 text-white">{t('dashboard.theme.done', 'Done')}</Button>
         </div>
       </div>
     </div>,

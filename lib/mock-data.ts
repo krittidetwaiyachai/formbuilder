@@ -1,5 +1,5 @@
-import { FormElement, FormSchema, FormSubmission } from "@/types/form";
-import { User, ActivityLog, ActiveEditor } from "@/types/collaboration";
+import { FormElement, FormSchema, FormSubmission } from "../types/form";
+import { User, ActivityLog, ActiveEditor } from "../types/collaboration";
 
 
 export const MOCK_FORM_ELEMENTS: FormElement[] = [

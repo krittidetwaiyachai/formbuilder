@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { dataStore } from "@/lib/data-store";
-import { Form } from "@/types";
-import { ActivityLog } from "@/types/collaboration";
+import { dataStore } from "../../../lib/data-store";
+import { FormSchema } from "../../../types/form";
+import { ActivityLog } from "../../../types/collaboration";
 
 export async function GET(request: NextRequest) {
   try {
@@ -9,16 +9,17 @@ export async function GET(request: NextRequest) {
     const status = searchParams.get("status");
     const search = searchParams.get("search");
     
-    let forms = dataStore.forms;
+    let forms = dataStore.getAllForms();
     
     if (status && (status === "published" || status === "draft")) {
-      forms = forms.filter((form: Form) => form.status === status.toUpperCase());
+      // Note: status in URL might be lowercase, FormSchema status is 'draft'|'published'
+      forms = forms.filter((form: FormSchema) => form.status === status);
     }
     
     if (search) {
       const query = search.toLowerCase();
       forms = forms.filter(
-        (form: Form) =>
+        (form: FormSchema) =>
           form.title.toLowerCase().includes(query) ||
           form.description?.toLowerCase().includes(query)
       );
@@ -38,12 +39,13 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     
-    const newForm: Partial<Form> = {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const newForm: any = {
       id: body.id || `form-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
       title: body.title || "Untitled Form",
       description: body.description || "",
-      status: body.status || "DRAFT",
-      fields: body.fields || [],
+      status: body.status || "draft",
+      elements: body.fields || [],
       settings: body.settings,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -53,7 +55,7 @@ export async function POST(request: NextRequest) {
       createdById: body.userId || "system",
     };
     
-    dataStore.forms.push(newForm as Form);
+    dataStore.createForm(newForm);
     
     if (body.userId) {
       const activityLog: ActivityLog = {
@@ -64,10 +66,10 @@ export async function POST(request: NextRequest) {
         target: "form",
         description: "Created the form",
         timestamp: new Date().toISOString(),
-        formId: newForm.id!
+        formId: newForm.id
       };
       
-      dataStore.activityLogs.push(activityLog);
+      dataStore.createActivityLog(activityLog);
     }
     
     return NextResponse.json({ form: newForm }, { status: 201 });

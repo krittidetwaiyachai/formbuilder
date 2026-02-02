@@ -1,5 +1,5 @@
-import { FormSchema, FormSubmission } from "@/types/form";
-import { ActivityLog, ActiveEditor } from "@/types/collaboration";
+import { FormSchema, FormSubmission } from "../types/form";
+import { ActivityLog, ActiveEditor } from "../types/collaboration";
 
 
 
