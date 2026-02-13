@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { FieldType, Field } from '@/types';
+import { FieldType, Field, FullNameFieldOptions, AddressFieldOptions } from '@/types';
 import { UseFormTrigger, UseFormGetValues } from 'react-hook-form';
 
 interface UseFormNavigationProps {
@@ -62,7 +62,7 @@ export function useFormNavigation({
         const fieldName = `field_${f.id}`;
         if (f.type === FieldType.FULLNAME) {
           const parts = [];
-          const opts = f.options || {};
+          const opts = (f.options || {}) as FullNameFieldOptions;
           parts.push(`${fieldName}_first`, `${fieldName}_last`);
           if (opts.showPrefix) parts.push(`${fieldName}_prefix`);
           if (opts.showMiddleName) parts.push(`${fieldName}_middle`);
@@ -71,7 +71,7 @@ export function useFormNavigation({
         }
         if (f.type === FieldType.ADDRESS) {
           const parts = [];
-          const opts = f.options || {};
+          const opts = (f.options || {}) as AddressFieldOptions;
           const showStreet = opts.showStreet !== false;
           const showCity = opts.showCity !== false;
           const showState = opts.showState !== false;
@@ -112,7 +112,7 @@ export function useFormNavigation({
         if (isEmpty(getValues(`${fieldName}_first`))) manualValid = false;
         else if (isEmpty(getValues(`${fieldName}_last`))) manualValid = false;
       } else if (f.type === FieldType.ADDRESS) {
-        const opts = f.options || {};
+        const opts = (f.options || {}) as AddressFieldOptions;
         const vStreet = getValues(`${fieldName}_street`);
         const vCity = getValues(`${fieldName}_city`);
         if (opts.showStreet !== false && isEmpty(vStreet)) manualValid = false;

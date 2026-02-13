@@ -1,16 +1,17 @@
 import { Filter, ArrowDownUp, Zap, Plus, GitBranch, Activity, ArrowRight, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { getOperatorLabel, getActionLabelType } from './utils';
+import { LogicChanges, LogicRuleChange, ChangeItem, LogicCondition, LogicAction } from './types';
 
 interface LogicChangeRendererProps {
-    logicRules: any;
+    logicRules?: LogicChanges;
     fieldLabels: Record<string, string>;
 }
 
 export default function LogicChangeRenderer({ logicRules, fieldLabels }: LogicChangeRendererProps) {
     const { t, i18n } = useTranslation();
 
-    const renderRuleContent = (rule: any, isDeleted: boolean = false) => {
+    const renderRuleContent = (rule: LogicRuleChange | Partial<LogicRuleChange>, isDeleted: boolean = false) => {
         const conditions = rule.conditions || [];
         const actions = rule.actions || [];
         const logicType = rule.logicType || 'ALL'; 
@@ -30,7 +31,7 @@ export default function LogicChangeRenderer({ logicRules, fieldLabels }: LogicCh
                 )}
               </div>
               <div className="grid gap-1.5 pl-2 border-l-2 border-indigo-50">
-                {conditions.map((c: any, idx: number) => (
+                {conditions.map((c: LogicCondition, idx: number) => (
                   <div key={idx} className="flex items-center gap-1.5 text-[11px] text-gray-700">
                     <Filter className={`w-3 h-3 ${isDeleted ? 'text-rose-400' : 'text-indigo-400'}`} />
                     <span className="font-semibold text-gray-900">{fieldLabels[c.fieldId] || 'none'}</span>
@@ -62,7 +63,7 @@ export default function LogicChangeRenderer({ logicRules, fieldLabels }: LogicCh
                 </div>
               </div>
               <div className="grid gap-1.5 pl-2 border-l-2 border-indigo-50">
-                {actions.map((a: any, idx: number) => (
+                {actions.map((a: LogicAction, idx: number) => (
                   <div key={idx} className="flex items-center gap-1.5 text-[11px] text-gray-700">
                     <Zap className={`w-3 h-3 ${isDeleted ? 'text-rose-400' : 'text-purple-400'}`} />
                     <span className="font-bold text-indigo-700 italic">{getActionLabelType(a.type, t, i18n)}</span>
@@ -84,7 +85,7 @@ export default function LogicChangeRenderer({ logicRules, fieldLabels }: LogicCh
     return (
         <div className="space-y-6 mt-4 border-t border-gray-100 pt-6">
             {}
-            {added?.length > 0 && (
+            {added && added.length > 0 && (
                 <div className="space-y-3">
                     <div className="flex items-center gap-2">
                         <div className="p-1.5 bg-indigo-50 rounded-lg">
@@ -93,7 +94,7 @@ export default function LogicChangeRenderer({ logicRules, fieldLabels }: LogicCh
                         <h3 className="text-sm font-bold text-gray-900">{t('activity.logic.new_added')}</h3>
                     </div>
                     <div className="grid gap-4">
-                        {added.map((r: any, i: number) => (
+                        {added.map((r: LogicRuleChange, i: number) => (
                             <div key={i} className="space-y-2">
                                 <div className="flex items-center gap-1.5 px-1">
                                     <GitBranch className="w-3.5 h-3.5 text-indigo-500" />
@@ -107,7 +108,7 @@ export default function LogicChangeRenderer({ logicRules, fieldLabels }: LogicCh
             )}
 
             {}
-            {updated?.length > 0 && (
+            {updated && updated.length > 0 && (
                 <div className="space-y-3">
                     <div className="flex items-center gap-2">
                         <div className="p-1.5 bg-amber-50 rounded-lg">
@@ -116,11 +117,11 @@ export default function LogicChangeRenderer({ logicRules, fieldLabels }: LogicCh
                         <h3 className="text-sm font-bold text-gray-900">{t('activity.logic.updated')}</h3>
                     </div>
                     <div className="grid gap-6">
-                        {updated.map((r: any, i: number) => {
-                            const conditionChange = r.changes.find((c: any) => c.property === 'conditions');
-                            const actionChange = r.changes.find((c: any) => c.property === 'actions');
-                            const typeChange = r.changes.find((c: any) => c.property === 'logicType');
-                            const nameChange = r.changes.find((c: any) => c.property === 'name');
+                        {updated.map((r: LogicRuleChange, i: number) => {
+                            const conditionChange = r.changes.find((c: ChangeItem) => c.property === 'conditions');
+                            const actionChange = r.changes.find((c: ChangeItem) => c.property === 'actions');
+                            const typeChange = r.changes.find((c: ChangeItem) => c.property === 'logicType');
+                            const nameChange = r.changes.find((c: ChangeItem) => c.property === 'name');
                             
                             return (
                                 <div key={i} className="space-y-3">
@@ -128,9 +129,9 @@ export default function LogicChangeRenderer({ logicRules, fieldLabels }: LogicCh
                                         <GitBranch className="w-3.5 h-3.5 text-amber-500" />
                                         {nameChange ? (
                                             <div className="flex items-center gap-2 text-xs">
-                                                <span className="font-bold text-gray-400 line-through">{nameChange.before}</span>
+                                                <span className="font-bold text-gray-400 line-through">{String(nameChange.before)}</span>
                                                 <ArrowRight className="w-3 h-3 text-amber-500" />
-                                                <span className="font-bold text-gray-800">{nameChange.after}</span>
+                                                <span className="font-bold text-gray-800">{String(nameChange.after)}</span>
                                                 <span className="text-[10px] text-amber-600 font-medium px-1.5 py-0.5 bg-amber-50 rounded bg-opacity-50 ml-1">{t('activity.logic.renamed')}</span>
                                             </div>
                                         ) : (
@@ -142,9 +143,9 @@ export default function LogicChangeRenderer({ logicRules, fieldLabels }: LogicCh
                                         <div className="w-full flex-1 opacity-60 scale-95 origin-left">
                                             <div className="text-[10px] font-bold text-gray-400 mb-1 uppercase text-center">{t('activity.logic.before')}</div>
                                             {renderRuleContent({
-                                                conditions: conditionChange ? conditionChange.before : r.originalConditions || [],
-                                                actions: actionChange ? actionChange.before : r.originalActions || [],
-                                                logicType: typeChange ? typeChange.before : r.originalType || 'ALL'
+                                                conditions: conditionChange ? (conditionChange.before as LogicCondition[]) : r.originalConditions || [],
+                                                actions: actionChange ? (actionChange.before as LogicAction[]) : r.originalActions || [],
+                                                logicType: typeChange ? (typeChange.before as string) : r.originalType || 'ALL'
                                             }, false)}
                                         </div>
                                         <div className="bg-amber-100 p-2 rounded-full hidden md:block">
@@ -153,9 +154,9 @@ export default function LogicChangeRenderer({ logicRules, fieldLabels }: LogicCh
                                         <div className="w-full flex-1">
                                             <div className="text-[10px] font-bold text-indigo-600 mb-1 uppercase text-center">{t('activity.logic.after')}</div>
                                             {renderRuleContent({
-                                                conditions: conditionChange ? conditionChange.after : r.conditions || [],
-                                                actions: actionChange ? actionChange.after : r.actions || [],
-                                                logicType: typeChange ? typeChange.after : r.logicType || 'ALL'
+                                                conditions: conditionChange ? (conditionChange.after as LogicCondition[]) : r.conditions || [],
+                                                actions: actionChange ? (actionChange.after as LogicAction[]) : r.actions || [],
+                                                logicType: typeChange ? (typeChange.after as string) : r.logicType || 'ALL'
                                             }, false)}
                                         </div>
                                     </div>
@@ -167,7 +168,7 @@ export default function LogicChangeRenderer({ logicRules, fieldLabels }: LogicCh
             )}
 
             {}
-            {deleted?.length > 0 && (
+            {deleted && deleted.length > 0 && (
                 <div className="space-y-3">
                     <div className="flex items-center gap-2">
                         <div className="p-1.5 bg-rose-50 rounded-lg">
@@ -176,7 +177,7 @@ export default function LogicChangeRenderer({ logicRules, fieldLabels }: LogicCh
                         <h3 className="text-sm font-bold text-gray-900">{t('activity.logic.deleted')}</h3>
                     </div>
                     <div className="grid gap-4">
-                        {deleted.map((r: any, i: number) => (
+                        {deleted.map((r: LogicRuleChange, i: number) => (
                             <div key={i} className="space-y-2 opacity-75">
                                 <div className="flex items-center gap-1.5 px-1">
                                     <GitBranch className="w-3.5 h-3.5 text-rose-400" />

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Field } from "@/types";
+import { Field, HeaderField } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -96,10 +96,10 @@ export default function HeaderProperties({ element, onUpdate }: HeaderProperties
                 <span className="text-sm text-gray-300 font-medium">{t('builder.properties.choose_file', 'Choose a file')}</span>
               </label>
             </div>
-            {(element as any).headingImage && (
+            {(element as HeaderField).headingImage && (
               <div className="mt-4 space-y-2">
                 <img
-                  src={(element as any).headingImage}
+                  src={(element as HeaderField).headingImage}
                   alt="Heading preview"
                   className="w-full h-32 object-cover rounded-lg border border-gray-600"
                 />

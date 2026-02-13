@@ -85,7 +85,7 @@ export default function ThankYouScreenEditor({ currentForm, updateForm }: ThankY
   const layout = settings?.layout || 'simple';
   const bgImage = settings?.backgroundImage;
   const iconColor = settings?.iconColor || 'green';
-  const IconComponent = iconMap[(settings as any)?.icon || 'check'] || Check;
+  const IconComponent = iconMap[settings?.icon || 'check'] || Check;
 
   const { t } = useTranslation();
   const defaultTitle = t('builder.thankyou.default_title');

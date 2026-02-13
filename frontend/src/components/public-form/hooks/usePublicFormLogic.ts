@@ -25,7 +25,7 @@ export function usePublicFormLogic({ form, loading = false, isPreview = false }:
   const [currentPageIndex, setCurrentPageIndex] = useState(0);
   const formRef = useRef<HTMLFormElement>(null);
 
-  const isAuthenticated = useAuthStore ? useAuthStore((state: any) => state.isAuthenticated) : false;
+  const isAuthenticated = useAuthStore ? useAuthStore((state: { isAuthenticated: boolean }) => state.isAuthenticated) : false;
 
   useEffect(() => {
     if (!form?.settings) return;
@@ -254,7 +254,7 @@ export function usePublicFormLogic({ form, loading = false, isPreview = false }:
 
     return ordered.filter((field) =>
       !field.validation?.hidden &&
-      !(field.options as any)?.hidden
+      !(field.options as Record<string, unknown>)?.hidden
     );
   }, [form?.fields, form?.quizSettings?.shuffleQuestions, isPreview, form?.id]);
 
@@ -338,7 +338,7 @@ export function usePublicFormLogic({ form, loading = false, isPreview = false }:
     watchedValues,
     errors: methods.formState.errors,
     submitForm,
-    onSubmit: async (data: any) => await submitForm(data),
+    onSubmit: async (data: Record<string, unknown>) => await submitForm(data),
 
     visibleFields,
     pages,

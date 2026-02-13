@@ -1,10 +1,11 @@
 import { ArrowRight, Zap } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { getPropertyLabel } from './utils';
-import ValueRenderer from './ValueRenderer';
+import ValueRenderer, { ValueType } from './ValueRenderer';
+import { ChangeItem } from './types';
 
 interface SettingsChangeRendererProps {
-  settingsChanges?: any[];
+  settingsChanges?: ChangeItem[];
   actionFilter: string;
 }
 
@@ -17,18 +18,18 @@ export default function SettingsChangeRenderer({ settingsChanges, actionFilter }
         return false;
     };
 
-    const isBooleanToggle = (before: any, after: any) => {
+    const isBooleanToggle = (before: unknown, after: unknown) => {
       return typeof before === 'boolean' && typeof after === 'boolean';
     };
       
-    const isStringToggle = (property: string, before: any, after: any) => {
+    const isStringToggle = (property: string, before: unknown, after: unknown) => {
       const prop = property.split('.').pop()?.toLowerCase();
       const isStringValue = typeof before === 'string' || typeof after === 'string' || typeof before === 'number' || typeof after === 'number';
       const toggleProps = ['size', 'width', 'height', 'align', 'variant', 'position', 'shrink', 'labelalign', 'labelalignment', 'textalign', 'textalignment', 'alignment', 'inputalign', 'inputalignment', 'columns', 'theme', 'layout', 'direction', 'orientation', 'color', 'background', 'radius', 'border', 'shadow', 'editormode'];
       return toggleProps.includes(prop || '') && (isStringValue || typeof before === 'undefined');
     };
 
-    const formatDiffValue = (key: string, val: any) => {
+    const formatDiffValue = (key: string, val: unknown) => {
         if (key === 'releaseScoreMode') {
             const v = val || 'immediately';
             if (v === 'immediately') return <span>{t('activity.values.immediately')}</span>;
@@ -39,15 +40,15 @@ export default function SettingsChangeRenderer({ settingsChanges, actionFilter }
              const boolVal = !!val;
              return boolVal ? <span className="text-emerald-700 font-medium">{t('activity.values.enable')}</span> : <span className="text-gray-500 font-medium">{t('activity.values.disable')}</span>;
         }
-        return <ValueRenderer value={val} />;
+        return <ValueRenderer value={val as ValueType} />;
     };
 
-    const rawChanges = settingsChanges?.filter((c: any) => c.before != c.after) || [];
+    const rawChanges = settingsChanges?.filter((c: ChangeItem) => c.before != c.after) || [];
     
     
     
     
-    let processedChanges: any[] = rawChanges;
+    let processedChanges: ChangeItem[] = rawChanges;
     
     for (const change of rawChanges) {
         
@@ -69,8 +70,8 @@ export default function SettingsChangeRenderer({ settingsChanges, actionFilter }
             });
 
             if (themeKey) {
-                const beforeVal = change.before[themeKey];
-                const afterVal = change.after[themeKey];
+                const beforeVal = (change.before as Record<string, unknown>)[themeKey];
+                const afterVal = (change.after as Record<string, unknown>)[themeKey];
 
                 
                 if (beforeVal !== afterVal) {
@@ -86,7 +87,7 @@ export default function SettingsChangeRenderer({ settingsChanges, actionFilter }
         }
     }
           
-    const renderableChanges = processedChanges.filter((change: any) => {
+    const renderableChanges = processedChanges.filter((change: ChangeItem) => {
         const prop = String(change.property || '').toUpperCase();
         
         
@@ -94,11 +95,11 @@ export default function SettingsChangeRenderer({ settingsChanges, actionFilter }
                             typeof change.after === 'object' && change.after !== null && !Array.isArray(change.after);
         
         if (isObjectDiff) {
-            const allKeys = Array.from(new Set([...Object.keys(change.before), ...Object.keys(change.after)]));
+            const allKeys = Array.from(new Set([...Object.keys(change.before as object), ...Object.keys(change.after as object)]));
             const diffKeys = allKeys.filter(key => {
-                const vBefore = change.before[key];
-                const vAfter = change.after[key];
-                const isEmpty = (v: any) => v === null || v === undefined || v === '';
+                const vBefore = (change.before as Record<string, unknown>)[key];
+                const vAfter = (change.after as Record<string, unknown>)[key];
+                const isEmpty = (v: unknown) => v === null || v === undefined || v === '';
                 if (isEmpty(vBefore) && isEmpty(vAfter)) return false;
                 return vBefore !== vAfter;
             });
@@ -108,16 +109,16 @@ export default function SettingsChangeRenderer({ settingsChanges, actionFilter }
     });
 
     
-    const finalRenderableChanges = renderableChanges.filter((change: any) => {
+    const finalRenderableChanges = renderableChanges.filter((change: ChangeItem) => {
          const isObjectDiff = typeof change.before === 'object' && change.before !== null && !Array.isArray(change.before) &&
                             typeof change.after === 'object' && change.after !== null && !Array.isArray(change.after);
         
         if (isObjectDiff) {
-            const allKeys = Array.from(new Set([...Object.keys(change.before), ...Object.keys(change.after)]));
+            const allKeys = Array.from(new Set([...Object.keys(change.before as object), ...Object.keys(change.after as object)]));
             const diffKeys = allKeys.filter(key => {
-                const vBefore = change.before[key];
-                const vAfter = change.after[key];
-                const isEmpty = (v: any) => v === null || v === undefined || v === '';
+                const vBefore = (change.before as Record<string, unknown>)[key];
+                const vAfter = (change.after as Record<string, unknown>)[key];
+                const isEmpty = (v: unknown) => v === null || v === undefined || v === '';
                 if (isEmpty(vBefore) && isEmpty(vAfter)) return false;
                 return vBefore !== vAfter;
             });
@@ -135,12 +136,12 @@ export default function SettingsChangeRenderer({ settingsChanges, actionFilter }
             </div>
             
             <div className="bg-slate-50 rounded-md p-3 border border-slate-100 space-y-1">
-                {finalRenderableChanges.map((change: any, i: number) => {
+                {finalRenderableChanges.map((change: ChangeItem, i: number) => {
                     const prop = String(change.property || '').toUpperCase();
                     
                     
                     if (prop.includes('THEME') && !prop.includes('COLOR') && !prop.includes('FONT')) {
-                        const formatThemeName = (name: any) => {
+                        const formatThemeName = (name: unknown) => {
                             if (!name) return t('activity.values.custom');
                             return String(name).charAt(0).toUpperCase() + String(name).slice(1);
                         };
@@ -163,11 +164,11 @@ export default function SettingsChangeRenderer({ settingsChanges, actionFilter }
                                         typeof change.after === 'object' && change.after !== null && !Array.isArray(change.after);
 
                     if (isObjectDiff) {
-                        const allKeys = Array.from(new Set([...Object.keys(change.before), ...Object.keys(change.after)]));
+                        const allKeys = Array.from(new Set([...Object.keys(change.before as object), ...Object.keys(change.after as object)]));
                         const diffKeys = allKeys.filter(key => {
-                            const vBefore = change.before[key];
-                            const vAfter = change.after[key];
-                            const isEmpty = (v: any) => v === null || v === undefined || v === '';
+                            const vBefore = (change.before as Record<string, unknown>)[key];
+                            const vAfter = (change.after as Record<string, unknown>)[key];
+                            const isEmpty = (v: unknown) => v === null || v === undefined || v === '';
                             if (isEmpty(vBefore) && isEmpty(vAfter)) return false;
                             return vBefore !== vAfter;
                         });
@@ -179,8 +180,8 @@ export default function SettingsChangeRenderer({ settingsChanges, actionFilter }
                                 <span className="text-gray-500 font-medium whitespace-nowrap mb-1">{getPropertyLabel(change.property, t, i18n)}</span>
                                 <div className="pl-2 border-l-2 border-gray-200 space-y-1.5">
                                     {diffKeys.map(key => {
-                                        const beforeVal = change.before[key];
-                                        const afterVal = change.after[key];
+                                        const beforeVal = (change.before as Record<string, unknown>)[key];
+                                        const afterVal = (change.after as Record<string, unknown>)[key];
                                         const isBool = typeof beforeVal === 'boolean' || typeof afterVal === 'boolean';
                                         
                                         return (

@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { Field } from '@/types';
+import { ParagraphField, ParagraphFieldOptions } from '@/types/typed-fields';
 import { Copy } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { PropertiesTabs } from '../common/PropertiesTabs';
 
 interface ParagraphPropertiesProps {
-  field: Field;
-  updateField: (id: string, updates: Partial<Field>) => void;
-  duplicatesField: (field: Omit<Field, 'id'>) => void;
+  field: ParagraphField;
+  updateField: (id: string, updates: Partial<ParagraphField>) => void;
+  duplicatesField: (field: Omit<ParagraphField, 'id' | 'formId'>) => void;
 }
 
 export const ParagraphProperties: React.FC<ParagraphPropertiesProps> = ({ field, updateField, duplicatesField }) => {
@@ -25,13 +25,13 @@ export const ParagraphProperties: React.FC<ParagraphPropertiesProps> = ({ field,
     return `<p>${text}</p>`;
   };
 
-  const options = field.options || {};
+  const options: ParagraphFieldOptions = field.options || {};
 
-  const handleUpdate = (updates: any) => {
+  const handleUpdate = (updates: Partial<ParagraphField>) => {
     updateField(field.id, updates);
   };
 
-  const handleOptionUpdate = (key: string, value: any) => {
+  const handleOptionUpdate = <K extends keyof ParagraphFieldOptions>(key: K, value: ParagraphFieldOptions[K]) => {
     handleUpdate({
       options: {
         ...options,
@@ -49,7 +49,6 @@ export const ParagraphProperties: React.FC<ParagraphPropertiesProps> = ({ field,
       validation: field.validation,
       options: field.options,
       order: field.order,
-      formId: field.formId,
     });
   };
 

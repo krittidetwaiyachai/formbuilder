@@ -6,6 +6,7 @@ import api from '@/lib/api';
 import { useAuthStore } from '@/store/authStore';
 import { useTranslation } from 'react-i18next';
 import ConfirmDialog from '@/components/ui/ConfirmDialog';
+import { getAxiosErrorMessage } from '@/utils/error';
 
 interface Collaborator {
   id?: string;
@@ -53,9 +54,9 @@ export default function CollaboratorListModal({
       setSuccess(t('dashboard.collaborators.invite_success'));
       setEmail('');
       onUpdate();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Failed to invite:', err);
-      setError(err.response?.data?.message || t('dashboard.collaborators.invite_error'));
+      setError(getAxiosErrorMessage(err, t('dashboard.collaborators.invite_error')));
     } finally {
       setLoading(false);
     }
@@ -76,9 +77,9 @@ export default function CollaboratorListModal({
     try {
       await api.delete(`/forms/${formId}/collaborators/${collaboratorToRemove}`);
       onUpdate();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Failed to remove:', err);
-      setError(err.response?.data?.message || t('dashboard.collaborators.remove_error'));
+      setError(getAxiosErrorMessage(err, t('dashboard.collaborators.remove_error')));
     } finally {
       setLoading(false);
       setCollaboratorToRemove(null);

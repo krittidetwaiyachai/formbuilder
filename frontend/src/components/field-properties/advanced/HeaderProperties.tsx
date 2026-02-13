@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Field } from '@/types';
+import { Field, HeaderValidation } from '@/types';
 import { AlignLeft, AlignCenter, AlignRight, Copy } from 'lucide-react';
 import { PropertiesTabs } from '../common/PropertiesTabs';
 import { useTranslation } from 'react-i18next';
@@ -10,9 +10,16 @@ interface HeaderPropertiesProps {
   duplicatesField: (field: Omit<Field, 'id' | 'formId'>) => void;
 }
 
+interface ExtendedHeaderValidation extends HeaderValidation {
+  imagePosition?: string;
+  overlayOpacity?: number;
+  hidden?: boolean;
+}
+
 export function HeaderProperties({ field, updateField, duplicatesField }: HeaderPropertiesProps) {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'general' | 'options' | 'advanced'>('general');
+  const validation = (field.validation || {}) as ExtendedHeaderValidation;
 
   const stripHtml = (html: string) => {
     const tmp = document.createElement('DIV');
@@ -99,7 +106,7 @@ export function HeaderProperties({ field, updateField, duplicatesField }: Header
                     validation: { ...field.validation, size }
                   })}
                   className={`flex-1 px-3 py-2 text-xs font-medium rounded-md border transition-colors ${
-                    (field.validation as any)?.size === size || (!(field.validation as any)?.size && size === 'DEFAULT')
+                    validation.size === size || (!validation.size && size === 'DEFAULT')
                       ? 'bg-black text-white border-black'
                       : 'bg-white text-black border-gray-400 hover:bg-gray-50'
                   }`}
@@ -128,7 +135,7 @@ export function HeaderProperties({ field, updateField, duplicatesField }: Header
                     validation: { ...field.validation, alignment: value }
                   })}
                   className={`flex-1 px-3 py-2 text-xs font-medium rounded-md border transition-colors flex items-center justify-center gap-1 ${
-                    (field.validation as any)?.alignment === value || (!(field.validation as any)?.alignment && value === 'LEFT')
+                    validation.alignment === value || (!validation.alignment && value === 'LEFT')
                       ? 'bg-black text-white border-black'
                       : 'bg-white text-black border-gray-400 hover:bg-gray-50'
                   }`}
@@ -148,7 +155,7 @@ export function HeaderProperties({ field, updateField, duplicatesField }: Header
             </label>
             <input
               type="text"
-              value={(field.validation as any)?.headingImage || ''}
+              value={validation.headingImage || ''}
               onChange={(e) => updateField(field.id, {
                 validation: { ...field.validation, headingImage: e.target.value }
               })}
@@ -164,10 +171,10 @@ export function HeaderProperties({ field, updateField, duplicatesField }: Header
               {t('builder.properties.heading_image_desc')}
             </p>
 
-            {(field.validation as any)?.headingImage && (
+            {validation.headingImage && (
               <div className="relative border border-gray-200 rounded-lg overflow-hidden mb-4">
                 <img 
-                  src={(field.validation as any)?.headingImage} 
+                  src={validation.headingImage} 
                   alt="Header Preview" 
                   className="w-full h-auto object-cover max-h-48"
                   onError={(e) => {
@@ -197,7 +204,7 @@ export function HeaderProperties({ field, updateField, duplicatesField }: Header
                     validation: { ...field.validation, imagePosition: value }
                   })}
                   className={`px-3 py-2 text-xs font-medium rounded-md border transition-colors ${
-                    (field.validation as any)?.imagePosition === value || (!(field.validation as any)?.imagePosition && value === 'CENTER')
+                    validation.imagePosition === value || (!validation.imagePosition && value === 'CENTER')
                       ? 'bg-black text-white border-black'
                       : 'bg-white text-black border-gray-400 hover:bg-gray-50'
                   }`}
@@ -211,7 +218,7 @@ export function HeaderProperties({ field, updateField, duplicatesField }: Header
             </p>
           </div>
 
-          {(field.validation as any)?.imagePosition === 'BACKGROUND' && (
+          {validation.imagePosition === 'BACKGROUND' && (
             <div>
               <label className="block text-sm font-medium text-black mb-2">
                 {t('builder.properties.overlay_opacity')}
@@ -221,14 +228,14 @@ export function HeaderProperties({ field, updateField, duplicatesField }: Header
                   type="range"
                   min="0"
                   max="100"
-                  value={(field.validation as any)?.overlayOpacity ?? 50}
+                  value={validation.overlayOpacity ?? 50}
                   onChange={(e) => updateField(field.id, {
                     validation: { ...field.validation, overlayOpacity: parseInt(e.target.value) }
                   })}
                   className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-black"
                 />
                 <span className="text-sm font-medium text-black w-12 text-right">
-                  {(field.validation as any)?.overlayOpacity ?? 50}%
+                  {validation.overlayOpacity ?? 50}%
                 </span>
               </div>
               <p className="mt-1 text-xs text-gray-500">
@@ -268,7 +275,7 @@ export function HeaderProperties({ field, updateField, duplicatesField }: Header
             <label className="relative inline-flex items-center cursor-pointer">
                 <input
                   type="checkbox"
-                  checked={(field.validation as any)?.hidden || false}
+                  checked={validation.hidden || false}
                   onChange={(e) => updateField(field.id, {
                     validation: {
                       ...field.validation,

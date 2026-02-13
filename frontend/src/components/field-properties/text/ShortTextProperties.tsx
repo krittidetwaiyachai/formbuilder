@@ -1,6 +1,7 @@
+
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Field } from '@/types';
+import { TextField, TextFieldOptions, ShortTextValidation } from '@/types/typed-fields';
 import { Copy } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/custom-select';
 import { stripHtml } from '@/lib/ui/utils';
@@ -8,9 +9,9 @@ import { PdpaToggle } from '../common/PdpaToggle';
 import { PropertiesTabs } from '../common/PropertiesTabs';
 
 interface ShortTextPropertiesProps {
-  field: Field;
-  updateField: (id: string, updates: Partial<Field>) => void;
-  duplicatesField: (field: Omit<Field, 'id'>) => void;
+  field: TextField;
+  updateField: (id: string, updates: Partial<TextField>) => void;
+  duplicatesField: (field: Omit<TextField, 'id' | 'formId'>) => void;
 }
 
 export const ShortTextProperties = ({ field, updateField, duplicatesField }: ShortTextPropertiesProps) => {
@@ -18,14 +19,14 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
   const [activeTab, setActiveTab] = useState<'general' | 'options' | 'advanced'>('general');
 
   
-  const options = field.options || {};
-  const validation = field.validation || {};
+  const options: TextFieldOptions = field.options || {};
+  const validation: ShortTextValidation = field.validation || {};
 
-  const handleUpdate = (updates: any) => {
+  const handleUpdate = (updates: Partial<TextField>) => {
     updateField(field.id, updates);
   };
 
-  const handleOptionUpdate = (key: string, value: any) => {
+  const handleOptionUpdate = <K extends keyof TextFieldOptions>(key: K, value: TextFieldOptions[K]) => {
     handleUpdate({
       options: {
         ...options,
@@ -34,7 +35,7 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
     });
   };
 
-  const handleValidationUpdate = (key: string, value: any) => {
+  const handleValidationUpdate = <K extends keyof ShortTextValidation>(key: K, value: ShortTextValidation[K]) => {
     handleUpdate({
       validation: {
         ...validation,
@@ -133,7 +134,6 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
                   validation: field.validation,
                   options: field.options,
                   order: 0,
-                  formId: field.formId,
               })}
               className="w-full mt-4 px-3 py-2 text-sm font-medium text-black bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
             >
@@ -273,7 +273,7 @@ export const ShortTextProperties = ({ field, updateField, duplicatesField }: Sho
               </label>
               <Select
                 value={validation.type || 'None'}
-                onValueChange={(val) => handleValidationUpdate('type', val)}
+                onValueChange={(val) => handleValidationUpdate('type', val as ShortTextValidation['type'])}
               >
                 <SelectTrigger className="w-full bg-white border-gray-400">
                     <SelectValue placeholder={t('builder.properties.select_validation')} />

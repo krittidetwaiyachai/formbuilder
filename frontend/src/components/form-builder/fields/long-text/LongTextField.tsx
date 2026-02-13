@@ -1,5 +1,5 @@
 import React from 'react';
-import { Field } from '@/types';
+import { Field, TextareaFieldOptions, LongTextValidation } from '@/types';
 import { FileText, Bold, Italic, Underline, Link as LinkIcon, List, ListOrdered, AlignLeft, AlignCenter, AlignRight, AlignJustify } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -16,8 +16,8 @@ interface LongTextFieldProps {
 
 export const LongTextField: React.FC<LongTextFieldProps> = ({ field, fieldStyle, disabledClass = "opacity-60 cursor-pointer" }) => {
   const { t } = useTranslation();
-  const options = field.options || {};
-  const validation = field.validation || {};
+  const options = (field.options || {}) as TextareaFieldOptions;
+  const validation = (field.validation || {}) as LongTextValidation;
   const { width, customWidth, hoverText, rows = 4, editorMode } = options;
   const { maxLength, hasMaxLength } = validation;
   const isRichText = editorMode === 'RICH_TEXT';
@@ -51,11 +51,7 @@ export const LongTextField: React.FC<LongTextFieldProps> = ({ field, fieldStyle,
                  <LinkIcon className="w-4 h-4 text-slate-500" />
               </div>
 
-              <div className="flex items-center gap-1">
-                  <div className="h-6 w-16 bg-white border border-slate-300 rounded text-[10px] flex items-center px-1 text-slate-500">
-                    {t('builder.long_text.rich_text_normal')}
-                  </div>
-              </div>
+
            </div>
            { }
            <div className="p-4 min-h-[100px] text-slate-400 text-base">

@@ -1,29 +1,34 @@
 import { useTranslation } from 'react-i18next';
-import { Field } from '@/types';
+import { Field, Row, Column, MatrixField as MatrixFieldType } from '@/types';
 import { Plus, X, GripVertical } from 'lucide-react';
 
 interface MatrixFieldProps {
   field: Field;
-  fieldStyle: any;
+  fieldStyle: {
+    inputBorder?: string;
+    iconColor?: string;
+    [key: string]: unknown;
+  };
   isSelected?: boolean;
   updateField?: (id: string, updates: Partial<Field>) => void;
 }
 
 export function MatrixField({ field, fieldStyle, isSelected, updateField }: MatrixFieldProps) {
   const { t } = useTranslation();
-  const rows = field.options?.rows || [{ id: 'r1', label: `${t('builder.field.question')} 1` }];
-  const columns = field.options?.columns || [{ id: 'c1', label: `${t('builder.field.column')} 1` }];
-  const inputType = field.options?.inputType || 'radio';
+  const matrixField = field as MatrixFieldType;
+  const rows = matrixField.options?.rows || [{ id: 'r1', label: `${t('builder.field.question')} 1` }];
+  const columns = matrixField.options?.columns || [{ id: 'c1', label: `${t('builder.field.column')} 1` }];
+  const inputType = matrixField.options?.inputType || 'radio';
 
-  const updateRows = (newRows: any[]) => {
+  const updateRows = (newRows: Row[]) => {
     if (updateField) {
-      updateField(field.id, { options: { ...field.options, rows: newRows } });
+      updateField(field.id, { options: { ...matrixField.options, rows: newRows } });
     }
   };
 
-  const updateColumns = (newCols: any[]) => {
+  const updateColumns = (newCols: Column[]) => {
     if (updateField) {
-      updateField(field.id, { options: { ...field.options, columns: newCols } });
+      updateField(field.id, { options: { ...matrixField.options, columns: newCols } });
     }
   };
 
@@ -38,12 +43,12 @@ export function MatrixField({ field, fieldStyle, isSelected, updateField }: Matr
   };
 
   const handleRemoveRow = (index: number) => {
-    const newRows = rows.filter((_: any, i: number) => i !== index);
+    const newRows = rows.filter((_: Row, i: number) => i !== index);
     updateRows(newRows);
   };
 
   const handleRemoveColumn = (index: number) => {
-    const newCols = columns.filter((_: any, i: number) => i !== index);
+    const newCols = columns.filter((_: Column, i: number) => i !== index);
     updateColumns(newCols);
   };
 
@@ -67,7 +72,7 @@ export function MatrixField({ field, fieldStyle, isSelected, updateField }: Matr
             <th className="p-2 border-b border-gray-200 bg-gray-50 text-left text-xs font-medium text-gray-500 min-w-[150px]">
               { }
             </th>
-            {columns.map((col: any, colIndex: number) => (
+            {columns.map((col: Column, colIndex: number) => (
               <th key={col.id} className="p-2 border-b border-gray-200 bg-gray-50 text-center min-w-[100px] relative group/col">
                  <div className="flex items-center justify-center relative">
                     {isSelected && updateField ? (
@@ -107,7 +112,7 @@ export function MatrixField({ field, fieldStyle, isSelected, updateField }: Matr
           </tr>
         </thead>
         <tbody>
-          {rows.map((row: any, rowIndex: number) => (
+          {rows.map((row: Row, rowIndex: number) => (
             <tr key={row.id} className={rowIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}>
               <td className="p-3 border-b border-gray-100 min-w-[150px] relative group/row">
                   <div className="flex items-center gap-2">
@@ -137,7 +142,7 @@ export function MatrixField({ field, fieldStyle, isSelected, updateField }: Matr
                        )}
                   </div>
               </td>
-              {columns.map((col: any) => (
+              {columns.map((col: Column) => (
                 <td key={col.id} className="p-2 border-b border-gray-100 text-center">
                   <div className={`inline-flex items-center justify-center w-5 h-5 rounded-full border ${fieldStyle.inputBorder} bg-white`}>
                     { }

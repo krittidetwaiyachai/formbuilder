@@ -268,14 +268,17 @@ export default function AnalyticsPage({ params }: { params: { id: string } }) {
             </CardHeader>
             <CardContent>
               {(() => {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const fieldSummary: Record<string, { total: number; unique: number; topValue: any }> = {};
+                interface FieldSummaryItem {
+                  total: number;
+                  unique: number; 
+                  topValue: { value: string; count: number } | null 
+                }
+                const fieldSummary: Record<string, FieldSummaryItem> = {};
                 
                 submissions.forEach((submission) => {
                   Object.entries(submission.data).forEach(([key]) => {
                     if (!fieldSummary[key]) {
-                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      fieldSummary[key] = { total: 0, unique: 0, topValue: null as any };
+                      fieldSummary[key] = { total: 0, unique: 0, topValue: null };
                     }
                     fieldSummary[key].total += 1;
                   });
@@ -285,8 +288,7 @@ export default function AnalyticsPage({ params }: { params: { id: string } }) {
                 Object.keys(fieldSummary).forEach((key) => {
                   const valueCounts: Record<string, number> = {};
                   submissions.forEach((submission) => {
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    const value = (submission.data as Record<string, any>)[key];
+                    const value = (submission.data as Record<string, unknown>)[key];
                     const values = Array.isArray(value) ? value : [value];
                     values.forEach((v) => {
                       valueCounts[String(v)] = (valueCounts[String(v)] || 0) + 1;

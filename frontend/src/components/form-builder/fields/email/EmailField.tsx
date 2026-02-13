@@ -1,5 +1,5 @@
 import React from 'react';
-import { Field } from '@/types';
+import { Field, EmailValidation } from '@/types';
 import { Mail } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -16,8 +16,9 @@ interface EmailFieldProps {
 
 export const EmailField: React.FC<EmailFieldProps> = ({ field, fieldStyle, disabledClass = "opacity-60 cursor-pointer" }) => {
   const { t } = useTranslation();
-  const showConfirmation = (field.validation as any)?.confirmation;
-  const isReadOnly = (field.validation as any)?.readOnly;
+  const validation = field.validation as EmailValidation | undefined;
+  const showConfirmation = validation?.confirmation;
+  const isReadOnly = validation?.readOnly;
 
   return (
     <div className="space-y-3 pointer-events-none">

@@ -67,11 +67,9 @@ export const ParagraphField: React.FC<ParagraphFieldProps> = ({
            <div className="relative group/editor">
              <React.Suspense fallback={<div className="h-32 bg-gray-50 animate-pulse rounded-md" />}>
                <RichTextEditor
-                  theme="snow"
                   value={field.label}
                   onChange={(value) => updateField(field.id, { label: value })}
                   placeholder={t('builder.header.slash_command')}
-                  modules={modules}
                   className="text-sm text-black leading-relaxed borderless animate-slide-down min-h-[3em]"
                />
              </React.Suspense>

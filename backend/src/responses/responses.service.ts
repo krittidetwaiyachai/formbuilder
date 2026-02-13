@@ -4,191 +4,203 @@ import { EncryptionService } from '../common/encryption.service';
 import { CreateResponseDto } from './dto/create-response.dto';
 import { FormStatus, RoleType } from '@prisma/client';
 
+interface FormSettings {
+  allowMultipleSubmissions?: boolean;
+  collectEmail?: boolean;
+}
+
+interface QuizSettings {
+  startTime?: string | Date;
+  endTime?: string | Date;
+  showAnswer?: boolean;
+  showDetail?: boolean;
+}
+
 @Injectable()
 export class ResponsesService {
   constructor(
     private prisma: PrismaService,
     private encryptionService: EncryptionService,
-  ) {}
+  ) { }
 
   async create(createResponseDto: CreateResponseDto) {
     try {
-        const { formId, answers, userId, respondentEmail, fingerprint, ipAddress } = createResponseDto;
+      const { formId, answers, userId, respondentEmail, fingerprint, ipAddress } = createResponseDto;
 
 
 
-        
-        const form = await this.prisma.form.findUnique({
-          where: { id: formId },
-          select: {
-            id: true,
-            status: true,
-            isQuiz: true,
-            settings: true,
-            fields: true,
-            quizSettings: true,
-          },
-        });
 
-        if (!form) {
-          throw new NotFoundException('Form not found');
-        }
+      const form = await this.prisma.form.findUnique({
+        where: { id: formId },
+        select: {
+          id: true,
+          status: true,
+          isQuiz: true,
+          settings: true,
+          fields: true,
+          quizSettings: true,
+        },
+      });
 
-        if (form.status !== FormStatus.PUBLISHED) {
-          throw new ForbiddenException('Form is not published');
-        }
+      if (!form) {
+        throw new NotFoundException('Form not found');
+      }
 
-        
-        if (form.isQuiz && form.quizSettings) {
-          const quizSettings = form.quizSettings as any;
-          const now = new Date();
-          
-          if (quizSettings.startTime) {
-            const startTime = new Date(quizSettings.startTime);
-            if (now < startTime) {
-              throw new ForbiddenException(`This quiz will be available starting ${startTime.toLocaleString()}`);
-            }
-          }
-          
-          if (quizSettings.endTime) {
-            const endTime = new Date(quizSettings.endTime);
-            if (now > endTime) {
-              throw new ForbiddenException(`This quiz closed on ${endTime.toLocaleString()}`);
-            }
+      if (form.status !== FormStatus.PUBLISHED) {
+        throw new ForbiddenException('Form is not published');
+      }
+
+
+      if (form.isQuiz && form.quizSettings) {
+        const quizSettings = form.quizSettings as unknown as QuizSettings;
+        const now = new Date();
+
+        if (quizSettings.startTime) {
+          const startTime = new Date(quizSettings.startTime);
+          if (now < startTime) {
+            throw new ForbiddenException(`This quiz will be available starting ${startTime.toLocaleString()}`);
           }
         }
 
-        
-        const settings = form.settings as any;
-        const allowMultipleSubmissions = settings?.allowMultipleSubmissions === true;
-
-        if (!allowMultipleSubmissions) {
-          
-          const whereConditions = [];
-          
-          if (userId) {
-            whereConditions.push({ userId });
-          }
-          if (respondentEmail) {
-            whereConditions.push({ respondentEmail });
-          }
-          if (fingerprint) {
-            whereConditions.push({ fingerprint });
-          }
-
-          if (whereConditions.length > 0) {
-            const existingResponse = await this.prisma.formResponse.findFirst({
-              where: {
-                formId,
-                OR: whereConditions,
-              },
-            });
-
-            if (existingResponse) {
-              throw new ForbiddenException('You have already submitted this form. Multiple submissions are not allowed.');
-            }
+        if (quizSettings.endTime) {
+          const endTime = new Date(quizSettings.endTime);
+          if (now > endTime) {
+            throw new ForbiddenException(`This quiz closed on ${endTime.toLocaleString()}`);
           }
         }
+      }
 
-        
-        let score = 0;
-        let totalScore = 0;
-        const answerResults: any[] = [];
 
-        if (form.isQuiz) {
-          for (const answer of answers) {
-            const field = form.fields.find((f) => f.id === answer.fieldId);
-            if (field) {
-              totalScore += field.score || 0;
-              const isCorrect = field.correctAnswer === answer.value;
-              if (isCorrect) {
-                score += field.score || 0;
-              }
-              answerResults.push({
-                fieldId: answer.fieldId,
-                value: answer.value,
-                isCorrect,
-              });
-            }
-          }
+      const settings = form.settings as unknown as FormSettings;
+      const allowMultipleSubmissions = settings?.allowMultipleSubmissions === true;
+
+      if (!allowMultipleSubmissions) {
+
+        const whereConditions = [];
+
+        if (userId) {
+          whereConditions.push({ userId });
+        }
+        if (respondentEmail) {
+          whereConditions.push({ respondentEmail });
+        }
+        if (fingerprint) {
+          whereConditions.push({ fingerprint });
         }
 
-        
-        const response = await this.prisma.formResponse.create({
-          data: {
-            formId,
-            userId: userId || null,
-            respondentEmail: createResponseDto.respondentEmail || null,
-            fingerprint: fingerprint || null,
-            ipAddress: ipAddress ? this.encryptionService.hashIpAddress(ipAddress) : null,
-            score: form.isQuiz ? score : null,
-            totalScore: form.isQuiz ? totalScore : null,
-            answers: {
-              create: answers.map((answer) => {
-                const result = answerResults.find((r) => r.fieldId === answer.fieldId);
-                const field = form.fields.find((f) => f.id === answer.fieldId);
-                const valueToStore = field?.isPII && answer.value 
-                  ? this.encryptionService.encrypt(answer.value) 
-                  : answer.value;
-                return {
-                  fieldId: answer.fieldId,
-                  value: valueToStore,
-                  isCorrect: result?.isCorrect || null,
-                };
-              }),
-            },
-          },
-          include: {
-            answers: {
-              include: {
-                field: true,
-              },
-            },
-            form: {
-              select: {
-                id: true,
-                title: true,
-                isQuiz: true,
-                quizSettings: true,
-              },
-            },
-          },
-        });
-
-        
-        if (form.isQuiz && totalScore > 0) {
-          const percentage = (score / totalScore) * 100;
-          await this.prisma.quizScore.create({
-            data: {
-              responseId: response.id,
-              score,
-              totalScore,
-              percentage,
+        if (whereConditions.length > 0) {
+          const existingResponse = await this.prisma.formResponse.findFirst({
+            where: {
+              formId,
+              OR: whereConditions,
             },
           });
-        }
 
-        return {
-          ...response,
-          score: form.isQuiz ? score : undefined,
-          totalScore: form.isQuiz ? totalScore : undefined,
-          
-          quizReview: form.isQuiz ? {
-            answers: response.answers.map(ans => ({
-              fieldId: ans.fieldId,
-              fieldLabel: ans.field.label,
-              userAnswer: ans.value,
-              correctAnswer: (form.quizSettings as any)?.showAnswer ? ans.field.correctAnswer : null,
-              isCorrect: ans.isCorrect,
-              score: ans.field.score || 0,
-            })),
-            showAnswer: (form.quizSettings as any)?.showAnswer || false,
-            showDetail: (form.quizSettings as any)?.showDetail || false,
-          } : undefined,
-        };
+          if (existingResponse) {
+            throw new ForbiddenException('You have already submitted this form. Multiple submissions are not allowed.');
+          }
+        }
+      }
+
+
+      let score = 0;
+      let totalScore = 0;
+      const answerResults: { fieldId: string, value: string, isCorrect: boolean }[] = [];
+
+      if (form.isQuiz) {
+        for (const answer of answers) {
+          const field = form.fields.find((f) => f.id === answer.fieldId);
+          if (field) {
+            totalScore += field.score || 0;
+            const isCorrect = field.correctAnswer === answer.value;
+            if (isCorrect) {
+              score += field.score || 0;
+            }
+            answerResults.push({
+              fieldId: answer.fieldId,
+              value: answer.value,
+              isCorrect,
+            });
+          }
+        }
+      }
+
+
+      const response = await this.prisma.formResponse.create({
+        data: {
+          formId,
+          userId: userId || null,
+          respondentEmail: createResponseDto.respondentEmail || null,
+          fingerprint: fingerprint || null,
+          ipAddress: ipAddress ? this.encryptionService.hashIpAddress(ipAddress) : null,
+          score: form.isQuiz ? score : null,
+          totalScore: form.isQuiz ? totalScore : null,
+          answers: {
+            create: answers.map((answer) => {
+              const result = answerResults.find((r) => r.fieldId === answer.fieldId);
+              const field = form.fields.find((f) => f.id === answer.fieldId);
+              const valueToStore = field?.isPII && answer.value
+                ? this.encryptionService.encrypt(answer.value)
+                : answer.value;
+              return {
+                fieldId: answer.fieldId,
+                value: valueToStore,
+                isCorrect: result?.isCorrect || null,
+              };
+            }),
+          },
+        },
+        include: {
+          answers: {
+            include: {
+              field: true,
+            },
+          },
+          form: {
+            select: {
+              id: true,
+              title: true,
+              isQuiz: true,
+              quizSettings: true,
+            },
+          },
+        },
+      });
+
+
+      if (form.isQuiz && totalScore > 0) {
+        const percentage = (score / totalScore) * 100;
+        await this.prisma.quizScore.create({
+          data: {
+            responseId: response.id,
+            score,
+            totalScore,
+            percentage,
+          },
+        });
+      }
+
+      return {
+        ...response,
+        score: form.isQuiz ? score : undefined,
+        totalScore: form.isQuiz ? totalScore : undefined,
+
+        quizReview: form.isQuiz ? {
+          answers: response.answers.map(ans => ({
+            fieldId: ans.fieldId,
+            fieldLabel: ans.field.label,
+            userAnswer: ans.value,
+            correctAnswer: (form.quizSettings as unknown as QuizSettings)?.showAnswer ? ans.field.correctAnswer : null,
+            isCorrect: ans.isCorrect,
+            score: ans.field.score || 0,
+          })),
+          showAnswer: (form.quizSettings as unknown as QuizSettings)?.showAnswer || false,
+          showDetail: (form.quizSettings as unknown as QuizSettings)?.showDetail || false,
+        } : undefined,
+      };
     } catch (error) {
-        console.error('FAILED TO CREATE RESPONSE:', error);
-        throw error; 
+      console.error('FAILED TO CREATE RESPONSE:', error);
+      throw error;
     }
   }
 
@@ -209,7 +221,7 @@ export class ResponsesService {
       throw new NotFoundException('Form not found');
     }
 
-    const settings = form.settings as any;
+    const settings = form.settings as unknown as FormSettings;
     const allowMultipleSubmissions = settings?.allowMultipleSubmissions === true;
 
     if (allowMultipleSubmissions) {
@@ -217,7 +229,7 @@ export class ResponsesService {
     }
 
     const whereConditions = [];
-    
+
     if (userId) {
       whereConditions.push({ userId });
     }
@@ -344,7 +356,7 @@ export class ResponsesService {
       throw new NotFoundException('Response not found');
     }
 
-    
+
     const form = response.form;
     if (userRole === RoleType.VIEWER && form.status !== FormStatus.PUBLISHED) {
       throw new ForbiddenException('You can only view responses for published forms');
@@ -357,15 +369,15 @@ export class ResponsesService {
       answers: response.answers.map(answer => {
         let value = answer.value;
         if (answer.field?.isPII && answer.value) {
-            try {
-                value = this.encryptionService.decrypt(answer.value);
-            } catch (error) {
-                value = '[Error: Data Encrypted]';
-            }
+          try {
+            value = this.encryptionService.decrypt(answer.value);
+          } catch (error) {
+            value = '[Error: Data Encrypted]';
+          }
         }
         return {
-            ...answer,
-            value,
+          ...answer,
+          value,
         };
       }),
     };
@@ -398,19 +410,19 @@ export class ResponsesService {
       };
 
       const headers = ['Submitted At'];
-      const safeSettings = form.settings as any;
+      const safeSettings = form.settings as unknown as FormSettings;
       if (safeSettings?.collectEmail) {
         headers.push('Respondent Email');
       }
-      
+
       const stripHtml = (html: string): string => {
         return html.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
       };
-      
+
       form.fields.forEach(f => {
-         if (!['HEADER', 'PARAGRAPH', 'DIVIDER', 'PAGE_BREAK', 'SUBMIT'].includes(f.type)) {
-             headers.push(stripHtml(f.label));
-         }
+        if (!['HEADER', 'PARAGRAPH', 'DIVIDER', 'PAGE_BREAK', 'SUBMIT'].includes(f.type)) {
+          headers.push(stripHtml(f.label));
+        }
       });
 
       if (form.isQuiz) {
@@ -438,17 +450,17 @@ export class ResponsesService {
 
         for (const response of batch) {
           const date = new Date(response.submittedAt);
-          const formattedDate = date.toLocaleString('th-TH', { 
-            day: '2-digit', 
-            month: '2-digit', 
+          const formattedDate = date.toLocaleString('th-TH', {
+            day: '2-digit',
+            month: '2-digit',
             year: 'numeric',
-            hour: '2-digit', 
+            hour: '2-digit',
             minute: '2-digit',
             second: '2-digit'
           });
-          
+
           const row: string[] = [escapeCsv(formattedDate)];
-          
+
           if (safeSettings?.collectEmail) {
             row.push(escapeCsv(response.respondentEmail || ''));
           }
@@ -479,12 +491,12 @@ export class ResponsesService {
               escapeCsv(percentage),
             );
           }
-          
+
           rows.push(row.join(','));
         }
 
         cursor = batch[batch.length - 1].id;
-        
+
         if (batch.length < BATCH_SIZE) break;
       }
 

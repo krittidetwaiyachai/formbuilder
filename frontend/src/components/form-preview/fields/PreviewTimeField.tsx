@@ -1,15 +1,15 @@
 import React from 'react';
-import { Field } from '@/types';
-import { useForm } from 'react-hook-form';
+import { Field, TimeField, TimeFieldOptions } from '@/types';
+import { useForm, FieldErrors, Control, UseFormWatch } from 'react-hook-form';
 import { Clock } from 'lucide-react';
 import { PreviewLabel } from '../PreviewLabel';
 
 interface PreviewFieldProps {
   field: Field;
   register: ReturnType<typeof useForm>['register'];
-  errors: any;
-  control?: any;
-  watch?: any;
+  errors: FieldErrors;
+  control?: Control;
+  watch?: UseFormWatch<Record<string, unknown>>;
   questionNumber?: number;
   isPublic?: boolean;
 }
@@ -22,7 +22,8 @@ export const PreviewTimeField: React.FC<PreviewFieldProps> = ({ field, register,
   const fieldName = `field_${field.id}`;
   const fieldError = errors[fieldName];
   
-  const options = field.options || {};
+  const typedField = field as TimeField;
+  const options: TimeFieldOptions = typedField.options || {};
 
   
   const labelAlignment = options.labelAlignment || 'TOP';
@@ -54,7 +55,7 @@ export const PreviewTimeField: React.FC<PreviewFieldProps> = ({ field, register,
                 placeholder={t('common.time.hour_placeholder')}
                 readOnly={readOnly}
                 min={1}
-                max={timeFormat === '24HOUR' ? 23 : 12}
+                max={(timeFormat as string) === '24HOUR' ? 23 : 12}
                 {...register(`${fieldName}${prefix}_hour`, { required: field.required })}
                 style={inputStyle}
                 className={`w-16 px-3 py-3 border ${fieldError ? 'border-red-500 bg-red-50' : isPublic ? '' : 'border-gray-300 bg-white'} rounded-lg text-center text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-black transition-all ${readOnly ? 'bg-gray-100 cursor-not-allowed' : ''}`}

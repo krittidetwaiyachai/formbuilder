@@ -1,4 +1,4 @@
-export type FormElementType = 
+export type FormElementType =
   | 'text'
   | 'email'
   | 'number'
@@ -25,13 +25,13 @@ export interface FormElement {
   placeholder?: string;
   helperText?: string;
   required: boolean;
-  options?: FormElementOption[]; 
-  min?: number; 
-  max?: number; 
-  rows?: number; 
-  accept?: string; 
-  content?: string; 
-  headingImage?: string; 
+  options?: FormElementOption[];
+  min?: number;
+  max?: number;
+  rows?: number;
+  accept?: string;
+  content?: string;
+  headingImage?: string;
 }
 
 export interface FormTheme {
@@ -70,13 +70,13 @@ export interface FormSchema {
   viewCount?: number;
   isQuiz?: boolean;
   createdById?: string;
-  quizSettings?: any;
+  quizSettings?: Record<string, unknown>;
 }
 
 export interface FormSubmission {
   id: string;
   formId: string;
-  data: Record<string, any>;
+  data: Record<string, unknown>;
   submittedAt: string;
   device?: 'desktop' | 'tablet' | 'mobile';
 }

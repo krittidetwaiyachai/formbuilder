@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, KeyboardEvent } from 'react';
 import { X, Plus } from 'lucide-react';
-import { Field, FieldType, Form } from '@/types';
+import { Field, FieldType, Form, TypedField, hasArrayOptions, hasCheckboxOptions } from '@/types';
 import { useTranslation } from 'react-i18next';
 
 interface InlineQuizBarProps {
@@ -15,6 +15,8 @@ export default function InlineQuizBar({ field, currentForm, allFields, onUpdate 
   const [showScoreModal, setShowScoreModal] = useState(false);
   const [showAnswerModal, setShowAnswerModal] = useState(false);
   const [newAnswer, setNewAnswer] = useState('');
+  
+  const typedField = field as unknown as TypedField;
   
   
   const [localScore, setLocalScore] = useState<string | number>(field.score || 0);
@@ -233,7 +235,7 @@ export default function InlineQuizBar({ field, currentForm, allFields, onUpdate 
               </button>
             </div>
 
-            {(field.type === FieldType.RADIO || field.type === FieldType.DROPDOWN) && field.options && field.options.length > 0 ? (
+            {hasArrayOptions(typedField) && typedField.options?.items && typedField.options.items.length > 0 ? (
               <select
                 value={field.correctAnswer || ''}
                 onChange={(e) => onUpdate(field.id, { correctAnswer: e.target.value })}
@@ -241,13 +243,13 @@ export default function InlineQuizBar({ field, currentForm, allFields, onUpdate 
                 onClick={(e) => e.stopPropagation()}
               >
                 <option value="">{t('builder.quiz.select_placeholder')}</option>
-                {field.options.map((opt: any, idx: number) => (
+                {typedField.options.items.map((opt: { label: string; value: string }, idx: number) => (
                   <option key={idx} value={opt.value}>{opt.label}</option>
                 ))}
               </select>
-            ) : field.type === FieldType.CHECKBOX && field.options && field.options.length > 0 ? (
+            ) : hasCheckboxOptions(typedField) && typedField.options?.items && typedField.options.items.length > 0 ? (
               <div className="space-y-1.5 max-h-48 overflow-y-auto">
-                {field.options.map((opt: any, idx: number) => {
+                {typedField.options.items.map((opt: { label: string; value: string }, idx: number) => {
                   const correctAnswers = (field.correctAnswer || '').split(',').filter(Boolean);
                   const isChecked = correctAnswers.includes(opt.value);
                   return (
@@ -263,6 +265,7 @@ export default function InlineQuizBar({ field, currentForm, allFields, onUpdate 
                   );
                 })}
               </div>
+
             ) : (
               
               <div>

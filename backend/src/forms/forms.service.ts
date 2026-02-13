@@ -7,7 +7,7 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { ActivityLogService } from '../activity-log/activity-log.service';
 import { EncryptionService } from '../common/encryption.service';
-import { CreateFormDto } from './dto/create-form.dto';
+import { CreateFormDto, CreateLogicConditionDto, CreateLogicActionDto } from './dto/create-form.dto';
 import { UpdateFormDto } from './dto/update-form.dto';
 import { FormStatus, RoleType } from '@prisma/client';
 import { FormDiffHelper } from './helpers/form-diff.helper';
@@ -21,7 +21,7 @@ export class FormsService {
     private prisma: PrismaService,
     private activityLog: ActivityLogService,
     private encryptionService: EncryptionService,
-  ) {}
+  ) { }
 
   async create(userId: string, createFormDto: CreateFormDto) {
     const { fields, conditions, logicRules, folderId, ...formData } = createFormDto;
@@ -35,30 +35,30 @@ export class FormsService {
         },
         fields: fields
           ? {
-              create: fields.map((field) => ({
-                ...field,
-                order: field.order ?? 0,
-              })),
-            }
+            create: fields.map((field) => ({
+              ...field,
+              order: field.order ?? 0,
+            })),
+          }
           : undefined,
         conditions: conditions
           ? {
-              create: conditions,
-            }
+            create: conditions,
+          }
           : undefined,
         logicRules: logicRules
           ? {
-              create: logicRules.map((rule) => ({
-                name: rule.name,
-                logicType: rule.logicType,
-                conditions: {
-                  create: rule.conditions,
-                },
-                actions: {
-                  create: rule.actions,
-                },
-              })),
-            }
+            create: logicRules.map((rule) => ({
+              name: rule.name,
+              logicType: rule.logicType,
+              conditions: {
+                create: rule.conditions,
+              },
+              actions: {
+                create: rule.actions,
+              },
+            })),
+          }
           : undefined,
       },
       include: {
@@ -86,7 +86,7 @@ export class FormsService {
   async findAll(userId: string, userRole: RoleType) {
     const where: any = {};
 
-    
+
     where.OR = [
       { createdById: userId },
       { collaborators: { some: { id: userId } } }
@@ -109,24 +109,24 @@ export class FormsService {
           }
         },
         collaborators: {
-            select: {
-                id: true,
-                email: true,
-                firstName: true,
-                lastName: true,
-                photoUrl: true,
-            }
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+            photoUrl: true,
+          }
         }
       },
     });
 
-    
+
     return forms.map((form) => {
       const { _count, ...formData } = form;
       return {
         ...formData,
         responseCount: _count.responses,
-        viewCount: (form as any).viewCount || 0,
+        viewCount: form.viewCount || 0,
       };
     });
   }
@@ -175,10 +175,10 @@ export class FormsService {
       throw new NotFoundException('Form not found');
     }
 
-    
 
-    
-    
+
+
+
     if (
       userRole === RoleType.VIEWER &&
       form.status !== FormStatus.PUBLISHED
@@ -186,22 +186,22 @@ export class FormsService {
       throw new ForbiddenException('You can only view published forms');
     }
 
-    
-    
-    
-    
+
+
+
+
 
     const isCreator = form.createdById === userId;
     const isCollaborator = form.collaborators?.some(c => c.id === userId);
 
-    
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
+
 
     if (
       userRole !== RoleType.VIEWER &&
@@ -253,10 +253,10 @@ export class FormsService {
       throw new ForbiddenException('Form is not published');
     }
 
-    
+
     if (fingerprint) {
       try {
-        
+
         const existingView = await this.prisma.formView.findUnique({
           where: {
             formId_fingerprint: {
@@ -266,7 +266,7 @@ export class FormsService {
           },
         });
 
-        
+
         if (!existingView) {
           await this.prisma.$transaction([
             this.prisma.formView.create({
@@ -288,7 +288,7 @@ export class FormsService {
           ]);
         }
       } catch {
-        
+
       }
     }
 
@@ -308,127 +308,125 @@ export class FormsService {
       throw new ForbiddenException('You can only edit your own forms or forms shared with you');
     }
 
-    const { fields, conditions, logicRules, ...formData } = updateFormDto as any;
+    const { fields, conditions, logicRules, ...formData } = updateFormDto;
 
-    
+
     const activityDetails = FormDiffHelper.calculateDiff(originalForm, { fields, logicRules, ...formData });
 
-    
+
     try {
-        await this.prisma.$transaction(async (prisma) => {
-            
-            if (Object.keys(formData).length > 0) {
-                 await prisma.form.update({ where: { id }, data: formData });
-            }
+      await this.prisma.$transaction(async (prisma) => {
 
-            
-            if (logicRules) await prisma.logicRule.deleteMany({ where: { formId: id } });
-            if (fields || conditions) await prisma.fieldCondition.deleteMany({ where: { formId: id } });
-
-            
-            if (fields) {
-                const existingFields = await prisma.field.findMany({ where: { formId: id }, select: { id: true } });
-                const { toDelete, toCreate, toUpdate } = FieldUpdateHelper.identifyFieldOperations(existingFields, fields);
-
-                if (toDelete.length > 0) {
-                    await prisma.field.deleteMany({ where: { id: { in: toDelete.map(f => f.id) } } });
-                }
-
-                if (toUpdate.length > 0) {
-                    await Promise.all(toUpdate.map(field => 
-                        prisma.field.update({
-                            where: { id: field.id },
-                            data: FieldUpdateHelper.prepareFieldForUpdate(field)
-                        })
-                    ));
-                }
-
-                if (toCreate.length > 0) {
-                    await prisma.field.createMany({
-                        data: toCreate.map(field => FieldUpdateHelper.prepareFieldForCreate(field, id)) as any
-                    });
-                }
-
-                
-                const fieldsWithGroups = fields.filter((f) => f.groupId);
-                if (fieldsWithGroups.length > 0) {
-                    await Promise.all(fieldsWithGroups.map(field => 
-                        prisma.field.update({ where: { id: field.id }, data: { groupId: field.groupId } })
-                    ));
-                }
-            }
-
-            
-            if (logicRules) {
-                let validFieldIds: Set<string>;
-                if (fields) {
-                    validFieldIds = new Set(fields.map((f: any) => f.id));
-                } else {
-                    const currentFields = await prisma.field.findMany({ where: { formId: id }, select: { id: true } });
-                    validFieldIds = new Set(currentFields.map(f => f.id));
-                }
-
-                for (const rule of logicRules) {
-                    const validConditions = FieldUpdateHelper.filterValidLogicItems(rule.conditions, validFieldIds);
-                    const validActions = FieldUpdateHelper.filterValidLogicItems(rule.actions, validFieldIds);
-
-                    await prisma.logicRule.create({
-                        data: {
-                            id: rule.id,
-                            formId: id,
-                            name: rule.name,
-                            logicType: rule.logicType,
-                            conditions: {
-                                create: validConditions.map((c: any) => ({
-                                    id: c.id,
-                                    fieldId: c.fieldId || null,
-                                    operator: c.operator,
-                                    value: c.value,
-                                })),
-                            },
-                            actions: {
-                                create: validActions.map((a: any) => ({
-                                    id: a.id,
-                                    type: a.type,
-                                    fieldId: a.fieldId || null,
-                                })),
-                            },
-                        },
-                    });
-                }
-            }
-
-            
-            if (conditions && conditions.length > 0) {
-                await prisma.fieldCondition.createMany({
-                    data: conditions.map((c: any) => ({
-                        sourceFieldId: c.sourceFieldId,
-                        targetFieldId: c.targetFieldId,
-                        operator: c.operator,
-                        value: c.value,
-                        action: c.action,
-                        formId: id
-                    }))
-                });
-            }
-        });
-
-        
-        const updatedForm = await this.prisma.form.findUnique({
-             where: { id },
-             include: {
-                 fields: { orderBy: { order: 'asc' } },
-                 conditions: true,
-                 logicRules: { include: { conditions: true, actions: true } },
-             }
-        });
-
-        
-        if (activityDetails.changes.length > 0) {
-            await this.activityLog.log(id, userId, 'UPDATED', activityDetails);
+        if (Object.keys(formData).length > 0) {
+          await prisma.form.update({ where: { id }, data: formData });
         }
 
-        return updatedForm;
+
+        if (logicRules) await prisma.logicRule.deleteMany({ where: { formId: id } });
+        if (fields || conditions) await prisma.fieldCondition.deleteMany({ where: { formId: id } });
+
+
+        if (fields) {
+          const existingFields = await prisma.field.findMany({ where: { formId: id }, select: { id: true } });
+          const { toDelete, toCreate, toUpdate } = FieldUpdateHelper.identifyFieldOperations(existingFields, fields);
+
+          if (toDelete.length > 0) {
+            await prisma.field.deleteMany({ where: { id: { in: toDelete.map(f => f.id) } } });
+          }
+
+          if (toUpdate.length > 0) {
+            await Promise.all(toUpdate.map(field =>
+              prisma.field.update({
+                where: { id: field.id },
+                data: FieldUpdateHelper.prepareFieldForUpdate(field)
+              })
+            ));
+          }
+
+          if (toCreate.length > 0) {
+            await prisma.field.createMany({
+              data: toCreate.map(field => FieldUpdateHelper.prepareFieldForCreate(field, id))
+            });
+          }
+
+
+          const fieldsWithGroups = fields.filter((f) => f.groupId);
+          if (fieldsWithGroups.length > 0) {
+            await Promise.all(fieldsWithGroups.map(field =>
+              prisma.field.update({ where: { id: field.id }, data: { groupId: field.groupId } })
+            ));
+          }
+        }
+
+
+        if (logicRules) {
+          let validFieldIds: Set<string>;
+          if (fields) {
+            validFieldIds = new Set(fields.map((f) => f.id));
+          } else {
+            const currentFields = await prisma.field.findMany({ where: { formId: id }, select: { id: true } });
+            validFieldIds = new Set(currentFields.map(f => f.id));
+          }
+
+          for (const rule of logicRules) {
+            const validConditions = FieldUpdateHelper.filterValidLogicItems(rule.conditions || [], validFieldIds) as CreateLogicConditionDto[];
+            const validActions = FieldUpdateHelper.filterValidLogicItems(rule.actions || [], validFieldIds) as CreateLogicActionDto[];
+
+            await prisma.logicRule.create({
+              data: {
+                id: rule.id,
+                formId: id,
+                name: rule.name,
+                logicType: rule.logicType,
+                conditions: {
+                  create: validConditions.map((c) => ({
+                    fieldId: c.fieldId || null,
+                    operator: c.operator,
+                    value: c.value,
+                  })),
+                },
+                actions: {
+                  create: validActions.map((a) => ({
+                    type: (a as any).type,
+                    fieldId: a.fieldId || null,
+                  })),
+                },
+              },
+            });
+          }
+        }
+
+
+        if (conditions && conditions.length > 0) {
+          await prisma.fieldCondition.createMany({
+            data: conditions.map((c) => ({
+              sourceFieldId: c.sourceFieldId,
+              targetFieldId: c.targetFieldId,
+              operator: c.operator,
+              value: c.value,
+              action: c.action,
+              formId: id
+            }))
+          });
+        }
+      });
+
+
+      const updatedForm = await this.prisma.form.findUnique({
+        where: { id },
+        include: {
+          fields: { orderBy: { order: 'asc' } },
+          conditions: true,
+          logicRules: { include: { conditions: true, actions: true } },
+        }
+      });
+
+
+      if (activityDetails.changes.length > 0) {
+        await this.activityLog.log(id, userId, 'UPDATED', activityDetails);
+      }
+
+      return updatedForm;
 
     } catch (error) {
       this.logger.error('Error updating form:', error);
@@ -439,12 +437,12 @@ export class FormsService {
   async remove(id: string, userId: string, userRole: RoleType) {
     const form = await this.findOne(id, userId, userRole);
 
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
     if (form.createdById !== userId) {
       throw new ForbiddenException('You can only delete your own forms');
     }
@@ -459,42 +457,42 @@ export class FormsService {
   }
 
   async clone(id: string, userId: string) {
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     const originalForm = await this.prisma.form.findUnique({
       where: { id },
       include: {
         fields: true,
         conditions: true,
-        collaborators: { select: { id: true } } 
+        collaborators: { select: { id: true } }
       },
-      
+
     });
 
     if (!originalForm) {
       throw new NotFoundException('Form not found');
     }
 
-    
+
     const isCreator = originalForm.createdById === userId;
     const isCollaborator = originalForm.collaborators?.some(c => c.id === userId);
 
     if (!isCreator && !isCollaborator) {
-         throw new ForbiddenException('You can only clone your own forms or forms shared with you');
+      throw new ForbiddenException('You can only clone your own forms or forms shared with you');
     }
 
 
@@ -522,15 +520,15 @@ export class FormsService {
         },
         conditions: {
           create: originalForm.conditions.map((condition) => ({
-            sourceFieldId: '', 
-            targetFieldId: '', 
+            sourceFieldId: '',
+            targetFieldId: '',
             operator: condition.operator,
             value: condition.value,
             action: condition.action
-          })) 
-          
-          
-          
+          }))
+
+
+
         }
       },
       include: {
@@ -545,7 +543,7 @@ export class FormsService {
   }
 
   async addCollaborator(formId: string, email: string) {
-    
+
     const user = await this.prisma.user.findUnique({
       where: { email },
     });
@@ -554,7 +552,7 @@ export class FormsService {
       throw new NotFoundException('User not found');
     }
 
-    
+
     const form = await this.prisma.form.findUnique({
       where: { id: formId },
       include: { collaborators: true },
@@ -564,18 +562,18 @@ export class FormsService {
       throw new NotFoundException('Form not found');
     }
 
-    
+
     const isAlreadyCollaborator = form.collaborators.some(c => c.id === user.id);
     if (isAlreadyCollaborator) {
       return { message: 'User is already a collaborator' };
     }
 
-    
+
     if (form.createdById === user.id) {
-        return { message: 'User is the owner of the form' };
+      return { message: 'User is the owner of the form' };
     }
 
-    
+
     await this.prisma.form.update({
       where: { id: formId },
       data: {
@@ -592,32 +590,32 @@ export class FormsService {
 
   async removeCollaborator(formId: string, userIdToRemove: string, requestingUserId: string, userRole: RoleType) {
     const form = await this.prisma.form.findUnique({
-        where: { id: formId },
-        include: { collaborators: true },
+      where: { id: formId },
+      include: { collaborators: true },
     });
 
     if (!form) {
-        throw new NotFoundException('Form not found');
+      throw new NotFoundException('Form not found');
     }
 
-    
-    
+
+
     if (
-        userRole !== RoleType.SUPER_ADMIN && 
-        userRole !== RoleType.ADMIN && 
-        form.createdById !== requestingUserId &&
-        userIdToRemove !== requestingUserId 
+      userRole !== RoleType.SUPER_ADMIN &&
+      userRole !== RoleType.ADMIN &&
+      form.createdById !== requestingUserId &&
+      userIdToRemove !== requestingUserId
     ) {
-        throw new ForbiddenException('You do not have permission to remove collaborators');
+      throw new ForbiddenException('You do not have permission to remove collaborators');
     }
 
     await this.prisma.form.update({
-        where: { id: formId },
-        data: {
-            collaborators: {
-                disconnect: { id: userIdToRemove },
-            },
+      where: { id: formId },
+      data: {
+        collaborators: {
+          disconnect: { id: userIdToRemove },
         },
+      },
     });
 
     await this.activityLog.log(formId, userIdToRemove, 'COLLABORATOR_REMOVED', { removedBy: requestingUserId });

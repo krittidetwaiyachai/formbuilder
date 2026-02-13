@@ -20,19 +20,6 @@ export default function ActivityLogItem({ log, index, fieldLabels, actionFilter 
     const { details } = log;
     let { addedFields, deletedFields, updatedFields, changes, logicChanges, settingsChanges } = details || {};
 
-    
-    
-    if (settingsChanges && settingsChanges.length > 0) {
-        const themeChange = settingsChanges.find((c: any) => 
-            String(c.property || '').toLowerCase().replace(/[^a-z]/g, '').includes('theme')
-        );
-        if (themeChange) {
-            settingsChanges = [themeChange];
-        }
-    }
-
-    const hasGeneralChanges = changes?.filter((c: string) => c !== 'fields' && c !== 'logic').length > 0;
-
     const getLogTitle = (log: ActivityLog) => {
         switch (log.action) {
           case 'CREATED': return <span className="text-gray-900">{t('activity.log.created')}</span>;
@@ -41,6 +28,8 @@ export default function ActivityLogItem({ log, index, fieldLabels, actionFilter 
           default: return <span className="text-gray-900">{log.action.toLowerCase()}</span>;
         }
     };
+
+    const hasGeneralChanges = changes && changes.length > 0;
 
     return (
         <motion.div 

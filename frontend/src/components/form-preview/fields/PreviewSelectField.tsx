@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
-import { Field, FieldType } from '@/types';
-import { useForm } from 'react-hook-form';
+import { Field, FieldType, ChoiceFieldOptions, CheckboxOption } from '@/types';
+import { useForm, FieldErrors } from 'react-hook-form';
 import { ChevronDown } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/custom-select';
 import { PreviewLabel } from '../PreviewLabel';
@@ -9,7 +9,7 @@ import { stripHtml } from '@/lib/ui/utils';
 interface PreviewFieldProps {
   field: Field;
   register: ReturnType<typeof useForm>['register'];
-  errors: any;
+  errors: FieldErrors; // Updated to FieldErrors
   watch: ReturnType<typeof useForm>['watch'];
   questionNumber?: number;
   isPublic?: boolean;
@@ -25,46 +25,43 @@ export const PreviewSelectField: React.FC<PreviewFieldProps> = ({ field, registe
   const currentValue = watch(fieldName);
 
   const validation = field.validation || {};
-  const optionsSettings = (field.options && !Array.isArray(field.options)) ? field.options : {};
+  const optionsSettings = (field.options && !Array.isArray(field.options)) ? field.options as ChoiceFieldOptions : {};
+  const merged = { ...validation, ...optionsSettings };
   
-  
-  const { 
-    labelAlignment = 'TOP', 
-    subLabel, 
-    width, 
-    customWidth, 
-    hoverText, 
-    shrink, 
-    shuffle, 
-    defaultValue,
-    multiple,
-    rows,
-    spreadToColumns,
-    columns,
-    otherOption,
-    readOnly,
-    minSelections,
-    maxSelections
-  } = { ...validation, ...optionsSettings };
+  const labelAlignment = (merged.labelAlignment as string) || 'TOP';
+  const subLabel = merged.subLabel as string | undefined;
+  const width = (merged as Record<string, unknown>).width as string | undefined;
+  const customWidth = (merged as Record<string, unknown>).customWidth as number | undefined;
+  const hoverText = merged.hoverText as string | undefined;
+  const shrink = (merged as Record<string, unknown>).shrink as boolean | undefined;
+  const shuffle = merged.shuffle as boolean | undefined;
+  const defaultValue = merged.defaultValue as string | undefined;
+  const multiple = (merged as Record<string, unknown>).multiple as boolean | undefined;
+  const rows = (merged as Record<string, unknown>).rows as number | undefined;
+  const spreadToColumns = merged.spreadToColumns as boolean | undefined;
+  const columns = merged.columns as number | undefined;
+  const otherOption = merged.otherOption as boolean | undefined;
+  const readOnly = merged.readOnly as boolean | undefined;
+  const minSelections = (merged as Record<string, unknown>).minSelections as number | undefined;
+  const maxSelections = (merged as Record<string, unknown>).maxSelections as number | undefined;
 
   const isRowLayout = labelAlignment === 'LEFT' || labelAlignment === 'RIGHT';
 
-  const getOptions = (): { label: string; value: string }[] => {
-    let rawOptions: any[] = [];
+  const getOptions = (): CheckboxOption[] => {
+    let rawOptions: CheckboxOption[] = [];
     
     if (Array.isArray(field.options)) {
-        rawOptions = field.options;
+        rawOptions = field.options as CheckboxOption[];
     } else if (typeof field.options === 'object' && field.options !== null) {
-        if (Array.isArray((field.options as any).options)) {
-            rawOptions = (field.options as any).options;
-        } else if (Array.isArray((field.options as any).items)) {
-            rawOptions = (field.options as any).items;
+        const opts = field.options as ChoiceFieldOptions;
+        if (Array.isArray(opts.items)) {
+            rawOptions = opts.items;
         }
     }
 
     if (!rawOptions) return [];
 
-    return rawOptions.map((opt: any) => {
+    return rawOptions.map((opt) => {
         if (typeof opt === 'string') {
             return { label: opt, value: opt };
         }
@@ -117,7 +114,7 @@ export const PreviewSelectField: React.FC<PreviewFieldProps> = ({ field, registe
                                 <SelectValue placeholder={field.placeholder || t('public.select.placeholder', 'Select an option...')} />
                             </SelectTrigger>
                             <SelectContent>
-                                {displayOptions.map((opt: any, index: number) => (
+                                {displayOptions.map((opt, index: number) => (
                                     <SelectItem key={index} value={opt.value}>
                                         {opt.label || opt.value}
                                     </SelectItem>
@@ -126,7 +123,7 @@ export const PreviewSelectField: React.FC<PreviewFieldProps> = ({ field, registe
                         </Select>
                     </div>
                     {fieldError && (
-                        <p className="mt-1 text-sm text-red-600">{fieldError.message}</p>
+                        <p className="mt-1 text-sm text-red-600">{fieldError.message as string}</p>
                     )}
                 </div>
             </div>
@@ -167,7 +164,7 @@ export const PreviewSelectField: React.FC<PreviewFieldProps> = ({ field, registe
               style={{ ...(showAsList ? { paddingRight: '1rem' } : {}), ...publicSelectStyle }}
             >
               {!multiple && !defaultValue && <option value="">{t('public.select.default_option', 'Select an option')}</option>}
-              {displayOptions.map((opt: any, index: number) => (
+              {displayOptions.map((opt, index: number) => (
                 <option key={index} value={opt.value}>
                   {opt.label || opt.value}
                 </option>
@@ -176,7 +173,7 @@ export const PreviewSelectField: React.FC<PreviewFieldProps> = ({ field, registe
           </div>
 
           {fieldError && (
-            <p className="mt-1 text-sm text-red-600">{fieldError.message}</p>
+            <p className="mt-1 text-sm text-red-600">{fieldError.message as string}</p>
           )}
         </div>
       </div>
@@ -200,7 +197,7 @@ export const PreviewSelectField: React.FC<PreviewFieldProps> = ({ field, registe
             className={`${isPublic ? '' : 'p-4 bg-gray-50 rounded-lg border border-gray-200'} ${spreadToColumns ? 'grid gap-3' : 'space-y-3'}`} 
             style={spreadToColumns ? { gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` } : {}}
           >
-            {displayOptions.map((opt: any, index: number) => (
+            {displayOptions.map((opt, index: number) => (
               <label key={index} className={`flex items-center gap-3 cursor-pointer group ${readOnly ? 'opacity-60 pointer-events-none' : ''}`}>
                 <div className="relative shrink-0">
                   <input
@@ -260,7 +257,7 @@ export const PreviewSelectField: React.FC<PreviewFieldProps> = ({ field, registe
           </div>
 
           {fieldError && (
-            <p className="mt-1 text-sm text-red-600">{fieldError.message}</p>
+            <p className="mt-1 text-sm text-red-600">{fieldError.message as string}</p>
           )}
         </div>
       </div>
@@ -291,7 +288,7 @@ export const PreviewSelectField: React.FC<PreviewFieldProps> = ({ field, registe
             className={`${isPublic ? '' : 'p-4 bg-gray-50 rounded-lg border border-gray-200'} ${spreadToColumns ? 'grid gap-3' : 'space-y-3'}`} 
             style={spreadToColumns ? { gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` } : {}}
           >
-            {displayOptions.map((opt: any, index: number) => (
+            {displayOptions.map((opt, index: number) => (
               <label key={index} className={`flex items-center gap-3 cursor-pointer group ${readOnly ? 'opacity-60 pointer-events-none' : ''}`}>
                 <div className="relative shrink-0">
                   <input
@@ -361,7 +358,7 @@ export const PreviewSelectField: React.FC<PreviewFieldProps> = ({ field, registe
           </div>
 
           {fieldError && (
-            <p className="mt-1 text-sm text-red-600">{fieldError.message}</p>
+            <p className="mt-1 text-sm text-red-600">{fieldError.message as string}</p>
           )}
         </div>
       </div>

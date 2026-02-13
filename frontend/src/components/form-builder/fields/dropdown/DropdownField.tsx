@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react';
-import { Field } from '@/types';
+import { Field, DropdownField as DropdownFieldType } from '@/types';
 import { ChevronDown, Plus, X, GripVertical } from 'lucide-react';
 import { useFormStore } from '@/store/formStore';
 import { useTranslation } from 'react-i18next';
@@ -35,17 +35,26 @@ export const DropdownField: React.FC<DropdownFieldProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
 
+  const dropdownField = field as unknown as DropdownFieldType;
+  
   const getOptionsRobust = (): { label: string; value: string }[] => {
-       let rawOptions = field.options;
+       const rawOptions = dropdownField.options;
        if (!rawOptions) return [];
+       
        if (Array.isArray(rawOptions)) {
            if (rawOptions.length > 0 && typeof rawOptions[0] === 'object') {
-                return rawOptions as unknown as { label: string; value: string }[];
+                return (rawOptions as unknown as { label: string; value: string }[]).map(o => ({
+                    label: o.label || '', 
+                    value: o.value || o.label || ''
+                }));
            }
-           return rawOptions.map(o => typeof o === 'string' ? {label:o, value:o} : o);
+           return (rawOptions as string[]).map(o => ({label: o, value: o}));
        }
+       
        if (rawOptions.items && Array.isArray(rawOptions.items)) {
-           return rawOptions.items.map((o: any) => typeof o === 'string' ? {label:o, value:o} : o);
+           return rawOptions.items.map((o: string | { label: string; value: string }) => 
+                typeof o === 'string' ? {label:o, value:o} : { label: o.label || '', value: o.value || o.label || '' }
+           );
        }
        return [];
   }
@@ -59,7 +68,7 @@ export const DropdownField: React.FC<DropdownFieldProps> = ({
     const optionText = newOptionText.trim() || `Option ${options.length + 1}`;
     const newOption = { label: optionText, value: optionText };
     
-    let newOptionsObj: any;
+    let newOptionsObj: Record<string, unknown>;
     if (Array.isArray(field.options)) {
          newOptionsObj = { items: [...options, newOption] };
     } else {
@@ -190,8 +199,8 @@ export const DropdownField: React.FC<DropdownFieldProps> = ({
     return { transform: 'translateY(0px)', transition: 'transform 150ms ease' };
   };
 
-  const isMultiple = field.validation?.multiple;
-  const rows = field.validation?.rows;
+  const isMultiple = field.validation?.multiple as boolean;
+  const rows = field.validation?.rows as number | undefined;
   const showAsList = isMultiple || (rows && rows > 1);
 
   if (isSelected) {
@@ -278,7 +287,7 @@ export const DropdownField: React.FC<DropdownFieldProps> = ({
         <div className="p-2 space-y-1">
           {options.length > 0 ? (
             <>
-              {options.slice(0, rows || 4).map((opt: any, idx: number) => (
+              {options.slice(0, rows || 4).map((opt, idx) => (
                 <div key={idx} className="px-3 py-2 hover:bg-pink-100/50 rounded-lg text-sm text-gray-700 truncate">
                   {opt.label || opt.value}
                 </div>

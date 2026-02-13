@@ -28,7 +28,7 @@ export class CreateBundleFieldDto {
 
   @IsOptional()
   @Allow()
-  validation?: any;
+  validation?: Record<string, unknown>;
 
   @IsOptional()
   @IsNumber()
@@ -36,7 +36,7 @@ export class CreateBundleFieldDto {
 
   @IsOptional()
   @Allow()
-  options?: any;
+  options?: Record<string, unknown>;
 
   @IsOptional()
   @IsBoolean()
@@ -72,7 +72,7 @@ export class CreateBundleDto {
   isActive?: boolean;
 
   @IsOptional()
-  options?: any;
+  options?: Record<string, unknown>;
 
   @IsArray()
   @ValidateNested({ each: true })

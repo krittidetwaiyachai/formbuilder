@@ -7,13 +7,18 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { mockSubmissions, mockForms } from "../../../lib/mock-data";
+import { FormResponse } from "@/types";
 import FieldAnalyticsSelector from "@/components/analytics/FieldAnalyticsSelector";
 import AnalysisRenderer from "@/components/analytics/AnalysisRenderer";
 
 export default function ResponsesPage({ params }: { params: { id: string } }) {
   const router = useRouter();
   const form = mockForms.find((f) => f.id === params.id);
-  const submissions = mockSubmissions.filter((s) => s.formId === params.id);
+  const rawSubmissions: FormResponse[] = mockSubmissions.filter((s) => s.formId === params.id);
+  const submissions = rawSubmissions.map(s => ({
+    submittedAt: s.submittedAt,
+    data: (s.answers || []).reduce((acc, curr) => ({ ...acc, [curr.fieldId]: curr.value }), {} as Record<string, string | number | string[] | boolean | null>)
+  }));
 
   const [selectedField, setSelectedField] = useState<string>("");
   const [selectedAnalysis, setSelectedAnalysis] = useState<string>("ranking");

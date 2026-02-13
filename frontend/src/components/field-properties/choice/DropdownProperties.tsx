@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Field } from '@/types';
+import { Field, DropdownField, DropdownFieldOptions, CheckboxOption } from '@/types';
 import { Copy } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup, SelectLabel } from '@/components/ui/custom-select';
 import { stripHtml } from '@/lib/ui/utils';
@@ -12,22 +12,21 @@ interface DropdownPropertiesProps {
   duplicatesField: (field: Omit<Field, 'id'>) => void;
 }
 
-export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field, updateField, duplicatesField }) => {
+export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field: rawField, updateField, duplicatesField }) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'general' | 'options' | 'advanced'>('general');
 
-  
-  
-  const options = Array.isArray(field.options) ? { items: field.options } : (field.options || {});
+  const field = rawField as unknown as DropdownField;
+  const rawOptions = Array.isArray(field.options) ? { items: field.options } : (field.options || {});
+  const options = rawOptions as DropdownFieldOptions;
 
-  
-  const handleUpdate = (updates: any) => {
+  const handleUpdate = (updates: Partial<DropdownField>) => {
     updateField(field.id, updates);
   };
 
 
 
-  const handleOptionUpdate = (key: string, value: any) => {
+  const handleOptionUpdate = (key: keyof DropdownFieldOptions, value: unknown) => {
     const currentOptions = Array.isArray(field.options) 
         ? { items: field.options } 
         : (field.options || {});
@@ -36,12 +35,12 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field, u
       options: {
         ...currentOptions,
         [key]: value,
-      },
+      } as DropdownFieldOptions,
     });
   };
 
   
-  const optionsList = Array.isArray(field.options) ? field.options : ((field.options as any)?.items || []);
+  const optionsList: CheckboxOption[] = options.items || [];
   
   const handleOptionsListChange = (text: string) => {
     const newItems = text.split('\n').filter(line => line.trim()).map(line => {
@@ -53,23 +52,23 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field, u
     });
     
     
-    const currentOptions = Array.isArray(field.options) ? {} : field.options;
+    const currentOptions = (Array.isArray(field.options) ? {} : field.options) as DropdownFieldOptions;
     
     handleUpdate({ 
         options: Array.isArray(field.options) 
-            ? { items: newItems }
+            ? { ...currentOptions, items: newItems }
             : { ...currentOptions, items: newItems }
     });
   };
  
   return (
     <div className="space-y-4">
-      { }
+      {/* <h3 className="font-semibold mb-2">{t('builder.properties.dropdown_properties')}</h3> */}
       <PropertiesTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {activeTab === 'general' && (
         <div className="space-y-4">
-           { }
+           {/* Label */}
            <div>
               <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.field_label')}
@@ -82,7 +81,7 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field, u
               />
             </div>
 
-            { }
+            {/* Label Alignment */}
             <div>
               <label className="block text-sm font-medium text-black mb-2">
                 {t('builder.properties.label_alignment')}
@@ -93,7 +92,7 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field, u
                     key={align}
                     onClick={() => handleOptionUpdate('labelAlignment', align)}
                      className={`flex-1 px-3 py-2 text-xs font-medium rounded-md border transition-colors ${
-                      ((field.options as any)?.labelAlignment === align) || (!(field.options as any)?.labelAlignment && align === 'TOP')
+                      (options.labelAlignment === align) || (!options.labelAlignment && align === 'TOP')
                         ? 'bg-black text-white border-black'
                         : 'bg-white text-black border-gray-400 hover:bg-gray-50'
                     }`}
@@ -104,7 +103,7 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field, u
               </div>
             </div>
 
-            { }
+            {/* Required */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                   {t('builder.properties.required')}
@@ -123,7 +122,7 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field, u
               </p>
             </div>
 
-            { }
+            {/* Sublabel */}
             <div>
               <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.sublabel')}
@@ -139,7 +138,7 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field, u
               </p>
             </div>
 
-             { }
+             {/* Duplicate Button */}
              <button
                type="button"
                onClick={() => duplicatesField({
@@ -162,7 +161,7 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field, u
 
       {activeTab === 'options' && (
         <div className="space-y-6">
-            { }
+            {/* Width */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.width')}
@@ -193,14 +192,14 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field, u
               </p>
             </div>
 
-            { }
+            {/* Options List */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                  {t('builder.properties.options')}
                </label>
                <div className="border border-gray-400 rounded-md overflow-hidden bg-white">
                   <textarea
-                    value={optionsList.map((opt: any) => opt.label === opt.value ? opt.label : `${opt.label}:${opt.value}`).join('\n')}
+                    value={optionsList.map((opt: CheckboxOption) => opt.label === opt.value ? opt.label : `${opt.label}:${opt.value}`).join('\n')}
                     onChange={(e) => handleOptionsListChange(e.target.value)}
                     rows={8}
                     className="w-full px-3 py-2 focus:outline-none resize-y text-sm"
@@ -212,7 +211,7 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field, u
                </p>
             </div>
             
-             { }
+             {/* Predefined Options */}
              <div>
                 <label className="block text-sm font-medium text-black mb-1">
                   {t('builder.properties.predefined_options')}
@@ -250,7 +249,7 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field, u
                                 options: {
                                     ...currentOptions,
                                     items: newItems
-                                }
+                                } as DropdownFieldOptions
                             });
                         }
                     }}
@@ -291,7 +290,7 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field, u
                 </p>
             </div>
 
-            { }
+            {/* Default Value */}
             <div>
                 <label className="block text-sm font-medium text-black mb-1">
                   {t('builder.properties.default_value')}
@@ -305,7 +304,7 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field, u
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value="_no_default_">{t('builder.properties.no_default')}</SelectItem>
-                        {optionsList.map((opt: any, idx: number) => (
+                        {optionsList.map((opt: CheckboxOption, idx: number) => (
                             <SelectItem key={idx} value={opt.value}>
                                 {opt.label || opt.value}
                             </SelectItem>
@@ -321,7 +320,7 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field, u
 
       {activeTab === 'advanced' && (
         <div className="space-y-6">
-            { }
+            {/* Multiple Selections */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.multiple_selections')}
@@ -340,7 +339,7 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field, u
               </p>
             </div>
 
-            { }
+            {/* Shuffle Options */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.shuffle_options')}
@@ -359,7 +358,7 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field, u
                </p>
             </div>
 
-             { }
+             {/* Read Only */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.read_only')}
@@ -378,7 +377,7 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field, u
               </p>
             </div>
 
-            { }
+             {/* Shrink */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.shrink')}
@@ -397,7 +396,7 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field, u
               </p>
             </div>
             
-             { }
+            {/* Hide Field */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.hide_field')}
@@ -411,6 +410,9 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({ field, u
                   />
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
                 </label>
+                 <p className="mt-1 text-xs text-gray-500">
+                  {t('builder.properties.hide_field_desc') || "Hide this field from the form"}
+                </p>
             </div>
 
         </div>

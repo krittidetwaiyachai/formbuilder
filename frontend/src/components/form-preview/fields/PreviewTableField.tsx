@@ -1,15 +1,15 @@
 
 import React, { useState, useEffect } from 'react';
-import { Field } from '@/types';
-import { useForm, useFieldArray } from 'react-hook-form';
+import { Field, TableField, Column } from '@/types';
+import { useForm, useFieldArray, FieldErrors, FieldError, Control } from 'react-hook-form';
 import { Plus, Trash2 } from 'lucide-react';
 import { PreviewLabel } from '../PreviewLabel';
 
 interface PreviewFieldProps {
   field: Field;
   register: ReturnType<typeof useForm>['register'];
-  errors: any;
-  control: any; 
+  errors: FieldErrors;
+  control: Control; 
   questionNumber?: number;
   isPublic?: boolean;
 }
@@ -19,8 +19,9 @@ import { stripHtml } from '@/lib/ui/utils';
 
 export const PreviewTableField: React.FC<PreviewFieldProps> = ({ field, register, errors, control, questionNumber, isPublic }) => {
   const { t } = useTranslation();
-  const columns = field.options?.columns || [{ id: 'c1', label: t('public.table.column', { index: 1 }) }, { id: 'c2', label: t('public.table.column', { index: 2 }) }];
-  const allowAddRow = field.options?.allowAddRow !== undefined ? field.options.allowAddRow : true;
+  const typedField = field as TableField;
+  const columns = typedField.options?.columns || [{ id: 'c1', label: t('public.table.column', { index: 1 }) }, { id: 'c2', label: t('public.table.column', { index: 2 }) }];
+  const allowAddRow = typedField.options?.allowAddRow !== undefined ? typedField.options.allowAddRow : true;
   
   const fieldName = `field_${field.id}`;
   
@@ -49,8 +50,8 @@ export const PreviewTableField: React.FC<PreviewFieldProps> = ({ field, register
     <div className="mb-6 w-full">
          <div className="mb-2">
             <PreviewLabel field={field} questionNumber={questionNumber} isPublic={isPublic} htmlFor={fieldName} />
-            {field.options?.subLabel && (
-                <p className="mt-1 text-sm text-gray-500 font-normal">{stripHtml(field.options.subLabel)}</p>
+            {typedField.options?.subLabel && (
+                <p className="mt-1 text-sm text-gray-500 font-normal">{stripHtml(typedField.options.subLabel)}</p>
             )}
         </div>
 
@@ -63,12 +64,12 @@ export const PreviewTableField: React.FC<PreviewFieldProps> = ({ field, register
                     <thead className="text-xs uppercase" style={{ backgroundColor: 'var(--input-bg)', color: 'var(--text)' }}>
                         <tr>
                             <th scope="col" className="px-4 py-3 border w-10 text-center" style={{ borderColor: 'var(--card-border)', opacity: 0.7 }}>#</th>
-                            {columns.map((col: any, idx: number) => (
+                            {columns.map((col: Column, idx: number) => (
                                 <th key={idx} scope="col" className="px-4 py-3 border font-semibold min-w-[150px]" style={{ borderColor: 'var(--card-border)', opacity: 0.7 }}>
                                     {col.label}
                                 </th>
                             ))}
-                            {allowAddRow && !field.options?.readOnly && <th scope="col" className="px-2 py-3 border w-10" style={{ borderColor: 'var(--card-border)' }}></th>}
+                            {allowAddRow && !typedField.options?.readOnly && <th scope="col" className="px-2 py-3 border w-10" style={{ borderColor: 'var(--card-border)' }}></th>}
                         </tr>
                     </thead>
                     <tbody>
@@ -77,7 +78,7 @@ export const PreviewTableField: React.FC<PreviewFieldProps> = ({ field, register
                                 <td className="px-4 py-2 border text-center text-xs font-medium" style={{ borderColor: 'var(--card-border)', color: 'var(--text)', opacity: 0.5 }}>
                                     {index + 1}
                                 </td>
-                                {columns.map((col: any, cIdx: number) => (
+                                {columns.map((col: Column, cIdx: number) => (
                                     <td key={cIdx} className="px-4 py-2 border" style={{ borderColor: 'var(--card-border)' }}>
                                         <input
                                             type="text"
@@ -85,7 +86,7 @@ export const PreviewTableField: React.FC<PreviewFieldProps> = ({ field, register
                                             {...register(`${fieldName}.${index}.${col.id}`, { 
                                                 required: field.required ? t('public.validation.required_field', { label: stripHtml(field.label) }) : false 
                                             })} 
-                                            disabled={field.options?.readOnly}
+                                            disabled={typedField.options?.readOnly}
                                             style={{
                                                 backgroundColor: 'var(--input-bg)',
                                                 borderColor: 'var(--input-border)',
@@ -95,7 +96,7 @@ export const PreviewTableField: React.FC<PreviewFieldProps> = ({ field, register
                                         />
                                     </td>
                                 ))}
-                                {allowAddRow && !field.options?.readOnly && (
+                                {allowAddRow && !typedField.options?.readOnly && (
                                     <td className="px-2 py-2 border text-center" style={{ borderColor: 'var(--card-border)' }}>
                                         {fields.length > 1 && (
                                             <button 
@@ -121,7 +122,7 @@ export const PreviewTableField: React.FC<PreviewFieldProps> = ({ field, register
              </span>
         </div>
         
-        {allowAddRow && !field.options?.readOnly && (
+        {allowAddRow && !typedField.options?.readOnly && (
             <div className="mt-3 flex justify-end">
                 <button 
                     type="button" 
@@ -135,7 +136,7 @@ export const PreviewTableField: React.FC<PreviewFieldProps> = ({ field, register
         )}
         
           {errors[fieldName] && (
-             <p className="mt-1 text-sm text-red-600">{errors[fieldName]?.message || t('public.validation.required_field', { label: stripHtml(field.label) })}</p>
+             <p className="mt-1 text-sm text-red-600">{(errors[fieldName] as FieldError)?.message || t('public.validation.required_field', { label: stripHtml(field.label) })}</p>
           )}
      </div>
    );

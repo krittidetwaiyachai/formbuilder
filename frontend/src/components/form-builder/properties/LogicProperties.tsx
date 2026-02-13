@@ -1,5 +1,5 @@
 import React from 'react';
-import { Field } from '@/types';
+import { Field, TypedField, hasArrayOptions, hasCheckboxOptions } from '@/types';
 import { useFormStore } from '@/store/formStore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -35,18 +35,21 @@ export const LogicProperties: React.FC<LogicPropertiesProps> = ({ field }) => {
   };
 
   const getSourceOptions = () => {
+    const typedField = field as TypedField;
     
-    if (['DROPDOWN', 'RADIO', 'CHECKBOX'].includes(field.type)) {
-      const opts = field.options;
+    if (hasArrayOptions(typedField) || hasCheckboxOptions(typedField)) {
+      const opts = typedField.options;
+      if (!opts) return null;
+
       if (Array.isArray(opts)) {
-          
           if (opts.length > 0 && typeof opts[0] === 'object') {
-             return opts.map((o: any) => o.value || o.label);
+             return (opts as unknown as { label: string; value: string }[]).map(o => o.value || o.label);
           }
-          return opts;
+          return opts as string[];
       }
-      if (opts?.items && Array.isArray(opts.items)) {
-          return opts.items.map((o: any) => o.value || o.label);
+      
+      if (opts.items && Array.isArray(opts.items)) {
+          return opts.items.map((o) => typeof o === 'string' ? o : (o.value || o.label));
       }
     }
     return null;

@@ -1,15 +1,16 @@
 
 import FormFieldRenderer from '@/components/form-preview/FormFieldRenderer';
-import { Form } from '@/types';
+import { Field, Form } from '@/types';
+import { UseFormRegister, FieldErrors, UseFormWatch, UseFormSetValue, Control } from 'react-hook-form';
 
 interface CardLayoutProps {
-  currentField?: any;
+  currentField?: Field;
   currentCardIndex: number;
-  register: any;
-  errors: any;
-  watch: any;
-  setValue: any;
-  control: any;
+  register: UseFormRegister<Record<string, unknown>>;
+  errors: FieldErrors;
+  watch: UseFormWatch<Record<string, unknown>>;
+  setValue: UseFormSetValue<Record<string, unknown>>;
+  control: Control;
   form: Form;
 }
 

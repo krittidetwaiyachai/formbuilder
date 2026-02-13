@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { FieldType } from '@/types';
+import { FieldType, FieldOptions } from '@/types';
 
 export interface BundleField {
   id: string;
@@ -8,7 +8,7 @@ export interface BundleField {
   placeholder?: string;
   required: boolean;
   order: number;
-  options?: any;
+  options?: FieldOptions;
   validation?: Record<string, unknown>;
   imageUrl?: string;
   imageWidth?: string;
@@ -22,14 +22,14 @@ export interface Bundle {
   isPII: boolean;
   isActive: boolean;
   fields: BundleField[];
-  options?: any;
+  options?: Record<string, any>;
 }
 
 interface BundleEditorState {
   bundle: Bundle | null;
   selectedFieldId: string | null;
   isDirty: boolean;
-  
+
   history: {
     past: Bundle[];
     future: Bundle[];
@@ -42,12 +42,12 @@ interface BundleEditorState {
   deleteField: (id: string) => void;
   reorderFields: (startIndex: number, endIndex: number) => void;
   updateBundleMeta: (updates: Partial<Pick<Bundle, 'name' | 'description' | 'isPII' | 'isActive' | 'options'>>) => void;
-  
+
   undo: () => void;
   redo: () => void;
-  
+
   saveBundle: () => Promise<void>;
-  
+
   reset: () => void;
 }
 
@@ -65,25 +65,25 @@ export const useBundleEditorStore = create<BundleEditorState>((set, get) => ({
   history: { past: [], future: [] },
 
   setBundle: (bundle) => set({ bundle, isDirty: false, history: { past: [], future: [] } }),
-  
+
   setSelectedFieldId: (id) => set({ selectedFieldId: id }),
 
   addField: (fieldData, index) => set((state) => {
     if (!state.bundle) return state;
-    
+
     const historyUpdate = { history: { ...state.history, ...pushHistory(state), future: [] } };
 
     const newField: BundleField = {
       ...fieldData,
-      id: `field-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      id: `field-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
       order: typeof index === 'number' ? index : state.bundle.fields.length,
     };
 
     const newFields = [...state.bundle.fields];
     if (typeof index === 'number' && index >= 0 && index <= newFields.length) {
-        newFields.splice(index, 0, newField);
+      newFields.splice(index, 0, newField);
     } else {
-        newFields.push(newField);
+      newFields.push(newField);
     }
 
     return {
@@ -101,7 +101,7 @@ export const useBundleEditorStore = create<BundleEditorState>((set, get) => ({
     if (!state.bundle) return state;
 
     const historyUpdate = { history: { ...state.history, ...pushHistory(state), future: [] } };
-    
+
     return {
       ...historyUpdate,
       bundle: {
@@ -118,7 +118,7 @@ export const useBundleEditorStore = create<BundleEditorState>((set, get) => ({
     if (!state.bundle) return state;
 
     const historyUpdate = { history: { ...state.history, ...pushHistory(state), future: [] } };
-    
+
     return {
       ...historyUpdate,
       bundle: {
@@ -136,11 +136,11 @@ export const useBundleEditorStore = create<BundleEditorState>((set, get) => ({
     if (!state.bundle) return state;
 
     const historyUpdate = { history: { ...state.history, ...pushHistory(state), future: [] } };
-    
+
     const fields = [...state.bundle.fields];
     const [removed] = fields.splice(startIndex, 1);
     fields.splice(endIndex, 0, removed);
-    
+
     return {
       ...historyUpdate,
       bundle: {
@@ -155,7 +155,7 @@ export const useBundleEditorStore = create<BundleEditorState>((set, get) => ({
     if (!state.bundle) return state;
 
     const historyUpdate = { history: { ...state.history, ...pushHistory(state), future: [] } };
-    
+
     return {
       ...historyUpdate,
       bundle: { ...state.bundle, ...updates },
@@ -198,37 +198,37 @@ export const useBundleEditorStore = create<BundleEditorState>((set, get) => ({
   saveBundle: async () => {
     const { bundle } = get();
     if (!bundle) return;
-    
+
     try {
-        const { default: api } = await import('@/lib/api'); 
-        const response = await api.patch(`/bundles/${bundle.id}`, {
-            name: bundle.name,
-            description: bundle.description,
-            isPII: bundle.isPII,
-            fields: bundle.fields,
-            isActive: bundle.isActive,
-            options: bundle.options,
-        });
+      const { default: api } = await import('@/lib/api');
+      const response = await api.patch(`/bundles/${bundle.id}`, {
+        name: bundle.name,
+        description: bundle.description,
+        isPII: bundle.isPII,
+        fields: bundle.fields,
+        isActive: bundle.isActive,
+        options: bundle.options,
+      });
 
-        const newBundle = response.data;
-        
-        const currentSelectedId = get().selectedFieldId;
-        let newSelectedId = null;
+      const newBundle = response.data;
 
-        if (currentSelectedId && bundle.fields) {
-            const index = bundle.fields.findIndex(f => f.id === currentSelectedId);
-            if (index !== -1 && newBundle.fields && newBundle.fields[index]) {
-                newSelectedId = newBundle.fields[index].id;
-            }
+      const currentSelectedId = get().selectedFieldId;
+      let newSelectedId = null;
+
+      if (currentSelectedId && bundle.fields) {
+        const index = bundle.fields.findIndex(f => f.id === currentSelectedId);
+        if (index !== -1 && newBundle.fields && newBundle.fields[index]) {
+          newSelectedId = newBundle.fields[index].id;
         }
+      }
 
-        set({ bundle: newBundle, selectedFieldId: newSelectedId, isDirty: false });
-        
-        window.history.replaceState(null, '', `/admin/bundles/${newBundle.id}`);
-        
+      set({ bundle: newBundle, selectedFieldId: newSelectedId, isDirty: false });
+
+      window.history.replaceState(null, '', `/admin/bundles/${newBundle.id}`);
+
     } catch (error) {
-        console.error("Failed to save bundle:", error);
-        throw error; 
+      console.error("Failed to save bundle:", error);
+      throw error;
     }
   },
 

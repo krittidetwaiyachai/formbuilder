@@ -1,5 +1,5 @@
 import React from 'react';
-import { Field } from '@/types';
+import { Field, PhoneValidation } from '@/types';
 import { Phone } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -16,9 +16,10 @@ interface PhoneFieldProps {
 
 export const PhoneField: React.FC<PhoneFieldProps> = ({ field, fieldStyle, disabledClass = "opacity-60 cursor-pointer" }) => {
   const { t } = useTranslation();
-  const showCountryCode = (field.validation as any)?.countryCode || false;
-  const phoneSublabel = (field.validation as any)?.sublabels?.masked;
-  const phonePlaceholder = (field.validation as any)?.placeholders?.masked || (field.validation as any)?.maskPattern || t('builder.phone.default_placeholder');
+  const validation = field.validation as PhoneValidation | undefined;
+  const showCountryCode = validation?.countryCode || false;
+  const phoneSublabel = validation?.sublabels?.masked;
+  const phonePlaceholder = validation?.placeholders?.masked || validation?.maskPattern || t('builder.phone.default_placeholder');
 
   return (
     <div className="space-y-2 max-w-full group">

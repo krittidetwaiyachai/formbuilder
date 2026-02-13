@@ -1,5 +1,5 @@
 import React from 'react';
-import { Field } from '@/types';
+import { Field, SubmitField } from '@/types';
 import { RotateCcw, Printer } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -10,7 +10,8 @@ interface PreviewFieldProps {
 
 export const PreviewSubmitField: React.FC<PreviewFieldProps> = ({ field }) => {
   const { t } = useTranslation();
-  const options = field.options || {};
+  const typedField = field as SubmitField;
+  const options = typedField.options || {};
   const buttonAlign = options.buttonAlign || 'AUTO'; 
   const resetButton = options.resetButton || false;
   const printButton = options.printButton || false;

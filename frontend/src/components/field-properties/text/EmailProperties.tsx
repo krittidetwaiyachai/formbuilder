@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Field } from '@/types';
+import { EmailField, EmailFieldOptions, EmailValidation } from '@/types/typed-fields';
 import { Copy } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { stripHtml } from '@/lib/ui/utils';
@@ -7,23 +7,23 @@ import { PdpaToggle } from '../common/PdpaToggle';
 import { PropertiesTabs } from '../common/PropertiesTabs';
 
 interface EmailPropertiesProps {
-  field: Field;
-  updateField: (id: string, updates: Partial<Field>) => void;
-  duplicatesField: (field: Omit<Field, 'id'>) => void;
+  field: EmailField;
+  updateField: (id: string, updates: Partial<EmailField>) => void;
+  duplicatesField: (field: Omit<EmailField, 'id'>) => void;
 }
 
 export const EmailProperties = ({ field, updateField, duplicatesField }: EmailPropertiesProps) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'general' | 'options' | 'advanced'>('general');
 
-  const options = field.options || {};
-  const validation = field.validation || {};
+  const options: EmailFieldOptions = field.options || {};
+  const validation: EmailValidation = field.validation || {};
 
-  const handleUpdate = (updates: any) => {
+  const handleUpdate = (updates: Partial<EmailField>) => {
     updateField(field.id, updates);
   };
 
-  const handleOptionUpdate = (key: string, value: any) => {
+  const handleOptionUpdate = <K extends keyof EmailFieldOptions>(key: K, value: EmailFieldOptions[K]) => {
     handleUpdate({
       options: {
         ...options,
@@ -32,7 +32,7 @@ export const EmailProperties = ({ field, updateField, duplicatesField }: EmailPr
     });
   };
 
-  const handleValidationUpdate = (key: string, value: any) => {
+  const handleValidationUpdate = <K extends keyof EmailValidation>(key: K, value: EmailValidation[K]) => {
     handleUpdate({
       validation: {
         ...validation,

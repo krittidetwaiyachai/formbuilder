@@ -47,7 +47,7 @@ export default function ActivityPage() {
   useEffect(() => {
     const fetchEditors = async () => {
       try {
-        const res = await api.get(`/forms/${id}/activity/editors`);
+        const res = await api.get<{id: string, firstName: string, lastName: string, email: string, photoUrl?: string}[]>(`/forms/${id}/activity/editors`);
         setEditors(res.data || []);
       } catch (error) {
         console.error('Failed to load editors:', error);
@@ -71,13 +71,13 @@ export default function ActivityPage() {
       
       if (formData.fields) {
         const labels: Record<string, string> = {};
-        formData.fields.forEach((f: any) => {
+        formData.fields.forEach((f: { id: string; label?: string }) => {
            labels[f.id] = f.label || 'Untitled';
         });
         setFieldLabels(labels);
       }
 
-      const res = await api.get(`/forms/${id}/activity`, {
+      const res = await api.get<{ data: ActivityLog[], meta: { totalPages: number } } | ActivityLog[]>(`/forms/${id}/activity`, {
         params: { 
             page, 
             limit, 
@@ -88,11 +88,14 @@ export default function ActivityPage() {
       });
       
       const responseData = res.data;
-      if (responseData.data && responseData.meta) {
+      if ('data' in responseData && 'meta' in responseData) {
         setLogs(responseData.data);
         setTotalPages(responseData.meta.totalPages);
+      } else if (Array.isArray(responseData)) {
+        setLogs(responseData);
+        setTotalPages(1);
       } else {
-        setLogs(Array.isArray(responseData) ? responseData : []);
+        setLogs([]);
         setTotalPages(1);
       }
     } catch (error) {

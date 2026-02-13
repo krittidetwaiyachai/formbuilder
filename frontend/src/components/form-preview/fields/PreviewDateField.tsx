@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
-import { Field, FieldType } from '@/types';
-import { useForm, Controller } from 'react-hook-form';
+import { Field, FieldType, DateFieldOptions } from '@/types';
+import { useForm, Controller, FieldErrors, Control } from 'react-hook-form';
 import { Calendar, Clock } from 'lucide-react';
 import { PreviewLabel } from '../PreviewLabel';
 import { MaterialDatePicker } from '@/components/ui/MaterialDatePicker'; 
+import { MaterialTimePicker } from '@/components/ui/MaterialTimePicker';
+import { DateField } from '@/types'; 
 
 interface PreviewFieldProps {
   field: Field;
   register: ReturnType<typeof useForm>['register'];
-  control?: any; 
-  errors: any;
+  control?: Control; 
+  errors: FieldErrors;
   questionNumber?: number;
   isPublic?: boolean;
 }
@@ -20,11 +22,13 @@ import { stripHtml } from '@/lib/ui/utils';
 export const PreviewDateField: React.FC<PreviewFieldProps> = ({ field, register, control, errors, questionNumber, isPublic }) => {
   const { t, i18n } = useTranslation();
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+  const [isTimePickerOpen, setIsTimePickerOpen] = useState(false); 
   const fieldName = `field_${field.id}`;
   const fieldError = errors[fieldName];
 
+  const typedField = field as DateField;
   const validation = field.validation || {};
-  const optionsSettings = (field.options && !Array.isArray(field.options)) ? field.options : {};
+  const optionsSettings: DateFieldOptions = typedField.options || {};
   
   const { 
     labelAlignment = 'TOP', 
@@ -132,7 +136,7 @@ export const PreviewDateField: React.FC<PreviewFieldProps> = ({ field, register,
                 />
             )}
              {fieldError && (
-                <p className="mt-1 text-sm text-red-600">{fieldError.message}</p>
+                <p className="mt-1 text-sm text-red-600">{fieldError?.message as string}</p>
              )}
           </div>
         </div>
@@ -145,11 +149,51 @@ export const PreviewDateField: React.FC<PreviewFieldProps> = ({ field, register,
           {renderLabel()}
           <div className="relative w-full">
             {!isPublic && (
-              <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none z-10">
                 <Clock className="h-4 w-4" style={{ color: 'var(--text)', opacity: 0.6 }} />
               </div>
             )}
-            <input
+            
+            {control ? (
+                <Controller
+                    control={control}
+                    name={fieldName}
+                    rules={{
+                        required: field.required ? t('public.validation.required_field', { label: stripHtml(field.label) }) : false,
+                    }}
+                    render={({ field: { value, onChange } }) => (
+                        <>
+                            <div 
+                                onClick={() => !readOnly && setIsTimePickerOpen(true)}
+                                className={`w-full ${isPublic ? 'px-4' : 'pl-10 pr-4'} py-3 border rounded-xl text-sm shadow-sm transition-all hover:border-gray-300 cursor-pointer flex items-center ${readOnly ? 'bg-gray-100 cursor-not-allowed' : 'bg-[var(--input-bg)]'}`}
+                                style={{ 
+                                    borderColor: 'var(--input-border)',
+                                    color: 'var(--text)'
+                                }}
+                            >
+                                {value ? (
+                                    <span>{value}</span>
+                                ) : (
+                                    <span className="text-gray-400 opacity-70">
+                                        {t('common.select_time', 'Select time')}
+                                    </span>
+                                )}
+                            </div>
+
+                            <MaterialTimePicker
+                                isOpen={isTimePickerOpen}
+                                onClose={() => setIsTimePickerOpen(false)}
+                                selectedTime={value}
+                                onSelect={(time) => {
+                                    onChange(time);
+                                }}
+                                themeColor={getPrimaryColor()}
+                            />
+                        </>
+                    )}
+                />
+            ) : (
+             <input
               type="time"
               id={fieldName}
               readOnly={readOnly}
@@ -159,8 +203,9 @@ export const PreviewDateField: React.FC<PreviewFieldProps> = ({ field, register,
               style={{ color: 'var(--text)', backgroundColor: 'var(--input-bg)', borderColor: 'var(--input-border)' }}
               className={`w-full ${isPublic ? 'px-4' : 'pl-10 pr-4'} py-3 border rounded-xl text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all hover:border-gray-300 ${readOnly ? 'bg-gray-100 cursor-not-allowed' : ''}`}
             />
+            )}
             {fieldError && (
-                <p className="mt-1 text-sm text-red-600">{fieldError.message}</p>
+                <p className="mt-1 text-sm text-red-600">{fieldError?.message as string}</p>
              )}
           </div>
         </div>

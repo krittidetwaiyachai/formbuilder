@@ -19,15 +19,21 @@ import { Permissions } from '../auth/decorators/permissions.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { RoleType } from '@prisma/client';
 
+interface User {
+  id: string;
+  email: string;
+  role: RoleType;
+}
+
 @Controller('bundles')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class BundlesController {
-  constructor(private readonly bundlesService: BundlesService) {}
+  constructor(private readonly bundlesService: BundlesService) { }
 
   @Post()
   @UseGuards(PermissionsGuard)
   @Permissions('MANAGE_BUNDLES')
-  create(@CurrentUser() user: any, @Body() createBundleDto: CreateBundleDto) {
+  create(@CurrentUser() user: User, @Body() createBundleDto: CreateBundleDto) {
     return this.bundlesService.create(user.id, createBundleDto);
   }
 
@@ -47,7 +53,7 @@ export class BundlesController {
   applyBundle(
     @Param('id') bundleId: string,
     @Param('formId') formId: string,
-    @CurrentUser() user: any,
+    @CurrentUser() user: User,
   ) {
     return this.bundlesService.applyBundleToForm(
       bundleId,
@@ -62,7 +68,7 @@ export class BundlesController {
   @Permissions('MANAGE_BUNDLES')
   update(
     @Param('id') id: string,
-    @CurrentUser() user: any,
+    @CurrentUser() user: User,
     @Body() updateData: Partial<CreateBundleDto>,
   ) {
     return this.bundlesService.update(id, user.id, updateData);

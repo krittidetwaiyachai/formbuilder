@@ -5,7 +5,6 @@ interface UserAvatarProps extends HTMLAttributes<HTMLDivElement> {
     firstName?: string;
     lastName?: string;
     photoUrl?: string;
-    [key: string]: any;
   };
   className?: string;
 }
@@ -26,7 +25,7 @@ export default function UserAvatar({ user, className = "w-10 h-10", ...props }: 
         onError={() => setImgError(true)}
         className={`${className} rounded-full object-cover border border-gray-200`}
         referrerPolicy="no-referrer"
-        {...(props as any)} 
+        {...(props as React.HTMLAttributes<HTMLImageElement>)} 
       />
     );
   }

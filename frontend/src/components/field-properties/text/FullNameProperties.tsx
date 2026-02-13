@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Field } from '@/types';
+import { FullNameField, FullNameFieldOptions, GenericValidation } from '@/types/typed-fields';
 import { Copy } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { stripHtml } from '@/lib/ui/utils';
@@ -7,23 +7,22 @@ import { PdpaToggle } from '../common/PdpaToggle';
 import { PropertiesTabs } from '../common/PropertiesTabs';
 
 interface FullNamePropertiesProps {
-  field: Field;
-  updateField: (id: string, updates: Partial<Field>) => void;
-  duplicatesField: (field: Omit<Field, 'id'>) => void;
+  field: FullNameField;
+  updateField: (id: string, updates: Partial<FullNameField>) => void;
+  duplicatesField: (field: Omit<FullNameField, 'id'>) => void;
 }
 
 export const FullNameProperties = ({ field, updateField, duplicatesField }: FullNamePropertiesProps) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'general' | 'options' | 'advanced'>('general');
 
-  const options = field.options || {};
+  const options: FullNameFieldOptions = field.options || {};
 
-
-  const handleUpdate = (updates: any) => {
+  const handleUpdate = (updates: Partial<FullNameField>) => {
     updateField(field.id, updates);
   };
 
-  const handleOptionUpdate = (key: string, value: any) => {
+  const handleOptionUpdate = <K extends keyof FullNameFieldOptions>(key: K, value: FullNameFieldOptions[K]) => {
     handleUpdate({
       options: {
         ...options,
@@ -276,10 +275,10 @@ export const FullNameProperties = ({ field, updateField, duplicatesField }: Full
                    className="sr-only peer"
                  />
                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
-              </label>
+               </label>
                <p className="mt-1 text-xs text-gray-500">
                 {t('builder.properties.shrink_desc')}
-              </p>
+               </p>
             </div>
             
             <div>

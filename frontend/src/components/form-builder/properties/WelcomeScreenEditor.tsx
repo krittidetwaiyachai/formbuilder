@@ -87,8 +87,8 @@ export default function WelcomeScreenEditor({ currentForm, updateForm }: Welcome
   const settings = currentForm.welcomeSettings;
   const layout = settings?.layout || 'simple';
   const bgImage = settings?.backgroundImage;
-  const iconColor = (settings as any)?.iconColor || 'blue';
-  const IconComponent = iconMap[(settings as any)?.icon || 'sparkles'] || Sparkles;
+  const iconColor = settings?.iconColor || 'blue';
+  const IconComponent = iconMap[settings?.icon || 'sparkles'] || Sparkles;
 
   const renderContent = () => (
       <div className="max-w-2xl w-full text-center space-y-8 p-12">

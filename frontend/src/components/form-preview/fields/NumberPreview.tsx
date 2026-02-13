@@ -1,6 +1,6 @@
 import React from 'react';
-import { Field } from '@/types';
-import { useForm } from 'react-hook-form';
+import { Field, NumberField, NumberFieldOptions, NumberValidation } from '@/types';
+import { useForm, FieldErrors, RegisterOptions } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Hash } from 'lucide-react';
 import { PreviewLabel } from '../PreviewLabel';
@@ -9,7 +9,7 @@ import { stripHtml } from '@/lib/ui/utils';
 interface PreviewFieldProps {
   field: Field;
   register: ReturnType<typeof useForm>['register'];
-  errors: any;
+  errors: FieldErrors;
   questionNumber?: number;
   isPublic?: boolean;
 }
@@ -18,15 +18,16 @@ export const NumberPreview: React.FC<PreviewFieldProps> = ({ field, register, er
   const { t } = useTranslation();
   const fieldName = `field_${field.id}`;
   const fieldError = errors[fieldName];
+  const typedField = field as NumberField;
 
-  const options = field.options || {};
-  const validation = field.validation || {};
+  const options = (typedField.options || {}) as NumberFieldOptions;
+  const validation = (field.validation || {}) as NumberValidation;
   const { labelAlignment = 'TOP', subLabel, width, customWidth, hoverText, readOnly, defaultValue, shrink } = options;
   const { min, max, entryLimits } = validation;
 
   const isRowLayout = labelAlignment === 'LEFT' || labelAlignment === 'RIGHT';
 
-  const validationRules: any = {
+  const validationRules: Record<string, unknown> = {
     required: field.required ? t('public.validation.required_field', { label: stripHtml(field.label) }) : false,
   };
 
@@ -70,8 +71,8 @@ export const NumberPreview: React.FC<PreviewFieldProps> = ({ field, register, er
                 placeholder={field.placeholder || t('public.placeholder.number', "Enter a number...")}
                 defaultValue={defaultValue}
                 readOnly={readOnly}
-                min={entryLimits ? min : undefined}
-                max={entryLimits ? max : undefined}
+                min={entryLimits ? (min ?? undefined) : undefined}
+                max={entryLimits ? (max ?? undefined) : undefined}
                 style={{ 
                   ...(width === 'FIXED' && customWidth ? { maxWidth: `${customWidth}px` } : {}),
                   color: 'var(--text)', 

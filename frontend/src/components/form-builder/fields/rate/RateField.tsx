@@ -1,5 +1,5 @@
 import React from 'react';
-import { Field } from '@/types';
+import { Field, RateFieldOptions } from '@/types';
 import { Star, Heart, Shield, Zap, Flag, ThumbsUp, Smile } from 'lucide-react';
 
 interface RateFieldProps {
@@ -14,7 +14,7 @@ interface RateFieldProps {
 }
 
 export const RateField: React.FC<RateFieldProps> = ({ field, fieldStyle, disabledClass = "opacity-60 cursor-pointer" }) => {
-  const options = field.options || {};
+  const options = (field.options || {}) as RateFieldOptions;
   const maxRating = options.maxRating || 5;
   const iconType = options.icon || 'star';
   const defaultValue = options.defaultValue || 0;

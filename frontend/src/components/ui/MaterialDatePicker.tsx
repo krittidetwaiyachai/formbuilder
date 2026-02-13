@@ -12,6 +12,8 @@ interface MaterialDatePickerProps {
   themeColor?: string;
 }
 
+type DateView = 'day' | 'month' | 'year';
+
 export const MaterialDatePicker: React.FC<MaterialDatePickerProps> = ({
   isOpen,
   onClose,
@@ -22,12 +24,14 @@ export const MaterialDatePicker: React.FC<MaterialDatePickerProps> = ({
   const { t, i18n } = useTranslation();
   const [currentDate, setCurrentDate] = useState(selectedDate || new Date());
   const [viewDate, setViewDate] = useState(selectedDate || new Date());
+  const [view, setView] = useState<DateView>('day');
   const [slideDirection, setSlideDirection] = useState<'left' | 'right'>('left');
 
   useEffect(() => {
     if (isOpen && selectedDate) {
       setCurrentDate(selectedDate);
       setViewDate(selectedDate);
+      setView('day'); // Reset view on open
     }
   }, [isOpen, selectedDate]);
 
@@ -54,6 +58,16 @@ export const MaterialDatePicker: React.FC<MaterialDatePickerProps> = ({
     setCurrentDate(newDate);
   };
 
+  const handleYearClick = (year: number) => {
+    setViewDate(new Date(year, viewDate.getMonth(), 1));
+    setView('month'); // After selecting year, go to month selection
+  };
+
+  const handleMonthClick = (monthIndex: number) => {
+    setViewDate(new Date(viewDate.getFullYear(), monthIndex, 1));
+    setView('day'); // After selecting month, go to day selection
+  };
+
   const handleApply = () => {
     onSelect(currentDate);
     onClose();
@@ -63,14 +77,7 @@ export const MaterialDatePicker: React.FC<MaterialDatePickerProps> = ({
      const today = new Date();
      setCurrentDate(today);
      setViewDate(today);
-  };
-
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString(i18n.language === 'th' ? 'th-TH' : 'en-US', {
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric'
-    });
+     setView('day');
   };
 
   const renderCalendarDays = () => {
@@ -115,6 +122,115 @@ export const MaterialDatePicker: React.FC<MaterialDatePickerProps> = ({
     return days;
   };
 
+  const yearListRef = React.useRef<HTMLDivElement>(null);
+  const selectedYearRef = React.useRef<HTMLButtonElement>(null);
+
+  // Lock body scroll when modal is open
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      // Also lock html to prevent bounce on some mobile browsers
+      document.documentElement.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    };
+  }, [isOpen]);
+
+
+
+  useEffect(() => {
+    if (view === 'year' && isOpen) {
+       // Use requestAnimationFrame to wait for layout
+       requestAnimationFrame(() => {
+           // Small timeout to allow transition/animation to start/finish
+           setTimeout(() => {
+              if (selectedYearRef.current && yearListRef.current) {
+                  const container = yearListRef.current;
+                  const selected = selectedYearRef.current;
+                  
+                  const containerHeight = container.clientHeight;
+                  const selectedTop = selected.offsetTop;
+                  const selectedHeight = selected.clientHeight;
+
+                  // Calculate center position
+                  container.scrollTo({
+                      top: selectedTop - containerHeight / 2 + selectedHeight / 2,
+                      behavior: 'auto'
+                  });
+              }
+           }, 100);
+       });
+    }
+  }, [view, isOpen]);
+
+  const renderYears = () => {
+      const currentYear = new Date().getFullYear();
+      const years = [];
+      const startYear = 1900;
+      const endYear = 2100;
+      
+      // Render in descending order (Newest first) so scrolling down shows older years
+      for (let year = endYear; year >= startYear; year--) {
+          const isSelected = year === currentDate.getFullYear();
+          years.push(
+              <button
+                key={year}
+                ref={isSelected ? selectedYearRef : null}
+                type="button"
+                onClick={() => handleYearClick(year)}
+                className={`py-2 px-6 rounded-full text-lg font-semibold transition-all ${
+                    isSelected ? 'text-white shadow-md scale-110' : 'text-gray-400 hover:text-gray-800'
+                }`}
+                style={isSelected ? { backgroundColor: themeColor } : {}}
+              >
+                  {year}
+              </button>
+          );
+      }
+      return (
+          <div 
+            ref={yearListRef} 
+            className="flex flex-col items-center gap-2 h-[260px] overflow-y-auto overscroll-contain py-4 scroll-smooth touch-pan-y isolate relative"
+            onTouchMove={(e) => e.stopPropagation()}
+            onWheel={(e) => e.stopPropagation()}
+          >
+             {years}
+          </div>
+      );
+  };
+
+  const renderMonths = () => {
+      const months = [];
+      for (let i = 0; i < 12; i++) {
+          const date = new Date(viewDate.getFullYear(), i, 1);
+          const monthName = date.toLocaleDateString(i18n.language === 'th' ? 'th-TH' : 'en-US', { month: 'short' });
+          const isSelected = i === currentDate.getMonth() && viewDate.getFullYear() === currentDate.getFullYear();
+          
+          months.push(
+              <button
+                key={i}
+                type="button"
+                onClick={() => handleMonthClick(i)}
+                className={`py-3 rounded-lg text-sm font-semibold transition-colors ${isSelected ? 'text-white' : 'text-gray-700 hover:bg-gray-100'}`}
+                 style={isSelected ? { backgroundColor: themeColor } : {}}
+              >
+                  {monthName}
+              </button>
+          );
+      }
+      return (
+        <div className="grid grid-cols-3 gap-3 h-[260px] content-center">
+            {months}
+        </div>
+      );
+  };
+
   
   const monthName = viewDate.toLocaleDateString(i18n.language === 'th' ? 'th-TH' : 'en-US', { month: 'long', year: 'numeric' });
   const yearText = currentDate.toLocaleDateString(i18n.language === 'th' ? 'th-TH' : 'en-US', { year: 'numeric' });
@@ -127,50 +243,95 @@ export const MaterialDatePicker: React.FC<MaterialDatePickerProps> = ({
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 touch-none">
+           {/* Backdrop */}
+           <motion.div 
+             initial={{ opacity: 0 }}
+             animate={{ opacity: 1 }}
+             exit={{ opacity: 0 }}
+             onClick={onClose}
+             className="absolute inset-0 bg-black/0" // Transparent backdrop to catch clicks
+           />
+           
            <motion.div
              initial={{ opacity: 0, scale: 0.9 }}
              animate={{ opacity: 1, scale: 1 }}
              exit={{ opacity: 0, scale: 0.9 }}
-             className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100 overflow-hidden w-full max-w-[360px] flex flex-col"
+             className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100 overflow-hidden w-full max-w-[360px] flex flex-col relative z-10"
            >
-              {}
+              {/* Header */}
               <div className="p-6 text-white transition-colors" style={{ backgroundColor: themeColor }}>
-                  <p className="text-sm font-medium opacity-70 mb-1">{yearText}</p>
-                  <h2 className="text-3xl font-bold">{dateText}</h2>
+                  <p 
+                    className={`text-sm font-medium opacity-70 mb-1 cursor-pointer hover:opacity-100 transition-opacity ${view === 'year' ? 'opacity-100 font-bold' : ''}`}
+                    onClick={() => setView('year')}
+                  >
+                        {yearText}
+                  </p>
+                  <h2 
+                    className={`text-3xl font-bold cursor-pointer hover:opacity-80 transition-opacity ${view === 'day' ? 'opacity-100' : 'opacity-60'}`}
+                    onClick={() => setView('day')}
+                  >
+                        {dateText}
+                  </h2>
               </div>
 
-              {}
+              {/* Body */}
               <div className="p-4">
-                 {}
-                 <div className="flex items-center justify-between mb-4 px-2">
-                    <button type="button" onClick={handlePrevMonth} className="p-1 rounded-full hover:bg-gray-100">
-                        <ChevronLeft className="w-6 h-6 text-gray-600" />
-                    </button>
-                    <span className="font-bold text-gray-800 text-lg">{monthName}</span>
-                    <button type="button" onClick={handleNextMonth} className="p-1 rounded-full hover:bg-gray-100">
-                        <ChevronRight className="w-6 h-6 text-gray-600" />
-                    </button>
-                 </div>
+                 {/* Navigation (Only on Day view) */}
+                 {view === 'day' && (
+                    <div className="flex items-center justify-between mb-4 px-2">
+                        <button type="button" onClick={handlePrevMonth} className="p-1 rounded-full hover:bg-gray-100">
+                            <ChevronLeft className="w-6 h-6 text-gray-600" />
+                        </button>
+                        <span 
+                            className="font-bold text-gray-800 text-lg cursor-pointer hover:text-primary transition-colors"
+                            onClick={() => setView('month')}
+                            style={{ color: 'inherit' }}
+                        >
+                            {monthName}
+                        </span>
+                        <button type="button" onClick={handleNextMonth} className="p-1 rounded-full hover:bg-gray-100">
+                            <ChevronRight className="w-6 h-6 text-gray-600" />
+                        </button>
+                    </div>
+                 )}
+                 {view === 'year' && (
+                     <div className="flex items-center justify-center mb-4">
+                         <span className="font-bold text-gray-800 text-lg">Select Year</span>
+                     </div>
+                 )}
+                 {view === 'month' && (
+                     <div className="flex items-center justify-center mb-4">
+                         <span className="font-bold text-gray-800 text-lg">{viewDate.getFullYear()}</span>
+                     </div>
+                 )}
 
-                 {}
-                 <div className="grid grid-cols-7 mb-2 text-center">
-                    {weekDays.map(day => (
-                        <div key={day} className="text-xs font-semibold text-gray-400 w-10 h-10 flex items-center justify-center">
-                            {day}
-                        </div>
-                    ))}
-                 </div>
+                 {/* Weekday Labels (Only on Day view) */}
+                 {view === 'day' && (
+                    <div className="grid grid-cols-7 mb-2 text-center">
+                        {weekDays.map(day => (
+                            <div key={day} className="text-xs font-semibold text-gray-400 w-10 h-10 flex items-center justify-center">
+                                {day}
+                            </div>
+                        ))}
+                    </div>
+                 )}
 
-                 {}
-                 <div className="grid grid-cols-7 gap-y-1 justify-items-center h-[260px]">
-                    <AnimatePresence mode="popLayout" custom={slideDirection}>
-                        {renderCalendarDays()}
-                    </AnimatePresence>
+                 {/* Calendar Grid */}
+                 <div className="h-[260px]">
+                    {view === 'day' && (
+                         <div className="grid grid-cols-7 gap-y-1 justify-items-center">
+                            <AnimatePresence mode="popLayout" custom={slideDirection}>
+                                {renderCalendarDays()}
+                            </AnimatePresence>
+                         </div>
+                    )}
+                    {view === 'year' && renderYears()}
+                    {view === 'month' && renderMonths()}
                  </div>
               </div>
 
-              {}
+              {/* Footer */}
               <div className="flex items-center justify-between p-4 px-6 border-t border-gray-100">
                   <button 
                     type="button"

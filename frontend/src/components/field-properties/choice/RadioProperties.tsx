@@ -1,10 +1,10 @@
-
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Field } from '@/types';
+import { Field, RadioField, RadioFieldOptions, CheckboxOption } from '@/types';
 import { Copy } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SelectGroup, SelectLabel } from '@/components/ui/custom-select';
 import { stripHtml } from '@/lib/ui/utils';
+import { parseOptions, formatOptionsToText } from './utils';
 import { PropertiesTabs } from '../common/PropertiesTabs';
 
 interface RadioPropertiesProps {
@@ -13,20 +13,20 @@ interface RadioPropertiesProps {
   duplicatesField: (field: Omit<Field, 'id' | 'formId'>) => void;
 }
 
-export const RadioProperties = ({ field, updateField, duplicatesField }: RadioPropertiesProps) => {
+export const RadioProperties: React.FC<RadioPropertiesProps> = ({ field: rawField, updateField, duplicatesField }) => {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState<'general' | 'options' | 'surveying' | 'advanced'>('general');
+  const [activeTab, setActiveTab] = useState<'general' | 'options' | 'advanced'>('general');
 
-  
-  const options = Array.isArray(field.options) ? { items: field.options } : (field.options || {});
+  const field = rawField as unknown as RadioField;
+  const rawOptions = Array.isArray(field.options) ? { items: field.options } : (field.options || {});
+  const options = rawOptions as RadioFieldOptions;
 
-  
-  const handleUpdate = (updates: any) => {
+  const handleUpdate = (updates: Partial<RadioField>) => {
     updateField(field.id, updates);
   };
 
 
-  const handleOptionUpdate = (key: string, value: any) => {
+  const handleOptionUpdate = (key: keyof RadioFieldOptions, value: unknown) => {
     const currentOptions = Array.isArray(field.options) 
         ? { items: field.options } 
         : (field.options || {});
@@ -35,44 +35,33 @@ export const RadioProperties = ({ field, updateField, duplicatesField }: RadioPr
       options: {
         ...currentOptions,
         [key]: value,
-      },
+      } as RadioFieldOptions,
     });
   };
-
   
-  const optionsList = Array.isArray(field.options) ? field.options : ((field.options as any)?.items || []);
+  const optionsList: CheckboxOption[] = options.items || [];
   
   const handleOptionsListChange = (text: string) => {
-    const newItems = text.split('\n').filter(line => line.trim()).map(line => {
-        const [label, value] = line.split(':');
-        return {
-            label: label?.trim() || value?.trim() || '',
-            value: value?.trim() || label?.trim() || '',
-        };
-    });
+    const newItems = parseOptions(text);
     
     
-    const currentOptions = Array.isArray(field.options) ? {} : field.options;
+    const currentOptions = (Array.isArray(field.options) ? {} : field.options) as RadioFieldOptions;
     
     handleUpdate({ 
         options: Array.isArray(field.options) 
-            ? { items: newItems }
+            ? { ...currentOptions, items: newItems }
             : { ...currentOptions, items: newItems }
     });
   };
  
   return (
     <div className="space-y-4">
-      { }
-      <PropertiesTabs 
-        activeTab={activeTab} 
-        setActiveTab={setActiveTab} 
-        tabs={['general', 'options', 'surveying', 'advanced']} 
-      />
-
+      {/* <h3 className="font-semibold mb-2">{t('builder.properties.radio_properties')}</h3> */}
+      <PropertiesTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+      
       {activeTab === 'general' && (
         <div className="space-y-4">
-           { }
+           {/* Label */}
            <div>
               <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.field_label')}
@@ -85,7 +74,7 @@ export const RadioProperties = ({ field, updateField, duplicatesField }: RadioPr
               />
             </div>
 
-            { }
+            {/* Label Alignment */}
             <div>
               <label className="block text-sm font-medium text-black mb-2">
                 {t('builder.properties.label_alignment')}
@@ -96,18 +85,18 @@ export const RadioProperties = ({ field, updateField, duplicatesField }: RadioPr
                     key={align}
                     onClick={() => handleOptionUpdate('labelAlignment', align)}
                      className={`flex-1 px-3 py-2 text-xs font-medium rounded-md border transition-colors ${
-                      ((field.options as any)?.labelAlignment === align) || (!(field.options as any)?.labelAlignment && align === 'TOP')
+                      (options.labelAlignment === align) || (!options.labelAlignment && align === 'TOP')
                         ? 'bg-black text-white border-black'
                         : 'bg-white text-black border-gray-400 hover:bg-gray-50'
                     }`}
                   >
-                    {align === 'LEFT' ? t('builder.properties.left') : align === 'CENTER' ? t('builder.properties.center') : t('builder.properties.top')}
+                   {align === 'LEFT' ? t('builder.properties.left') : align === 'CENTER' ? t('builder.properties.center') : t('builder.properties.top')}
                   </button>
                 ))}
               </div>
             </div>
 
-            { }
+            {/* Required */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                   {t('builder.properties.required')}
@@ -126,7 +115,7 @@ export const RadioProperties = ({ field, updateField, duplicatesField }: RadioPr
               </p>
             </div>
 
-            { }
+            {/* Sublabel */}
             <div>
               <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.sublabel')}
@@ -136,14 +125,13 @@ export const RadioProperties = ({ field, updateField, duplicatesField }: RadioPr
                 value={options.subLabel || ''}
                 onChange={(e) => handleOptionUpdate('subLabel', e.target.value)}
                 className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
-                placeholder={t('builder.properties.sublabel_desc')}
               />
               <p className="mt-1 text-xs text-gray-500">
                 {t('builder.properties.sublabel_desc')}
               </p>
             </div>
 
-             { }
+             {/* Duplicate Button */}
              <button
                type="button"
                onClick={() => duplicatesField({
@@ -165,14 +153,14 @@ export const RadioProperties = ({ field, updateField, duplicatesField }: RadioPr
 
       {activeTab === 'options' && (
         <div className="space-y-6">
-            { }
+            {/* Options List */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                  {t('builder.properties.options')}
                </label>
                <div className="border border-gray-400 rounded-md overflow-hidden bg-white">
                   <textarea
-                    value={optionsList.map((opt: any) => opt.label === opt.value ? opt.label : `${opt.label}:${opt.value}`).join('\n')}
+                    value={formatOptionsToText(optionsList)}
                     onChange={(e) => handleOptionsListChange(e.target.value)}
                     rows={8}
                     className="w-full px-3 py-2 focus:outline-none resize-y text-sm"
@@ -184,7 +172,7 @@ export const RadioProperties = ({ field, updateField, duplicatesField }: RadioPr
                </p>
             </div>
             
-             { }
+             {/* Predefined Options */}
              <div>
                 <label className="block text-sm font-medium text-black mb-1">
                   {t('builder.properties.predefined_options')}
@@ -200,17 +188,10 @@ export const RadioProperties = ({ field, updateField, duplicatesField }: RadioPr
                             gender_thai: ['ชาย', 'หญิง', 'อื่นๆ', 'ไม่ระบุ'],
                             days_of_week: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
                             days_thai: ['วันจันทร์', 'วันอังคาร', 'วันพุธ', 'วันพฤหัสบดี', 'วันศุกร์', 'วันเสาร์', 'วันอาทิตย์'],
-                            months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-                            months_thai: ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'],
-                            education: ['Primary School', 'Secondary School', 'High School', 'Bachelor\'s Degree', 'Master\'s Degree', 'Doctorate', 'Other'],
-                            education_thai: ['ประถมศึกษา', 'มัธยมศึกษาตอนต้น', 'มัธยมศึกษาตอนปลาย', 'ปริญญาตรี', 'ปริญญาโท', 'ปริญญาเอก', 'อื่นๆ'],
-                            age_ranges: ['Under 18', '18-24', '25-34', '35-44', '45-54', '55-64', '65+'],
-                            rating_1_5: ['1', '2', '3', '4', '5'],
-                            rating_1_10: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
                             satisfaction: ['Very Dissatisfied', 'Dissatisfied', 'Neutral', 'Satisfied', 'Very Satisfied'],
                             satisfaction_thai: ['ไม่พอใจมาก', 'ไม่พอใจ', 'ปานกลาง', 'พอใจ', 'พอใจมาก'],
                             agreement: ['Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree'],
-                            agreement_thai: ['ไม่เห็นด้วยอย่างยิ่ง', 'ไม่เห็นด้วย', 'ปานกลาง', 'เห็นด้วย', 'เห็นด้วยอย่างยิ่ง'],
+                            agreement_thai: ['ไม่เห็นด้วยอย่างยิ่ง', 'ไม่เห็นด้วย', 'เฉยๆ', 'เห็นด้วย', 'เห็นด้วยอย่างยิ่ง'],
                         };
                         
                         const selected = predefinedLists[value];
@@ -223,7 +204,7 @@ export const RadioProperties = ({ field, updateField, duplicatesField }: RadioPr
                                 options: {
                                     ...currentOptions,
                                     items: newItems
-                                }
+                                } as RadioFieldOptions
                             });
                         }
                     }}
@@ -232,13 +213,11 @@ export const RadioProperties = ({ field, updateField, duplicatesField }: RadioPr
                         <SelectValue placeholder={t('builder.properties.select_predefined')} />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectGroup>
+                         <SelectGroup>
                             <SelectLabel>Thailand</SelectLabel>
                             <SelectItem value="yes_no_thai">Yes/No (Thai)</SelectItem>
                             <SelectItem value="gender_thai">Gender (Thai)</SelectItem>
                             <SelectItem value="days_thai">Days of Week (Thai)</SelectItem>
-                            <SelectItem value="months_thai">Months (Thai)</SelectItem>
-                            <SelectItem value="education_thai">Education Level (Thai)</SelectItem>
                             <SelectItem value="satisfaction_thai">Satisfaction (Thai)</SelectItem>
                             <SelectItem value="agreement_thai">Agreement (Thai)</SelectItem>
                         </SelectGroup>
@@ -247,16 +226,8 @@ export const RadioProperties = ({ field, updateField, duplicatesField }: RadioPr
                             <SelectItem value="yes_no">Yes/No</SelectItem>
                             <SelectItem value="gender">Gender</SelectItem>
                             <SelectItem value="days_of_week">Days of Week</SelectItem>
-                            <SelectItem value="months">Months</SelectItem>
-                            <SelectItem value="education">Education Level</SelectItem>
                             <SelectItem value="satisfaction">Satisfaction</SelectItem>
-                            <SelectItem value="agreement">Agreement</SelectItem>
-                        </SelectGroup>
-                        <SelectGroup>
-                            <SelectLabel>Numbers</SelectLabel>
-                            <SelectItem value="age_ranges">Age Ranges</SelectItem>
-                            <SelectItem value="rating_1_5">Rating 1-5</SelectItem>
-                            <SelectItem value="rating_1_10">Rating 1-10</SelectItem>
+                             <SelectItem value="agreement">Agreement</SelectItem>
                         </SelectGroup>
                     </SelectContent>
                 </Select>
@@ -265,7 +236,7 @@ export const RadioProperties = ({ field, updateField, duplicatesField }: RadioPr
                 </p>
             </div>
 
-            { }
+            {/* Calculation Values */}
              <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.calculation_values')}
@@ -284,7 +255,7 @@ export const RadioProperties = ({ field, updateField, duplicatesField }: RadioPr
                 </p>
             </div>
 
-            { }
+            {/* Other Option */}
              <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.display_other_option')}
@@ -303,7 +274,7 @@ export const RadioProperties = ({ field, updateField, duplicatesField }: RadioPr
                 </p>
             </div>
 
-             { }
+             {/* Spread to Columns */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.spread_to_columns')}
@@ -318,11 +289,6 @@ export const RadioProperties = ({ field, updateField, duplicatesField }: RadioPr
                    />
                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
                  </label>
-                 {options.spreadToColumns && (
-                   <span className="text-xs font-bold px-2 py-1 bg-gray-200 rounded text-gray-600">
-                        {t('builder.properties.fixed_width')}
-                   </span>
-                 )}
                </div>
                  <p className="mt-1 text-xs text-gray-500">
                   {t('builder.properties.spread_to_columns_desc')}
@@ -344,46 +310,23 @@ export const RadioProperties = ({ field, updateField, duplicatesField }: RadioPr
         </div>
       )}
 
-      {activeTab === 'surveying' && (
-           <div className="space-y-6">
-               { }
-            <div>
-               <label className="block text-sm font-medium text-black mb-1">
-                {t('builder.properties.shuffle_options')}
-               </label>
-               <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={options.shuffle || false}
-                    onChange={(e) => handleOptionUpdate('shuffle', e.target.checked)}
-                    className="sr-only peer"
-                  />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
-                </label>
-                <p className="mt-1 text-xs text-gray-500">
-                 {t('builder.properties.random_order_desc')}
-               </p>
-            </div>
-           </div>
-      )}
-
       {activeTab === 'advanced' && (
         <div className="space-y-6">
-            { }
+            {/* Default Value */}
             <div>
                 <label className="block text-sm font-medium text-black mb-1">
                   {t('builder.properties.selected_by_default')}
                 </label>
-                 <Select 
+                <Select 
                     value={options.defaultValue || ''} 
                     onValueChange={(val) => handleOptionUpdate('defaultValue', val)}
                 >
                     <SelectTrigger className="w-full bg-white border-gray-400">
-                        <SelectValue placeholder={t('builder.properties.select_default')} />
+                        <SelectValue placeholder={t('builder.properties.no_selection')} />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="_no_default_">{t('builder.properties.no_selection')}</SelectItem>
-                        {Array.isArray(field.options) && field.options.map((opt: any, idx: number) => (
+                        <SelectItem value="_no_selection_">{t('builder.properties.no_selection')}</SelectItem>
+                        {optionsList.map((opt: CheckboxOption, idx: number) => (
                             <SelectItem key={idx} value={opt.value}>
                                 {opt.label || opt.value}
                             </SelectItem>
@@ -395,7 +338,7 @@ export const RadioProperties = ({ field, updateField, duplicatesField }: RadioPr
                 </p>
             </div>
 
-            { }
+            {/* Hover Text */}
              <div>
               <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.hover_text')}
@@ -411,7 +354,7 @@ export const RadioProperties = ({ field, updateField, duplicatesField }: RadioPr
               </p>
             </div>
 
-             { }
+             {/* Read Only */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.read_only')}
@@ -430,7 +373,7 @@ export const RadioProperties = ({ field, updateField, duplicatesField }: RadioPr
               </p>
             </div>
 
-             { }
+             {/* Shrink */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.shrink')}
@@ -449,7 +392,7 @@ export const RadioProperties = ({ field, updateField, duplicatesField }: RadioPr
               </p>
             </div>
             
-             { }
+            {/* Hide Field */}
             <div>
                <label className="block text-sm font-medium text-black mb-1">
                 {t('builder.properties.hide_field')}
@@ -467,6 +410,7 @@ export const RadioProperties = ({ field, updateField, duplicatesField }: RadioPr
                   {t('builder.properties.hide_field_desc') || "Hide this field from the form"}
                 </p>
             </div>
+
         </div>
       )}
     </div>

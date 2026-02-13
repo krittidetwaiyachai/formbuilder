@@ -1,4 +1,4 @@
-import { Field, FieldType, Form } from '@/types';
+import { Field, FieldType, Form, hasArrayOptions, hasCheckboxOptions, TypedField, CheckboxOption } from '@/types';
 import { stripHtml } from '@/lib/ui/utils';
 import { useTranslation } from 'react-i18next';
 
@@ -148,23 +148,23 @@ export function CommonFieldProperties({ field, currentForm, updateField }: Commo
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   {t('builder.properties.correct_answer')}
                 </label>
-                {(field.type === FieldType.RADIO || field.type === FieldType.DROPDOWN) && field.options && field.options.length > 0 ? (
+                {(field.type === FieldType.RADIO || field.type === FieldType.DROPDOWN) && hasArrayOptions(field as TypedField) && (field as TypedField).options?.items && ((((field as TypedField).options?.items as CheckboxOption[])?.length ?? 0) > 0) ? (
                   <select
                     value={field.correctAnswer || ''}
                     onChange={(e) => updateField(field.id, { correctAnswer: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white"
                   >
                     <option value="">{t('builder.properties.select_correct_option')}</option>
-                    {field.options.map((opt: any, idx: number) => (
+                    {(hasArrayOptions(field as TypedField) ? ((field as TypedField).options?.items as CheckboxOption[]) || [] : []).map((opt: CheckboxOption, idx: number) => (
                       <option key={idx} value={opt.value}>
                         {opt.label}
                       </option>
                     ))}
                   </select>
-                ) : field.type === FieldType.CHECKBOX && field.options && field.options.length > 0 ? (
+                ) : field.type === FieldType.CHECKBOX && hasCheckboxOptions(field as TypedField) && (field as TypedField).options?.items && ((((field as TypedField).options?.items as CheckboxOption[])?.length ?? 0) > 0) ? (
                   <div className="space-y-2 p-3 border border-gray-300 rounded-lg bg-white max-h-48 overflow-y-auto">
                     <p className="text-xs text-gray-500 mb-2">{t('builder.properties.select_all_correct')}</p>
-                    {field.options.map((opt: any, idx: number) => {
+                    {(((field as TypedField).options?.items as CheckboxOption[]) || []).map((opt: CheckboxOption, idx: number) => {
                       const correctAnswers = (field.correctAnswer || '').split(',').filter(Boolean);
                       const isChecked = correctAnswers.includes(opt.value);
                       

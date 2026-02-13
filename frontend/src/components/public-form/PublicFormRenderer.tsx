@@ -165,7 +165,7 @@ export default function PublicFormRenderer(props: PublicFormRendererProps) {
                   showScore={!!showScore}
                   allowViewMissedQuestions={!!(form.isQuiz && form.quizSettings?.allowViewMissedQuestions)}
                   showExplanation={!!(form.isQuiz && form.quizSettings?.showExplanation)}
-                  quizReview={quizReview}
+                  quizReview={quizReview ?? undefined}
                   isQuiz={form.isQuiz}
                   viewMode={viewMode}
                 />
@@ -308,7 +308,7 @@ export default function PublicFormRenderer(props: PublicFormRendererProps) {
                     style={!isCardLayout ? { backgroundColor: 'var(--card-bg)', borderColor: 'var(--card-border)' } : {}}
                 >
                     {isCardLayout ? (
-                        <CardLayout currentField={currentField} currentCardIndex={currentCardIndex} register={register} errors={errors} watch={watch} setValue={setValue} control={control} form={form} />
+                        <CardLayout currentField={currentField ?? undefined} currentCardIndex={currentCardIndex} register={register} errors={errors} watch={watch} setValue={setValue} control={control} form={form} />
                     ) : (
                         <ClassicLayout currentPageFields={currentPageFields} register={register} errors={errors} watch={watch} setValue={setValue} control={control} form={form} />
                     )}

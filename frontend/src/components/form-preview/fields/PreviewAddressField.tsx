@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Field } from '@/types';
-import { useForm } from 'react-hook-form';
+import { Field, AddressField } from '@/types';
+import { useForm, FieldErrors } from 'react-hook-form';
 import { MapPin } from 'lucide-react';
 import { PreviewLabel } from '../PreviewLabel';
 import { AddressInput } from './components/AddressInput';
@@ -10,7 +10,7 @@ import { AddressProvinceSelect } from './components/AddressProvinceSelect';
 interface PreviewFieldProps {
   field: Field;
   register: ReturnType<typeof useForm>['register'];
-  errors: any;
+  errors: FieldErrors;
   questionNumber?: number;
   isPublic?: boolean;
 }
@@ -24,7 +24,8 @@ export const PreviewAddressField: React.FC<PreviewFieldProps> = ({
 }) => {
   const { t } = useTranslation();
   const fieldName = `field_${field.id}`;
-  const options = field.options || {};
+  const typedField = field as AddressField;
+  const options = typedField.options || {};
   const {
     labelAlignment = 'TOP',
     sublabels = {},
@@ -85,7 +86,7 @@ export const PreviewAddressField: React.FC<PreviewFieldProps> = ({
         register={register}
         inputClass={getBaseInputClass(false)}
         inputStyle={inputStyle}
-        errorMessage={errors[`${fieldName}_state`]?.message}
+        errorMessage={errors[`${fieldName}_state`]?.message as string}
       />
     );
   };
@@ -124,7 +125,7 @@ export const PreviewAddressField: React.FC<PreviewFieldProps> = ({
               register={register}
               inputClass={getBaseInputClass(!isPublic)}
               inputStyle={inputStyle}
-              errorMessage={errors[`${fieldName}_street`]?.message}
+              errorMessage={errors[`${fieldName}_street`]?.message as string}
               startIcon={
                 !isPublic ? (
                   <MapPin className="h-4 w-4 text-gray-400" />
@@ -144,7 +145,7 @@ export const PreviewAddressField: React.FC<PreviewFieldProps> = ({
               register={register}
               inputClass={getBaseInputClass(false)}
               inputStyle={inputStyle}
-              errorMessage={errors[`${fieldName}_street2`]?.message}
+              errorMessage={errors[`${fieldName}_street2`]?.message as string}
             />
           )}
 
@@ -161,7 +162,7 @@ export const PreviewAddressField: React.FC<PreviewFieldProps> = ({
                 register={register}
                 inputClass={getBaseInputClass(false)}
                 inputStyle={inputStyle}
-                errorMessage={errors[`${fieldName}_city`]?.message}
+                errorMessage={errors[`${fieldName}_city`]?.message as string}
               />
             )}
             {showState && renderStateInput()}
@@ -184,7 +185,7 @@ export const PreviewAddressField: React.FC<PreviewFieldProps> = ({
                 register={register}
                 inputClass={getBaseInputClass(false)}
                 inputStyle={inputStyle}
-                errorMessage={errors[`${fieldName}_zip`]?.message}
+                errorMessage={errors[`${fieldName}_zip`]?.message as string}
               />
             )}
             {showCountry && (
@@ -199,7 +200,7 @@ export const PreviewAddressField: React.FC<PreviewFieldProps> = ({
                 register={register}
                 inputClass={getBaseInputClass(false)}
                 inputStyle={inputStyle}
-                errorMessage={errors[`${fieldName}_country`]?.message}
+                errorMessage={errors[`${fieldName}_country`]?.message as string}
               />
             )}
           </div>

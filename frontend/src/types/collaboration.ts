@@ -20,7 +20,7 @@ export interface ActivityLog {
   targetName?: string;
   description: string;
   timestamp: string;
-  metadata?: any;
+  metadata?: Record<string, unknown>;
   formId: string;
 }
 

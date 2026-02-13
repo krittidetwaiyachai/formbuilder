@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Field } from '@/types';
+import { Field, TableField, Column, TableFieldOptions } from '@/types';
 import { Plus, X, GripVertical, Copy } from 'lucide-react';
-import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { stripHtml } from '@/lib/ui/utils';
 import { PropertiesTabs } from '../common/PropertiesTabs';
 import { useTranslation } from 'react-i18next';
@@ -16,24 +16,25 @@ export function TableProperties({ field, updateField, duplicatesField }: TablePr
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'general' | 'columns' | 'advanced'>('general');
 
-  const columns = field.options?.columns || [{ id: 'c1', label: t('builder.properties.column') + ' 1' }, { id: 'c2', label: t('builder.properties.column') + ' 2' }];
-  const options = field.options || {};
-  const allowAddRow = field.options?.allowAddRow !== undefined ? field.options.allowAddRow : true;
+  const typedField = field as unknown as TableField;
+  const columns: Column[] = typedField.options?.columns || [{ id: 'c1', label: t('builder.properties.column') + ' 1' }, { id: 'c2', label: t('builder.properties.column') + ' 2' }];
+  const options: TableFieldOptions = typedField.options || {};
+  const allowAddRow = options.allowAddRow !== undefined ? options.allowAddRow : true;
 
-  const handleUpdate = (updates: any) => {
+  const handleUpdate = (updates: Partial<TableField>) => {
     updateField(field.id, updates);
   };
 
-  const handleOptionUpdate = (key: string, value: any) => {
+  const handleOptionUpdate = (key: keyof TableFieldOptions, value: unknown) => {
     handleUpdate({
       options: {
-        ...field.options,
+        ...options,
         [key]: value,
       },
     });
   };
 
-  const updateColumns = (newCols: any[]) => {
+  const updateColumns = (newCols: Column[]) => {
     handleOptionUpdate('columns', newCols);
   };
 
@@ -54,7 +55,7 @@ export function TableProperties({ field, updateField, duplicatesField }: TablePr
     updateColumns(newCols);
   };
 
-  const handleDragEndColumns = (result: any) => {
+  const handleDragEndColumns = (result: DropResult) => {
     if (!result.destination) return;
     const items = Array.from(columns);
     const [reorderedItem] = items.splice(result.source.index, 1);
@@ -170,7 +171,7 @@ export function TableProperties({ field, updateField, duplicatesField }: TablePr
             onClick={() => duplicatesField({
                ...field,
                id: undefined,
-            } as any)}
+            } as unknown as Field)}
             className="w-full mt-4 px-3 py-2 text-sm font-medium text-black bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
           >
             <Copy className="h-4 w-4" />
@@ -212,7 +213,7 @@ export function TableProperties({ field, updateField, duplicatesField }: TablePr
                   <Droppable droppableId="table-cols">
                       {(provided) => (
                           <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-2">
-                              {columns.map((col: any, index: number) => (
+                              {columns.map((col: Column, index: number) => (
                                   <Draggable key={col.id} draggableId={col.id} index={index}>
                                       {(provided) => (
                                           <div 
@@ -262,7 +263,7 @@ export function TableProperties({ field, updateField, duplicatesField }: TablePr
                <label className="relative inline-flex items-center cursor-pointer">
                   <input
                     type="checkbox"
-                    checked={field.options?.readOnly || false}
+                    checked={(field.options as TableFieldOptions)?.readOnly || false}
                     onChange={(e) => handleOptionUpdate('readOnly', e.target.checked)}
                     className="sr-only peer"
                   />

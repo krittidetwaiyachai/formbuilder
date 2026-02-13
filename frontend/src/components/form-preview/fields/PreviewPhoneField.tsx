@@ -1,6 +1,6 @@
 import React from 'react';
-import { Field } from '@/types';
-import { useForm } from 'react-hook-form';
+import { Field, PhoneField, PhoneFieldOptions, PhoneValidation } from '@/types';
+import { useForm, FieldErrors, RegisterOptions } from 'react-hook-form';
 import { Phone } from 'lucide-react';
 import { PreviewLabel } from '../PreviewLabel';
 import { stripHtml } from '@/lib/ui/utils';
@@ -8,7 +8,7 @@ import { stripHtml } from '@/lib/ui/utils';
 interface PreviewFieldProps {
   field: Field;
   register: ReturnType<typeof useForm>['register'];
-  errors: any;
+  errors: FieldErrors;
   questionNumber?: number;
   isPublic?: boolean;
 }
@@ -19,15 +19,16 @@ export const PreviewPhoneField: React.FC<PreviewFieldProps> = ({ field, register
   const { t } = useTranslation();
   const fieldName = `field_${field.id}`;
   const fieldError = errors[fieldName];
+  const typedField = field as PhoneField;
 
-  const options = field.options || {};
-  const validation = field.validation || {};
+  const options = (typedField.options || {}) as PhoneFieldOptions;
+  const validation = (field.validation || {}) as PhoneValidation;
   const { labelAlignment = 'TOP', subLabel, width, customWidth, hoverText, readOnly, defaultValue, shrink, showCountryCode } = options;
   const { hasInputMask, inputMask } = validation;
 
   const isRowLayout = labelAlignment === 'LEFT' || labelAlignment === 'RIGHT';
 
-  const validationRules: any = {
+  const validationRules: RegisterOptions = {
     required: field.required ? t('public.validation.required_field', { label: stripHtml(field.label) }) : false,
     pattern: {
       value: /^[\d\s\-\(\)\+]{9,}$/,

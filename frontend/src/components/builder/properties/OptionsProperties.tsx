@@ -5,38 +5,54 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Plus, Trash2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
+
+interface OptionItem {
+  id: string;
+  label: string;
+  value: string;
+}
 
 interface OptionsPropertiesProps {
   element: Field;
   onUpdate: (updates: Partial<Field>) => void;
 }
 
-import { useTranslation } from "react-i18next";
+const getItems = (options: Field['options']): OptionItem[] => {
+  if (!options) return [];
+  if ('items' in options && Array.isArray(options.items)) {
+    return options.items as OptionItem[];
+  }
+  return [];
+};
 
 export default function OptionsProperties({ element, onUpdate }: OptionsPropertiesProps) {
   const { t } = useTranslation();
+  const items = getItems(element.options);
+
   const handleAddOption = () => {
-    const newOption = {
+    const newOption: OptionItem = {
       id: `opt-${Date.now()}`,
-      label: `Option ${(element.options?.length || 0) + 1}`,
-      value: `option-${(element.options?.length || 0) + 1}`,
+      label: `Option ${items.length + 1}`,
+      value: `option-${items.length + 1}`,
     };
     onUpdate({
-      options: [...(element.options || []), newOption],
+      options: { ...element.options, items: [...items, newOption] } as Field['options'],
     });
   };
 
   const handleRemoveOption = (optionId: string) => {
     onUpdate({
-      options: element.options?.filter((opt: any) => opt.id !== optionId),
+      options: { ...element.options, items: items.filter((opt) => opt.id !== optionId) } as Field['options'],
     });
   };
 
   const handleUpdateOption = (optionId: string, updates: { label?: string; value?: string }) => {
     onUpdate({
-      options: element.options?.map((opt: any) =>
-        opt.id === optionId ? { ...opt, ...updates } : opt
-      ),
+      options: {
+        ...element.options,
+        items: items.map((opt) => opt.id === optionId ? { ...opt, ...updates } : opt),
+      } as Field['options'],
     });
   };
 
@@ -55,7 +71,7 @@ export default function OptionsProperties({ element, onUpdate }: OptionsProperti
         </Button>
       </div>
       <div className="space-y-2">
-        {element.options?.map((option: any) => (
+        {items.map((option) => (
           <div key={option.id} className="flex gap-2">
             <Input
               value={option.label}

@@ -1,4 +1,4 @@
-import { Field, FieldType, FormStatus } from "@/types";
+import { Field, FieldType, FormStatus, Form, FormResponse } from "@/types";
 import { ActivityLog } from "@/types/collaboration";
 
 export const MOCK_FORM_ELEMENTS: Field[] = [
@@ -12,22 +12,22 @@ export const MOCK_FORM_ELEMENTS: Field[] = [
     options: {},
   },
   {
-      id: "2",
-      formId: "form1",
-      type: FieldType.CHECKBOX,
-      label: "Interests",
-      required: false,
-      order: 1,
-      options: {
-          items: [
-              { label: "Coding", value: "coding" },
-              { label: "Design", value: "design" }
-          ]
-      }
+    id: "2",
+    formId: "form1",
+    type: FieldType.CHECKBOX,
+    label: "Interests",
+    required: false,
+    order: 1,
+    options: {
+      items: [
+        { label: "Coding", value: "coding" },
+        { label: "Design", value: "design" }
+      ]
+    }
   }
 ];
 
-export const MOCK_USER_FORMS = [
+export const MOCK_USER_FORMS: Form[] = [
   {
     id: "f1",
     title: "Customer Satisfaction Survey",
@@ -35,8 +35,6 @@ export const MOCK_USER_FORMS = [
     responseCount: 150,
     updatedAt: new Date().toISOString(),
     viewCount: 450,
-    questions: 10,
-    responses: 150,
     isQuiz: false,
     createdById: "u1",
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 7).toISOString(),
@@ -49,8 +47,6 @@ export const MOCK_USER_FORMS = [
     responseCount: 0,
     updatedAt: new Date().toISOString(),
     viewCount: 0,
-    questions: 5,
-    responses: 0,
     isQuiz: false,
     createdById: "u1",
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
@@ -82,75 +78,28 @@ export const MOCK_ANALYTICS = {
   },
 };
 
-export const MOCK_SUBMISSIONS = [
+export const MOCK_SUBMISSIONS: FormResponse[] = [
   {
     id: "sub1",
-    submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), 
-    device: "desktop",
-    data: {
-      email: "alice@example.com",
-      satisfaction: "5",
-      feedback: "Great experience!",
-    },
+    formId: "f1",
+    submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
+    answers: [
+      { id: "a1", responseId: "sub1", fieldId: "1", value: "alice@example.com" },
+      { id: "a2", responseId: "sub1", fieldId: "2", value: "5" },
+      { id: "a3", responseId: "sub1", fieldId: "3", value: "Great experience!" }
+    ]
   },
   {
     id: "sub2",
-    submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(), 
-    device: "mobile",
-    data: {
-      email: "bob@example.com",
-      satisfaction: "4",
-      feedback: "Good, but could be faster.",
-    },
-  },
-  {
-    id: "sub3",
-    submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(), 
-    device: "desktop",
-    data: {
-      email: "charlie@example.com",
-      satisfaction: "3",
-      feedback: "It was okay.",
-    },
-  },
+    formId: "f1",
+    submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
+    answers: []
+  }
 ];
 
+
 export const mockForms = MOCK_USER_FORMS;
-export const mockSubmissions = [
-  {
-    id: "sub1",
-    formId: "f1",
-    submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), 
-    device: "desktop",
-    data: {
-      email: "alice@example.com",
-      satisfaction: "5",
-      feedback: "Great experience!",
-    },
-  },
-  {
-    id: "sub2",
-    formId: "f1",
-    submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(), 
-    device: "mobile",
-    data: {
-      email: "bob@example.com",
-      satisfaction: "4",
-      feedback: "Good, but could be faster.",
-    },
-  },
-  {
-    id: "sub3",
-    formId: "f1",
-    submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(), 
-    device: "desktop",
-    data: {
-      email: "charlie@example.com",
-      satisfaction: "3",
-      feedback: "It was okay.",
-    },
-  },
-];
+export const mockSubmissions = MOCK_SUBMISSIONS;
 
 export const mockActivityLogs: ActivityLog[] = [
   {

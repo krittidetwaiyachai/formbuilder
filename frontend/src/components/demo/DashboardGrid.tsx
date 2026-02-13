@@ -1,6 +1,7 @@
 "use client";
 
 import { MOCK_USER_FORMS } from "@/lib/mock-data";
+import { Form } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Plus, Pencil, BarChart3 } from "lucide-react";
 
@@ -45,7 +46,7 @@ export default function DashboardGrid() {
       </Card>
 
       { }
-      {MOCK_USER_FORMS.map((form: any) => (
+      {MOCK_USER_FORMS.map((form: Form) => (
         <Card
           key={form.id}
           className="hover:shadow-lg transition-shadow flex flex-col"

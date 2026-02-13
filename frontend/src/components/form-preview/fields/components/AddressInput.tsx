@@ -1,5 +1,5 @@
 import React from 'react';
-import { UseFormRegister } from 'react-hook-form';
+import { UseFormRegister, FieldValues } from 'react-hook-form';
 
 interface AddressInputProps {
   id: string;
@@ -11,7 +11,7 @@ interface AddressInputProps {
   isRequired?: boolean;
   errorMessage?: string;
   startIcon?: React.ReactNode;
-  register: UseFormRegister<any>;
+  register: UseFormRegister<FieldValues>;
   inputClass: string;
   inputStyle: React.CSSProperties;
 }

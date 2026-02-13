@@ -6,8 +6,26 @@ import { Form } from '@/types';
 import UserAvatar from '@/components/common/UserAvatar';
 import { useTranslation } from 'react-i18next';
 
+interface FormEditor {
+  id: string;
+  email: string;
+  firstName?: string;
+  lastName?: string;
+  photoUrl?: string;
+}
+
+interface ExtendedForm extends Form {
+  responseCount?: number;
+  viewCount?: number;
+  collaborators?: FormEditor[];
+  createdBy?: FormEditor;
+  createdAt: string;
+  updatedAt: string;
+  _count?: { responses: number };
+}
+
 interface FormDetailsModalProps {
-  form: (Form & { collaborators?: any[]; createdBy?: any }) | null;
+  form: ExtendedForm | null;
   onClose: () => void;
   onRequestLogin: () => void;
   onOpenCollaborators: () => void;
@@ -95,14 +113,14 @@ export default function FormDetailsModal({ form, onClose, onRequestLogin, onOpen
                                 <MessageSquare className="w-4 h-4" />
                                 <span>{t('dashboard.form.responses')}</span>
                             </div>
-                            <span className="font-bold text-gray-900">{(form as any).responseCount || (form as any)._count?.responses || 0}</span>
+                            <span className="font-bold text-gray-900">{form.responseCount || form._count?.responses || 0}</span>
                         </div>
                         <div className="flex items-center justify-between text-sm">
                             <div className="flex items-center gap-2 text-gray-600">
                                 <Eye className="w-4 h-4" />
                                 <span>{t('dashboard.form.views_plural')}</span>
                             </div>
-                            <span className="font-bold text-gray-900">{(form as any).viewCount || 0}</span>
+                            <span className="font-bold text-gray-900">{form.viewCount || 0}</span>
                         </div>
                     </div>
                   </div>
@@ -114,14 +132,14 @@ export default function FormDetailsModal({ form, onClose, onRequestLogin, onOpen
                             <Clock className="w-4 h-4 mt-0.5 flex-shrink-0" />
                             <div>
                                 <span className="block text-xs text-gray-400">{t('dashboard.form.created')}</span>
-                                <span className="font-medium text-gray-900">{formatDate((form as any).createdAt)}</span>
+                                <span className="font-medium text-gray-900">{formatDate(form.createdAt)}</span>
                             </div>
                         </div>
                         <div className="flex items-start gap-2 text-sm text-gray-600">
                             <FileText className="w-4 h-4 mt-0.5 flex-shrink-0" />
                             <div>
                                 <span className="block text-xs text-gray-400">{t('dashboard.form.last_updated')}</span>
-                                <span className="font-medium text-gray-900">{formatDate((form as any).updatedAt)}</span>
+                                <span className="font-medium text-gray-900">{formatDate(form.updatedAt)}</span>
                             </div>
                         </div>
                     </div>
@@ -137,7 +155,7 @@ export default function FormDetailsModal({ form, onClose, onRequestLogin, onOpen
                   onClick={onOpenCollaborators}
                 >
                     <div className="flex -space-x-2 overflow-hidden pl-1 pointer-events-none">
-                        {([form.createdBy, ...(form.collaborators || [])].filter(Boolean) as any[]).map((editor, index) => (
+                        {([form.createdBy, ...(form.collaborators || [])].filter((editor): editor is FormEditor => Boolean(editor))).map((editor, index) => (
                             <div key={index} className="relative z-10">
                                 <UserAvatar 
                                   user={editor} 

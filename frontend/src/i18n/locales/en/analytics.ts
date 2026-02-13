@@ -63,6 +63,8 @@ export default {
   "analytics.loading": "Loading Analytics...",
   "analytics.count": "Count",
   "analytics.value": "Value",
+  "analytics.axis_answer": "Answer",
+  "analytics.axis_count": "Count",
   "analytics.percentage": "Percentage",
   "analytics.total_responses_count": "Total Responses",
   "analytics.unique_values": "Unique Values",

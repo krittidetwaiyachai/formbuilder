@@ -1,7 +1,8 @@
 import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Form, FormResponse } from '@/types';
+import { Form, FormResponse, Row, Column, MatrixFieldOptions, TableFieldOptions } from '@/types';
 import { FieldStats, QuizStats } from '../types';
+import { TFunction } from 'i18next';
 
 const stripHtml = (html: string): string => {
   if (!html) return '';
@@ -21,95 +22,95 @@ export const useAnalyticsStats = () => {
       if (['HEADER', 'PARAGRAPH', 'DIVIDER', 'PAGE_BREAK', 'SUBMIT'].includes(field.type)) return;
 
       if (field.type === 'MATRIX') {
-        const rows = field.options?.rows || [];
-        rows.forEach((row: any) => {
+        const rows = (field.options as MatrixFieldOptions)?.rows || [];
+        rows.forEach((row: Row) => {
           const rowLabel = row.label || row.id;
           const virtualFieldLabel = `${stripHtml(field.label)} - ${rowLabel}`;
-          
+
           const rowResponses: string[] = [];
           responsesData.forEach((r) => {
-             const answer = r.answers?.find((a) => a.fieldId === field.id);
-             if (answer && answer.value) {
-                try {
-                   const parsedValue = typeof answer.value === 'string' && (answer.value.startsWith('{') || answer.value.startsWith('[')) 
-                      ? JSON.parse(answer.value) 
-                      : answer.value;
-                   
-                   if (typeof parsedValue === 'object' && parsedValue !== null) {
-                      const val = parsedValue[row.id];
-                      if (val) {
-                         if (Array.isArray(val)) {
-                            rowResponses.push(...val);
-                         } else {
-                            rowResponses.push(String(val));
-                         }
-                      }
-                   }
-                } catch (e) {
-                   console.warn('Failed to parse matrix answer', e);
+            const answer = r.answers?.find((a) => a.fieldId === field.id);
+            if (answer && answer.value) {
+              try {
+                const parsedValue = typeof answer.value === 'string' && (answer.value.startsWith('{') || answer.value.startsWith('['))
+                  ? JSON.parse(answer.value)
+                  : answer.value;
+
+                if (typeof parsedValue === 'object' && parsedValue !== null) {
+                  const val = parsedValue[row.id];
+                  if (val) {
+                    if (Array.isArray(val)) {
+                      rowResponses.push(...val);
+                    } else {
+                      rowResponses.push(String(val));
+                    }
+                  }
                 }
-             }
+              } catch (e) {
+                console.warn('Failed to parse matrix answer', e);
+              }
+            }
           });
 
           const valueCounts = countValues(rowResponses);
           const total = rowResponses.length;
           const sortedValues = sortValues(valueCounts, total, t);
 
-           stats.push({
+          stats.push({
             fieldId: `${field.id}_${row.id}`,
             fieldLabel: virtualFieldLabel,
             fieldType: 'MATRIX_ROW',
             totalResponses: total,
             uniqueValues: Object.keys(valueCounts).length,
             valueCounts: sortedValues,
-            distributionCounts: sortedValues, 
+            distributionCounts: sortedValues,
           });
         });
         return;
       }
 
       if (field.type === 'TABLE') {
-        const columns = field.options?.columns || [];
-        columns.forEach((col: any) => {
-            const colLabel = col.label || col.id;
-            const virtualFieldLabel = `${stripHtml(field.label)} - ${colLabel}`;
-            const colResponses: string[] = [];
-            
-            responsesData.forEach((r) => {
-                const answer = r.answers?.find((a) => a.fieldId === field.id);
-                if (answer && answer.value) {
-                    try {
-                        const parsedValue = typeof answer.value === 'string' && (answer.value.startsWith('{') || answer.value.startsWith('['))
-                            ? JSON.parse(answer.value) 
-                            : answer.value;
+        const columns = (field.options as TableFieldOptions)?.columns || [];
+        columns.forEach((col: Column) => {
+          const colLabel = col.label || col.id;
+          const virtualFieldLabel = `${stripHtml(field.label)} - ${colLabel}`;
+          const colResponses: string[] = [];
 
-                        if (Array.isArray(parsedValue)) {
-                            parsedValue.forEach((row: any) => {
-                                const val = row[col.id] || row[colLabel];
-                                if (row && val) {
-                                    colResponses.push(String(val));
-                                }
-                            });
-                        }
-                    } catch (e) {
-                         console.warn('Failed to parse table answer', e);
+          responsesData.forEach((r) => {
+            const answer = r.answers?.find((a) => a.fieldId === field.id);
+            if (answer && answer.value) {
+              try {
+                const parsedValue = typeof answer.value === 'string' && (answer.value.startsWith('{') || answer.value.startsWith('['))
+                  ? JSON.parse(answer.value)
+                  : answer.value;
+
+                if (Array.isArray(parsedValue)) {
+                  parsedValue.forEach((row: Record<string, unknown>) => {
+                    const val = row[col.id] || row[colLabel];
+                    if (row && val) {
+                      colResponses.push(String(val));
                     }
+                  });
                 }
-            });
+              } catch (e) {
+                console.warn('Failed to parse table answer', e);
+              }
+            }
+          });
 
-            const valueCounts = countValues(colResponses);
-            const total = colResponses.length;
-            const sortedValues = sortValues(valueCounts, total, t, 10);
-            
-            stats.push({
-                fieldId: `${field.id}_${col.id}`,
-                fieldLabel: virtualFieldLabel,
-                fieldType: 'TABLE_COLUMN',
-                totalResponses: total,
-                uniqueValues: Object.keys(valueCounts).length,
-                valueCounts: sortedValues,
-                distributionCounts: sortedValues,
-            });
+          const valueCounts = countValues(colResponses);
+          const total = colResponses.length;
+          const sortedValues = sortValues(valueCounts, total, t, 10);
+
+          stats.push({
+            fieldId: `${field.id}_${col.id}`,
+            fieldLabel: virtualFieldLabel,
+            fieldType: 'TABLE_COLUMN',
+            totalResponses: total,
+            uniqueValues: Object.keys(valueCounts).length,
+            valueCounts: sortedValues,
+            distributionCounts: sortedValues,
+          });
         });
         return;
       }
@@ -122,15 +123,15 @@ export const useAnalyticsStats = () => {
       fieldResponses.forEach((value) => {
         const key = value || t('analytics.empty', '(Empty)');
         if (typeof key === 'string' && key.startsWith('[') && key.endsWith(']')) {
-             try {
-                 const parsed = JSON.parse(key);
-                 if (Array.isArray(parsed)) {
-                     parsed.forEach(v => {
-                         valueCounts[v] = (valueCounts[v] || 0) + 1;
-                     });
-                     return;
-                 }
-             } catch {}
+          try {
+            const parsed = JSON.parse(key);
+            if (Array.isArray(parsed)) {
+              parsed.forEach(v => {
+                valueCounts[v] = (valueCounts[v] || 0) + 1;
+              });
+              return;
+            }
+          } catch { }
         }
         valueCounts[key] = (valueCounts[key] || 0) + 1;
       });
@@ -138,10 +139,10 @@ export const useAnalyticsStats = () => {
       const total = fieldResponses.length;
       const sortedValues = sortValues(valueCounts, total, t);
       let distributionValues = [...sortedValues];
-      
+
       if (field.options && Array.isArray(field.options) && field.options.length > 0) {
         const valueToLabelMap = new Map<string, string>();
-        field.options.forEach((opt: any) => {
+        (field.options as unknown as (string | { label: string; value: string })[]).forEach((opt) => {
           if (typeof opt === 'string') {
             valueToLabelMap.set(opt, opt);
           } else {
@@ -152,7 +153,7 @@ export const useAnalyticsStats = () => {
         const allOptionStats: { value: string; count: number; percentage: number }[] = [];
         const processedValues = new Set<string>();
 
-        field.options.forEach((opt: any) => {
+        (field.options as unknown as (string | { label: string; value: string })[]).forEach((opt) => {
           const optValue = typeof opt === 'string' ? opt : (opt.value || opt.label);
           const optLabel = typeof opt === 'string' ? opt : opt.label;
           const count = valueCounts[optValue] || 0;
@@ -207,7 +208,7 @@ export const useAnalyticsStats = () => {
     responsesData.forEach((r) => {
       const responseDate = new Date(r.submittedAt);
       const normalizedResponseDate = new Date(responseDate.getFullYear(), responseDate.getMonth(), responseDate.getDate());
-      
+
       const dayEntry = days.find(d => {
         const normalizedDay = new Date(d.date.getFullYear(), d.date.getMonth(), d.date.getDate());
         return normalizedDay.getTime() === normalizedResponseDate.getTime();
@@ -301,7 +302,7 @@ function countValues(values: string[]) {
   return counts;
 }
 
-function sortValues(counts: Record<string, number>, total: number, t: any, limit?: number) {
+function sortValues(counts: Record<string, number>, total: number, t: TFunction, limit?: number) {
   const sorted = Object.entries(counts)
     .map(([value, count]) => ({
       value,
@@ -309,15 +310,15 @@ function sortValues(counts: Record<string, number>, total: number, t: any, limit
       percentage: total > 0 ? (count / total) * 100 : 0,
     }))
     .sort((a, b) => b.count - a.count);
-  
+
   if (limit && sorted.length > limit) {
-      const limited = sorted.slice(0, limit);
-      limited.push({ 
-        value: t('analytics.more_items', { count: sorted.length - limit, defaultValue: `... ${sorted.length - limit} more` }), 
-        count: 0, 
-        percentage: 0 
-      });
-      return limited;
+    const limited = sorted.slice(0, limit);
+    limited.push({
+      value: t('analytics.more_items', { count: sorted.length - limit, defaultValue: `... ${sorted.length - limit} more` }),
+      count: 0,
+      percentage: 0
+    });
+    return limited;
   }
   return sorted;
 }

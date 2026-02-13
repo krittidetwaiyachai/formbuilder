@@ -4,7 +4,7 @@ import { Field, LogicRule } from '@/types';
 interface UseFormLogicProps {
   fields: Field[];
   logicRules: LogicRule[];
-  formValues: Record<string, any>;
+  formValues: Record<string, unknown>;
 }
 
 export const useFormLogic = ({ fields, logicRules, formValues }: UseFormLogicProps) => {
@@ -27,7 +27,7 @@ export const useFormLogic = ({ fields, logicRules, formValues }: UseFormLogicPro
       if (!rule.conditions || rule.conditions.length === 0) return;
 
       const conditionResults = rule.conditions.map(c => {
-        const hasContent = (val: any): boolean => {
+        const hasContent = (val: unknown): boolean => {
           if (val === undefined || val === null || val === "") return false;
           if (Array.isArray(val)) return val.length > 0;
           if (typeof val === 'object') return Object.keys(val).length > 0;
@@ -41,7 +41,7 @@ export const useFormLogic = ({ fields, logicRules, formValues }: UseFormLogicPro
 
         let sourceValue = formValues[c.fieldId];
         if (isGroupTarget) {
-          const activeValues: Record<string, any> = {};
+          const activeValues: Record<string, unknown> = {};
           children.forEach(child => {
             const val = formValues[child.id];
             if (hasContent(val)) {

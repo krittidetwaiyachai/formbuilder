@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Form } from '@/types';
+import { Field, Form } from '@/types';
 import { FormProgressBar } from './FormProgressBar';
 import QuizTimer from './QuizTimer';
 
@@ -11,8 +11,8 @@ interface PublicFormLayoutProps {
   isMobileView: boolean;
   isTabletView: boolean;
   submitted: boolean;
-  visibleFields: any[];
-  watchedValues: any;
+  visibleFields: Field[];
+  watchedValues: Record<string, unknown>;
   currentCardIndex: number;
   quizStartTime: Date | null;
   onTimeUp: () => void;

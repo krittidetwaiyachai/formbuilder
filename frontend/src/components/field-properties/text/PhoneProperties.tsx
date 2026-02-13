@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Field } from '@/types';
+import { PhoneField, PhoneFieldOptions, PhoneValidation } from '@/types/typed-fields';
 import { Copy } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { stripHtml } from '@/lib/ui/utils';
@@ -7,23 +7,23 @@ import { PdpaToggle } from '../common/PdpaToggle';
 import { PropertiesTabs } from '../common/PropertiesTabs';
 
 interface PhonePropertiesProps {
-  field: Field;
-  updateField: (id: string, updates: Partial<Field>) => void;
-  duplicatesField: (field: Omit<Field, 'id'>) => void;
+  field: PhoneField;
+  updateField: (id: string, updates: Partial<PhoneField>) => void;
+  duplicatesField: (field: Omit<PhoneField, 'id' | 'formId'>) => void;
 }
 
 export const PhoneProperties = ({ field, updateField, duplicatesField }: PhonePropertiesProps) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'general' | 'options' | 'advanced'>('general');
 
-  const options = field.options || {};
-  const validation = field.validation || {};
+  const options: PhoneFieldOptions = field.options || {};
+  const validation: PhoneValidation = field.validation || {};
 
-  const handleUpdate = (updates: any) => {
+  const handleUpdate = (updates: Partial<PhoneField>) => {
     updateField(field.id, updates);
   };
 
-  const handleOptionUpdate = (key: string, value: any) => {
+  const handleOptionUpdate = <K extends keyof PhoneFieldOptions>(key: K, value: PhoneFieldOptions[K]) => {
     handleUpdate({
       options: {
         ...options,
@@ -32,7 +32,7 @@ export const PhoneProperties = ({ field, updateField, duplicatesField }: PhonePr
     });
   };
 
-  const handleValidationUpdate = (key: string, value: any) => {
+  const handleValidationUpdate = <K extends keyof PhoneValidation>(key: K, value: PhoneValidation[K]) => {
     handleUpdate({
       validation: {
         ...validation,
@@ -123,7 +123,6 @@ export const PhoneProperties = ({ field, updateField, duplicatesField }: PhonePr
                   validation: field.validation,
                   options: field.options,
                   order: 0,
-                  formId: field.formId,
               })}
               className="w-full mt-4 px-3 py-2 text-sm font-medium text-black bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
             >

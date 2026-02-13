@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import api from '@/lib/api';
 import type { Folder } from '@/types/folder';
 import { useAuthStore } from '@/store/authStore';
+import { getAxiosErrorMessage } from '@/utils/error';
 
 import { useTranslation } from 'react-i18next';
 export function useFolders() {
@@ -17,15 +18,15 @@ export function useFolders() {
       setFolders([]);
       return;
     }
-    
+
     try {
       setLoading(true);
       setError(null);
       const response = await api.get('/folders');
       setFolders(response.data || []);
-    } catch (error: any) {
-      console.error('Failed to load folders:', error);
-      setError(error?.response?.data?.message || t('dashboard.toast.error_load_folders'));
+    } catch (err: unknown) {
+      console.error('Failed to load folders:', err);
+      setError(getAxiosErrorMessage(err, t('dashboard.toast.error_load_folders')));
       setFolders([]);
     } finally {
       setLoading(false);
@@ -43,9 +44,9 @@ export function useFolders() {
       const newFolder = response.data;
       setFolders(prev => [...prev, newFolder]);
       return newFolder;
-    } catch (error: any) {
-      console.error('Failed to create folder:', error);
-      const errorMessage = error?.response?.data?.message || t('dashboard.toast.error_create_folder');
+    } catch (err: unknown) {
+      console.error('Failed to create folder:', err);
+      const errorMessage = getAxiosErrorMessage(err, t('dashboard.toast.error_create_folder'));
       setError(errorMessage);
       throw new Error(errorMessage);
     }
@@ -58,9 +59,9 @@ export function useFolders() {
       const updatedFolder = response.data;
       setFolders(prev => prev.map(f => f.id === id ? updatedFolder : f));
       return updatedFolder;
-    } catch (error: any) {
-      console.error('Failed to update folder:', error);
-      const errorMessage = error?.response?.data?.message || t('dashboard.toast.error_update_folder');
+    } catch (err: unknown) {
+      console.error('Failed to update folder:', err);
+      const errorMessage = getAxiosErrorMessage(err, t('dashboard.toast.error_update_folder'));
       setError(errorMessage);
       throw new Error(errorMessage);
     }
@@ -71,9 +72,9 @@ export function useFolders() {
       setError(null);
       await api.delete(`/folders/${id}`);
       setFolders(prev => prev.filter(f => f.id !== id));
-    } catch (error: any) {
-      console.error('Failed to delete folder:', error);
-      const errorMessage = error?.response?.data?.message || t('dashboard.toast.error_delete_folder');
+    } catch (err: unknown) {
+      console.error('Failed to delete folder:', err);
+      const errorMessage = getAxiosErrorMessage(err, t('dashboard.toast.error_delete_folder'));
       setError(errorMessage);
       throw new Error(errorMessage);
     }
@@ -84,9 +85,9 @@ export function useFolders() {
       setError(null);
       await api.put(`/folders/move-form/${formId}`, { folderId });
       await loadFolders();
-    } catch (error: any) {
-      console.error('Failed to move form:', error);
-      const errorMessage = error?.response?.data?.message || t('dashboard.toast.error_move_form');
+    } catch (err: unknown) {
+      console.error('Failed to move form:', err);
+      const errorMessage = getAxiosErrorMessage(err, t('dashboard.toast.error_move_form'));
       setError(errorMessage);
       throw new Error(errorMessage);
     }

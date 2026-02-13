@@ -138,7 +138,7 @@ export class CreateLogicConditionDto {
   operator: string;
 
   @IsOptional()
-  value?: any;
+  value?: string;
 }
 
 export class CreateLogicActionDto {
@@ -164,7 +164,7 @@ export class CreateLogicRuleDto {
 
   @IsOptional()
   @IsString()
-  logicType?: string; 
+  logicType?: string;
 
   @IsOptional()
   @IsArray()

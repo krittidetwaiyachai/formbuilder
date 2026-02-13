@@ -20,32 +20,38 @@ import { RoleType } from '@prisma/client';
 import { Public } from '../auth/decorators/public.decorator';
 import { ActivityLogService } from '../activity-log/activity-log.service';
 
+interface User {
+  id: string;
+  email: string;
+  role: RoleType;
+}
+
 @Controller('forms')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class FormsController {
   constructor(
     private readonly formsService: FormsService,
     private readonly activityLogService: ActivityLogService,
-  ) {}
+  ) { }
 
   @Post()
   @Roles(RoleType.SUPER_ADMIN, RoleType.ADMIN, RoleType.EDITOR)
   create(
-    @CurrentUser() user: any,
+    @CurrentUser() user: User,
     @Body() createFormDto: CreateFormDto,
   ) {
     return this.formsService.create(user.id, createFormDto).then(form => ({ form }));
   }
 
   @Get()
-  findAll(@CurrentUser() user: any) {
+  findAll(@CurrentUser() user: User) {
     return this.formsService.findAll(user.id, user.role).then(forms => ({ forms }));
   }
 
   @Get(':id')
   findOne(
     @Param('id') id: string,
-    @CurrentUser() user: any,
+    @CurrentUser() user: User,
   ) {
     return this.formsService.findOne(id, user.id, user.role).then(form => ({ form }));
   }
@@ -54,7 +60,7 @@ export class FormsController {
   @Roles(RoleType.SUPER_ADMIN, RoleType.ADMIN, RoleType.EDITOR)
   update(
     @Param('id') id: string,
-    @CurrentUser() user: any,
+    @CurrentUser() user: User,
     @Body() updateFormDto: UpdateFormDto,
   ) {
     return this.formsService.update(id, user.id, user.role, updateFormDto);
@@ -62,13 +68,13 @@ export class FormsController {
 
   @Delete(':id')
   @Roles(RoleType.SUPER_ADMIN, RoleType.ADMIN, RoleType.EDITOR)
-  remove(@Param('id') id: string, @CurrentUser() user: any) {
+  remove(@Param('id') id: string, @CurrentUser() user: User) {
     return this.formsService.remove(id, user.id, user.role).then(result => ({ ...result }));
   }
 
   @Post(':id/clone')
   @Roles(RoleType.SUPER_ADMIN, RoleType.ADMIN, RoleType.EDITOR)
-  clone(@Param('id') id: string, @CurrentUser() user: any) {
+  clone(@Param('id') id: string, @CurrentUser() user: User) {
     return this.formsService.clone(id, user.id);
   }
 
@@ -121,7 +127,7 @@ export class FormsController {
   async removeCollaborator(
     @Param('id') id: string,
     @Param('userId') userIdToRemove: string,
-    @CurrentUser() user: any,
+    @CurrentUser() user: User,
   ) {
     return this.formsService.removeCollaborator(id, userIdToRemove, user.id, user.role);
   }

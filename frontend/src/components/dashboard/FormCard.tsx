@@ -36,7 +36,7 @@ export default function FormCard({ form, onDelete, onDuplicate, onEdit, onView }
   const { t } = useTranslation();
   
   
-  const activeEditors = mockActiveEditors.filter((e: any) => e.fieldId === form.id) || [];
+  const activeEditors = mockActiveEditors || [];
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -104,14 +104,14 @@ export default function FormCard({ form, onDelete, onDuplicate, onEdit, onView }
         { }
         {activeEditors.length > 0 && (
           <div className="flex -space-x-2 overflow-hidden mb-4 pl-1">
-            {activeEditors.slice(0, 3).map((editor: any) => (
+            {activeEditors.slice(0, 3).map((editor) => (
               <div
-                key={editor.userId}
+                key={editor.id}
                 className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-semibold border-2 border-white"
-                style={{ backgroundColor: editor.userColor }}
-                title={editor.userName}
+                style={{ backgroundColor: editor.color }}
+                title={editor.name}
               >
-                {editor.userName.charAt(0).toUpperCase()}
+                {editor.name.charAt(0).toUpperCase()}
               </div>
             ))}
             {activeEditors.length > 3 && (

@@ -1,4 +1,5 @@
 import { TFunction, i18n as I18nType } from "i18next";
+import { ActivityLog, ChangeItem } from './types';
 
 export const getFieldTypeName = (type: string, t: TFunction, i18n: I18nType) => {
     const key = `activity.field_type.${type.toLowerCase()}`;
@@ -38,7 +39,7 @@ export const formatTime = (dateString: string, language: string) => {
     });
 };
 
-export const shouldRenderLog = (log: any, actionFilter: string) => {
+export const shouldRenderLog = (log: ActivityLog, actionFilter: string) => {
     const isVisible = (section: 'created' | 'deleted' | 'updated') => {
         if (actionFilter === 'ALL') return true;
         if (actionFilter === 'CREATED' && section === 'created') return true;
@@ -49,18 +50,18 @@ export const shouldRenderLog = (log: any, actionFilter: string) => {
 
     const details = log.details || {};
 
-    
+
     if (
         (details.addedFields && details.addedFields.length > 0) ||
         (details.deletedFields && details.deletedFields.length > 0) ||
         (details.updatedFields && details.updatedFields.length > 0)
     ) {
-        if (isVisible('created') && details.addedFields?.length > 0) return true;
-        if (isVisible('deleted') && details.deletedFields?.length > 0) return true;
-        if (isVisible('updated') && details.updatedFields?.length > 0) return true;
+        if (isVisible('created') && details.addedFields && details.addedFields.length > 0) return true;
+        if (isVisible('deleted') && details.deletedFields && details.deletedFields.length > 0) return true;
+        if (isVisible('updated') && details.updatedFields && details.updatedFields.length > 0) return true;
     }
 
-    
+
     if (details.logicChanges) {
         const logic = details.logicChanges;
         if (
@@ -72,39 +73,39 @@ export const shouldRenderLog = (log: any, actionFilter: string) => {
         }
     }
 
-    
+
     if (details.settingsChanges && details.settingsChanges.length > 0) {
         if (!isVisible('updated')) return false;
 
-        
-        const rawChanges = details.settingsChanges.filter((c: any) => c.before != c.after);
 
-        
-        const themeNameChange = rawChanges.find((c: any) => {
+        const rawChanges = details.settingsChanges.filter((c: ChangeItem) => c.before != c.after) as ChangeItem[];
+
+
+        const themeNameChange = rawChanges.find((c: ChangeItem) => {
             const prop = String(c.property || '').toLowerCase();
             return prop === 'themename' || prop === 'theme' || prop.endsWith('.themename');
         });
 
         if (themeNameChange) {
-            
-            
+
+
             rawChanges.length = 0;
             rawChanges.push(themeNameChange);
         }
 
-        
 
-        const renderableSettings = rawChanges.filter((change: any) => {
+
+        const renderableSettings = rawChanges.filter((change: ChangeItem) => {
             const isObjectDiff = typeof change.before === 'object' && change.before !== null && !Array.isArray(change.before) &&
                 typeof change.after === 'object' && change.after !== null && !Array.isArray(change.after);
 
             if (isObjectDiff) {
-                const allKeys = Array.from(new Set([...Object.keys(change.before), ...Object.keys(change.after)]));
+                const allKeys = Array.from(new Set([...Object.keys(change.before as object), ...Object.keys(change.after as object)]));
 
                 const diffKeys = allKeys.filter(key => {
-                    const vBefore = change.before[key];
-                    const vAfter = change.after[key];
-                    const isEmpty = (v: any) => v === null || v === undefined || v === '';
+                    const vBefore = (change.before as Record<string, unknown>)[key];
+                    const vAfter = (change.after as Record<string, unknown>)[key];
+                    const isEmpty = (v: unknown) => v === null || v === undefined || v === '';
                     if (isEmpty(vBefore) && isEmpty(vAfter)) return false;
                     return vBefore !== vAfter;
                 });
@@ -118,4 +119,3 @@ export const shouldRenderLog = (log: any, actionFilter: string) => {
 
     return false;
 };
-

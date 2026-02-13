@@ -1,4 +1,4 @@
-import { Form } from '@/types';
+import { Form, FormSettings } from '@/types';
 import { useRef, useEffect, useState } from 'react';
 import { useFormStore } from '@/store/formStore';
 import {
@@ -17,7 +17,7 @@ interface FormSettingsPropertiesProps {
   setFormTitle: (title: string) => void;
   formDescription: string;
   setFormDescription: (desc: string) => void;
-  handleFormUpdate: (field: string, value: any) => void;
+  handleFormUpdate: (field: string, value: unknown) => void;
 }
 
 export function FormSettingsProperties({
@@ -33,7 +33,7 @@ export function FormSettingsProperties({
   const [hasResponseLimit, setHasResponseLimit] = useState(!!settings.responseLimit);
   const [activeTab, setActiveTab] = useState<'general' | 'submission' | 'display'>('general');
 
-  const updateSettings = (key: string, value: any) => {
+  const updateSettings = (key: keyof FormSettings, value: unknown) => {
     handleFormUpdate('settings', {
       ...settings,
       [key]: value,
@@ -118,7 +118,7 @@ export function FormSettingsProperties({
         {['general', 'submission', 'display'].map((tab) => (
           <button
             key={tab}
-            onClick={() => setActiveTab(tab as any)}
+            onClick={() => setActiveTab(tab as typeof activeTab)}
             className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-colors uppercase ${
               activeTab === tab
                 ? 'bg-white text-black shadow-sm'

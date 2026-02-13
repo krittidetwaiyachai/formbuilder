@@ -1,5 +1,5 @@
 import React from 'react';
-import { Field, FieldType } from '@/types';
+import { Field, FieldType, DateValidation } from '@/types';
 import { Calendar, Clock } from 'lucide-react';
 
 interface DateFieldProps {
@@ -35,12 +35,12 @@ export const DateField: React.FC<DateFieldProps> = ({ field, fieldStyle, disable
     );
   }
 
-  
-  const showTime = (field.validation as any)?.showTime || false;
-  const liteMode = (field.validation as any)?.liteMode || false;
-  const separator = (field.validation as any)?.separator || '/';
-  const dateFormat = (field.validation as any)?.dateFormat || 'MM-DD-YYYY';
-  const dateSublabel = (field.validation as any)?.sublabels?.date || t('builder.fields.date'); 
+  const validation = field.validation as DateValidation | undefined;
+  const showTime = validation?.showTime || false;
+  const liteMode = validation?.liteMode || false;
+  const separator = validation?.separator || '/';
+  const dateFormat = validation?.dateFormat || 'MM-DD-YYYY';
+  const dateSublabel = validation?.sublabels?.date || t('builder.fields.date'); 
   const parts = dateFormat.split('-');
 
   return (

@@ -1,6 +1,6 @@
 import React from 'react';
-import { Field } from '@/types';
-import { useForm } from 'react-hook-form';
+import { Field, FullNameField } from '@/types';
+import { useForm, FieldErrors } from 'react-hook-form';
 import { User } from 'lucide-react';
 import { useFormStore } from '@/store/formStore';
 import { PreviewLabel } from '../PreviewLabel';
@@ -8,7 +8,7 @@ import { PreviewLabel } from '../PreviewLabel';
 interface PreviewFieldProps {
   field: Field;
   register: ReturnType<typeof useForm>['register'];
-  errors: any;
+  errors: FieldErrors;
   questionNumber?: number;
   isPublic?: boolean;
 }
@@ -19,8 +19,9 @@ export const PreviewFullNameField: React.FC<PreviewFieldProps> = ({ field, regis
   const { t } = useTranslation();
   const fieldName = `field_${field.id}`;
   const { updateField } = useFormStore();
+  const typedField = field as FullNameField;
 
-  const options = field.options || {};
+  const options = typedField.options || {};
   const { 
     labelAlignment = 'TOP', 
     sublabels = {}, 
@@ -96,7 +97,7 @@ export const PreviewFullNameField: React.FC<PreviewFieldProps> = ({ field, regis
       )}
 
       {errors[`${fieldName}_${name}`] && (
-        <p className="mt-1 text-sm text-red-600">{errors[`${fieldName}_${name}`].message}</p>
+        <p className="mt-1 text-sm text-red-600">{errors[`${fieldName}_${name}`]?.message as string}</p>
       )}
     </div>
   );

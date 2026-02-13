@@ -34,3 +34,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+
+# Temporary Compilation & Log Files
+tsc_*.txt
+temp_*.txt
+compile_*.txt
+*.log
+error_log.txt

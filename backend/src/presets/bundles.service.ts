@@ -4,12 +4,16 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateBundleDto } from './dto/create-bundle.dto';
-import { RoleType } from '@prisma/client';
+import { CreateBundleDto, CreateBundleFieldDto } from './dto/create-bundle.dto';
+import { RoleType, BundleField, Prisma } from '@prisma/client';
+
+interface BundleOptions {
+  deleted?: boolean;
+}
 
 @Injectable()
 export class BundlesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async create(userId: string, createBundleDto: CreateBundleDto) {
     const { fields, ...bundleData } = createBundleDto;
@@ -25,10 +29,13 @@ export class BundlesService {
       data: {
         ...bundleData,
         version,
-        createdById: userId,
+        createdBy: { connect: { id: userId } },
+        options: bundleData.options as Prisma.InputJsonValue,
         fields: {
           create: fields.map((field) => ({
             ...field,
+            validation: field.validation as Prisma.InputJsonValue,
+            options: field.options as Prisma.InputJsonValue,
             order: field.order ?? 0,
           })),
         },
@@ -61,12 +68,12 @@ export class BundlesService {
       ],
     });
 
-    
-    let allBundles = bundles.filter(b => !(b.options as any)?.deleted);
-    
-    
+
+    let allBundles = bundles.filter(b => !(b.options as unknown as BundleOptions)?.deleted);
+
+
     const latestBundlesMap = new Map<string, typeof bundles[0]>();
-    
+
     allBundles.forEach(bundle => {
       const existing = latestBundlesMap.get(bundle.name);
       if (!existing || bundle.version > existing.version) {
@@ -75,12 +82,12 @@ export class BundlesService {
     });
 
     const finalBundles = Array.from(latestBundlesMap.values()).sort((a, b) => {
-        
-        return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+
+      return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
     });
 
     if (isActive !== undefined) {
-        return finalBundles.filter(b => b.isActive === isActive);
+      return finalBundles.filter(b => b.isActive === isActive);
     }
 
     return finalBundles;
@@ -143,7 +150,7 @@ export class BundlesService {
             validation: field.validation,
             order: field.order,
             options: field.options,
-            isPII: field.isPII ?? false, 
+            isPII: field.isPII ?? false,
           },
         }),
       ),
@@ -165,13 +172,13 @@ export class BundlesService {
     const version = latestBundle ? latestBundle.version + 1 : bundle.version + 1;
 
     const nameChanged = bundleData.name && bundleData.name !== bundle.name;
-    const currentOptions = (bundle.options as any) || {};
+    const currentOptions = (bundle.options as unknown as BundleOptions) || {};
 
     await this.prisma.bundle.update({
       where: { id },
-      data: { 
+      data: {
         isActive: false,
-        options: nameChanged ? { ...currentOptions, deleted: true } : currentOptions,
+        options: (nameChanged ? { ...currentOptions, deleted: true } : currentOptions) as Prisma.InputJsonValue,
       },
     });
 
@@ -181,19 +188,19 @@ export class BundlesService {
         description: bundleData.description ?? bundle.description,
         isPII: bundleData.isPII ?? bundle.isPII,
         isActive: bundleData.isActive ?? bundle.isActive,
-        options: (bundleData.options as any) ?? bundle.options,
+        options: ((bundleData.options as unknown as BundleOptions) ?? bundle.options) as Prisma.InputJsonValue,
 
         version,
-        createdById: userId,
+        createdBy: { connect: { id: userId } },
         fields: {
-          create: (fields || bundle.fields).map((field: any) => ({
+          create: (fields || bundle.fields).map((field: CreateBundleFieldDto | BundleField) => ({
             type: field.type,
             label: field.label,
             placeholder: field.placeholder,
             required: field.required,
-            validation: field.validation,
+            validation: field.validation as Prisma.InputJsonValue,
             order: field.order ?? 0,
-            options: field.options,
+            options: field.options as Prisma.InputJsonValue,
             isPII: field.isPII ?? false,
           })),
         },
@@ -210,13 +217,13 @@ export class BundlesService {
 
   async remove(id: string) {
     const bundle = await this.findOne(id);
-    const currentOptions = (bundle.options as any) || {};
-    
+    const currentOptions = (bundle.options as unknown as BundleOptions) || {};
+
     await this.prisma.bundle.update({
       where: { id },
-      data: { 
+      data: {
         isActive: false,
-        options: { ...currentOptions, deleted: true } 
+        options: { ...currentOptions, deleted: true } as Prisma.InputJsonValue
       },
     });
 

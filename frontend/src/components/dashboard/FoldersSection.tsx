@@ -14,9 +14,9 @@ interface FoldersSectionProps {
   currentUserId?: string;
   formatDate: (date: string) => string;
   onContextMenu: (e: React.MouseEvent, formId: string) => void;
-  onViewDetails: (e: React.MouseEvent, form: any) => void;
+  onViewDetails: (e: React.MouseEvent, form: Form) => void;
   onDeleteForm: (formId: string, e: React.MouseEvent) => void;
-  onCollaboratorsClick: (e: React.MouseEvent, collaborators: any[], title: string, formId: string) => void;
+  onCollaboratorsClick: (e: React.MouseEvent, collaborators: Array<{ id?: string; firstName?: string; lastName?: string; email?: string; photoUrl?: string; role?: string }>, title: string, formId: string) => void;
 }
 
 export default function FoldersSection({
@@ -36,7 +36,7 @@ export default function FoldersSection({
   const [expandedFolderId, setExpandedFolderId] = useState<string | null>(null);
 
   const getFormsInFolder = (folderId: string) => {
-    return forms.filter(f => (f as any).folderId === folderId);
+    return forms.filter(f => f.folderId === folderId);
   };
 
   const toggleFolder = (folderId: string) => {

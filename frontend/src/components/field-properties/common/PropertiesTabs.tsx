@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next';
 
-interface PropertiesTabsProps {
-  activeTab: string;
-  setActiveTab: (tab: any) => void;
-  tabs?: string[];
+interface PropertiesTabsProps<T extends string> {
+  activeTab: T;
+  setActiveTab: (tab: T) => void;
+  tabs?: T[];
 }
 
-export const PropertiesTabs = ({ activeTab, setActiveTab, tabs = ['general', 'options', 'advanced'] }: PropertiesTabsProps) => {
+export const PropertiesTabs = <T extends string>({ activeTab, setActiveTab, tabs = ['general', 'options', 'advanced'] as unknown as T[] }: PropertiesTabsProps<T>) => {
   const { t } = useTranslation();
 
   return (

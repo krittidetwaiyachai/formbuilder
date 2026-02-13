@@ -5,21 +5,24 @@ import { sanitize } from '@/utils/sanitization';
 import { stripHtml } from '@/lib/ui/utils';
 import { useTranslation } from 'react-i18next';
 
-interface QuizAnswer {
+export interface QuizAnswer {
   fieldId: string;
   fieldLabel: string;
   userAnswer: string;
   correctAnswer: string | null;
   isCorrect: boolean;
   score: number;
+  explanation?: string;
+}
+
+export interface QuizReview {
+  answers: QuizAnswer[];
+  showAnswer: boolean;
+  showDetail: boolean;
 }
 
 interface QuizResultsProps {
-  quizReview: {
-    answers: QuizAnswer[];
-    showAnswer: boolean;
-    showDetail: boolean;
-  };
+  quizReview: QuizReview;
   score: { score: number; totalScore: number };
   showScore?: boolean; 
   allowViewMissedQuestions?: boolean;
@@ -228,7 +231,7 @@ export default function QuizResults({ quizReview, score, showScore = true, allow
                         )}
                         
                         { }
-                        {showExplanation && (answer as any).explanation && (
+                        {showExplanation && answer.explanation && (
                            <div className="mt-3 p-3 rounded-lg border bg-blue-50 border-blue-100">
                               <div className="flex items-center gap-2 mb-1">
                                  <div className="bg-blue-100 p-1 rounded-full">
@@ -236,7 +239,7 @@ export default function QuizResults({ quizReview, score, showScore = true, allow
                                  </div>
                                  <span className="text-xs font-bold text-blue-700 uppercase tracking-wide">{t('public.quiz.explanation', 'Explanation')}</span>
                               </div>
-                              <p className="text-sm text-blue-900 leading-relaxed">{(answer as any).explanation}</p>
+                              <p className="text-sm text-blue-900 leading-relaxed">{answer.explanation}</p>
                            </div>
                         )}
 

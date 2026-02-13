@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Field, FieldType } from '@/types';
+import { Field, FieldType, HeaderFieldOptions } from '@/types';
 import { useFormStore } from '@/store/formStore';
 import { ChevronRight, FileX } from 'lucide-react';
 
@@ -103,16 +103,16 @@ export const HeaderField: React.FC<HeaderFieldProps> = ({
   }
 
   
-  const headerProps = field.options || {};
+  const headerProps = (field.options || {}) as HeaderFieldOptions;
   const headerAlignment = headerProps.alignment || 'LEFT';
   const headerSize = headerProps.size || 'MEDIUM';
   const headerSubheading = field.placeholder && field.placeholder.length > 0;
   
   
-  const headingImage = headerProps.headingImage || null;
-  const imagePosition = headerProps.imagePosition || 'TOP';
+  const headingImage = (headerProps.headingImage as string) || null;
+  const imagePosition = (headerProps.imagePosition as string) || 'TOP';
   const hasBackgroundImage = headingImage && imagePosition === 'BACKGROUND';
-  const overlayOpacity = headerProps.overlayOpacity ?? 50;
+  const overlayOpacity = (headerProps.overlayOpacity as number) ?? 50;
 
   const getHeaderSizeClass = () => {
     switch(headerSize) {
@@ -178,12 +178,9 @@ export const HeaderField: React.FC<HeaderFieldProps> = ({
           <div className="relative group/editor">
              <React.Suspense fallback={<div className="h-12 bg-gray-50 animate-pulse rounded-md" />}>
                <RichTextEditor
-                  theme="snow"
                   value={field.label || t('builder.header.default_heading')}
                   onChange={(value) => updateField(field.id, { label: value })}
-                  onFocus={() => setActiveInput('heading')}
                   placeholder={t('builder.header.default_heading')}
-                  modules={headingModules}
                   className={`${getHeaderSizeClass()} ${getHeaderAlignmentClass()} text-gray-900 leading-tight tracking-tight borderless`}
                />
              </React.Suspense>
@@ -201,13 +198,10 @@ export const HeaderField: React.FC<HeaderFieldProps> = ({
                <div className="relative group/editor">
                  <React.Suspense fallback={<div className="h-8 bg-gray-50 animate-pulse rounded-md" />}>
                    <RichTextEditor
-                     theme="snow"
                      value={field.placeholder || ''}
                      onChange={(value) => updateField(field.id, { placeholder: value })}
 
-                   onFocus={() => setActiveInput('subheading')}
                    placeholder={t('builder.header.subheading_placeholder')}
-                   modules={subheadingModules}
                    className="text-gray-500 text-lg borderless"
                  />
                  </React.Suspense>

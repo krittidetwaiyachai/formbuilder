@@ -3,6 +3,8 @@ import api from '@/lib/api';
 import { Form, FieldType } from '@/types';
 import { getBrowserFingerprint } from '@/utils/fingerprint';
 import { useToast } from '@/components/ui/toaster';
+import { getAxiosErrorMessage } from '@/utils/error';
+import type { QuizReview } from '@/components/form-preview/QuizResults';
 
 interface UseFormSubmissionProps {
   form: Form;
@@ -13,10 +15,10 @@ export function useFormSubmission({ form, isPreview = false }: UseFormSubmission
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [score, setScore] = useState<{ score: number; totalScore: number } | null>(null);
-  const [quizReview, setQuizReview] = useState<any>(null);
+  const [quizReview, setQuizReview] = useState<QuizReview | null>(null);
   const { toast } = useToast();
 
-  const submitForm = async (data: any) => {
+  const submitForm = async (data: Record<string, unknown>) => {
     setSubmitting(true);
 
     if (isPreview) {
@@ -92,10 +94,10 @@ export function useFormSubmission({ form, isPreview = false }: UseFormSubmission
       }
 
       setSubmitted(true);
-    } catch (error: any) {
+    } catch (err: unknown) {
       toast({
         title: "Submission Failed",
-        description: error.response?.data?.message || 'Failed to submit form',
+        description: getAxiosErrorMessage(err, 'Failed to submit form'),
         variant: "error"
       });
     } finally {

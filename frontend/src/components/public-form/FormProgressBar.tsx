@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion';
-import { FieldType } from '@/types';
+import { FieldType, Field } from '@/types';
 
 interface FormProgressBarProps {
-  visibleFields: any[];
-  watchedValues: any;
+  visibleFields: Field[];
+  watchedValues: Record<string, unknown>;
   isCardLayout: boolean;
   currentCardIndex: number;
   totalQuestions: number;
@@ -27,7 +27,7 @@ export function FormProgressBar({
   ];
 
   const getData = () => {
-    const isFieldAnswered = (value: any): boolean => {
+    const isFieldAnswered = (value: unknown): boolean => {
       if (value === undefined || value === null) return false;
       if (Array.isArray(value)) return value.length > 0;
       if (typeof value === 'string') return value.trim().length > 0;

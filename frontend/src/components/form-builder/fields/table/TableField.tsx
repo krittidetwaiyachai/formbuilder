@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Field } from '@/types';
+import { Field, Column, TableField as TableFieldType } from '@/types';
 import { Plus, X, Trash2 } from 'lucide-react';
 
 interface TableFieldProps {
@@ -11,11 +11,12 @@ interface TableFieldProps {
 
 export const TableField: React.FC<TableFieldProps> = ({ field, isSelected, updateField }) => {
   const { t } = useTranslation();
-  const columns = field.options?.columns || [{ id: 'c1', label: `${t('builder.field.column')} 1` }, { id: 'c2', label: `${t('builder.field.column')} 2` }];
-  const allowAddRow = field.options?.allowAddRow !== undefined ? field.options.allowAddRow : true;
+  const tableField = field as TableFieldType;
+  const columns = tableField.options?.columns || [{ id: 'c1', label: `${t('builder.field.column')} 1` }, { id: 'c2', label: `${t('builder.field.column')} 2` }];
+  const allowAddRow = tableField.options?.allowAddRow !== undefined ? tableField.options.allowAddRow : true;
 
   
-  const updateColumns = (newCols: any[]) => {
+  const updateColumns = (newCols: Column[]) => {
     if (updateField) {
       updateField(field.id, { options: { ...field.options, columns: newCols } });
     }
@@ -27,7 +28,7 @@ export const TableField: React.FC<TableFieldProps> = ({ field, isSelected, updat
   };
 
   const handleRemoveColumn = (index: number) => {
-    const newCols = columns.filter((_: any, i: number) => i !== index);
+    const newCols = columns.filter((_: Column, i: number) => i !== index);
     updateColumns(newCols);
   };
 
@@ -45,7 +46,7 @@ export const TableField: React.FC<TableFieldProps> = ({ field, isSelected, updat
         <table className="w-full text-sm text-left text-gray-500 border-collapse border border-gray-200 rounded-lg overflow-hidden">
             <thead className="text-xs text-gray-700 bg-gray-50">
                 <tr>
-                    {columns.map((col: any, idx: number) => (
+                    {columns.map((col: Column, idx: number) => (
                          <th key={idx} scope="col" className="px-4 py-3 border border-gray-200 font-semibold min-w-[150px] relative group/col">
                             <div className="flex items-center justify-between">
                                 {isSelected && updateField ? (
@@ -88,7 +89,7 @@ export const TableField: React.FC<TableFieldProps> = ({ field, isSelected, updat
             <tbody>
                 {Array.from({ length: rowCount }).map((_, rIdx) => (
                      <tr key={rIdx} className="bg-white border-b hover:bg-gray-50">
-                        {columns.map((col: any, cIdx: number) => (
+                        {columns.map((col: Column, cIdx: number) => (
                             <td key={cIdx} className="px-4 py-2 border border-gray-200">
                                 <input 
                                     type="text" 

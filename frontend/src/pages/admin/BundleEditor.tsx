@@ -155,11 +155,13 @@ export default function BundleEditor() {
         required: false,
         order: destination.index,
         ...(needsOptions && {
-          options: [
-            { id: 'opt-1', label: 'Option 1', value: 'option-1' },
-            { id: 'opt-2', label: 'Option 2', value: 'option-2' },
-            { id: 'opt-3', label: 'Option 3', value: 'option-3' },
-          ],
+          options: {
+            items: [
+              { id: 'opt-1', label: 'Option 1', value: 'option-1' },
+              { id: 'opt-2', label: 'Option 2', value: 'option-2' },
+              { id: 'opt-3', label: 'Option 3', value: 'option-3' },
+            ],
+          },
         }),
       };
 

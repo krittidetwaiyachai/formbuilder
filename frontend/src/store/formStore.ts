@@ -1,6 +1,6 @@
-import { create } from 'zustand';
+import { create, type StoreApi } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { io } from 'socket.io-client';
+import { Socket } from 'socket.io-client';
 import throttle from 'lodash.throttle';
 import { Form } from '@/types';
 import { FieldSlice, createFieldSlice } from './slices/createFieldSlice';
@@ -13,8 +13,8 @@ export type FormBuilderState = FieldSlice & SelectionSlice & LogicSlice & FormSl
 };
 
 export const useFormStore = create<FormBuilderState>()(persist((set, get) => {
-    
-    const throttledEmit = throttle((socket: any, form: Form) => {
+
+    const throttledEmit = throttle((socket: Socket, form: Form) => {
         if (socket.connected) {
             socket.emit('update_form_client', {
                 formId: form.id,
@@ -31,11 +31,11 @@ export const useFormStore = create<FormBuilderState>()(persist((set, get) => {
     };
 
     return {
-        ...createFormSlice(set, get, [] as any),
-        ...createFieldSlice(set, get, [] as any),
-        ...createSelectionSlice(set, get, [] as any),
-        ...createLogicSlice(set, get, [] as any),
-        ...createHistorySlice(set, get, [] as any),
+        ...createFormSlice(set, get, {} as StoreApi<FormBuilderState>),
+        ...createFieldSlice(set, get, {} as StoreApi<FormBuilderState>),
+        ...createSelectionSlice(set, get, {} as StoreApi<FormBuilderState>),
+        ...createLogicSlice(set, get, {} as StoreApi<FormBuilderState>),
+        ...createHistorySlice(set, get, {} as StoreApi<FormBuilderState>),
         emitChange,
     };
 }, {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Field } from '@/types';
+import { Field, TimeFieldOptions } from '@/types';
 import { Clock } from 'lucide-react';
 
 interface TimeFieldProps {
@@ -16,7 +16,7 @@ interface TimeFieldProps {
 
 export const TimeField: React.FC<TimeFieldProps> = ({ field, fieldStyle, disabledClass = "opacity-60 cursor-pointer" }) => {
   const { t } = useTranslation();
-  const options = field.options || {};
+  const options = (field.options || {}) as TimeFieldOptions;
   const timeFormat = options.timeFormat || 'AMPM'; 
   const subLabelHour = options.subLabelHour || t('builder.time.hour');
   const subLabelMinutes = options.subLabelMinutes || t('builder.time.minutes');

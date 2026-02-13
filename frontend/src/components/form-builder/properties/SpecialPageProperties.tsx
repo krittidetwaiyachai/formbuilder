@@ -14,7 +14,7 @@ import {
 interface SpecialPagePropertiesProps {
   currentPage: number;
   currentForm: Form;
-  handleFormUpdate: (field: string, value: any) => void;
+  handleFormUpdate: (field: string, value: unknown) => void;
 }
 
 export function SpecialPageProperties({ currentPage, currentForm, handleFormUpdate }: SpecialPagePropertiesProps) {
@@ -92,13 +92,13 @@ export function SpecialPageProperties({ currentPage, currentForm, handleFormUpda
 
   const activeSettings = isWelcome ? currentForm.welcomeSettings : currentForm.thankYouSettings;
 
-  const updateSetting = (key: string, value: any) => {
+  const updateSetting = (key: string, value: unknown) => {
       const settingType = isWelcome ? 'welcomeSettings' : 'thankYouSettings';
       const currentSettings = isWelcome ? currentForm.welcomeSettings : currentForm.thankYouSettings;
       handleFormUpdate(settingType, { ...currentSettings, [key]: value });
   };
 
-  const SectionHeader = ({ title, section, icon: Icon }: { title: string; section: string; icon: any }) => (
+  const SectionHeader = ({ title, section, icon: Icon }: { title: string; section: string; icon: React.ElementType }) => (
     <button 
       onClick={() => toggleSection(section)}
       className="w-full flex items-center justify-between py-2 group"
@@ -129,7 +129,7 @@ export function SpecialPageProperties({ currentPage, currentForm, handleFormUpda
                       onClick={() => updateSetting('icon', item.id)}
                       className={`
                         aspect-square rounded-md border flex items-center justify-center transition-all
-                        ${((activeSettings as any)?.icon || (isWelcome ? 'sparkles' : 'check')) === item.id 
+                        ${(activeSettings?.icon || (isWelcome ? 'sparkles' : 'check')) === item.id 
                           ? 'border-black bg-gray-50 text-black' 
                           : 'border-slate-200 text-slate-400 hover:border-slate-300 hover:text-slate-600'}
                       `}

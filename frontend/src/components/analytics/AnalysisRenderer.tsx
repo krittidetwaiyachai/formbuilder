@@ -20,8 +20,10 @@ import {
 import { Download } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+type SubmissionValue = string | number | boolean | string[] | Record<string, unknown> | null;
+
 interface FormSubmission {
-  data: Record<string, any>;
+  data: Record<string, SubmissionValue>;
   submittedAt: string;
 }
 
@@ -31,6 +33,11 @@ interface AnalysisRendererProps {
   analysisType: string;
 }
 
+const formatValue = (val: SubmissionValue): string => {
+  if (val === null || val === undefined) return "";
+  if (typeof val === 'object') return JSON.stringify(val);
+  return String(val);
+};
 
 export default function AnalysisRenderer({
   fieldName,
@@ -40,7 +47,7 @@ export default function AnalysisRenderer({
   const { t } = useTranslation();
 
   
-  const fieldResponses: { value: any; count: number }[] = [];
+  const fieldResponses: { value: SubmissionValue; count: number }[] = [];
   const valueCounts: Record<string, number> = {};
 
   submissions.forEach((submission) => {
@@ -85,7 +92,7 @@ export default function AnalysisRenderer({
       ["Field", "Value", "Count", "Percentage"],
       ...fieldResponses.map((r) => [
         fieldName,
-        r.value,
+        formatValue(r.value),
         r.count,
         ((r.count / totalResponses) * 100).toFixed(2) + "%",
       ]),
@@ -120,7 +127,7 @@ export default function AnalysisRenderer({
                     #{index + 1}
                   </div>
                   <div>
-                    <div className="font-medium">{response.value}</div>
+                    <div className="font-medium">{formatValue(response.value)}</div>
                     <div className="text-sm text-muted-foreground">
                       {response.count} {t('analytics.times')} ({(response.count / totalResponses * 100).toFixed(1)}%)
                     </div>
@@ -157,7 +164,7 @@ export default function AnalysisRenderer({
               </CardHeader>
               <CardContent>
                 <div className="text-lg font-bold">
-                  {fieldResponses[0]?.value || "N/A"}
+                  {formatValue(fieldResponses[0]?.value) || "N/A"}
                 </div>
                 <div className="text-xs text-muted-foreground">
                   {fieldResponses[0]?.count || 0} {t('analytics.times')}
@@ -240,7 +247,7 @@ export default function AnalysisRenderer({
               >
                 <div className="flex items-center gap-3">
                   <Badge variant="outline">#{index + 1}</Badge>
-                  <span className="font-medium">{response.value}</span>
+                  <span className="font-medium">{formatValue(response.value)}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-muted-foreground">
@@ -259,7 +266,7 @@ export default function AnalysisRenderer({
             {fieldResponses.map((response, index) => (
               <div key={index} className="space-y-2">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="font-medium">{response.value}</span>
+                  <span className="font-medium">{formatValue(response.value)}</span>
                   <span className="text-muted-foreground">
                     {response.count} ({(response.count / totalResponses * 100).toFixed(1)}%)
                   </span>
@@ -282,7 +289,7 @@ export default function AnalysisRenderer({
               <Card key={index}>
                 <CardContent className="p-4">
                   <div className="text-sm text-muted-foreground mb-1">{t('analytics.value')}</div>
-                  <div className="font-medium mb-2">{response.value}</div>
+                  <div className="font-medium mb-2">{formatValue(response.value)}</div>
                   <div className="text-2xl font-bold">{response.count}</div>
                   <div className="text-xs text-muted-foreground">
                     {(response.count / totalResponses * 100).toFixed(1)}% {t('analytics.of_total')}
@@ -305,7 +312,7 @@ export default function AnalysisRenderer({
                 const value = submission.data[fieldName];
                 return (
                   <Badge key={idx} variant="outline" className="text-xs">
-                    {Array.isArray(value) ? value.join(", ") : String(value)}
+                    {Array.isArray(value) ? value.join(", ") : formatValue(value)}
                   </Badge>
                 );
               })}

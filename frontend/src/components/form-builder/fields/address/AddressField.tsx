@@ -1,5 +1,5 @@
 import React from 'react';
-import { Field } from '@/types';
+import { Field, AddressFieldOptions } from '@/types';
 import { useFormStore } from '@/store/formStore';
 import { MapPin } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -21,7 +21,7 @@ export const AddressField: React.FC<AddressFieldProps> = ({ field, fieldStyle, d
   const { inputBorder } = fieldStyle;
 
   
-  const options = field.options || {};
+  const options = (field.options || {}) as AddressFieldOptions;
   const showStreet = options.showStreet !== false;
   const showStreet2 = options.showStreet2 !== false;
   const showCity = options.showCity !== false;

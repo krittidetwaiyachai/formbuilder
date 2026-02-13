@@ -40,8 +40,8 @@ export default function WelcomeScreen({ settings, onStart, viewMode = 'desktop' 
   const isTablet = viewMode === 'tablet';
   const layout = settings?.layout || 'simple';
   const bgImage = settings?.backgroundImage;
-  const iconColor = (settings as any)?.iconColor || 'blue';
-  const IconComponent = iconMap[(settings as any)?.icon || 'sparkles'] || Sparkles;
+  const iconColor = settings?.iconColor || 'blue';
+  const IconComponent = iconMap[settings?.icon || 'sparkles'] || Sparkles;
   const title = settings?.title;
   const description = settings?.description;
   const buttonText = settings?.buttonText || t('public.start', 'Start');

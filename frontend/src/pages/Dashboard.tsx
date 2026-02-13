@@ -51,7 +51,7 @@ export default function DashboardPage() {
 
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [selectedForm, setSelectedForm] = useState<FormWithStats | null>(null);
-  const [collaboratorModalData, setCollaboratorModalData] = useState<{ isOpen: boolean; collaborators: any[]; formTitle: string; formId: string } | null>(null);
+  const [collaboratorModalData, setCollaboratorModalData] = useState<{ isOpen: boolean; collaborators: Array<{ id?: string; firstName?: string; lastName?: string; email?: string; photoUrl?: string; role?: string }>; formTitle: string; formId: string } | null>(null);
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; formId: string } | null>(null);
   const { isAuthenticated, user } = useAuthStore();
   const [searchTerm, setSearchTerm] = useState('');
@@ -443,7 +443,7 @@ export default function DashboardPage() {
                   onContextMenu={handleContextMenu}
                   onViewDetails={(e, form) => {
                     e.stopPropagation();
-                    setSelectedForm(form);
+                    setSelectedForm(form as FormWithStats);
                   }}
                   onDeleteForm={handleDeleteForm}
                   onCollaboratorsClick={(e, collaborators, title, formId) => {
@@ -467,7 +467,7 @@ export default function DashboardPage() {
                   user={user}
                   navigate={navigate}
                   handleContextMenu={handleContextMenu}
-                  setSelectedForm={setSelectedForm}
+                  setSelectedForm={(form) => setSelectedForm(form as FormWithStats)}
                   handleDeleteForm={handleDeleteForm}
                   setCollaboratorModalData={setCollaboratorModalData}
                   formatDate={formatDate}
@@ -539,7 +539,7 @@ export default function DashboardPage() {
         onRequestLogin={() => setIsLoginModalOpen(true)}
         onOpenCollaborators={() => {
           if (selectedForm) {
-            const allEditors = [selectedForm.createdBy, ...(selectedForm.collaborators || [])].filter(Boolean);
+            const allEditors = [selectedForm.createdBy, ...(selectedForm.collaborators || [])].filter((u): u is NonNullable<typeof u> => u != null);
             setCollaboratorModalData({
               isOpen: true,
               collaborators: allEditors,
@@ -574,7 +574,7 @@ export default function DashboardPage() {
           onCollaborators={() => {
              const form = forms.find(f => f.id === contextMenu.formId);
              if (form) {
-                const allEditors = [form.createdBy, ...(form.collaborators || [])].filter(Boolean);
+                const allEditors = [form.createdBy, ...(form.collaborators || [])].filter((u): u is NonNullable<typeof u> => u != null);
                 setCollaboratorModalData({
                     isOpen: true,
                     collaborators: allEditors,

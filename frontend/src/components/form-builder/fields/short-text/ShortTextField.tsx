@@ -1,5 +1,5 @@
 import React from 'react';
-import { Field } from '@/types';
+import { Field, TextFieldOptions } from '@/types';
 import { Type } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -16,7 +16,7 @@ interface ShortTextFieldProps {
 
 export const ShortTextField: React.FC<ShortTextFieldProps> = ({ field, fieldStyle, disabledClass = "opacity-60 cursor-pointer" }) => {
   const { t } = useTranslation();
-  const { hoverText, width, customWidth } = field.options || {};
+  const { hoverText, width, customWidth } = (field.options || {}) as TextFieldOptions;
 
   return (
     <div className="relative max-w-full group" title={hoverText}>

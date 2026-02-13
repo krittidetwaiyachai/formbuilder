@@ -2,18 +2,19 @@ import { useDroppable } from '@dnd-kit/core';
 import { motion, AnimatePresence } from 'framer-motion';
 import DraggableFormCard from './DraggableFormCard';
 import DashboardFormCard from './DashboardFormCard';
+import type { Form } from '@/types';
 
 import { useTranslation } from 'react-i18next';
 
 interface UngroupedFormsSectionProps {
-  forms: any[]; 
+  forms: Form[]; 
   foldersCount: number;
-  user: any;
+  user: { id?: string } | null;
   navigate: (path: string) => void;
   handleContextMenu: (e: React.MouseEvent, formId: string) => void;
-  setSelectedForm: (form: any) => void;
+  setSelectedForm: (form: Form) => void;
   handleDeleteForm: (formId: string, e: React.MouseEvent) => void;
-  setCollaboratorModalData: (data: any) => void;
+  setCollaboratorModalData: (data: { isOpen: boolean; collaborators: Array<{ id?: string; firstName?: string; lastName?: string; email?: string; photoUrl?: string; role?: string }>; formTitle: string; formId: string } | null) => void;
   formatDate: (date: string) => string;
   droppableId?: string;
   title?: string;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Field } from '@/types';
+import { Field, FullNameFieldOptions } from '@/types';
 import { useFormStore } from '@/store/formStore';
 import { useTranslation } from 'react-i18next';
 
@@ -21,7 +21,7 @@ export const FullNameField: React.FC<FullNameFieldProps> = ({ field, fieldStyle,
   const { inputBorder } = fieldStyle;
 
   
-  const options = field.options || {};
+  const options = (field.options || {}) as FullNameFieldOptions;
   const showPrefix = options.showPrefix;
   const showMiddleName = options.showMiddleName;
   const showSuffix = options.showSuffix;

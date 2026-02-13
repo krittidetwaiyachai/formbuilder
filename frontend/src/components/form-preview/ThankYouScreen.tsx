@@ -3,10 +3,10 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Check, CheckCircle, Facebook, Twitter, Linkedin, ThumbsUp, Heart, Star, Trophy, PartyPopper } from 'lucide-react';
 import { FormSettings, ThankYouScreenSettings } from '@/types';
-import QuizResults from './QuizResults';
+import QuizResults, { QuizReview } from './QuizResults';
 import Loader from '@/components/common/Loader';
 
-const iconMap: Record<string, any> = {
+const iconMap: Record<string, React.ElementType> = {
   check: CheckCircle,
   thumbsUp: ThumbsUp,
   heart: Heart,
@@ -35,7 +35,7 @@ interface ThankYouScreenProps {
   showScore?: boolean;
   allowViewMissedQuestions?: boolean;
   showExplanation?: boolean;
-  quizReview?: any;
+  quizReview?: QuizReview;
   isQuiz?: boolean;
   viewMode?: 'desktop' | 'tablet' | 'mobile';
 }
@@ -47,7 +47,7 @@ export default function ThankYouScreen({ settings, globalSettings, score, showSc
   const layout = settings?.layout || 'simple';
   const bgImage = settings?.backgroundImage;
   const iconColor = settings?.iconColor || 'green';
-  const IconComponent = iconMap[(settings as any)?.icon || 'check'] || Check;
+  const IconComponent = iconMap[settings?.icon || 'check'] || Check;
   const isMobile = viewMode === 'mobile';
   const isTablet = viewMode === 'tablet';
   

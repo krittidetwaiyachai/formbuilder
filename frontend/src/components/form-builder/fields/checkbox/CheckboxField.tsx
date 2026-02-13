@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react';
-import { Field } from '@/types';
+import { Field, CheckboxField as CheckboxFieldType } from '@/types';
 import { Plus, X, GripVertical } from 'lucide-react';
 import { useFormStore } from '@/store/formStore';
 import { useTranslation } from 'react-i18next';
@@ -35,27 +35,33 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
 
+  const checkboxField = field as unknown as CheckboxFieldType;
+
   
   const getOptionsRobust = (): { label: string; value: string }[] => {
-       let rawOptions = field.options;
+       const rawOptions = checkboxField.options;
        if (!rawOptions) return [];
        if (Array.isArray(rawOptions)) {
-           
-           if (rawOptions.length > 0 && typeof rawOptions[0] === 'object') {
-                return rawOptions as unknown as { label: string; value: string }[];
-           }
-           return rawOptions.map(o => typeof o === 'string' ? {label:o, value:o} : o);
+            if (rawOptions.length > 0 && typeof rawOptions[0] === 'object') {
+                 return (rawOptions as unknown as { label: string; value: string }[]).map(o => ({
+                    label: o.label || '', 
+                    value: o.value || o.label || ''
+                }));
+            }
+            return (rawOptions as string[]).map(o => ({label: o, value: o}));
        }
        
        if (rawOptions.items && Array.isArray(rawOptions.items)) {
-           return rawOptions.items.map((o: any) => typeof o === 'string' ? {label:o, value:o} : o);
+           return rawOptions.items.map((o: string | { label: string; value: string }) => 
+                typeof o === 'string' ? {label:o, value:o} : { label: o.label || '', value: o.value || o.label || '' }
+           );
        }
        return [];
   }
 
   const options = getOptionsRobust();
-  const optionsObj = (field.options && !Array.isArray(field.options)) ? field.options : {};
-  const validation = field.validation || {};
+  const optionsObj = (checkboxField.options && !Array.isArray(checkboxField.options)) ? checkboxField.options : {};
+  const validation = checkboxField.validation || {};
 
   const spreadToColumns = optionsObj.spreadToColumns || validation.spreadToColumns;
   const columns = optionsObj.columns || validation.columns || 2;
@@ -69,7 +75,7 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = ({
     const newOption = { label: optionText, value: optionText };
     
     const newItems = [...options, newOption];
-    let newOptionsObj: any;
+    let newOptionsObj: Record<string, unknown>;
     if (Array.isArray(field.options)) {
          newOptionsObj = { items: newItems };
     } else {
@@ -275,7 +281,7 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = ({
 
   return (
     <div className={`pt-1 ${spreadToColumns ? 'grid gap-3' : 'space-y-3'}`} style={spreadToColumns ? { gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` } : {}}>
-      {options.length > 0 ? options.map((opt: any, idx: number) => (
+      {options.length > 0 ? options.map((opt, idx) => (
         <div key={idx} className="flex items-center gap-4 p-3 rounded-xl border border-transparent hover:bg-pink-50/50 transition-colors duration-200 group">
           <div className="relative flex items-center justify-center shrink-0">
             <div className="w-6 h-6 border-2 border-pink-200 rounded-lg group-hover/field:border-pink-500 transition-colors"></div>
@@ -285,7 +291,7 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = ({
               </svg>
             )}
           </div>
-          <span className="text-base font-medium text-gray-700">{opt.label || opt.value || opt}</span>
+          <span className="text-base font-medium text-gray-700">{opt.label || opt.value}</span>
         </div>
       )) : (
         <div className="flex items-center gap-4 p-3 text-gray-400 italic">

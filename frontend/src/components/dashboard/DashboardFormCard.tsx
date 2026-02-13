@@ -4,20 +4,29 @@ import UserAvatar from '@/components/common/UserAvatar';
 import type { Form } from '@/types';
 import { useTranslation } from 'react-i18next';
 
+interface UserInfo {
+  id?: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  photoUrl?: string;
+  role?: string;
+}
+
 interface DashboardFormCardProps {
   form: Form & {
     responseCount?: number;
     viewCount?: number;
     _count?: { responses: number };
-    collaborators?: any[];
-    createdBy?: any;
+    collaborators?: UserInfo[];
+    createdBy?: UserInfo;
   };
   currentUserId?: string;
   onCardClick: () => void;
   onContextMenu: (e: React.MouseEvent) => void;
   onViewDetails: (e: React.MouseEvent) => void;
   onDelete: (e: React.MouseEvent) => void;
-  onCollaboratorsClick: (e: React.MouseEvent, collaborators: any[], title: string, formId: string) => void;
+  onCollaboratorsClick: (e: React.MouseEvent, collaborators: UserInfo[], title: string, formId: string) => void;
   formatDate: (date: string) => string;
   compact?: boolean;
 }
@@ -34,7 +43,7 @@ export default function DashboardFormCard({
   compact = false,
 }: DashboardFormCardProps) {
   const { t } = useTranslation();
-  const allEditors = [form.createdBy, ...(form.collaborators || [])].filter(Boolean);
+  const allEditors = ([form.createdBy, ...(form.collaborators || [])] as (UserInfo | undefined)[]).filter((u): u is UserInfo => u != null);
 
   return (
     <div
@@ -113,7 +122,7 @@ export default function DashboardFormCard({
             }}
           >
             <div className={`flex -space-x-2 overflow-hidden pointer-events-none items-center ${compact ? 'scale-90 origin-left' : ''}`}>
-              {allEditors.slice(0, 3).map((editor: any, index) => (
+              {allEditors.slice(0, 3).map((editor, index) => (
                 <div key={index} className="relative ring-2 ring-white rounded-full">
                   <UserAvatar 
                     user={editor} 

@@ -2,12 +2,13 @@ import { Plus, Trash2, Edit3, ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { stripHtml } from '@/lib/ui/utils';
 import { getFieldTypeName, getPropertyLabel } from './utils';
-import ValueRenderer from './ValueRenderer';
+import ValueRenderer, { ValueType } from './ValueRenderer';
+import { FieldChange, ChangeItem } from './types';
 
 interface FieldChangeRendererProps {
-  addedFields?: any[];
-  deletedFields?: any[];
-  updatedFields?: any[];
+  addedFields?: FieldChange[];
+  deletedFields?: FieldChange[];
+  updatedFields?: FieldChange[];
   fieldLabels: Record<string, string>;
   actionFilter: string;
 }
@@ -29,11 +30,11 @@ export default function FieldChangeRenderer({
       return false;
   };
 
-  const isBooleanToggle = (before: any, after: any) => {
+  const isBooleanToggle = (before: unknown, after: unknown) => {
     return typeof before === 'boolean' && typeof after === 'boolean';
   };
     
-  const isStringToggle = (property: string, before: any, after: any) => {
+  const isStringToggle = (property: string, before: unknown, after: unknown) => {
     const prop = property.split('.').pop()?.toLowerCase();
     const isStringValue = typeof before === 'string' || typeof after === 'string' || typeof before === 'number' || typeof after === 'number';
     const toggleProps = ['size', 'width', 'height', 'align', 'variant', 'position', 'shrink', 'labelalign', 'labelalignment', 'textalign', 'textalignment', 'alignment', 'inputalign', 'inputalignment', 'columns', 'theme', 'layout', 'direction', 'orientation', 'color', 'background', 'radius', 'border', 'shadow', 'editormode'];
@@ -42,14 +43,14 @@ export default function FieldChangeRenderer({
 
   return (
     <div className="space-y-3">
-        {}
+        {/* Added Fields */}
         {addedFields.length > 0 && isVisible('added') && (
           <div className="space-y-4">
             <div className="text-xs font-semibold text-green-600 bg-green-50 px-2 py-1 rounded-md border border-green-100 inline-flex items-center gap-1">
                <Plus className="w-3 h-3" /> {t('activity.changes.added_fields', { count: addedFields.length })}
             </div>
             <div className="flex flex-wrap gap-2">
-              {addedFields.map((f: any, i: number) => {
+              {addedFields.map((f: FieldChange, i: number) => {
                 const groupName = f.groupId ? fieldLabels[f.groupId] : null;
                 return (
                   <div key={i} className="flex items-center gap-1.5 bg-white px-2 py-1 rounded border border-gray-200 shadow-sm">
@@ -65,14 +66,14 @@ export default function FieldChangeRenderer({
           </div>
         )}
 
-        {}
+        {/* Deleted Fields */}
         {deletedFields.length > 0 && isVisible('deleted') && (
           <div className="space-y-4">
              <div className="text-xs font-semibold text-red-600 bg-red-50 px-2 py-1 rounded-md border border-red-100 inline-flex items-center gap-1">
                 <Trash2 className="w-3 h-3" /> {t('activity.changes.deleted_fields', { count: deletedFields.length })}
              </div>
              <div className="flex flex-wrap gap-2">
-              {deletedFields.map((f: any, i: number) => {
+              {deletedFields.map((f: FieldChange, i: number) => {
                 const groupName = f.groupId ? fieldLabels[f.groupId] : null;
                 return (
                   <div key={i} className="flex items-center gap-1.5 bg-white px-2 py-1 rounded border border-red-100 shadow-sm opacity-75">
@@ -88,7 +89,7 @@ export default function FieldChangeRenderer({
           </div>
         )}
 
-        {}
+        {/* Updated Fields */}
         {updatedFields.length > 0 && isVisible('updated') && (
           <div className="space-y-4">
             <div className="text-xs font-semibold text-indigo-600 bg-indigo-50 px-2 py-1 rounded-md border border-indigo-100 inline-flex items-center gap-1">
@@ -96,7 +97,7 @@ export default function FieldChangeRenderer({
             </div>
             
             <div className="space-y-4">
-              {updatedFields.map((f: any, i: number) => {
+              {updatedFields.map((f: FieldChange, i: number) => {
                  const groupName = f.groupId ? fieldLabels[f.groupId] : null;
                  return (
                   <div key={i} className="bg-white rounded-lg border border-gray-100 p-3 shadow-sm hover:border-indigo-100 transition-colors">
@@ -111,10 +112,10 @@ export default function FieldChangeRenderer({
                     </div>
 
                   <div className="space-y-1">
-                    {f.changes.map((c: any, idx: number) => {
-                       const propName = getPropertyLabel(c.property, t, i18n);
+                    {(f.changes || []).map((c: ChangeItem, idx: number) => {
+                       const propName = getPropertyLabel(c.property || '', t, i18n);
                        
-                       
+                       // Set default value for 'before' if it's undefined/null for certain properties
                        let beforeValue = c.before;
                        
                        if (c.property === 'stateInputType' && !beforeValue) beforeValue = 'text';
@@ -124,7 +125,7 @@ export default function FieldChangeRenderer({
                        if ((c.property === 'validation.dateFormat' || c.property === 'dateFormat') && !beforeValue) beforeValue = 'MM-DD-YYYY';
                        if ((c.property === 'validation.timeFormat' || c.property === 'timeFormat') && !beforeValue) beforeValue = 'AM/PM';
                        if ((c.property === 'validation.minimumAge' || c.property === 'minimumAge') && !beforeValue) beforeValue = 18;
-                       if (['validation.allowPast', 'allowPast', 'validation.allowFuture', 'allowFuture'].includes(c.property) && beforeValue === undefined) beforeValue = true;
+                       if (['validation.allowPast', 'allowPast', 'validation.allowFuture', 'allowFuture'].includes(c.property || '') && beforeValue === undefined) beforeValue = true;
                        if ((c.property === 'validation.limitTime' || c.property === 'limitTime') && !beforeValue) beforeValue = 'BOTH';
                        if (c.property === 'icon' && !beforeValue) beforeValue = 'star';
                        if (c.property === 'maxRating' && !beforeValue) beforeValue = 5;
@@ -162,24 +163,24 @@ export default function FieldChangeRenderer({
                                  {c.after ? t('activity.values.enable') : t('activity.values.disable')}
                                </div>
                              </>
-                           ) : isStringToggle(c.property, beforeValue, c.after) ? (
+                           ) : isStringToggle(c.property || '', beforeValue, c.after) ? (
                              <>
                                 <div className="px-2 py-1 bg-gray-100 text-gray-600 rounded border border-gray-200 whitespace-nowrap">
-                                  {typeof beforeValue === 'string' || typeof beforeValue === 'number' ? beforeValue : (c.property.toLowerCase().includes('editormode') ? t('activity.values.plain_text') : t('activity.values.auto'))}
+                                  {typeof beforeValue === 'string' || typeof beforeValue === 'number' ? beforeValue : ((c.property || '').toLowerCase().includes('editormode') ? t('activity.values.plain_text') : t('activity.values.auto'))}
                                 </div>
                                 <ArrowRight className="w-3 h-3 text-gray-300 flex-shrink-0" />
                                 <div className="px-2 py-1 bg-indigo-50 text-indigo-700 rounded border border-indigo-200 font-medium">
-                                  {typeof c.after === 'string' || typeof c.after === 'number' ? c.after : (c.property.toLowerCase().includes('editormode') ? t('activity.values.plain_text') : t('activity.values.auto'))}
+                                  {typeof c.after === 'string' || typeof c.after === 'number' ? c.after : ((c.property || '').toLowerCase().includes('editormode') ? t('activity.values.plain_text') : t('activity.values.auto'))}
                                 </div>
                              </>
                            ) : (
                              <>
                                <div className="bg-red-50 text-red-700 px-2 py-1 rounded border border-red-100 line-through opacity-75 break-words min-w-0" title={String(beforeValue)}>
-                                 <ValueRenderer value={beforeValue} />
+                                 <ValueRenderer value={beforeValue as ValueType} />
                                </div>
                                <ArrowRight className="w-3 h-3 text-gray-300 flex-shrink-0" />
                                <div className="bg-emerald-50 text-emerald-700 px-2 py-1 rounded border border-emerald-100 font-medium break-words min-w-0" title={String(c.after)}>
-                                 <ValueRenderer value={c.after} />
+                                 <ValueRenderer value={c.after as ValueType} />
                                </div>
                              </>
                            )}

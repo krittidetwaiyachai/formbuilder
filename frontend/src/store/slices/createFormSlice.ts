@@ -5,80 +5,80 @@ import { Socket } from 'socket.io-client';
 import api from '@/lib/api';
 
 export interface FormSlice {
-  currentForm: Form | null;
-  socket: Socket | null;
-  activeSidebarTab: 'properties' | 'theme' | 'settings' | 'logic' | 'builder';
-  shouldFocusField: boolean;
-  shouldScrollToQuizSettings: boolean;
-  focusedLogicRuleId: string | null;
+    currentForm: Form | null;
+    socket: Socket | null;
+    activeSidebarTab: 'properties' | 'theme' | 'settings' | 'logic' | 'builder';
+    shouldFocusField: boolean;
+    shouldScrollToQuizSettings: boolean;
+    focusedLogicRuleId: string | null;
 
-  setCurrentForm: (form: Form | null) => void;
-  updateForm: (updates: Partial<Form>, emit?: boolean) => void;
-  setShouldFocusField: (shouldFocus: boolean) => void;
-  loadForm: (formId: string) => Promise<void>;
-  saveForm: () => Promise<any>;
-  setActiveSidebarTab: (tab: 'properties' | 'theme' | 'settings' | 'logic' | 'builder') => void;
-  setShouldScrollToQuizSettings: (shouldScroll: boolean) => void;
-  setFocusedLogicRuleId: (id: string | null) => void;
-  setSocket: (socket: Socket | null) => void;
+    setCurrentForm: (form: Form | null) => void;
+    updateForm: (updates: Partial<Form>, emit?: boolean) => void;
+    setShouldFocusField: (shouldFocus: boolean) => void;
+    loadForm: (formId: string) => Promise<void>;
+    saveForm: () => Promise<Form | undefined>;
+    setActiveSidebarTab: (tab: 'properties' | 'theme' | 'settings' | 'logic' | 'builder') => void;
+    setShouldScrollToQuizSettings: (shouldScroll: boolean) => void;
+    setFocusedLogicRuleId: (id: string | null) => void;
+    setSocket: (socket: Socket | null) => void;
 }
 
 export const createFormSlice: StateCreator<FormBuilderState, [], [], FormSlice> = (set, get) => ({
-  currentForm: null,
-  socket: null,
-  activeSidebarTab: 'properties',
-  shouldFocusField: false,
-  shouldScrollToQuizSettings: false,
-  focusedLogicRuleId: null,
+    currentForm: null,
+    socket: null,
+    activeSidebarTab: 'properties',
+    shouldFocusField: false,
+    shouldScrollToQuizSettings: false,
+    focusedLogicRuleId: null,
 
-  setCurrentForm: (form) => set({ currentForm: form }),
-  
-  updateForm: (updates, emit = true) => {
-    const { currentForm } = get();
-    if (!currentForm) return;
+    setCurrentForm: (form) => set({ currentForm: form }),
 
-    const newForm = { ...currentForm, ...updates };
-    set({ currentForm: newForm });
+    updateForm: (updates, emit = true) => {
+        const { currentForm } = get();
+        if (!currentForm) return;
 
-    if (emit) {
-        get().emitChange(newForm);
+        const newForm = { ...currentForm, ...updates };
+        set({ currentForm: newForm });
+
+        if (emit) {
+            get().emitChange(newForm);
+        }
+        get().saveToHistory();
+    },
+
+    setShouldFocusField: (shouldFocus) => set({ shouldFocusField: shouldFocus }),
+    setActiveSidebarTab: (tab) => set({ activeSidebarTab: tab }),
+    setShouldScrollToQuizSettings: (shouldScroll) => set({ shouldScrollToQuizSettings: shouldScroll }),
+    setFocusedLogicRuleId: (id) => set({ focusedLogicRuleId: id }),
+    setSocket: (socket) => set({ socket }),
+
+    loadForm: async (formId) => {
+        const response = await api.get<{ form: Form } | Form>(`/forms/${formId}`);
+
+        const formData = 'form' in response.data ? response.data.form : response.data;
+        set({ currentForm: formData });
+    },
+
+    saveForm: async () => {
+        const { currentForm } = get();
+        if (!currentForm) return;
+
+        const {
+            id, createdAt, updatedAt, createdBy, createdById,
+            responseCount, viewCount, collaborators, _count,
+            ...payload
+        } = currentForm as Form & Record<string, unknown>;
+
+        const response = await api.patch<Form>(`/forms/${currentForm.id}`, payload);
+        return response.data;
     }
-    get().saveToHistory();
-  },
-
-  setShouldFocusField: (shouldFocus) => set({ shouldFocusField: shouldFocus }),
-  setActiveSidebarTab: (tab) => set({ activeSidebarTab: tab }),
-  setShouldScrollToQuizSettings: (shouldScroll) => set({ shouldScrollToQuizSettings: shouldScroll }),
-  setFocusedLogicRuleId: (id) => set({ focusedLogicRuleId: id }),
-  setSocket: (socket) => set({ socket }),
-
-  loadForm: async (formId) => {
-      const response = await api.get(`/forms/${formId}`);
-      
-      const formData = response.data.form || response.data;
-      set({ currentForm: formData });
-  },
-
-  saveForm: async () => {
-      const { currentForm } = get();
-      if (!currentForm) return;
-
-      const { 
-          id, createdAt, updatedAt, createdBy, createdById, 
-          responseCount, viewCount, collaborators, _count,
-          ...payload 
-      } = currentForm as any;
-
-      const response = await api.patch(`/forms/${currentForm.id}`, payload);
-      return response.data;
-  }
 });
 
 export interface HistoryStateItem {
     form: Form;
     timestamp: number;
 }
-  
+
 export interface HistorySlice {
     history: HistoryStateItem[];
     historyIndex: number;
@@ -86,7 +86,7 @@ export interface HistorySlice {
     redo: () => void;
     saveToHistory: () => void;
 }
-  
+
 export const createHistorySlice: StateCreator<FormBuilderState, [], [], HistorySlice> = (set, get) => ({
     history: [],
     historyIndex: -1,
@@ -96,7 +96,7 @@ export const createHistorySlice: StateCreator<FormBuilderState, [], [], HistoryS
         if (!currentForm) return;
 
         const newHistory = history.slice(0, historyIndex + 1);
-        
+
         newHistory.push({
             form: JSON.parse(JSON.stringify(currentForm)),
             timestamp: Date.now()

@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
-import { Field, FieldType } from '@/types';
+import { Field, FieldType, HeaderValidation } from '@/types';
 import { FileX, ChevronRight, X, ZoomIn } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+
+interface ExtendedHeaderValidation extends HeaderValidation {
+  imagePosition?: string;
+  overlayOpacity?: number;
+}
 
 interface PreviewFieldProps {
   field: Field;
@@ -23,13 +28,13 @@ export const PreviewHeaderField: React.FC<PreviewFieldProps> = ({ field }) => {
   };
 
   if (field.type === FieldType.HEADER) {
-      const headerValidation = field.validation as any;
-      const headerSize = headerValidation?.size || 'DEFAULT';
-      const headerAlignment = headerValidation?.alignment || 'LEFT';
+      const headerValidation = (field.validation || {}) as ExtendedHeaderValidation;
+      const headerSize = headerValidation.size || 'DEFAULT';
+      const headerAlignment = headerValidation.alignment || 'LEFT';
       const headerSubheading = field.placeholder || '';
-      const headingImage = headerValidation?.headingImage || '';
-      const imagePosition = headerValidation?.imagePosition || 'CENTER';
-      const overlayOpacity = headerValidation?.overlayOpacity ?? 50;
+      const headingImage = headerValidation.headingImage || '';
+      const imagePosition = headerValidation.imagePosition || 'CENTER';
+      const overlayOpacity = headerValidation.overlayOpacity ?? 50;
       
       const getHeaderSizeClass = () => {
         switch (headerSize) {

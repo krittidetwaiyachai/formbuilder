@@ -1,14 +1,15 @@
 
 import FormFieldRenderer from '@/components/form-preview/FormFieldRenderer';
-import { Form } from '@/types';
+import { Field, Form } from '@/types';
+import { UseFormRegister, FieldErrors, UseFormWatch, UseFormSetValue, Control } from 'react-hook-form';
 
 interface ClassicLayoutProps {
-  currentPageFields: any[];
-  register: any;
-  errors: any;
-  watch: any;
-  setValue: any;
-  control: any;
+  currentPageFields: Field[];
+  register: UseFormRegister<Record<string, unknown>>;
+  errors: FieldErrors;
+  watch: UseFormWatch<Record<string, unknown>>;
+  setValue: UseFormSetValue<Record<string, unknown>>;
+  control: Control;
   form: Form;
 }
 
@@ -24,7 +25,7 @@ export function ClassicLayout({
   return (
     <div className="flex flex-wrap gap-x-6 gap-y-6">
       {currentPageFields.map((field, index) => {
-        const isShrunk = field.options?.shrink; 
+        const isShrunk = field.options && 'shrink' in field.options && field.options.shrink; 
         return (
           <div 
             key={field.id} 

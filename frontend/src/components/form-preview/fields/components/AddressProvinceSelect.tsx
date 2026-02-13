@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { UseFormRegister } from 'react-hook-form';
+import { UseFormRegister, FieldValues } from 'react-hook-form';
 import { THAI_PROVINCES } from '@/utils/thai-provinces';
 
 interface AddressProvinceSelectProps {
   fieldName: string;
-  register: UseFormRegister<any>;
+  register: UseFormRegister<FieldValues>;
   isPublic?: boolean;
   sublabel?: string;
   inputClass: string;

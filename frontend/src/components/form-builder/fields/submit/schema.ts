@@ -1,4 +1,19 @@
-import { FieldType } from '@/types';
+import { FieldType } from '@/types/enums';
+import { FieldWidth, FieldWidthType } from '@/types/field-schema';
+
+export const ButtonPosition = {
+  LEFT: 'LEFT',
+  CENTER: 'CENTER',
+  RIGHT: 'RIGHT',
+} as const;
+
+export type ButtonPositionType = keyof typeof ButtonPosition;
+
+export interface SubmitOptions {
+  buttonText: string;
+  width: FieldWidthType;
+  position: ButtonPositionType;
+}
 
 export const submitDefaultValues = {
   type: FieldType.SUBMIT,
@@ -6,10 +21,10 @@ export const submitDefaultValues = {
   required: true,
   options: {
     buttonText: 'Submit',
-    width: 'FULL',
-    position: 'CENTER',
-  },
+    width: FieldWidth.FULL,
+    position: ButtonPosition.CENTER,
+  } satisfies SubmitOptions,
   validation: {
     readOnly: true,
   }
-};
+} as const;

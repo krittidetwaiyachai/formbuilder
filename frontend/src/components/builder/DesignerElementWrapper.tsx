@@ -82,17 +82,17 @@ function DesignerElementWrapperComponent({
     transform: isDragging ? undefined : (transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined),
     transition: isDragging ? 'none' : transition,
     opacity: isDragging ? 0.3 : 1,
-    visibility: 'visible',
+    visibility: 'visible' as const,
   };
 
   const customListeners = React.useMemo(() => {
     if (!listeners) return {};
     
-    const customHandlers: any = {};
+    const customHandlers: Record<string, (e: React.SyntheticEvent | Event) => void> = {};
     Object.keys(listeners).forEach((key) => {
-      const originalHandler = (listeners as any)[key];
+      const originalHandler = (listeners as Record<string, Function>)[key];
       if (typeof originalHandler === 'function') {
-        customHandlers[key] = (e: any) => {
+        customHandlers[key] = (e: React.SyntheticEvent | Event) => {
           const target = e.target as HTMLElement;
           
           if (

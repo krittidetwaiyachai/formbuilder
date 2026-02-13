@@ -103,7 +103,7 @@ function ElementButton({ type, label, icon }: ElementButtonProps) {
         options: [
           { id: "opt-1", label: "Option 1", value: "option-1" },
           { id: "opt-2", label: "Option 2", value: "option-2" },
-        ],
+        ] as unknown as Record<string, unknown>,
       }),
       ...(type === FormElementType.RATE && { max: 5 }),
       ...(type === FormElementType.TEXTAREA && { rows: 4 }),

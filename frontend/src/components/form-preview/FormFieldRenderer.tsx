@@ -1,5 +1,5 @@
 import { Field, FieldType } from '@/types';
-import { useForm } from 'react-hook-form';
+import { useForm, FieldErrors, Control, UseFormRegister, UseFormWatch, UseFormSetValue } from 'react-hook-form';
 import { TextPreview } from './fields/TextPreview';
 import { EmailPreview } from './fields/EmailPreview';
 import { PreviewPhoneField } from './fields/PreviewPhoneField';
@@ -19,11 +19,11 @@ import { PreviewTableField } from './fields/PreviewTableField';
 
 interface FormFieldRendererProps {
   field: Field;
-  register: ReturnType<typeof useForm>['register'];
-  errors: any;
-  watch?: ReturnType<typeof useForm>['watch'];
-  setValue?: ReturnType<typeof useForm>['setValue'];
-  control?: any;
+  register: UseFormRegister<Record<string, unknown>>;
+  errors: FieldErrors;
+  watch?: UseFormWatch<Record<string, unknown>>;
+  setValue?: UseFormSetValue<Record<string, unknown>>;
+  control?: Control<Record<string, unknown>>;
   questionNumber?: number;
   isPublic?: boolean;
 }
@@ -55,8 +55,7 @@ export default function FormFieldRenderer({
       return <NumberPreview {...commonProps} />;
     
     case FieldType.TEXTAREA:
-    case FieldType.TEXTAREA:
-      return <PreviewTextAreaField {...commonProps} watch={watch} setValue={setValue} />;
+      return <PreviewTextAreaField {...commonProps} watch={watch} setValue={setValue} control={control} />;
     
     case FieldType.DROPDOWN:
     case FieldType.RADIO:

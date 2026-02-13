@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useFormStore } from '@/store/formStore';
-import { FieldType } from '@/types';
+import { FieldType, TypedField } from '@/types';
 import { Settings, GitBranch } from 'lucide-react';
 
 import LogicSidebarList from './LogicSidebarList';
@@ -67,7 +67,7 @@ export default function PropertiesPanel({ currentPage = 0 }: PropertiesPanelProp
     }
   }, [selectedField, activeTab, setActiveTab]);
 
-  const handleFormUpdate = (field: string, value: any) => {
+  const handleFormUpdate = (field: string, value: unknown) => {
     if (!currentForm) return;
     updateForm({ ...currentForm, [field]: value });
   };
@@ -162,122 +162,164 @@ export default function PropertiesPanel({ currentPage = 0 }: PropertiesPanelProp
                   <h3 className="text-sm font-semibold text-black mb-2">{t('builder.properties.element_properties')}</h3>
                 </div>
                 
-                {selectedField.type === FieldType.FULLNAME ? (
-                  <FullNameProperties 
-                    field={selectedField} 
-                    updateField={updateField} 
-                    duplicatesField={addField} 
-                  />
-                ) : selectedField.type === FieldType.EMAIL ? (
-                  <EmailProperties 
-                    field={selectedField} 
-                    updateField={updateField} 
-                    duplicatesField={addField} 
-                  />
-                ) : selectedField.type === FieldType.ADDRESS ? (
-                  <AddressProperties 
-                    field={selectedField} 
-                    updateField={updateField} 
-                    duplicatesField={addField} 
-                  />
-                ) : selectedField.type === FieldType.PHONE ? (
-                  <PhoneProperties 
-                    field={selectedField} 
-                    updateField={updateField} 
-                    duplicatesField={addField} 
-                  />
-                ) : selectedField.type === FieldType.DATE ? (
-                  <DateProperties 
-                    field={selectedField} 
-                    updateField={updateField} 
-                    duplicatesField={addField} 
-                  />
-                ) : selectedField.type === FieldType.HEADER ? (
-                  <HeaderProperties 
-                    field={selectedField}
-                    updateField={updateField}
-                    duplicatesField={addField}
-                  />
-                ) : selectedField.type === FieldType.TEXT ? (
-                  <ShortTextProperties 
-                    field={selectedField}
-                    updateField={updateField}
-                    duplicatesField={addField}
-                  />
-                ) : selectedField.type === FieldType.TEXTAREA ? (
-                  <LongTextProperties 
-                    field={selectedField}
-                    updateField={updateField}
-                    duplicatesField={addField}
-                  />
-                ) : selectedField.type === FieldType.PARAGRAPH ? (
-                  <ParagraphProperties
-                    field={selectedField}
-                    updateField={updateField}
-                    duplicatesField={addField}
-                  />
-                ) : selectedField.type === FieldType.DROPDOWN ? (
-                  <DropdownProperties
-                    field={selectedField}
-                    updateField={updateField}
-                    duplicatesField={addField}
-                  />
-                ) : selectedField.type === FieldType.RADIO ? (
-                  <RadioProperties
-                    field={selectedField}
-                    updateField={updateField}
-                    duplicatesField={addField}
-                  />
-                ) : selectedField.type === FieldType.CHECKBOX ? (
-                  <CheckboxProperties
-                    field={selectedField}
-                    updateField={updateField}
-                    duplicatesField={addField}
-                  />
-                ) : selectedField.type === FieldType.NUMBER ? (
-                  <NumberProperties
-                    field={selectedField}
-                    updateField={updateField}
-                    duplicatesField={addField}
-                  />
-                ) : selectedField.type === FieldType.TIME ? (
-                  <TimeProperties
-                    field={selectedField}
-                    updateField={updateField}
-                    duplicatesField={addField}
-                  />
-                ) : selectedField.type === FieldType.SUBMIT ? (
-                  <SubmitProperties
-                    field={selectedField}
-                    updateField={updateField}
-                    duplicatesField={addField}
-                  />
-                ) : selectedField.type === FieldType.RATE ? (
-                  <RateProperties
-                    field={selectedField}
-                    updateField={updateField}
-                    duplicatesField={addField}
-                  />
-                ) : selectedField.type === FieldType.MATRIX ? (
-                  <MatrixProperties
-                    field={selectedField}
-                    updateField={updateField}
-                    duplicatesField={addField}
-                  />
-                ) : selectedField.type === FieldType.TABLE ? (
-                  <TableProperties
-                    field={selectedField}
-                    updateField={updateField}
-                    duplicatesField={addField}
-                  />
-                ) : (
+                {(() => {
+                  const field = selectedField as unknown as TypedField;
                   
-                  <CommonFieldProperties 
-                    field={selectedField}
-                    currentForm={currentForm}
-                    updateField={updateField}
-                  />
-                )}
+                  switch (field.type) {
+                    case FieldType.FULLNAME:
+                      return (
+                        <FullNameProperties 
+                          field={field} 
+                          updateField={updateField} 
+                          duplicatesField={addField} 
+                        />
+                      );
+                    case FieldType.EMAIL:
+                      return (
+                        <EmailProperties 
+                          field={field} 
+                          updateField={updateField} 
+                          duplicatesField={addField} 
+                        />
+                      );
+                    case FieldType.ADDRESS:
+                      return (
+                        <AddressProperties 
+                          field={field} 
+                          updateField={updateField} 
+                          duplicatesField={addField} 
+                        />
+                      );
+                    case FieldType.PHONE:
+                      return (
+                        <PhoneProperties 
+                          field={field} 
+                          updateField={updateField} 
+                          duplicatesField={addField} 
+                        />
+                      );
+                    case FieldType.DATE:
+                      return (
+                        <DateProperties 
+                          field={field} 
+                          updateField={updateField} 
+                          duplicatesField={addField} 
+                        />
+                      );
+                    case FieldType.HEADER:
+                      return (
+                        <HeaderProperties 
+                          field={field}
+                          updateField={updateField}
+                          duplicatesField={addField}
+                        />
+                      );
+                    case FieldType.TEXT:
+                      return (
+                        <ShortTextProperties 
+                          field={field}
+                          updateField={updateField}
+                          duplicatesField={addField}
+                        />
+                      );
+                    case FieldType.TEXTAREA:
+                      return (
+                        <LongTextProperties 
+                          field={field}
+                          updateField={updateField}
+                          duplicatesField={addField}
+                        />
+                      );
+                    case FieldType.PARAGRAPH:
+                      return (
+                        <ParagraphProperties
+                          field={field}
+                          updateField={updateField}
+                          duplicatesField={addField}
+                        />
+                      );
+                    case FieldType.DROPDOWN:
+                      return (
+                        <DropdownProperties
+                          field={field}
+                          updateField={updateField}
+                          duplicatesField={addField}
+                        />
+                      );
+                    case FieldType.RADIO:
+                      return (
+                        <RadioProperties
+                          field={field}
+                          updateField={updateField}
+                          duplicatesField={addField}
+                        />
+                      );
+                    case FieldType.CHECKBOX:
+                      return (
+                        <CheckboxProperties
+                          field={field}
+                          updateField={updateField}
+                          duplicatesField={addField}
+                        />
+                      );
+                    case FieldType.NUMBER:
+                      return (
+                        <NumberProperties
+                          field={field}
+                          updateField={updateField}
+                          duplicatesField={addField}
+                        />
+                      );
+                    case FieldType.TIME:
+                      return (
+                        <TimeProperties
+                          field={field}
+                          updateField={updateField}
+                          duplicatesField={addField}
+                        />
+                      );
+                    case FieldType.SUBMIT:
+                      return (
+                        <SubmitProperties
+                          field={field}
+                          updateField={updateField}
+                          duplicatesField={addField}
+                        />
+                      );
+                    case FieldType.RATE:
+                      return (
+                        <RateProperties
+                          field={field}
+                          updateField={updateField}
+                          duplicatesField={addField}
+                        />
+                      );
+                    case FieldType.MATRIX:
+                      return (
+                        <MatrixProperties
+                          field={field}
+                          updateField={updateField}
+                          duplicatesField={addField}
+                        />
+                      );
+                    case FieldType.TABLE:
+                      return (
+                        <TableProperties
+                          field={field}
+                          updateField={updateField}
+                          duplicatesField={addField}
+                        />
+                      );
+                    default:
+                      return (
+                        <CommonFieldProperties 
+                          field={selectedField}
+                          currentForm={currentForm}
+                          updateField={updateField}
+                        />
+                      );
+                  }
+                })()}
                 
                 { }
                 { }

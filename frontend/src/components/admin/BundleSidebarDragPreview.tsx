@@ -1,4 +1,5 @@
-import { FieldType } from '@/types';
+import React from 'react';
+import { FieldType, FieldOptions } from '@/types';
 import {
   Type,
   FileText,
@@ -61,8 +62,8 @@ interface BundleSidebarDragPreviewProps {
   fieldConfig: {
     type: FieldType;
     label: string;
-    icon?: any;
-    options?: any;
+    icon?: React.ElementType;
+    options?: FieldOptions;
   };
 }
 
@@ -202,9 +203,9 @@ export default function BundleSidebarDragPreview({ fieldConfig }: BundleSidebarD
             </div>
             <div>
                 {renderPreview()}
-                {fieldConfig.options?.subLabel && (
+                {'subLabel' in (fieldConfig.options || {}) && (
                     <div className="text-[10px] text-gray-400 mt-1">
-                        {fieldConfig.options.subLabel}
+                        {(fieldConfig.options as Record<string, unknown>).subLabel as string}
                     </div>
                 )}
             </div>

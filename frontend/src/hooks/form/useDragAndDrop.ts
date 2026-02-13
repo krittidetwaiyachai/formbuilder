@@ -66,7 +66,7 @@ export function useFormDragAndDrop({
           ) {
             newField.options = {
               subLabel: "Sublabel",
-              options: [
+              items: [
                 { id: generateUUID(), label: "Option 1", value: "Option 1" },
                 { id: generateUUID(), label: "Option 2", value: "Option 2" },
                 { id: generateUUID(), label: "Option 3", value: "Option 3" },
@@ -154,7 +154,7 @@ export function useFormDragAndDrop({
         ) {
           newField.options = {
             subLabel: "",
-            options: [
+            items: [
               { id: generateUUID(), label: "Option 1", value: "Option 1" },
               { id: generateUUID(), label: "Option 2", value: "Option 2" },
               { id: generateUUID(), label: "Option 3", value: "Option 3" },
@@ -311,7 +311,7 @@ export function useFormDragAndDrop({
         label: getLabelForType(type),
         required: false,
         order: 0,
-        options: type === FieldType.GROUP ? { collapsible: true } : [],
+        options: type === FieldType.GROUP ? { collapsible: true } : {},
       };
 
       if (

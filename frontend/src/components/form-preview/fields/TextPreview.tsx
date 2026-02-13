@@ -1,6 +1,6 @@
 import React from 'react';
-import { Field } from '@/types';
-import { useForm } from 'react-hook-form';
+import { Field, TextField } from '@/types';
+import { useForm, FieldErrors, RegisterOptions } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Type } from 'lucide-react';
 import { PreviewLabel } from '../PreviewLabel';
@@ -9,7 +9,7 @@ import { stripHtml } from '@/lib/ui/utils';
 interface PreviewFieldProps {
   field: Field;
   register: ReturnType<typeof useForm>['register'];
-  errors: any;
+  errors: FieldErrors;
   questionNumber?: number;
   isPublic?: boolean;
 }
@@ -18,22 +18,23 @@ export const TextPreview: React.FC<PreviewFieldProps> = ({ field, register, erro
   const { t } = useTranslation();
   const fieldName = `field_${field.id}`;
   const fieldError = errors[fieldName];
+  const typedField = field as TextField;
 
-  const options = field.options || {};
-  const validation = field.validation || {};
+  const options = typedField.options || {};
+  const validation = typedField.validation || {};
   const { labelAlignment = 'TOP', subLabel, width, customWidth, hoverText, readOnly, defaultValue, shrink } = options;
   const { maxLength, hasMaxLength, type: validationType } = validation;
 
   const isRowLayout = labelAlignment === 'LEFT' || labelAlignment === 'RIGHT';
 
   
-  const validationRules: any = {
+  const validationRules: RegisterOptions = {
     required: field.required ? t('public.validation.required_field', { label: stripHtml(field.label) }) : false,
   };
 
   if (hasMaxLength && maxLength) {
     validationRules.maxLength = {
-      value: maxLength,
+      value: maxLength as number,
       message: t('public.validation.max_length', { count: maxLength })
     };
   }

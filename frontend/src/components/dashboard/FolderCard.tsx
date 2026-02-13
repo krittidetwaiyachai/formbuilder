@@ -17,9 +17,9 @@ interface FolderCardProps {
   currentUserId?: string;
   formatDate: (date: string) => string;
   onContextMenu: (e: React.MouseEvent, formId: string) => void;
-  onViewDetails: (e: React.MouseEvent, form: any) => void;
+  onViewDetails: (e: React.MouseEvent, form: Form) => void;
   onDeleteForm: (formId: string, e: React.MouseEvent) => void;
-  onCollaboratorsClick: (e: React.MouseEvent, collaborators: any[], title: string, formId: string) => void;
+  onCollaboratorsClick: (e: React.MouseEvent, collaborators: Array<{ id?: string; firstName?: string; lastName?: string; email?: string; photoUrl?: string; role?: string }>, title: string, formId: string) => void;
   isExpanded: boolean;
   onToggleExpand: () => void;
 }
@@ -219,7 +219,7 @@ export default function FolderCard({
                   {forms.map((form) => (
                     <DraggableFormCard key={form.id} formId={form.id}>
                       <DashboardFormCard
-                        form={form as any}
+                        form={form}
                         currentUserId={currentUserId}
                         onCardClick={() => onFormClick(form.id)}
                         onContextMenu={(e) => onContextMenu(e, form.id)}

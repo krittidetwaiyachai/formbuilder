@@ -1,3 +1,4 @@
+import { ComponentProps } from 'react';
 import { useBundleEditorStore } from '@/store/bundleEditorStore';
 import { Settings } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -128,7 +129,7 @@ import {
   Timer, Trash2, Trophy, Umbrella, Upload, Users, Wallet, Watch, Wifi, Wrench,
 } from 'lucide-react';
 
-const IconMap: Record<string, any> = {
+const IconMap: Record<string, React.ElementType> = {
   Layers, User, Briefcase, CalendarCheck, MessageSquare, Share2, GraduationCap, Star, Lock,
   Home, Heart, ShoppingCart, Mail, Phone, MapPin, FileText, Folder, SettingsIcon, Search,
   Camera, Music, Video, Globe, Zap, Award, Target, Code, Rocket, Coffee, Gift, Truck,
@@ -139,7 +140,9 @@ const IconMap: Record<string, any> = {
   Timer, Trash2, Trophy, Umbrella, Upload, Users, Wallet, Watch, Wifi, Wrench,
 };
 
-function BundleSettings({ bundle, updateBundleMeta }: { bundle: any; updateBundleMeta: any }) {
+import { Bundle } from '@/store/bundleEditorStore';
+
+function BundleSettings({ bundle, updateBundleMeta }: { bundle: Bundle; updateBundleMeta: (meta: Partial<Bundle>) => void }) {
 
     return (
         <div className="space-y-6">
@@ -244,7 +247,7 @@ export default function BundleFieldProperties() {
     
     
     
-    const { order, formId, ...rest } = fieldData as any;
+    const { order, formId, ...rest } = fieldData;
     addField(rest);
   };
 
@@ -267,31 +270,31 @@ export default function BundleFieldProperties() {
              <div className="space-y-4">
                  { }
                  {(() => {
-                    const fieldProps: any = {
-                        field: selectedField,
+                    const fieldProps = {
+                        field: { ...selectedField, formId: 'bundle-preview' },
                         updateField: updateField,
                         duplicatesField: handleDuplicate
                     };
 
                     switch (selectedField.type) {
-                        case FieldType.FULLNAME: return <FullNameProperties {...fieldProps} />;
-                        case FieldType.EMAIL: return <EmailProperties {...fieldProps} />;
-                        case FieldType.ADDRESS: return <AddressProperties {...fieldProps} />;
-                        case FieldType.PHONE: return <PhoneProperties {...fieldProps} />;
-                        case FieldType.DATE: return <DateProperties {...fieldProps} />;
-                        case FieldType.HEADER: return <HeaderProperties {...fieldProps} />;
-                        case FieldType.TEXT: return <ShortTextProperties {...fieldProps} />;
-                        case FieldType.TEXTAREA: return <LongTextProperties {...fieldProps} />;
-                        case FieldType.PARAGRAPH: return <ParagraphProperties {...fieldProps} />;
-                        case FieldType.DROPDOWN: return <DropdownProperties {...fieldProps} />;
-                        case FieldType.RADIO: return <RadioProperties {...fieldProps} />;
-                        case FieldType.CHECKBOX: return <CheckboxProperties {...fieldProps} />;
-                        case FieldType.NUMBER: return <NumberProperties {...fieldProps} />;
-                        case FieldType.TIME: return <TimeProperties {...fieldProps} />;
-                        case FieldType.SUBMIT: return <SubmitProperties {...fieldProps} />; 
-                        case FieldType.RATE: return <RateProperties {...fieldProps} />;
-                        case FieldType.MATRIX: return <MatrixProperties {...fieldProps} />;
-                        case FieldType.TABLE: return <TableProperties {...fieldProps} />;
+                        case FieldType.FULLNAME: return <FullNameProperties {...(fieldProps as unknown as ComponentProps<typeof FullNameProperties>)} />;
+                        case FieldType.EMAIL: return <EmailProperties {...(fieldProps as unknown as ComponentProps<typeof EmailProperties>)} />;
+                        case FieldType.ADDRESS: return <AddressProperties {...(fieldProps as unknown as ComponentProps<typeof AddressProperties>)} />;
+                        case FieldType.PHONE: return <PhoneProperties {...(fieldProps as unknown as ComponentProps<typeof PhoneProperties>)} />;
+                        case FieldType.DATE: return <DateProperties {...(fieldProps as unknown as ComponentProps<typeof DateProperties>)} />;
+                        case FieldType.HEADER: return <HeaderProperties {...(fieldProps as unknown as ComponentProps<typeof HeaderProperties>)} />;
+                        case FieldType.TEXT: return <ShortTextProperties {...(fieldProps as unknown as ComponentProps<typeof ShortTextProperties>)} />;
+                        case FieldType.TEXTAREA: return <LongTextProperties {...(fieldProps as unknown as ComponentProps<typeof LongTextProperties>)} />;
+                        case FieldType.PARAGRAPH: return <ParagraphProperties {...(fieldProps as unknown as ComponentProps<typeof ParagraphProperties>)} />;
+                        case FieldType.DROPDOWN: return <DropdownProperties {...(fieldProps as unknown as ComponentProps<typeof DropdownProperties>)} />;
+                        case FieldType.RADIO: return <RadioProperties {...(fieldProps as unknown as ComponentProps<typeof RadioProperties>)} />;
+                        case FieldType.CHECKBOX: return <CheckboxProperties {...(fieldProps as unknown as ComponentProps<typeof CheckboxProperties>)} />;
+                        case FieldType.NUMBER: return <NumberProperties {...(fieldProps as unknown as ComponentProps<typeof NumberProperties>)} />;
+                        case FieldType.TIME: return <TimeProperties {...(fieldProps as unknown as ComponentProps<typeof TimeProperties>)} />;
+                        case FieldType.SUBMIT: return <SubmitProperties {...(fieldProps as unknown as ComponentProps<typeof SubmitProperties>)} />; 
+                        case FieldType.RATE: return <RateProperties {...(fieldProps as unknown as ComponentProps<typeof RateProperties>)} />;
+                        case FieldType.MATRIX: return <MatrixProperties {...(fieldProps as unknown as ComponentProps<typeof MatrixProperties>)} />;
+                        case FieldType.TABLE: return <TableProperties {...(fieldProps as unknown as ComponentProps<typeof TableProperties>)} />;
                         default: return (
                             <div className="p-4 text-center text-gray-500 text-sm">
                                 Properties for {selectedField.type} not available.

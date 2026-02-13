@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, CartesianGrid, XAxis, YAxis, Bar } from 'recharts';
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, CartesianGrid, XAxis, YAxis, Bar, Legend, Label } from 'recharts';
 import { CheckCircle2, Copy } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/custom-select';
@@ -89,7 +89,8 @@ export const FieldDistributionWidget: React.FC<FieldAnalyticsProps & { selectedF
                   ))}
                 </Pie>
                 <Tooltip />
-              </PieChart>
+                  <Legend />
+                </PieChart>
             </ResponsiveContainer>
           </div>
         </div>
@@ -192,14 +193,18 @@ export const FieldDetailedAnalysis: React.FC<FieldAnalyticsProps & { selectedFie
                       <ResponsiveContainer width="100%" height={300}>
                           <BarChart data={selectedFieldStats.distributionCounts} layout="vertical">
                               <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                              <XAxis type="number" tick={{ fontSize: 12 }} />
+                              <XAxis type="number" tick={{ fontSize: 12 }}>
+                                  <Label value={t('analytics.axis_count')} position="insideBottom" offset={-5} style={{ textAnchor: 'middle', fill: '#666', fontSize: 12 }} />
+                              </XAxis>
                               <YAxis
                                   type="category"
                                   dataKey="value"
                                   width={100}
                                   tick={{ fontSize: 11 }}
                                   tickFormatter={(value) => value.length > 12 ? value.slice(0, 12) + '...' : value}
-                              />
+                              >
+                                  <Label value={t('analytics.axis_answer')} position="insideLeft" angle={-90} style={{ textAnchor: 'middle', fill: '#666', fontSize: 12 }} />
+                              </YAxis>
                               <Tooltip
                                   contentStyle={{
                                       backgroundColor: 'white',

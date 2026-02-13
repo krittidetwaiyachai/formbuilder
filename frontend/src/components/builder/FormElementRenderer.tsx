@@ -1,6 +1,6 @@
 "use client";
 
-import { Field, FieldType } from "@/types";
+import { Field, FieldType, CheckboxOption, DropdownField, CheckboxField, RadioField } from "@/types";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -174,8 +174,8 @@ export default function FormElementRenderer({
               disabled={isDesigner}
             >
               <option value="">Select an option</option>
-              {element.options?.map((opt: any) => (
-                <option key={opt.id} value={opt.value}>
+              {(element as DropdownField).options?.items?.map((opt: CheckboxOption) => (
+                <option key={opt.id || opt.value} value={opt.value}>
                   {opt.label}
                 </option>
               ))}
@@ -193,15 +193,15 @@ export default function FormElementRenderer({
           <div className="space-y-3">
             {renderEditableLabel(element.label, element.required)}
             <div className="space-y-2">
-              {element.options?.map((opt: any) => (
-                <div key={opt.id} className="flex items-center space-x-2">
+              {(element as CheckboxField).options?.items?.map((opt: CheckboxOption) => (
+                <div key={opt.id || opt.value} className="flex items-center space-x-2">
                   <input
                     type="checkbox"
-                    id={opt.id}
+                    id={opt.id || opt.value}
                     disabled={isDesigner}
                     className="h-4 w-4 rounded border-gray-300"
                   />
-                  <label htmlFor={opt.id} className="text-sm">
+                  <label htmlFor={opt.id || opt.value} className="text-sm">
                     {opt.label}
                   </label>
                 </div>
@@ -220,16 +220,16 @@ export default function FormElementRenderer({
           <div className="space-y-3">
             {renderEditableLabel(element.label, element.required)}
             <div className="space-y-2">
-              {element.options?.map((opt: any) => (
-                <div key={opt.id} className="flex items-center space-x-2">
+              {(element as RadioField).options?.items?.map((opt: CheckboxOption) => (
+                <div key={opt.id || opt.value} className="flex items-center space-x-2">
                   <input
                     type="radio"
-                    id={opt.id}
+                    id={opt.id || opt.value}
                     name={element.id}
                     disabled={isDesigner}
                     className="h-4 w-4"
                   />
-                  <label htmlFor={opt.id} className="text-sm">
+                  <label htmlFor={opt.id || opt.value} className="text-sm">
                     {opt.label}
                   </label>
                 </div>

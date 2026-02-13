@@ -141,10 +141,10 @@ function FieldTypeButton({ config, isCollapsed }: { config: SidebarFieldConfig; 
       label: config.label,
       required: false,
       validation: config.validation,
-      options: config.options || (needsOptions(config.type) ? [
+      options: (config.options || (needsOptions(config.type) ? [
         { id: 'opt-1', label: 'Option 1', value: 'option-1' },
         { id: 'opt-2', label: 'Option 2', value: 'option-2' },
-      ] : undefined),
+      ] : undefined)) as Record<string, unknown> | undefined,
     });
   };
 

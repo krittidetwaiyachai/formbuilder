@@ -1,41 +1,27 @@
-export enum RoleType {
-  SUPER_ADMIN = 'SUPER_ADMIN',
-  ADMIN = 'ADMIN',
-  EDITOR = 'EDITOR',
-  VIEWER = 'VIEWER',
-}
+export * from './enums';
+export * from './field-validation';
+export * from './typed-fields';
+import { FieldType, RoleType, FormStatus } from './enums';
+import { FieldWidthType, LabelAlignmentType } from './field-schema';
+import type { FieldValidation } from './field-validation';
+import type { FieldOptions } from './typed-fields';
 
-export enum FieldType {
-  TEXT = 'TEXT',
-  TEXTAREA = 'TEXTAREA',
-  NUMBER = 'NUMBER',
-  EMAIL = 'EMAIL',
-  PHONE = 'PHONE',
-  DROPDOWN = 'DROPDOWN',
-  CHECKBOX = 'CHECKBOX',
-  RADIO = 'RADIO',
-  DATE = 'DATE',
-  TIME = 'TIME',
-  RATE = 'RATE',
-  HEADER = 'HEADER',
-  FULLNAME = 'FULLNAME',
-  ADDRESS = 'ADDRESS',
-  PARAGRAPH = 'PARAGRAPH',
-  SUBMIT = 'SUBMIT',
-  DIVIDER = 'DIVIDER',
-  SECTION_COLLAPSE = 'SECTION_COLLAPSE',
-  PAGE_BREAK = 'PAGE_BREAK',
-  GROUP = 'GROUP',
-  MATRIX = 'MATRIX',
-  TABLE = 'TABLE',
-  FILE = 'FILE',
-}
-
-export enum FormStatus {
-  DRAFT = 'DRAFT',
-  PUBLISHED = 'PUBLISHED',
-  ARCHIVED = 'ARCHIVED',
-}
+import type { RateOptions } from '@/components/form-builder/fields/rate/schema';
+import type { AddressOptions } from '@/components/form-builder/fields/address/schema';
+import type { CheckboxOption } from '@/components/form-builder/fields/checkbox/schema';
+import type { DateOptions } from '@/components/form-builder/fields/date/schema';
+import type { DropdownValidation } from '@/components/form-builder/fields/dropdown/schema';
+import type { EmailOptions } from '@/components/form-builder/fields/email/schema';
+import type { FullNameOptions } from '@/components/form-builder/fields/full-name/schema';
+import type { HeaderOptions } from '@/components/form-builder/fields/header/schema';
+import type { LongTextOptions } from '@/components/form-builder/fields/long-text/schema';
+import type { NumberOptions } from '@/components/form-builder/fields/number/schema';
+import type { ParagraphOptions } from '@/components/form-builder/fields/paragraph/schema';
+import type { PhoneOptions } from '@/components/form-builder/fields/phone/schema';
+import type { RadioValidation } from '@/components/form-builder/fields/radio/schema';
+import type { ShortTextOptions } from '@/components/form-builder/fields/short-text/schema';
+import type { SubmitOptions } from '@/components/form-builder/fields/submit/schema';
+import type { TimeOptions } from '@/components/form-builder/fields/time/schema';
 
 
 
@@ -49,7 +35,7 @@ export interface User {
     id: string;
     name: RoleType;
     description?: string;
-    permissions: any;
+    permissions: Record<string, boolean>;
   };
 }
 
@@ -60,9 +46,9 @@ export interface Field {
   label: string;
   placeholder?: string;
   required: boolean;
-  validation?: any;
+  validation?: FieldValidation;
   order: number;
-  options?: any;
+  options?: FieldOptions;
   shrink?: boolean;
   correctAnswer?: string;
   score?: number;
@@ -189,7 +175,10 @@ export interface FormSettings {
   emailNotifications?: boolean;
   shuffleQuestions?: boolean;
   themeName?: string;
+  buttonStyle?: 'filled' | 'outlined' | 'ghost';
 }
+
+export type FormSettingsProperties = FormSettings;
 
 export interface FormTheme {
   primaryColor: string;
@@ -217,6 +206,7 @@ export interface WelcomeScreenSettings {
   layout?: 'simple' | 'split-left' | 'split-right' | 'cover';
   isActive?: boolean;
   backgroundImage?: string;
+  icon?: 'check' | 'thumbsUp' | 'heart' | 'star' | 'trophy' | 'party' | 'rocket' | 'sparkles';
   iconColor?: 'green' | 'blue' | 'purple' | 'orange' | 'pink' | 'red' | 'yellow' | 'gray' | 'white';
 }
 
@@ -232,6 +222,7 @@ export interface ThankYouScreenSettings {
   backgroundImage?: string;
   footerText?: string;
   showFooter?: boolean;
+  icon?: 'check' | 'thumbsUp' | 'heart' | 'star' | 'trophy' | 'party' | 'rocket' | 'sparkles';
   iconColor?: 'green' | 'blue' | 'purple' | 'orange' | 'pink' | 'red' | 'yellow' | 'gray' | 'white';
   backgroundColor?: string;
   showButton?: boolean;
@@ -248,6 +239,12 @@ export interface Bundle {
 
   version: number;
   isActive: boolean;
+  options?: {
+    icon?: string;
+    color?: string;
+    bg?: string;
+    [key: string]: unknown;
+  };
   fields?: BundleField[];
 }
 
@@ -259,15 +256,16 @@ export interface BundleField {
   label: string;
   placeholder?: string;
   required: boolean;
-  validation?: any;
+  validation?: FieldValidation;
   order: number;
-  options?: any;
+  options?: FieldOptions;
 }
 
 export interface FormResponse {
   id: string;
   formId: string;
   userId?: string;
+  respondentEmail?: string;
   submittedAt: string;
   score?: number;
   totalScore?: number;
@@ -276,7 +274,7 @@ export interface FormResponse {
     id: string;
     title: string;
     isQuiz: boolean;
-    quizSettings?: any;
+    quizSettings?: Form['quizSettings'];
   };
 }
 

@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Field } from '@/types';
+import { Field, MatrixField, Row, Column, MatrixFieldOptions } from '@/types';
 import { Plus, X, GripVertical, Copy } from 'lucide-react';
-import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { stripHtml } from '@/lib/ui/utils';
 import { PropertiesTabs } from '../common/PropertiesTabs';
 import { useTranslation } from 'react-i18next';
@@ -16,29 +16,30 @@ export function MatrixProperties({ field, updateField, duplicatesField }: Matrix
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'general' | 'fields' | 'advanced'>('general');
 
-  const rows = field.options?.rows || [{ id: 'r1', label: t('builder.properties.question') + ' 1' }];
-  const columns = field.options?.columns || [{ id: 'c1', label: t('builder.properties.column') + ' 1' }];
-  const inputType = field.options?.inputType || 'radio';
-  const options = field.options || {};
+  const typedField = field as unknown as MatrixField;
+  const options: MatrixFieldOptions = typedField.options || {};
+  const rows: Row[] = options.rows || [{ id: 'r1', label: t('builder.properties.question') + ' 1' }];
+  const columns: Column[] = options.columns || [{ id: 'c1', label: t('builder.properties.column') + ' 1' }];
+  const inputType = options.inputType || 'radio';
 
-  const handleUpdate = (updates: any) => {
+  const handleUpdate = (updates: Partial<MatrixField>) => {
     updateField(field.id, updates);
   };
 
-  const handleOptionUpdate = (key: string, value: any) => {
+  const handleOptionUpdate = (key: keyof MatrixFieldOptions, value: unknown) => {
     handleUpdate({
       options: {
-        ...field.options,
+        ...options,
         [key]: value,
       },
     });
   };
 
-  const updateRows = (newRows: any[]) => {
+  const updateRows = (newRows: Row[]) => {
     handleOptionUpdate('rows', newRows);
   };
 
-  const updateColumns = (newCols: any[]) => {
+  const updateColumns = (newCols: Column[]) => {
     handleOptionUpdate('columns', newCols);
   };
 
@@ -77,7 +78,7 @@ export function MatrixProperties({ field, updateField, duplicatesField }: Matrix
     updateColumns(newCols);
   };
 
-  const handleDragEndRows = (result: any) => {
+  const handleDragEndRows = (result: DropResult) => {
     if (!result.destination) return;
     const items = Array.from(rows);
     const [reorderedItem] = items.splice(result.source.index, 1);
@@ -85,7 +86,7 @@ export function MatrixProperties({ field, updateField, duplicatesField }: Matrix
     updateRows(items);
   };
 
-  const handleDragEndColumns = (result: any) => {
+  const handleDragEndColumns = (result: DropResult) => {
     if (!result.destination) return;
     const items = Array.from(columns);
     const [reorderedItem] = items.splice(result.source.index, 1);
@@ -160,7 +161,7 @@ export function MatrixProperties({ field, updateField, duplicatesField }: Matrix
             onClick={() => duplicatesField({
                ...field,
                id: undefined, 
-            } as any)}
+            } as unknown as Field)}
             className="w-full mt-4 px-3 py-2 text-sm font-medium text-black bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
           >
             <Copy className="h-4 w-4" />
@@ -212,7 +213,7 @@ export function MatrixProperties({ field, updateField, duplicatesField }: Matrix
                   <Droppable droppableId="matrix-rows">
                       {(provided) => (
                           <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-2">
-                              {rows.map((row: any, index: number) => (
+                              {rows.map((row: Row, index: number) => (
                                   <Draggable key={row.id} draggableId={row.id} index={index}>
                                       {(provided) => (
                                           <div 
@@ -265,7 +266,7 @@ export function MatrixProperties({ field, updateField, duplicatesField }: Matrix
                   <Droppable droppableId="matrix-cols">
                       {(provided) => (
                           <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-2">
-                              {columns.map((col: any, index: number) => (
+                              {columns.map((col: Column, index: number) => (
                                   <Draggable key={col.id} draggableId={col.id} index={index}>
                                       {(provided) => (
                                           <div 

@@ -21,7 +21,6 @@ export const MaterialTimePicker: React.FC<MaterialTimePickerProps> = ({
 }) => {
   const { t } = useTranslation();
   
-  
   const parseTime = (timeStr?: string | null) => {
     if (!timeStr) {
       return { hours: 12, minutes: 0, period: 'AM' as const };
@@ -77,108 +76,156 @@ export const MaterialTimePicker: React.FC<MaterialTimePickerProps> = ({
     setMinutes(prev => prev === 0 ? 59 : prev - 1);
   };
 
+  const handleNow = () => {
+     const now = new Date();
+     let h = now.getHours();
+     const m = now.getMinutes();
+     const p = h >= 12 ? 'PM' : 'AM';
+     
+     if (h > 12) h -= 12;
+     if (h === 0) h = 12;
+
+     setHours(h);
+     setMinutes(m);
+     setPeriod(p);
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+           {/* Backdrop */}
+           <motion.div 
+             initial={{ opacity: 0 }}
+             animate={{ opacity: 1 }}
+             exit={{ opacity: 0 }}
+             onClick={onClose}
+             className="absolute inset-0"
+           />
+           
            <motion.div
-             initial={{ opacity: 0, scale: 0.9 }}
-             animate={{ opacity: 1, scale: 1 }}
-             exit={{ opacity: 0, scale: 0.9 }}
-             className="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100 overflow-hidden w-full max-w-[320px] p-6 flex flex-col items-center"
+             initial={{ opacity: 0, scale: 0.95, y: 10 }}
+             animate={{ opacity: 1, scale: 1, y: 0 }}
+             exit={{ opacity: 0, scale: 0.95, y: 10 }}
+             className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100 overflow-hidden w-full max-w-[320px] flex flex-col relative z-10"
            >
-              {}
-              <h3 className="text-lg font-bold text-gray-800 mb-6">
-                 {t('common.time', 'Time')}
-              </h3>
-
-              {}
-              <div className="flex items-start justify-center gap-8 mb-6">
-                   {}
-                   <div className="flex flex-col items-center gap-2 w-20">
-                       <button 
-                         type="button"
-                         onClick={incrementHours}
-                         className="w-full p-2 rounded-lg border border-gray-200 hover:bg-gray-50 active:bg-gray-100 transition-colors flex items-center justify-center"
-                       >
-                           <ChevronUp className="w-4 h-4 text-gray-600" />
-                       </button>
-                       <div className="text-center py-2">
-                           <div className="text-4xl font-bold text-gray-800">{hours}</div>
-                           <div className="text-xs text-gray-500 font-medium mt-1">{t('common.hour', 'hour')}</div>
-                       </div>
-                       <button 
-                         type="button"
-                         onClick={decrementHours}
-                         className="w-full p-2 rounded-lg border border-gray-200 hover:bg-gray-50 active:bg-gray-100 transition-colors flex items-center justify-center"
-                       >
-                           <ChevronDown className="w-4 h-4 text-gray-600" />
-                       </button>
-                   </div>
-
-                   {}
-                   <div className="flex flex-col items-center gap-2 w-20">
-                       <button 
-                         type="button"
-                         onClick={incrementMinutes}
-                         className="w-full p-2 rounded-lg border border-gray-200 hover:bg-gray-50 active:bg-gray-100 transition-colors flex items-center justify-center"
-                       >
-                           <ChevronUp className="w-4 h-4 text-gray-600" />
-                       </button>
-                       <div className="text-center py-2">
-                           <div className="text-4xl font-bold text-gray-800">{minutes.toString().padStart(2, '0')}</div>
-                           <div className="text-xs text-gray-500 font-medium mt-1">{t('common.min', 'min')}</div>
-                       </div>
-                       <button 
-                         type="button"
-                         onClick={decrementMinutes}
-                         className="w-full p-2 rounded-lg border border-gray-200 hover:bg-gray-50 active:bg-gray-100 transition-colors flex items-center justify-center"
-                       >
-                           <ChevronDown className="w-4 h-4 text-gray-600" />
-                       </button>
-                   </div>
+              {/* Header */}
+              <div className="p-6 text-white transition-colors flex flex-col justify-center items-start" style={{ backgroundColor: themeColor }}>
+                  <p className="text-sm font-medium opacity-70 mb-1 pointer-events-none uppercase tracking-wider">{t('common.select_time', 'SELECT TIME')}</p>
+                  <div className="flex items-baseline gap-1">
+                      <h2 className="text-5xl font-bold tracking-tight">
+                        {hours}:{minutes.toString().padStart(2, '0')}
+                      </h2>
+                      <span className="text-xl font-medium opacity-80 ml-1">{period}</span>
+                  </div>
               </div>
 
-               {}
-               <div className="flex bg-gray-100 p-1 rounded-lg mb-6 w-full max-w-[160px]">
-                   <button
-                     type="button"
-                     onClick={() => setPeriod('AM')}
-                     className={`flex-1 py-1.5 text-sm font-semibold rounded-md transition-all ${period === 'AM' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
-                   >
-                       AM
-                   </button>
-                   <button
-                     type="button"
-                     onClick={() => setPeriod('PM')}
-                     className={`flex-1 py-1.5 text-sm font-semibold rounded-md transition-all ${period === 'PM' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
-                   >
-                       PM
-                   </button>
-               </div>
-               
-               {}
-               <div className="text-gray-500 font-medium mb-6 text-lg">
-                   {hours}:{minutes.toString().padStart(2, '0')} {period}
-               </div>
+              {/* Body */}
+              <div className="p-6 flex flex-col items-center">
+                 <div className="flex items-center gap-4 mb-6">
+                      {/* Hours */}
+                      <div className="flex flex-col items-center gap-1">
+                          <button 
+                            type="button"
+                            onClick={incrementHours}
+                            className="p-1 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors"
+                          >
+                              <ChevronUp className="w-6 h-6" />
+                          </button>
+                          <div className="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center text-3xl font-bold text-gray-800 border border-gray-100">
+                             {hours}
+                          </div>
+                          <span className="text-xs text-gray-400 font-medium uppercase tracking-wide">{t('common.hour', 'Hour')}</span>
+                          <button 
+                            type="button"
+                            onClick={decrementHours}
+                            className="p-1 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors"
+                          >
+                              <ChevronDown className="w-6 h-6" />
+                          </button>
+                      </div>
 
-              {}
-              <div className="flex flex-col gap-3 w-full">
-                    <button 
-                        type="button"
-                        onClick={handleApply}
-                        className="w-full py-2.5 rounded-lg text-white font-semibold text-sm shadow-sm active:shadow-none hover:opacity-90 transition-all"
-                        style={{ backgroundColor: themeColor }}
-                    >
-                        {t('common.ok', 'OK')}
-                    </button>
+                      <div className="text-2xl font-bold text-gray-300 pb-6">:</div>
+
+                      {/* Minutes */}
+                      <div className="flex flex-col items-center gap-1">
+                          <button 
+                            type="button"
+                            onClick={incrementMinutes}
+                            className="p-1 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors"
+                          >
+                              <ChevronUp className="w-6 h-6" />
+                          </button>
+                          <div className="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center text-3xl font-bold text-gray-800 border border-gray-100">
+                             {minutes.toString().padStart(2, '0')}
+                          </div>
+                          <span className="text-xs text-gray-400 font-medium uppercase tracking-wide">{t('common.minute', 'Minute')}</span>
+                          <button 
+                            type="button"
+                            onClick={decrementMinutes}
+                            className="p-1 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors"
+                          >
+                              <ChevronDown className="w-6 h-6" />
+                          </button>
+                      </div>
+
+                      {/* Period */}
+                      <div className="flex flex-col gap-2 ml-2 pb-6">
+                          <button
+                            type="button"
+                            onClick={() => setPeriod('AM')}
+                            className={`px-3 py-2 rounded-lg text-sm font-bold transition-all border ${
+                                period === 'AM' 
+                                ? 'bg-primary/10 text-primary border-primary' 
+                                : 'bg-white text-gray-400 border-gray-200 hover:border-gray-300'
+                            }`}
+                            style={period === 'AM' ? { backgroundColor: `${themeColor}20`, color: themeColor, borderColor: themeColor } : {}}
+                          >
+                              AM
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setPeriod('PM')}
+                            className={`px-3 py-2 rounded-lg text-sm font-bold transition-all border ${
+                                period === 'PM' 
+                                ? 'bg-primary/10 text-primary border-primary' 
+                                : 'bg-white text-gray-400 border-gray-200 hover:border-gray-300'
+                            }`}
+                            style={period === 'PM' ? { backgroundColor: `${themeColor}20`, color: themeColor, borderColor: themeColor } : {}}
+                          >
+                              PM
+                          </button>
+                      </div>
+                 </div>
+              </div>
+
+              {/* Footer */}
+              <div className="flex items-center justify-between p-4 px-6 border-t border-gray-100 bg-gray-50/50">
+                  <button 
+                    type="button"
+                    onClick={handleNow}
+                    className="text-sm font-semibold hover:bg-gray-100 px-3 py-2 rounded-lg transition-colors"
+                    style={{ color: themeColor }}
+                  >
+                    {t('common.now', 'Now')}
+                  </button>
+                  <div className="flex gap-2">
                     <button 
                         type="button"
                         onClick={onClose}
-                        className="w-full py-2.5 rounded-lg border border-gray-200 text-gray-700 font-semibold text-sm hover:bg-gray-50 transition-colors"
+                        className="text-sm font-semibold text-gray-500 hover:bg-gray-100 px-4 py-2 rounded-lg transition-colors"
                     >
                         {t('common.cancel', 'Cancel')}
                     </button>
+                    <button 
+                        type="button"
+                        onClick={handleApply}
+                        className="text-sm font-semibold hover:opacity-90 px-6 py-2 rounded-lg transition-colors text-white shadow-lg shadow-primary/30 active:scale-95 active:shadow-sm"
+                        style={{ backgroundColor: themeColor, boxShadow: `0 10px 15px -3px ${themeColor}40` }}
+                    >
+                        {t('common.ok', 'OK')}
+                    </button>
+                  </div>
               </div>
 
            </motion.div>

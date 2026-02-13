@@ -120,7 +120,7 @@ export const ResponseViewer: React.FC<ResponseViewerProps> = ({
                 const emailField = form?.fields?.find(f => f.type === 'EMAIL' || f.label.toLowerCase().includes('email') || f.label.includes('อีเมล'));
                 
                 const nameValue = nameField ? response.answers?.find(a => a.fieldId === nameField.id)?.value : null;
-                const emailValue = (response as any).respondentEmail || (emailField ? response.answers?.find(a => a.fieldId === emailField.id)?.value : null);
+                const emailValue = response.respondentEmail || (emailField ? response.answers?.find(a => a.fieldId === emailField.id)?.value : null);
 
                 return (
                 <div

@@ -1,15 +1,15 @@
 
 import React from 'react';
-import { Field } from '@/types';
-import { UseFormRegister, UseFormSetValue, UseFormWatch } from 'react-hook-form';
+import { Field, MatrixField, Row, Column, MatrixFieldOptions } from '@/types';
+import { UseFormRegister, UseFormSetValue, UseFormWatch, FieldErrors } from 'react-hook-form';
 import { PreviewLabel } from '../PreviewLabel';
 
 interface PreviewMatrixFieldProps {
   field: Field;
-  register: UseFormRegister<any>;
-  errors: any;
-  watch: UseFormWatch<any>;
-  setValue: UseFormSetValue<any>;
+  register: UseFormRegister<Record<string, unknown>>;
+  errors: FieldErrors;
+  watch: UseFormWatch<Record<string, unknown>>;
+  setValue: UseFormSetValue<Record<string, unknown>>;
   questionNumber?: number;
   isPublic?: boolean;
 }
@@ -26,13 +26,14 @@ export const PreviewMatrixField: React.FC<PreviewMatrixFieldProps> = ({
   isPublic
 }) => {
   const { t } = useTranslation();
-  const rows = field.options?.rows || [];
-  const columns = field.options?.columns || [];
-  const inputType = field.options?.inputType || 'radio';
+  const typedField = field as MatrixField;
+  const rows = typedField.options?.rows || [];
+  const columns = typedField.options?.columns || [];
+  const inputType = typedField.options?.inputType || 'radio';
   
   
   const fieldName = `field_${field.id}`; 
-  const currentValue = watch(fieldName) || {};
+  const currentValue = (watch(fieldName) || {}) as Record<string, string | string[]>;
 
   const handleCellChange = (rowId: string, colLabel: string) => {
     const newValue = { ...currentValue };
@@ -67,7 +68,7 @@ export const PreviewMatrixField: React.FC<PreviewMatrixFieldProps> = ({
 
   
   const validation = field.validation || {};
-  const optionsSettings = field.options || {};
+  const optionsSettings: MatrixFieldOptions = typedField.options || {};
   const { 
     labelAlignment = 'TOP', 
     subLabel, 
@@ -106,7 +107,7 @@ export const PreviewMatrixField: React.FC<PreviewMatrixFieldProps> = ({
                       style={{ color: 'var(--text)', opacity: 0.7, backgroundColor: 'var(--input-bg)' }}>
                     { }
                   </th>
-                  {columns.map((col: any) => (
+                  {columns.map((col: Column) => (
                     <th key={col.id} scope="col" className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider min-w-[80px]"
                         style={{ color: 'var(--text)', opacity: 0.7 }}>
                       {col.label}
@@ -115,7 +116,7 @@ export const PreviewMatrixField: React.FC<PreviewMatrixFieldProps> = ({
                 </tr>
               </thead>
               <tbody className="divide-y divide-[color:var(--divider)]" style={{ backgroundColor: 'var(--card-bg)' }}>
-                {rows.map((row: any, rowIndex: number) => (
+                {rows.map((row: Row, rowIndex: number) => (
                   <tr 
                     key={row.id} 
                     className="transition-colors hover:bg-black/5"
@@ -125,7 +126,7 @@ export const PreviewMatrixField: React.FC<PreviewMatrixFieldProps> = ({
                         style={{ color: 'var(--text)', backgroundColor: rowIndex % 2 === 0 ? 'var(--card-bg)' : 'var(--input-bg)' }}>
                       {row.label}
                     </td>
-                    {columns.map((col: any) => (
+                    {columns.map((col: Column) => (
                       <td key={col.id} className="px-4 py-3.5 whitespace-nowrap text-center">
                         <div className="relative inline-flex items-center justify-center cursor-pointer p-1">
                           <input
@@ -179,7 +180,8 @@ export const PreviewMatrixField: React.FC<PreviewMatrixFieldProps> = ({
               
                 if (inputType === 'radio') {
                     if (value && typeof value === 'object') {
-                        const answeredRows = Object.keys(value).filter(k => value[k]).length;
+                        const typedValue = value as Record<string, unknown>;
+                        const answeredRows = Object.keys(typedValue).filter(k => typedValue[k]).length;
                         if (answeredRows !== rows.length) {
                           return t('public.validation.matrix_radio', 'Please answer all questions');
                         }
@@ -188,7 +190,7 @@ export const PreviewMatrixField: React.FC<PreviewMatrixFieldProps> = ({
                     return t('public.validation.matrix_radio', 'Please answer all questions');
                 }
                 if (inputType === 'checkbox') {
-                   const hasAnswers = Object.values(value || {}).some((arr: any) => Array.isArray(arr) && arr.length > 0);
+                   const hasAnswers = Object.values(value || {}).some((arr: unknown) => Array.isArray(arr) && arr.length > 0);
                    return hasAnswers || t('public.validation.matrix_checkbox', 'Please select at least one option.');
                 }
                 return true;
@@ -201,7 +203,7 @@ export const PreviewMatrixField: React.FC<PreviewMatrixFieldProps> = ({
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
               <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
             </svg>
-            {errors[fieldName].message}
+            {errors[fieldName].message as string}
           </p>
         )}
       </div>

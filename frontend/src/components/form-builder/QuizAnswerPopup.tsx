@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
-import { Field, FieldType, Form } from '@/types';
+import { Field, FieldType, Form, TypedField, hasArrayOptions, hasCheckboxOptions } from '@/types';
 
 interface QuizAnswerPopupProps {
   field: Field;
@@ -61,8 +61,11 @@ export default function QuizAnswerPopup({ field, currentForm, allFields, onUpdat
   };
 
   const renderAnswerSelector = () => {
-    if (field.type === FieldType.RADIO || field.type === FieldType.DROPDOWN) {
-      if (!field.options || field.options.length === 0) {
+    const typedField = field as unknown as TypedField;
+
+    if (hasArrayOptions(typedField)) {
+      const options = typedField.options?.items;
+      if (!options || options.length === 0) {
         return (
           <p className="text-sm text-gray-600">{t('builder.quiz.no_options')}</p>
         );
@@ -77,7 +80,7 @@ export default function QuizAnswerPopup({ field, currentForm, allFields, onUpdat
             className="w-full px-3 py-2 border border-gray-800 rounded-lg bg-white focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
           >
             <option value="">{t('builder.quiz.select_option_placeholder')}</option>
-            {field.options.map((opt: any, idx: number) => (
+            {options.map((opt: { label: string; value: string }, idx: number) => (
               <option key={idx} value={opt.value}>
                 {opt.label}
               </option>
@@ -87,8 +90,9 @@ export default function QuizAnswerPopup({ field, currentForm, allFields, onUpdat
       );
     }
 
-    if (field.type === FieldType.CHECKBOX) {
-      if (!field.options || field.options.length === 0) {
+    if (hasCheckboxOptions(typedField)) {
+      const options = typedField.options?.items;
+      if (!options || options.length === 0) {
         return (
           <p className="text-sm text-gray-600">{t('builder.quiz.no_options')}</p>
         );
@@ -100,7 +104,7 @@ export default function QuizAnswerPopup({ field, currentForm, allFields, onUpdat
         <div>
           <p className="text-sm font-medium text-gray-900 mb-2">{t('builder.quiz.select_all_correct')}</p>
           <div className="space-y-2 max-h-48 overflow-y-auto">
-            {field.options.map((opt: any, idx: number) => {
+            {options.map((opt: { label: string; value: string }, idx: number) => {
               const isChecked = correctAnswers.includes(opt.value);
               return (
                 <label
@@ -122,7 +126,7 @@ export default function QuizAnswerPopup({ field, currentForm, allFields, onUpdat
       );
     }
 
-    
+    // Default text input for other types
     return (
       <div>
         <p className="text-sm font-medium text-gray-900 mb-2">{t('builder.quiz.enter_correct')}</p>

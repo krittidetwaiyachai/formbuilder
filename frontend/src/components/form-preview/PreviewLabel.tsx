@@ -36,7 +36,8 @@ export const PreviewLabel: React.FC<PreviewLabelProps> = ({
     
     const labelContent = sanitize(labelToSanitize);
     
-    const labelAlignment = field.options?.labelAlignment || 'TOP';
+    const options = field.options as Record<string, any> | undefined;
+    const labelAlignment = options?.labelAlignment || 'TOP';
     const isRightAligned = labelAlignment === 'RIGHT';
     const isCenterAligned = labelAlignment === 'CENTER';
 

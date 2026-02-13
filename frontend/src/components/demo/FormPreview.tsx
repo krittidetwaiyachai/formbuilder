@@ -1,7 +1,7 @@
 "use client";
 
 import { MOCK_FORM_ELEMENTS } from "@/lib/mock-data";
-import { FieldType } from "@/types";
+import { Field, FieldType } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,9 +13,18 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Star } from "lucide-react";
 import { useTranslation } from 'react-i18next';
 
+interface OptionItem {
+  id: string;
+  label: string;
+  value: string;
+}
+
 export default function FormPreview() {
   const { t } = useTranslation();
-  const renderElement = (element: any) => {
+  const renderElement = (element: Field) => {
+    const options = element.options as Record<string, unknown> | undefined;
+    const items = (options?.items as OptionItem[]) || [];
+    const optionItems = Array.isArray(items) ? items : [];
     switch (element.type) {
       case FieldType.HEADER:
         return (
@@ -89,7 +98,7 @@ export default function FormPreview() {
                 <SelectValue placeholder={t('common.select_option')} />
               </SelectTrigger>
               <SelectContent>
-                {element.options?.map((opt: any) => (
+                {optionItems.map((opt) => (
                   <SelectItem key={opt.id} value={opt.value}>
                     {opt.label}
                   </SelectItem>
@@ -114,7 +123,7 @@ export default function FormPreview() {
               )}
             </Label>
             <div className="space-y-2">
-              {element.options?.map((opt: any) => (
+              {optionItems.map((opt) => (
                 <div key={opt.id} className="flex items-center space-x-2">
                   <Checkbox id={opt.id} />
                   <Label
@@ -144,7 +153,7 @@ export default function FormPreview() {
               )}
             </Label>
             <RadioGroup name={element.id}>
-              {element.options?.map((opt: any) => (
+              {optionItems.map((opt) => (
                 <div key={opt.id} className="flex items-center space-x-2">
                   <RadioGroupItem value={opt.value} id={opt.id} />
                   <Label

@@ -22,9 +22,15 @@ import { Public } from '../auth/decorators/public.decorator';
 import { RoleType } from '@prisma/client';
 import { Response } from 'express';
 
+interface User {
+  id: string;
+  email: string;
+  role: RoleType;
+}
+
 @Controller('responses')
 export class ResponsesController {
-  constructor(private readonly responsesService: ResponsesService) {}
+  constructor(private readonly responsesService: ResponsesService) { }
 
   @Post()
   @Public()
@@ -54,7 +60,7 @@ export class ResponsesController {
   @Roles(RoleType.SUPER_ADMIN, RoleType.ADMIN, RoleType.EDITOR, RoleType.VIEWER)
   findAll(
     @Param('formId') formId: string,
-    @CurrentUser() user: any,
+    @CurrentUser() user: User,
     @Query('page') page?: string,
     @Query('limit') limit?: string,
     @Query('sort') sort?: string,
@@ -70,7 +76,7 @@ export class ResponsesController {
   @Roles(RoleType.SUPER_ADMIN, RoleType.ADMIN, RoleType.EDITOR, RoleType.VIEWER)
   findOne(
     @Param('id') id: string,
-    @CurrentUser() user: any,
+    @CurrentUser() user: User,
   ) {
     return this.responsesService.findOne(id, user.id, user.role);
   }
@@ -80,7 +86,7 @@ export class ResponsesController {
   @Roles(RoleType.SUPER_ADMIN, RoleType.ADMIN, RoleType.EDITOR, RoleType.VIEWER)
   async exportCSV(
     @Param('formId') formId: string,
-    @CurrentUser() user: any,
+    @CurrentUser() user: User,
     @Res() res: Response,
   ) {
     const { csv, filename } = await this.responsesService.exportToCSV(

@@ -166,7 +166,7 @@ export function BundleFieldCard({
         case FieldType.PHONE: return <PhoneField field={renderField} fieldStyle={fieldStyle} />;
         case FieldType.DROPDOWN: return <DropdownField field={renderField} fieldStyle={fieldStyle} />;
         case FieldType.CHECKBOX: return <CheckboxField field={renderField} fieldStyle={fieldStyle} />;
-        case FieldType.RADIO: return <RadioField field={renderField} fieldStyle={fieldStyle} />;
+        case FieldType.RADIO: return <RadioField field={renderField as Field} fieldStyle={fieldStyle} />;
         case FieldType.DATE: return <DateField field={renderField} fieldStyle={fieldStyle} />;
         case FieldType.TIME: return <TimeField field={renderField} fieldStyle={fieldStyle} />;
         case FieldType.RATE: return <RateField field={renderField} fieldStyle={fieldStyle} />;
@@ -189,8 +189,9 @@ export function BundleFieldCard({
     }
   }), [field.id]);
 
-  const isRowLayout = renderField.options?.labelAlignment === 'LEFT' || renderField.options?.labelAlignment === 'RIGHT';
-  const labelAlignment = renderField.options?.labelAlignment || 'TOP';
+  const options = renderField.options as Record<string, unknown> | undefined;
+  const isRowLayout = options?.labelAlignment === 'LEFT' || options?.labelAlignment === 'RIGHT';
+  const labelAlignment = (options?.labelAlignment as string) || 'TOP';
   const isCenterAligned = labelAlignment === 'CENTER';
   const isLayoutField = [FieldType.HEADER, FieldType.PARAGRAPH, FieldType.DIVIDER, FieldType.PAGE_BREAK, FieldType.SECTION_COLLAPSE].includes(renderField.type);
 
@@ -396,12 +397,10 @@ export function BundleFieldCard({
                              )}>
                                  <div className="relative group/editor max-w-full">
                                      {isSelected && !isOverlay ? (
-                                        <RichTextEditor
-                                            theme="snow"
+                                    <RichTextEditor
                                             value={field.label || ''}
                                             onChange={(value) => updateField(field.id, { label: value })}
                                             placeholder={t('common.question')}
-                                            modules={modules}
                                             className={cn(
                                                 "text-base font-medium text-black leading-tight borderless animate-slide-down min-h-[1.5em]",
                                                 labelAlignment === 'RIGHT' ? 'text-right' : '',
@@ -428,12 +427,11 @@ export function BundleFieldCard({
                         )}>
                             {content}
                             
-                            {(isSelected || field.options?.subLabel) && !isOverlay && (
+                            {(isSelected || !!options?.subLabel) && !isOverlay && (
                                 <div className="mt-2 text-sm text-gray-500">
                                    {isSelected ? (
                                         <RichTextEditor
-                                            theme="bubble"
-                                            value={field.options?.subLabel || ''}
+                                            value={(options?.subLabel as string) || ''}
                                             onChange={(value) => updateField(field.id, { options: { ...field.options, subLabel: value } })}
                                             placeholder={t('builder.sublabel', 'Sublabel')}
                                             className="sublabel-editor"
@@ -441,7 +439,7 @@ export function BundleFieldCard({
                                    ) : (
                                        <div 
                                            className="ql-editor !p-0"
-                                           dangerouslySetInnerHTML={{ __html: sanitize(field.options?.subLabel) }}
+                                           dangerouslySetInnerHTML={{ __html: sanitize(options?.subLabel as string) }}
                                        />
                                    )}
                                 </div>

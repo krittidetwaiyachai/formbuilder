@@ -63,6 +63,8 @@ export default {
   "analytics.loading": "กำลังโหลดข้อมูล...",
   "analytics.count": "จำนวน",
   "analytics.value": "ค่า",
+  "analytics.axis_answer": "คำตอบ",
+  "analytics.axis_count": "จำนวน",
   "analytics.percentage": "เปอร์เซ็นต์",
   "analytics.total_responses_count": "คำตอบทั้งหมด",
   "analytics.unique_values": "ค่าที่ไม่ซ้ำ",

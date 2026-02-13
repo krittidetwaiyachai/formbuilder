@@ -1,12 +1,13 @@
 import React from 'react';
-import { Field } from '@/types';
+import { Field, ParagraphField } from '@/types';
 
 interface PreviewFieldProps {
   field: Field;
 }
 
 export const PreviewParagraphField: React.FC<PreviewFieldProps> = ({ field }) => {
-  const options = field.options || {};
+  const typedField = field as ParagraphField;
+  const options = typedField.options || {};
   const { shrink, moveToNewLine, hidden } = options;
 
   if (hidden) return null;

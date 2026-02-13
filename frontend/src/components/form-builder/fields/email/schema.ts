@@ -1,4 +1,12 @@
-import { FieldType } from '@/types';
+import { FieldType } from '@/types/enums';
+import { FieldWidth, FieldWidthType, LabelAlignment, LabelAlignmentType } from '@/types/field-schema';
+
+export interface EmailOptions {
+  width: FieldWidthType;
+  labelAlignment: LabelAlignmentType;
+  placeholder: string;
+  subLabel: string;
+}
 
 export const emailDefaultValues = {
   type: FieldType.EMAIL,
@@ -6,14 +14,14 @@ export const emailDefaultValues = {
   required: false,
   placeholder: 'example@email.com',
   options: {
-    width: 'FULL',
-    labelAlignment: 'TOP',
+    width: FieldWidth.FULL,
+    labelAlignment: LabelAlignment.TOP,
     placeholder: 'example@email.com',
     subLabel: '',
-  },
+  } satisfies EmailOptions,
   validation: {
     required: false,
     readOnly: false,
-    confirmation: false, 
+    confirmation: false,
   }
-};
+} as const;

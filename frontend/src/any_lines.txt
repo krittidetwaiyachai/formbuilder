@@ -1,0 +1,19 @@
+﻿                {conditions.map((c: any, idx: number) => (
+                {actions.map((a: any, idx: number) => (
+        return <ValueRenderer value={val as any} />;
+                const isEmpty = (v: any) => v === null || v === undefined || v === '';
+                const isEmpty = (v: any) => v === null || v === undefined || v === '';
+                        const formatThemeName = (name: any) => {
+                            const isEmpty = (v: any) => v === null || v === undefined || v === '';
+    before?: any;
+    after?: any;
+    conditions?: any[];
+    actions?: any[];
+    originalConditions?: any[];
+    originalActions?: any[];
+        case FieldType.RADIO: return <RadioField field={renderField as any} fieldStyle={fieldStyle} />;
+                    const fieldProps: any = {
+  register: UseFormRegister<any>;
+  register: UseFormRegister<any>;
+  "builder.logic.how_or": "OR: Any one condition being true will trigger the action.",
+    [key: string]: any;

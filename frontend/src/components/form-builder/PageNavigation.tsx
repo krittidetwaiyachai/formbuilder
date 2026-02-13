@@ -51,8 +51,8 @@ interface PageTabProps {
   isDragging?: boolean;
   isOverlay?: boolean;
   style?: React.CSSProperties;
-  dragListeners?: any;
-  dragAttributes?: any;
+  dragListeners?: Record<string, Function>;
+  dragAttributes?: React.HTMLAttributes<HTMLDivElement>;
 }
 
 

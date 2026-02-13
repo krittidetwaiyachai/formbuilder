@@ -1,4 +1,10 @@
-import { FieldType } from '@/types';
+import { FieldType } from '@/types/enums';
+import { FieldWidth, FieldWidthType, LabelAlignment, LabelAlignmentType } from '@/types/field-schema';
+
+export interface PhoneOptions {
+  width: FieldWidthType;
+  labelAlignment: LabelAlignmentType;
+}
 
 export const phoneDefaultValues = {
   type: FieldType.PHONE,
@@ -6,10 +12,10 @@ export const phoneDefaultValues = {
   required: false,
   placeholder: '(123) 456-7890',
   options: {
-    width: 'FULL',
-    labelAlignment: 'TOP',
-  },
+    width: FieldWidth.FULL,
+    labelAlignment: LabelAlignment.TOP,
+  } satisfies PhoneOptions,
   validation: {
     readOnly: false,
   }
-};
+} as const;
