@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Field, LogicRule } from '@/types';
+import type { Field, LogicRule } from '@/types';
 
 interface UseFormLogicProps {
   fields: Field[];

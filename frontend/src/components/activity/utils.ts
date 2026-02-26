@@ -1,5 +1,5 @@
-import { TFunction, i18n as I18nType } from "i18next";
-import { ActivityLog, ChangeItem } from './types';
+import type { TFunction, i18n as I18nType } from "i18next";
+import type { ActivityLog, ChangeItem } from './types';
 
 export const getFieldTypeName = (type: string, t: TFunction, i18n: I18nType) => {
     const key = `activity.field_type.${type.toLowerCase()}`;

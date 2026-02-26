@@ -2,7 +2,10 @@
 
 import { ToasterProvider } from "@/components/ui/toaster";
 
-export default function ToasterWrapper({ children }: { children: React.ReactNode }) {
+export default function ToasterWrapper({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return <ToasterProvider>{children}</ToasterProvider>;
 }
-

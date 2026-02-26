@@ -81,7 +81,7 @@ export const adminApi = {
   getUsers: (params?: { page?: number; limit?: number; search?: string; role?: string }) =>
     api.get<UsersResponse>('/admin/users', { params }),
 
-  toggleBan: (userId: string) => 
+  toggleBan: (userId: string) =>
     api.patch<{ id: string; email: string; isActive: boolean }>(`/admin/users/${userId}/ban`),
 
   updateUserRole: (userId: string, roleId: string) =>

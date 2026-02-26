@@ -1,20 +1,32 @@
-import React from 'react';
-import { Field, NumberField, NumberFieldOptions, NumberValidation } from '@/types';
-import { useForm, FieldErrors, RegisterOptions } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
-import { Hash } from 'lucide-react';
-import { PreviewLabel } from '../PreviewLabel';
-import { stripHtml } from '@/lib/ui/utils';
+import React from "react";
+import type {
+  Field,
+  NumberField,
+  NumberFieldOptions,
+  NumberValidation,
+} from "@/types";
+import { useForm } from "react-hook-form";
+import type { FieldErrors, RegisterOptions } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+import { Hash } from "lucide-react";
+import { PreviewLabel } from "../PreviewLabel";
+import { stripHtml } from "@/lib/ui/utils";
 
 interface PreviewFieldProps {
   field: Field;
-  register: ReturnType<typeof useForm>['register'];
+  register: ReturnType<typeof useForm>["register"];
   errors: FieldErrors;
   questionNumber?: number;
   isPublic?: boolean;
 }
 
-export const NumberPreview: React.FC<PreviewFieldProps> = ({ field, register, errors, questionNumber, isPublic }) => {
+export const NumberPreview: React.FC<PreviewFieldProps> = ({
+  field,
+  register,
+  errors,
+  questionNumber,
+  isPublic,
+}) => {
   const { t } = useTranslation();
   const fieldName = `field_${field.id}`;
   const fieldError = errors[fieldName];
@@ -22,36 +34,56 @@ export const NumberPreview: React.FC<PreviewFieldProps> = ({ field, register, er
 
   const options = (typedField.options || {}) as NumberFieldOptions;
   const validation = (field.validation || {}) as NumberValidation;
-  const { labelAlignment = 'TOP', subLabel, width, customWidth, hoverText, readOnly, defaultValue, shrink } = options;
+  const {
+    labelAlignment = "TOP",
+    subLabel,
+    width,
+    customWidth,
+    hoverText,
+    readOnly,
+    defaultValue,
+    shrink,
+  } = options;
   const { min, max, entryLimits } = validation;
 
-  const isRowLayout = labelAlignment === 'LEFT' || labelAlignment === 'RIGHT';
+  const isRowLayout = labelAlignment === "LEFT" || labelAlignment === "RIGHT";
 
   const validationRules: Record<string, unknown> = {
-    required: field.required ? t('public.validation.required_field', { label: stripHtml(field.label) }) : false,
+    required: field.required
+      ? t("public.validation.required_field", { label: stripHtml(field.label) })
+      : false,
   };
 
   if (entryLimits) {
     if (min !== undefined && min !== null) {
       validationRules.min = {
         value: min,
-        message: t('public.validation.min_value', { min: min })
+        message: t("public.validation.min_value", { min: min }),
       };
     }
     if (max !== undefined && max !== null) {
       validationRules.max = {
         value: max,
-        message: t('public.validation.max_value', { max: max })
+        message: t("public.validation.max_value", { max: max }),
       };
     }
   }
 
   return (
-    <div className={`mb-4 w-full ${isRowLayout ? 'flex items-start gap-4' : ''}`}>
-      <div className={`${isRowLayout ? 'w-40 flex-shrink-0 pt-2' : 'mb-3'} ${labelAlignment === 'RIGHT' ? 'text-right' : ''}`}>
-        <PreviewLabel field={field} questionNumber={questionNumber} isPublic={isPublic} htmlFor={fieldName} />
-        {subLabel && subLabel !== 'Sublabel' && (
-           <p className="mt-1 text-sm text-gray-500 font-normal">{subLabel}</p>
+    <div
+      className={`mb-4 w-full ${isRowLayout ? "flex items-start gap-4" : ""}`}
+    >
+      <div
+        className={`${isRowLayout ? "w-40 flex-shrink-0 pt-2" : "mb-3"} ${labelAlignment === "RIGHT" ? "text-right" : ""}`}
+      >
+        <PreviewLabel
+          field={field}
+          questionNumber={questionNumber}
+          isPublic={isPublic}
+          htmlFor={fieldName}
+        />
+        {subLabel && subLabel !== "Sublabel" && (
+          <p className="mt-1 text-sm text-gray-500 font-normal">{subLabel}</p>
         )}
       </div>
 
@@ -59,50 +91,71 @@ export const NumberPreview: React.FC<PreviewFieldProps> = ({ field, register, er
         <div className="relative group" title={hoverText}>
           {!isPublic && (
             <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                <Hash className="h-4 w-4 text-gray-400" />
+              <Hash className="h-4 w-4 text-gray-400" />
             </div>
           )}
-          
+
           {isPublic ? (
             <input
-                type="number"
-                id={fieldName}
-                {...register(fieldName, { ...validationRules, valueAsNumber: true })}
-                placeholder={field.placeholder || t('public.placeholder.number', "Enter a number...")}
-                defaultValue={defaultValue}
-                readOnly={readOnly}
-                min={entryLimits ? (min ?? undefined) : undefined}
-                max={entryLimits ? (max ?? undefined) : undefined}
-                style={{ 
-                  ...(width === 'FIXED' && customWidth ? { maxWidth: `${customWidth}px` } : {}),
-                  color: 'var(--text)', 
-                  backgroundColor: 'var(--input-bg)', 
-                  borderColor: 'var(--input-border)' 
-                }}
-                className={`w-full px-4 ${shrink ? 'py-2 text-base' : 'py-3 text-base'} border rounded-lg placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all ${
-                    fieldError ? 'border-red-500 bg-red-50' : 'hover:border-gray-300'
-                } ${readOnly ? 'bg-gray-50 cursor-not-allowed' : ''}`}
+              type="number"
+              id={fieldName}
+              {...register(fieldName, {
+                ...validationRules,
+                valueAsNumber: true,
+              })}
+              placeholder={
+                field.placeholder ||
+                t("public.placeholder.number", "Enter a number...")
+              }
+              defaultValue={defaultValue}
+              readOnly={readOnly}
+              min={entryLimits ? (min ?? undefined) : undefined}
+              max={entryLimits ? (max ?? undefined) : undefined}
+              style={{
+                ...(width === "FIXED" && customWidth
+                  ? { maxWidth: `${customWidth}px` }
+                  : {}),
+                color: "var(--text)",
+                backgroundColor: "var(--input-bg)",
+                borderColor: "var(--input-border)",
+              }}
+              className={`w-full px-4 ${shrink ? "py-2 text-base" : "py-3 text-base"} border rounded-lg placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all ${
+                fieldError
+                  ? "border-red-500 bg-red-50"
+                  : "hover:border-gray-300"
+              } ${readOnly ? "bg-gray-50 cursor-not-allowed" : ""}`}
             />
           ) : (
             <input
-                type="number"
-                id={fieldName}
-                {...register(fieldName, { ...validationRules, valueAsNumber: true })}
-                placeholder={field.placeholder}
-                defaultValue={defaultValue}
-                readOnly={readOnly}
-                style={width === 'FIXED' && customWidth ? { maxWidth: `${customWidth}px` } : {}}
-                className={`w-full pl-10 pr-4 py-3 border-2 ${
-                fieldError ? 'border-red-500 bg-red-50' : 'border-gray-300 bg-white'
-                } rounded-lg text-black text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-black transition-all ${
-                readOnly ? 'bg-gray-100 cursor-not-allowed text-gray-500' : ''
-                }`}
+              type="number"
+              id={fieldName}
+              {...register(fieldName, {
+                ...validationRules,
+                valueAsNumber: true,
+              })}
+              placeholder={field.placeholder}
+              defaultValue={defaultValue}
+              readOnly={readOnly}
+              style={
+                width === "FIXED" && customWidth
+                  ? { maxWidth: `${customWidth}px` }
+                  : {}
+              }
+              className={`w-full pl-10 pr-4 py-3 border-2 ${
+                fieldError
+                  ? "border-red-500 bg-red-50"
+                  : "border-gray-300 bg-white"
+              } rounded-lg text-black text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-black transition-all ${
+                readOnly ? "bg-gray-100 cursor-not-allowed text-gray-500" : ""
+              }`}
             />
           )}
         </div>
 
         {fieldError && (
-          <p className="mt-1 text-sm text-red-600">{fieldError.message as string}</p>
+          <p className="mt-1 text-sm text-red-600">
+            {fieldError.message as string}
+          </p>
         )}
       </div>
     </div>

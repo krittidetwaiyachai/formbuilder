@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
-import { FieldType, Field, FullNameFieldOptions, AddressFieldOptions } from '@/types';
-import { UseFormTrigger, UseFormGetValues } from 'react-hook-form';
+import { FieldType } from '@/types';
+import type { Field, FullNameFieldOptions, AddressFieldOptions } from '@/types';
+import type { UseFormTrigger, UseFormGetValues } from 'react-hook-form';
 
 interface UseFormNavigationProps {
   currentPageIndex: number;

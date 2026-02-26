@@ -1,5 +1,5 @@
-import React from 'react';
-import { Field } from '@/types';
+import React from "react";
+import type { Field } from "@/types";
 
 interface DividerFieldProps {
   field: Field;
@@ -14,7 +14,7 @@ interface DividerFieldProps {
 export const DividerField: React.FC<DividerFieldProps> = () => {
   return (
     <div className="w-full py-4">
-        <hr className="border-t border-gray-300" />
+      <hr className="border-t border-gray-300" />
     </div>
   );
 };

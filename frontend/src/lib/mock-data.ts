@@ -1,5 +1,6 @@
-import { Field, FieldType, FormStatus, Form, FormResponse } from "@/types";
-import { ActivityLog } from "@/types/collaboration";
+import { FieldType, FormStatus } from "@/types";
+import type { Field, Form, FormResponse } from "@/types";
+import type { ActivityLog } from "@/types/collaboration";
 
 export const MOCK_FORM_ELEMENTS: Field[] = [
   {

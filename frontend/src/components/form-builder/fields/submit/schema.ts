@@ -1,5 +1,6 @@
 import { FieldType } from '@/types/enums';
-import { FieldWidth, FieldWidthType } from '@/types/field-schema';
+import { FieldWidth } from '@/types/field-schema';
+import type { FieldWidthType } from '@/types/field-schema';
 
 export const ButtonPosition = {
   LEFT: 'LEFT',

@@ -1,18 +1,24 @@
-import { useState } from 'react';
-import { useFormStore } from '@/store/formStore';
-import { Edit2, Check, GitBranch, X, Trash2, ChevronDown } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { useTranslation } from 'react-i18next';
-import ConfirmDialog from '@/components/ui/ConfirmDialog';
-import { stripHtml } from '@/lib/ui/utils';
+import { useState } from "react";
+import { useFormStore } from "@/store/formStore";
+import { Edit2, Check, GitBranch, X, Trash2, ChevronDown } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { useTranslation } from "react-i18next";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import { stripHtml } from "@/lib/ui/utils";
 
 export default function LogicSidebarList() {
   const { t } = useTranslation();
-  const { currentForm, updateLogicRule, deleteLogicRule, focusedLogicRuleId, setFocusedLogicRuleId } = useFormStore();
+  const {
+    currentForm,
+    updateLogicRule,
+    deleteLogicRule,
+    focusedLogicRuleId,
+    setFocusedLogicRuleId,
+  } = useFormStore();
   const logicRules = currentForm?.logicRules || [];
-  
+
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editName, setEditName] = useState('');
+  const [editName, setEditName] = useState("");
   const [deleteRuleId, setDeleteRuleId] = useState<string | null>(null);
 
   const handleDeleteRule = (id: string) => {
@@ -27,8 +33,8 @@ export default function LogicSidebarList() {
   };
 
   const getFieldLabel = (fieldId: string) => {
-    const field = currentForm?.fields?.find(f => f.id === fieldId);
-    return stripHtml(field?.label || field?.type || 'Unknown');
+    const field = currentForm?.fields?.find((f) => f.id === fieldId);
+    return stripHtml(field?.label || field?.type || "Unknown");
   };
 
   const handleStartEdit = (id: string, currentName: string) => {
@@ -45,8 +51,10 @@ export default function LogicSidebarList() {
     return (
       <div className="flex flex-col items-center justify-center h-full text-center p-4 text-gray-500">
         <GitBranch className="h-8 w-8 mb-2 opacity-50" />
-        <p className="text-sm font-medium">{t('builder.logic.no_conditions')}</p>
-        <p className="text-xs mt-1">{t('builder.logic.sidebar_subtitle')}</p>
+        <p className="text-sm font-medium">
+          {t("builder.logic.no_conditions")}
+        </p>
+        <p className="text-xs mt-1">{t("builder.logic.sidebar_subtitle")}</p>
       </div>
     );
   }
@@ -54,9 +62,11 @@ export default function LogicSidebarList() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-gray-900">{t('builder.logic.sidebar_title')}</h3>
+        <h3 className="text-sm font-semibold text-gray-900">
+          {t("builder.logic.sidebar_title")}
+        </h3>
         <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-          {logicRules.length} {t('builder.logic.rules_count_label')}
+          {logicRules.length} {t("builder.logic.rules_count_label")}
         </span>
       </div>
 
@@ -71,18 +81,27 @@ export default function LogicSidebarList() {
             <div
               key={rule.id}
               className={`border rounded-xl overflow-hidden transition-all ${
-                isSelected ? 'border-purple-400 bg-purple-50' : 'border-gray-200 bg-white'
+                isSelected
+                  ? "border-purple-400 bg-purple-50"
+                  : "border-gray-200 bg-white"
               }`}
             >
               <div
-                onClick={() => setFocusedLogicRuleId(isSelected ? null : rule.id)}
+                onClick={() =>
+                  setFocusedLogicRuleId(isSelected ? null : rule.id)
+                }
                 className="flex items-center justify-between px-3 py-3 cursor-pointer hover:bg-gray-50 group"
               >
                 <div className="flex items-center gap-2 flex-1 min-w-0">
-                  <div className={`w-2 h-2 rounded-full ${isSelected ? 'bg-purple-500' : 'bg-gray-300'}`} />
-                  
+                  <div
+                    className={`w-2 h-2 rounded-full ${isSelected ? "bg-purple-500" : "bg-gray-300"}`}
+                  />
+
                   {isEditing ? (
-                    <div className="flex items-center gap-1 flex-1 relative z-10" onClick={e => e.stopPropagation()}>
+                    <div
+                      className="flex items-center gap-1 flex-1 relative z-10"
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       <Input
                         value={editName}
                         onChange={(e) => setEditName(e.target.value)}
@@ -90,8 +109,8 @@ export default function LogicSidebarList() {
                         autoFocus
                         onBlur={() => handleSaveEdit(rule.id)}
                         onKeyDown={(e) => {
-                          if (e.key === 'Enter') handleSaveEdit(rule.id);
-                          if (e.key === 'Escape') setEditingId(null);
+                          if (e.key === "Enter") handleSaveEdit(rule.id);
+                          if (e.key === "Escape") setEditingId(null);
                         }}
                       />
                       <button
@@ -108,13 +127,13 @@ export default function LogicSidebarList() {
                       </button>
                     </div>
                   ) : (
-                    <div 
-                        className="flex items-center gap-2 flex-1 min-w-0 cursor-text hover:bg-gray-100 rounded px-1 -ml-1 transition-colors"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleStartEdit(rule.id, rule.name);
-                        }}
-                        title={rule.name}
+                    <div
+                      className="flex items-center gap-2 flex-1 min-w-0 cursor-text hover:bg-gray-100 rounded px-1 -ml-1 transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleStartEdit(rule.id, rule.name);
+                      }}
+                      title={rule.name}
                     >
                       <span className="font-medium text-sm text-gray-900 break-words flex-1 leading-tight">
                         {rule.name}
@@ -125,62 +144,88 @@ export default function LogicSidebarList() {
                 </div>
 
                 <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-2 text-xs text-gray-400 mr-1">
-                        <span>{conditionCount} {t('builder.logic.if').toUpperCase()}</span>
-                        <span>•</span>
-                        <span>{actionCount} {t('builder.logic.then').toUpperCase()}</span>
-                    </div>
+                  <div className="flex items-center gap-2 text-xs text-gray-400 mr-1">
+                    <span>
+                      {conditionCount} {t("builder.logic.if").toUpperCase()}
+                    </span>
+                    <span>•</span>
+                    <span>
+                      {actionCount} {t("builder.logic.then").toUpperCase()}
+                    </span>
+                  </div>
 
-                    { }
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeleteRule(rule.id);
-                        }}
-                        className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-md opacity-0 group-hover:opacity-100 transition-all"
-                        title={t('builder.logic.delete_rule')}
-                    >
-                        <Trash2 className="w-4 h-4" />
-                    </button>
+                  {}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteRule(rule.id);
+                    }}
+                    className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-md opacity-0 group-hover:opacity-100 transition-all"
+                    title={t("builder.logic.delete_rule")}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
 
-                    { }
-                    <div className={`text-gray-400 transition-transform duration-200 ${isSelected ? 'rotate-180' : ''}`}>
-                        <ChevronDown className="w-4 h-4" />
-                    </div>
+                  {}
+                  <div
+                    className={`text-gray-400 transition-transform duration-200 ${isSelected ? "rotate-180" : ""}`}
+                  >
+                    <ChevronDown className="w-4 h-4" />
+                  </div>
                 </div>
               </div>
 
               {isSelected && (
                 <div className="px-3 pb-3 border-t border-gray-100">
                   <div className="pt-2 space-y-3">
-                    { }
+                    {}
                     <div>
-                        <div className="text-[10px] font-semibold text-gray-400 mb-1 uppercase tracking-wider">{t('builder.logic.conditions')} ({rule.logicType})</div>
-                        <div className="space-y-1">
-                            {rule.conditions.map((cond) => (
-                                <div key={cond.id} className="text-xs text-gray-600 bg-gray-50 rounded p-1.5 flex flex-wrap gap-1 items-center">
-                                    <span className="font-medium text-purple-600">{t('builder.logic.if').toUpperCase()}</span>
-                                    <span>{getFieldLabel(cond.fieldId)}</span>
-                                    <span className="text-gray-400">{t(`builder.logic.op.${cond.operator.toLowerCase()}`)}</span>
-                                    <span className="font-medium">"{cond.value}"</span>
-                                </div>
-                            ))}
-                        </div>
+                      <div className="text-[10px] font-semibold text-gray-400 mb-1 uppercase tracking-wider">
+                        {t("builder.logic.conditions")} ({rule.logicType})
+                      </div>
+                      <div className="space-y-1">
+                        {rule.conditions.map((cond) => (
+                          <div
+                            key={cond.id}
+                            className="text-xs text-gray-600 bg-gray-50 rounded p-1.5 flex flex-wrap gap-1 items-center"
+                          >
+                            <span className="font-medium text-purple-600">
+                              {t("builder.logic.if").toUpperCase()}
+                            </span>
+                            <span>{getFieldLabel(cond.fieldId)}</span>
+                            <span className="text-gray-400">
+                              {t(
+                                `builder.logic.op.${cond.operator.toLowerCase()}`,
+                              )}
+                            </span>
+                            <span className="font-medium">"{cond.value}"</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
 
-                    { }
+                    {}
                     <div>
-                        <div className="text-[10px] font-semibold text-gray-400 mb-1 uppercase tracking-wider">{t('builder.logic.actions')}</div>
-                        <div className="space-y-1">
-                            {rule.actions.map((action) => (
-                                <div key={action.id} className="text-xs text-gray-600 bg-gray-50 rounded p-1.5 flex flex-wrap gap-1 items-center">
-                                    <span className={`font-medium ${action.type === 'show' ? 'text-green-600' : 'text-red-500'}`}>
-                                        {t(`builder.logic.action.${action.type.toLowerCase()}`).toUpperCase()}
-                                    </span>
-                                    <span>{getFieldLabel(action.fieldId)}</span>
-                                </div>
-                            ))}
-                        </div>
+                      <div className="text-[10px] font-semibold text-gray-400 mb-1 uppercase tracking-wider">
+                        {t("builder.logic.actions")}
+                      </div>
+                      <div className="space-y-1">
+                        {rule.actions.map((action) => (
+                          <div
+                            key={action.id}
+                            className="text-xs text-gray-600 bg-gray-50 rounded p-1.5 flex flex-wrap gap-1 items-center"
+                          >
+                            <span
+                              className={`font-medium ${action.type === "show" ? "text-green-600" : "text-red-500"}`}
+                            >
+                              {t(
+                                `builder.logic.action.${action.type.toLowerCase()}`,
+                              ).toUpperCase()}
+                            </span>
+                            <span>{getFieldLabel(action.fieldId)}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -192,15 +237,15 @@ export default function LogicSidebarList() {
 
       <div className="pt-2 border-t border-gray-100">
         <p className="text-xs text-gray-400 text-center">
-          {t('builder.logic.click_expand')}
+          {t("builder.logic.click_expand")}
         </p>
       </div>
 
       <ConfirmDialog
         open={!!deleteRuleId}
         onOpenChange={(open) => !open && setDeleteRuleId(null)}
-        title={t('builder.logic.delete_confirm')}
-        description={t('builder.logic.delete_confirm_desc')}
+        title={t("builder.logic.delete_confirm")}
+        description={t("builder.logic.delete_confirm_desc")}
         onConfirm={confirmDelete}
       />
     </div>

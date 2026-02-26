@@ -1,5 +1,5 @@
-import React from 'react';
-import { UseFormRegister, FieldValues } from 'react-hook-form';
+import React from "react";
+import type { UseFormRegister, FieldValues } from "react-hook-form";
 
 interface AddressInputProps {
   id: string;
@@ -16,7 +16,7 @@ interface AddressInputProps {
   inputStyle: React.CSSProperties;
 }
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
 export const AddressInput: React.FC<AddressInputProps> = ({
   id,
@@ -45,7 +45,9 @@ export const AddressInput: React.FC<AddressInputProps> = ({
           type="text"
           id={id}
           {...register(name, {
-            required: isRequired ? t('public.validation.required_field', { label }) : false,
+            required: isRequired
+              ? t("public.validation.required_field", { label })
+              : false,
           })}
           placeholder={placeholder || label}
           className={inputClass}
@@ -53,7 +55,12 @@ export const AddressInput: React.FC<AddressInputProps> = ({
         />
       </div>
       {isPublic && label !== defaultLabel && (
-        <p className="mt-1 text-xs" style={{ color: 'var(--text)', opacity: 0.6 }}>{label}</p>
+        <p
+          className="mt-1 text-xs"
+          style={{ color: "var(--text)", opacity: 0.6 }}
+        >
+          {label}
+        </p>
       )}
       {errorMessage && (
         <p className="mt-1 text-sm text-red-600">{errorMessage}</p>

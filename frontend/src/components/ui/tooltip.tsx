@@ -10,7 +10,12 @@ interface TooltipProps {
   delayDuration?: number;
 }
 
-export function Tooltip({ children, content, side = "top", delayDuration = 300 }: TooltipProps) {
+export function Tooltip({
+  children,
+  content,
+  side = "top",
+  delayDuration = 300,
+}: TooltipProps) {
   const [isVisible, setIsVisible] = React.useState(false);
   const timeoutRef = React.useRef<NodeJS.Timeout>();
 
@@ -42,9 +47,11 @@ export function Tooltip({ children, content, side = "top", delayDuration = 300 }
 
   const arrowClasses = {
     top: "top-full left-1/2 -translate-x-1/2 border-t-gray-900 border-l-transparent border-r-transparent border-b-transparent",
-    bottom: "bottom-full left-1/2 -translate-x-1/2 border-b-gray-900 border-l-transparent border-r-transparent border-t-transparent",
+    bottom:
+      "bottom-full left-1/2 -translate-x-1/2 border-b-gray-900 border-l-transparent border-r-transparent border-t-transparent",
     left: "left-full top-1/2 -translate-y-1/2 border-l-gray-900 border-t-transparent border-b-transparent border-r-transparent",
-    right: "right-full top-1/2 -translate-y-1/2 border-r-gray-900 border-t-transparent border-b-transparent border-l-transparent",
+    right:
+      "right-full top-1/2 -translate-y-1/2 border-r-gray-900 border-t-transparent border-b-transparent border-l-transparent",
   };
 
   return (
@@ -59,19 +66,15 @@ export function Tooltip({ children, content, side = "top", delayDuration = 300 }
           className={cn(
             "absolute z-50 px-3 py-1.5 text-xs font-medium text-white bg-gray-900 rounded-md shadow-lg whitespace-nowrap pointer-events-none transition-opacity duration-200",
             sideClasses[side],
-            isVisible ? "opacity-100" : "opacity-0"
+            isVisible ? "opacity-100" : "opacity-0",
           )}
         >
           {content}
           <div
-            className={cn(
-              "absolute w-0 h-0 border-4",
-              arrowClasses[side]
-            )}
+            className={cn("absolute w-0 h-0 border-4", arrowClasses[side])}
           />
         </div>
       )}
     </div>
   );
 }
-

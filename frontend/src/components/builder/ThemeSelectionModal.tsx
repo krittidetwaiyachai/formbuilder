@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { createPortal } from "react-dom";
-import { FormTheme } from "@/types";
+import type { FormTheme } from "@/types";
 import { Palette, X, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 

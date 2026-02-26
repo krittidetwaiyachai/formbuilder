@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import api from '@/lib/api';
-import { Form } from '@/types';
+import type { Form } from '@/types';
 import { useToast } from '@/components/ui/toaster';
 import { useAuthStore } from '@/store/authStore';
 import { useNavigate } from 'react-router-dom';

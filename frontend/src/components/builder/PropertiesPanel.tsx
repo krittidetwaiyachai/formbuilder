@@ -6,7 +6,8 @@ import ConfirmDialog from '@/components/ui/ConfirmDialog';
 import { useFormStore } from "@/store/formStore";
 import { Button } from "@/components/ui/button";
 import { Trash2, Copy } from "lucide-react";
-import { FieldType as FormElementType, Field } from "@/types";
+import { FieldType as FormElementType } from '@/types';
+import type { Field } from '@/types';;
 import { Tooltip } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/toaster";
 import {

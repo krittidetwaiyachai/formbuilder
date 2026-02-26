@@ -12,5 +12,7 @@ export default {
   "error.footer.security": "โปรโตคอลความปลอดภัย • ระดับการเข้าถึง: จำกัด",
   "error.footer.diagnostic": "การวินิจฉัยระบบ • สถานะ: วิกฤต",
   "error.footer.upgrade": "การอัปเกรดระบบ • เวลาที่คาดการณ์: ไม่ทราบ",
-  "error.footer.default": "FormBuilder • ข้อผิดพลาด 404"
+  "error.footer.default": "FormBuilder • ข้อผิดพลาด 404",
+  "error.rate_limit.title": "ขอข้อมูลมากเกินไป",
+  "error.rate_limit.message": "คุณส่งคำขอมากเกินไป กรุณาลองใหม่ในภายหลัง"
 };

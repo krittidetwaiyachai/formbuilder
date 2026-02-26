@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 
 interface Particle {
   id: number;
@@ -14,7 +14,9 @@ interface BackgroundParticlesProps {
   count?: number;
 }
 
-export default function BackgroundParticles({ count = 20 }: BackgroundParticlesProps) {
+export default function BackgroundParticles({
+  count = 20,
+}: BackgroundParticlesProps) {
   const [particles, setParticles] = useState<Particle[]>([]);
 
   useEffect(() => {
@@ -43,7 +45,7 @@ export default function BackgroundParticles({ count = 20 }: BackgroundParticlesP
           transition={{
             duration: particle.duration,
             repeat: Infinity,
-            ease: 'easeInOut',
+            ease: "easeInOut",
             delay: particle.delay,
           }}
           className="absolute rounded-full bg-gradient-to-br from-indigo-100/30 to-purple-100/30 blur-xl"

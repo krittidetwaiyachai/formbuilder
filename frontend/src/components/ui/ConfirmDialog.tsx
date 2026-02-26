@@ -1,6 +1,6 @@
-import { motion, AnimatePresence } from 'framer-motion';
-import { AlertTriangle, AlertCircle } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import { motion, AnimatePresence } from "framer-motion";
+import { AlertTriangle, AlertCircle } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -10,7 +10,7 @@ interface ConfirmDialogProps {
   confirmText?: string;
   cancelText?: string;
   onConfirm: () => void;
-  variant?: 'default' | 'destructive';
+  variant?: "default" | "destructive";
 }
 
 export default function ConfirmDialog({
@@ -21,11 +21,11 @@ export default function ConfirmDialog({
   confirmText,
   cancelText,
   onConfirm,
-  variant = 'destructive',
+  variant = "destructive",
 }: ConfirmDialogProps) {
   const { t } = useTranslation();
-  const finalConfirmText = confirmText || t('common.confirm');
-  const finalCancelText = cancelText || t('common.cancel');
+  const finalConfirmText = confirmText || t("common.confirm");
+  const finalCancelText = cancelText || t("common.cancel");
 
   if (!open) return null;
 
@@ -33,7 +33,7 @@ export default function ConfirmDialog({
     <AnimatePresence>
       {open && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
-          { }
+          {}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -42,7 +42,7 @@ export default function ConfirmDialog({
             className="absolute inset-0 bg-black/60 backdrop-blur-sm cursor-pointer"
           />
 
-          { }
+          {}
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -50,38 +50,41 @@ export default function ConfirmDialog({
             transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
             className="relative bg-white w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden z-20"
           >
-            { }
-            <div className={`h-2 w-full ${variant === 'destructive' ? 'bg-red-500' : 'bg-black'}`} />
-
-
+            {}
+            <div
+              className={`h-2 w-full ${variant === "destructive" ? "bg-red-500" : "bg-black"}`}
+            />
 
             <div className="p-6 pt-6">
               <div className="flex flex-col items-center text-center">
-                <motion.div 
+                <motion.div
                   initial={{ scale: 0, rotate: -45 }}
-                  animate={{ 
-                    scale: 1, 
+                  animate={{
+                    scale: 1,
                     rotate: 0,
-                    ...(variant === 'destructive' ? {
-                      scale: [1, 1.1, 1],
-                      transition: {
-                        scale: {
-                          repeat: Infinity,
-                          duration: 2,
-                          ease: "easeInOut",
-                          delay: 0.5
-                        },
-                        rotate: { duration: 0.5, type: "spring" }
-                      }
-                    } : {})
+                    ...(variant === "destructive"
+                      ? {
+                          scale: [1, 1.1, 1],
+                          transition: {
+                            scale: {
+                              repeat: Infinity,
+                              duration: 2,
+                              ease: "easeInOut",
+                              delay: 0.5,
+                            },
+                            rotate: { duration: 0.5, type: "spring" },
+                          },
+                        }
+                      : {}),
                   }}
                   transition={{ type: "spring", stiffness: 260, damping: 20 }}
                   className={`mb-4 w-12 h-12 rounded-full flex items-center justify-center ${
-                  variant === 'destructive' 
-                    ? 'bg-red-50 text-red-500' 
-                    : 'bg-gray-100 text-black'
-                }`}>
-                  {variant === 'destructive' ? (
+                    variant === "destructive"
+                      ? "bg-red-50 text-red-500"
+                      : "bg-gray-100 text-black"
+                  }`}
+                >
+                  {variant === "destructive" ? (
                     <AlertTriangle className="w-6 h-6 border-0" />
                   ) : (
                     <AlertCircle className="w-6 h-6" />
@@ -91,7 +94,7 @@ export default function ConfirmDialog({
                 <h2 className="text-xl font-bold text-gray-900 mb-2">
                   {title}
                 </h2>
-                
+
                 <p className="text-gray-500 text-sm leading-relaxed mb-6">
                   {description}
                 </p>
@@ -109,9 +112,9 @@ export default function ConfirmDialog({
                       onOpenChange(false);
                     }}
                     className={`flex-1 px-4 py-2.5 rounded-xl font-medium text-white shadow-lg transition-all hover:scale-105 active:scale-95 text-sm ${
-                      variant === 'destructive' 
-                        ? 'bg-red-600 hover:bg-red-700 shadow-red-200' 
-                        : 'bg-black hover:bg-gray-800 shadow-gray-200'
+                      variant === "destructive"
+                        ? "bg-red-600 hover:bg-red-700 shadow-red-200"
+                        : "bg-black hover:bg-gray-800 shadow-gray-200"
                     }`}
                   >
                     {finalConfirmText}

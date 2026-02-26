@@ -1,5 +1,6 @@
 import { FieldType } from '@/types/enums';
-import { FieldWidth, FieldWidthType, LabelAlignment, LabelAlignmentType } from '@/types/field-schema';
+import { FieldWidth, LabelAlignment } from '@/types/field-schema';
+import type { FieldWidthType, LabelAlignmentType } from '@/types/field-schema';
 
 export interface AddressOptions {
   width: FieldWidthType;

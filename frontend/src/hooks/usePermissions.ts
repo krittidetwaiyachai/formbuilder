@@ -1,5 +1,5 @@
 import { useAuthStore } from '@/store/authStore';
-import { Permission } from '@/lib/permissions';
+import type { Permission } from '@/lib/permissions';
 
 export function useHasPermission(permission: Permission | Permission[]): boolean {
   const user = useAuthStore((state) => state.user);
@@ -7,7 +7,7 @@ export function useHasPermission(permission: Permission | Permission[]): boolean
   if (!user) return false;
 
   const userPermissions = user.permissions || [];
-  
+
   if (Array.isArray(permission)) {
     return permission.some((p) => userPermissions.includes(p));
   }
@@ -21,7 +21,7 @@ export function useHasAllPermissions(permissions: Permission[]): boolean {
   if (!user) return false;
 
   const userPermissions = user.permissions || [];
-  
+
   return permissions.every((p) => userPermissions.includes(p));
 }
 

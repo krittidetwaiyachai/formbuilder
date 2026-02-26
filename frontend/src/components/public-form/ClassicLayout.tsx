@@ -1,7 +1,12 @@
-
-import FormFieldRenderer from '@/components/form-preview/FormFieldRenderer';
-import { Field, Form } from '@/types';
-import { UseFormRegister, FieldErrors, UseFormWatch, UseFormSetValue, Control } from 'react-hook-form';
+import FormFieldRenderer from "@/components/form-preview/FormFieldRenderer";
+import type { Field, Form } from "@/types";
+import type {
+  UseFormRegister,
+  FieldErrors,
+  UseFormWatch,
+  UseFormSetValue,
+  Control,
+} from "react-hook-form";
 
 interface ClassicLayoutProps {
   currentPageFields: Field[];
@@ -25,11 +30,12 @@ export function ClassicLayout({
   return (
     <div className="flex flex-wrap gap-x-6 gap-y-6">
       {currentPageFields.map((field, index) => {
-        const isShrunk = field.options && 'shrink' in field.options && field.options.shrink; 
+        const isShrunk =
+          field.options && "shrink" in field.options && field.options.shrink;
         return (
-          <div 
-            key={field.id} 
-            className={`${isShrunk ? 'w-full md:w-[calc(50%-0.75rem)]' : 'w-full'}`}
+          <div
+            key={field.id}
+            className={`${isShrunk ? "w-full md:w-[calc(50%-0.75rem)]" : "w-full"}`}
           >
             <FormFieldRenderer
               field={field}
@@ -38,7 +44,9 @@ export function ClassicLayout({
               watch={watch}
               setValue={setValue}
               control={control}
-              questionNumber={form.settings?.showQuestionNumber ? index + 1 : undefined}
+              questionNumber={
+                form.settings?.showQuestionNumber ? index + 1 : undefined
+              }
               isPublic
             />
           </div>

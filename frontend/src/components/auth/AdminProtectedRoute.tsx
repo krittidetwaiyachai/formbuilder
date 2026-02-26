@@ -1,7 +1,7 @@
-import { Outlet, Navigate } from 'react-router-dom';
-import { useAuthStore } from '@/store/authStore';
+import { Outlet, Navigate } from "react-router-dom";
+import { useAuthStore } from "@/store/authStore";
 
-const ADMIN_ROLES = ['SUPER_ADMIN'];
+const ADMIN_ROLES = ["SUPER_ADMIN"];
 
 export default function AdminProtectedRoute() {
   const { isAuthenticated, user } = useAuthStore();

@@ -1,23 +1,29 @@
-import React from 'react';
-import './LiquidFab.css';
+import React from "react";
+import "./LiquidFab.css";
 
 interface LiquidFabProps {
   onClick: () => void;
   isOpen: boolean;
-  className?: string; 
+  className?: string;
 }
 
-export const LiquidFab: React.FC<LiquidFabProps> = ({ onClick, isOpen, className }) => {
+export const LiquidFab: React.FC<LiquidFabProps> = ({
+  onClick,
+  isOpen,
+  className,
+}) => {
   return (
-    <div 
-        className={`liquid-fab cursor-pointer ${className || ''}`}
-        onClick={onClick}
-        style={{ 
-            '--size': '0.73', 
-            '--rotation': isOpen ? '45deg' : '0deg' 
-        } as React.CSSProperties} 
-        role="button"
-        tabIndex={0}
+    <div
+      className={`liquid-fab cursor-pointer ${className || ""}`}
+      onClick={onClick}
+      style={
+        {
+          "--size": "0.73",
+          "--rotation": isOpen ? "45deg" : "0deg",
+        } as React.CSSProperties
+      }
+      role="button"
+      tabIndex={0}
     >
       <svg width="100" height="100" viewBox="0 0 100 100">
         <defs>

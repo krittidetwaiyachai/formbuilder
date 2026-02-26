@@ -1,7 +1,7 @@
-import React from 'react';
-import { Field, EmailValidation } from '@/types';
-import { Mail } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import React from "react";
+import type { Field, EmailValidation } from "@/types";
+import { Mail } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface EmailFieldProps {
   field: Field;
@@ -14,7 +14,11 @@ interface EmailFieldProps {
   disabledClass?: string;
 }
 
-export const EmailField: React.FC<EmailFieldProps> = ({ field, fieldStyle, disabledClass = "opacity-60 cursor-pointer" }) => {
+export const EmailField: React.FC<EmailFieldProps> = ({
+  field,
+  fieldStyle,
+  disabledClass = "opacity-60 cursor-pointer",
+}) => {
   const { t } = useTranslation();
   const validation = field.validation as EmailValidation | undefined;
   const showConfirmation = validation?.confirmation;
@@ -22,34 +26,37 @@ export const EmailField: React.FC<EmailFieldProps> = ({ field, fieldStyle, disab
 
   return (
     <div className="space-y-3 pointer-events-none">
-       <div className="relative max-w-full group">
-          <div className="absolute left-3.5 top-1/2 -translate-y-1/2 transition-colors duration-300">
-           <Mail className={`h-5 w-5 ${fieldStyle.iconColor} opacity-70 group-hover/field:opacity-100`} />
-         </div>
-         <input
-           type="email"
-           placeholder={field.placeholder || t('builder.placeholder.email')}
-           readOnly
-           tabIndex={-1}
-           className={`w-full pl-12 pr-4 py-3.5 border ${fieldStyle.inputBorder} rounded-xl bg-blue-50/30 text-black text-base shadow-sm transition-all duration-300 ${disabledClass} group-hover/field:bg-white group-hover/field:shadow-md ${isReadOnly ? 'opacity-50' : ''}`}
-         />
-       </div>
-       
-       {showConfirmation && (
-         <div className="relative max-w-full group">
-            <div className="absolute left-3.5 top-1/2 -translate-y-1/2 transition-colors duration-300">
-             <Mail className={`h-5 w-5 ${fieldStyle.iconColor} opacity-70 group-hover/field:opacity-100`} />
-           </div>
-           <input
-             type="email"
-             placeholder={t('builder.email.confirm_placeholder')}
-             readOnly
-             tabIndex={-1}
-             className={`w-full pl-12 pr-4 py-3.5 border ${fieldStyle.inputBorder} rounded-xl bg-blue-50/30 text-black text-base shadow-sm transition-all duration-300 ${disabledClass} group-hover/field:bg-white group-hover/field:shadow-md ${isReadOnly ? 'opacity-50' : ''}`}
-           />
+      <div className="relative max-w-full group">
+        <div className="absolute left-3.5 top-1/2 -translate-y-1/2 transition-colors duration-300">
+          <Mail
+            className={`h-5 w-5 ${fieldStyle.iconColor} opacity-70 group-hover/field:opacity-100`}
+          />
+        </div>
+        <input
+          type="email"
+          placeholder={field.placeholder || t("builder.placeholder.email")}
+          readOnly
+          tabIndex={-1}
+          className={`w-full pl-12 pr-4 py-3.5 border ${fieldStyle.inputBorder} rounded-xl bg-blue-50/30 text-black text-base shadow-sm transition-all duration-300 ${disabledClass} group-hover/field:bg-white group-hover/field:shadow-md ${isReadOnly ? "opacity-50" : ""}`}
+        />
+      </div>
 
-         </div>
-       )}
+      {showConfirmation && (
+        <div className="relative max-w-full group">
+          <div className="absolute left-3.5 top-1/2 -translate-y-1/2 transition-colors duration-300">
+            <Mail
+              className={`h-5 w-5 ${fieldStyle.iconColor} opacity-70 group-hover/field:opacity-100`}
+            />
+          </div>
+          <input
+            type="email"
+            placeholder={t("builder.email.confirm_placeholder")}
+            readOnly
+            tabIndex={-1}
+            className={`w-full pl-12 pr-4 py-3.5 border ${fieldStyle.inputBorder} rounded-xl bg-blue-50/30 text-black text-base shadow-sm transition-all duration-300 ${disabledClass} group-hover/field:bg-white group-hover/field:shadow-md ${isReadOnly ? "opacity-50" : ""}`}
+          />
+        </div>
+      )}
     </div>
   );
 };

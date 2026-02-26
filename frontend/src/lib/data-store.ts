@@ -1,6 +1,6 @@
 import { mockForms, mockActivityLogs, mockSubmissions } from "./mock-data";
-import { Form, FormResponse } from "@/types";
-import { ActivityLog, ActiveEditor } from "@/types/collaboration";
+import type { Form, FormResponse } from "@/types";
+import type { ActivityLog, ActiveEditor } from "@/types/collaboration";
 
 export const forms: Form[] = [...mockForms] as Form[];
 export const activityLogs: ActivityLog[] = [...mockActivityLogs];

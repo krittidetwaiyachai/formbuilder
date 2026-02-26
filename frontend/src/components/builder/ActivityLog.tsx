@@ -1,16 +1,22 @@
 "use client";
 
-import { ActivityLog as ActivityLogType } from "@/types/collaboration";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { 
-  Plus, 
-  Edit, 
-  Trash2, 
-  Send, 
-  Eye, 
+import type { ActivityLog as ActivityLogType } from "@/types/collaboration";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Plus,
+  Edit,
+  Trash2,
+  Send,
+  Eye,
   FileText,
   Settings,
-  Clock
+  Clock,
 } from "lucide-react";
 import { mockUsers } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
@@ -58,10 +64,10 @@ export default function ActivityLog({ logs, maxItems = 10 }: ActivityLogProps) {
     const diffHours = Math.floor(diffMs / 3600000);
     const diffDays = Math.floor(diffMs / 86400000);
 
-    if (diffMins < 1) return t('activity.just_now');
-    if (diffMins < 60) return t('activity.m_ago', { count: diffMins });
-    if (diffHours < 24) return t('activity.h_ago', { count: diffHours });
-    if (diffDays < 7) return t('activity.d_ago', { count: diffDays });
+    if (diffMins < 1) return t("activity.just_now");
+    if (diffMins < 60) return t("activity.m_ago", { count: diffMins });
+    if (diffHours < 24) return t("activity.h_ago", { count: diffHours });
+    if (diffDays < 7) return t("activity.d_ago", { count: diffDays });
     return date.toLocaleDateString();
   };
 
@@ -79,11 +85,9 @@ export default function ActivityLog({ logs, maxItems = 10 }: ActivityLogProps) {
       <CardHeader>
         <CardTitle className="text-lg flex items-center gap-2">
           <Clock className="h-5 w-5" />
-          {t('activity.title')}
+          {t("activity.title")}
         </CardTitle>
-        <CardDescription>
-          {t('activity.recent_changes')}
-        </CardDescription>
+        <CardDescription>{t("activity.recent_changes")}</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
@@ -98,10 +102,12 @@ export default function ActivityLog({ logs, maxItems = 10 }: ActivityLogProps) {
                   <div className="flex-shrink-0">
                     <div
                       className={cn(
-                        "w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold text-white"
+                        "w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold text-white",
                       )}
                       style={{
-                        backgroundColor: mockUsers.find((u) => u.id === log.userId)?.color || "#6B7280",
+                        backgroundColor:
+                          mockUsers.find((u) => u.id === log.userId)?.color ||
+                          "#6B7280",
                       }}
                     >
                       {getInitials(log.userName)}
@@ -112,7 +118,7 @@ export default function ActivityLog({ logs, maxItems = 10 }: ActivityLogProps) {
                       <div
                         className={cn(
                           "p-1.5 rounded-md flex-shrink-0",
-                          actionColor
+                          actionColor,
                         )}
                       >
                         <ActionIcon className="h-3.5 w-3.5" />
@@ -144,7 +150,7 @@ export default function ActivityLog({ logs, maxItems = 10 }: ActivityLogProps) {
             })
           ) : (
             <div className="text-center py-8 text-sm text-gray-500">
-              {t('activity.no_activity')}
+              {t("activity.no_activity")}
             </div>
           )}
         </div>
@@ -152,4 +158,3 @@ export default function ActivityLog({ logs, maxItems = 10 }: ActivityLogProps) {
     </Card>
   );
 }
-

@@ -1,6 +1,6 @@
-import { StateCreator } from 'zustand';
-import { FormBuilderState } from '../formStore';
-import { LogicRule, LogicCondition, LogicAction, FieldCondition } from '@/types';
+import type { StateCreator } from 'zustand';
+import type { FormBuilderState } from '../formStore';
+import type { LogicRule, LogicCondition, LogicAction, FieldCondition } from '@/types';
 import { generateUUID } from '@/utils/uuid';
 
 export interface LogicSlice {

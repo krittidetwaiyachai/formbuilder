@@ -1,5 +1,5 @@
-import { AlertTriangle } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import { AlertTriangle } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface PdpaToggleProps {
   value: boolean;
@@ -13,17 +13,19 @@ export const PdpaToggle = ({ value, onChange }: PdpaToggleProps) => {
     <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm mt-4">
       <div className="flex items-center justify-between">
         <div className="flex items-start gap-3">
-            <div className="mt-1">
-                 <AlertTriangle className="h-5 w-5 text-yellow-500" />
+          <div className="mt-1">
+            <AlertTriangle className="h-5 w-5 text-yellow-500" />
+          </div>
+          <div className="space-y-0.5">
+            <label className="block text-sm font-medium text-black">
+              {t("builder.properties.pdpa_title")}
+            </label>
+            <div className="text-[0.8rem] text-muted-foreground text-gray-500">
+              {t("builder.properties.pdpa_desc")}
             </div>
-            <div className="space-y-0.5">
-                <label className="block text-sm font-medium text-black">{t('builder.properties.pdpa_title')}</label>
-                <div className="text-[0.8rem] text-muted-foreground text-gray-500">
-                    {t('builder.properties.pdpa_desc')}
-                </div>
-            </div>
+          </div>
         </div>
-        
+
         <label className="relative inline-flex items-center cursor-pointer">
           <input
             type="checkbox"

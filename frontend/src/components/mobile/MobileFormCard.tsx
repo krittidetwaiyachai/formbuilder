@@ -1,6 +1,6 @@
-import { FileText, ChevronRight, Inbox, Eye } from 'lucide-react';
-import type { Form } from '@/types';
-import { useTranslation } from 'react-i18next';
+import { FileText, ChevronRight, Inbox, Eye } from "lucide-react";
+import type { Form } from "@/types";
+import { useTranslation } from "react-i18next";
 
 interface MobileFormCardProps {
   form: Form & {
@@ -32,18 +32,20 @@ export default function MobileFormCard({
           {form.title}
         </h3>
         <div className="flex items-center gap-2.5 mt-1.5">
-          <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide ${
-            form.status === 'PUBLISHED' 
-              ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' 
-              : form.status === 'ARCHIVED'
-              ? 'bg-gray-100 text-gray-500 border border-gray-200'
-              : 'bg-amber-50 text-amber-600 border border-amber-100'
-          }`}>
-            {form.status === 'PUBLISHED' 
-              ? t('dashboard.filters.published') 
-              : form.status === 'ARCHIVED' 
-                ? t('dashboard.filters.archived') 
-                : t('dashboard.filters.draft')}
+          <span
+            className={`px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide ${
+              form.status === "PUBLISHED"
+                ? "bg-emerald-50 text-emerald-600 border border-emerald-100"
+                : form.status === "ARCHIVED"
+                  ? "bg-gray-100 text-gray-500 border border-gray-200"
+                  : "bg-amber-50 text-amber-600 border border-amber-100"
+            }`}
+          >
+            {form.status === "PUBLISHED"
+              ? t("dashboard.filters.published")
+              : form.status === "ARCHIVED"
+                ? t("dashboard.filters.archived")
+                : t("dashboard.filters.draft")}
           </span>
           <span className="flex items-center gap-1 text-[11px] text-gray-400 font-medium">
             <Inbox className="w-3 h-3" />

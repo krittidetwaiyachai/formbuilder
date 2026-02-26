@@ -1,6 +1,6 @@
-import { Field } from '@/types';
-import { Layers } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import type { Field } from "@/types";
+import { Layers } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface PreviewGroupFieldProps {
   field: Field;
@@ -15,9 +15,7 @@ export function PreviewGroupField({ field, children }: PreviewGroupFieldProps) {
       {}
 
       {children ? (
-        <div className="space-y-4 pl-0 md:pl-2">
-          {children}
-        </div>
+        <div className="space-y-4 pl-0 md:pl-2">{children}</div>
       ) : null}
     </div>
   );

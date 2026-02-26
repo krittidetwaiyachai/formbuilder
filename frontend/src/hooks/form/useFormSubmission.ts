@@ -1,6 +1,8 @@
 import { useState } from 'react';
+import { isAxiosError } from 'axios';
 import api from '@/lib/api';
-import { Form, FieldType } from '@/types';
+import { FieldType } from '@/types';
+import type { Form } from '@/types';
 import { getBrowserFingerprint } from '@/utils/fingerprint';
 import { useToast } from '@/components/ui/toaster';
 import { getAxiosErrorMessage } from '@/utils/error';
@@ -65,42 +67,75 @@ export function useFormSubmission({ form, isPreview = false }: UseFormSubmission
           value = parts.join(', ');
         }
 
+        const serializedValue = (() => {
+          if (value === null || value === undefined || value === '') return '';
+          if (Array.isArray(value)) return value.join(', ');
+          if (typeof value === 'object') return JSON.stringify(value);
+          return String(value);
+        })();
+
         return {
           fieldId: field.id,
-          value: Array.isArray(value) ? value.join(', ') : String(value || ''),
+          value: serializedValue,
         };
       }) || [];
 
       const fingerprint = await getBrowserFingerprint();
 
-      const response = await api.post('/responses', {
-        formId: form.id,
-        answers,
-        respondentEmail: data.respondentEmail || undefined,
-        fingerprint,
-      });
-
-      if (form.isQuiz) {
-        const submission = response.data.submission || response.data;
-        if (submission?.score !== undefined) {
-          setScore({
-            score: submission.score || 0,
-            totalScore: submission.totalScore || 0,
+      const attemptSubmit = async (attemptCount = 0) => {
+        try {
+          const response = await api.post('/responses', {
+            formId: form.id,
+            answers,
+            respondentEmail: data.respondentEmail || undefined,
+            fingerprint,
           });
-          if (submission.quizReview) {
-            setQuizReview(submission.quizReview);
-          }
-        }
-      }
 
-      setSubmitted(true);
-    } catch (err: unknown) {
+          if (form.isQuiz) {
+            const submission = response.data.submission || response.data;
+            if (submission?.score !== undefined) {
+              setScore({
+                score: submission.score || 0,
+                totalScore: submission.totalScore || 0,
+              });
+              if (submission.quizReview) {
+                setQuizReview(submission.quizReview);
+              }
+            }
+          }
+
+          setSubmitted(true);
+          setSubmitting(false);
+        } catch (err: unknown) {
+
+          if (isAxiosError(err) && err.response?.status === 429) {
+
+
+            if (attemptCount < 20) {
+              setTimeout(() => {
+                attemptSubmit(attemptCount + 1);
+              }, 3000);
+              return;
+            }
+          }
+
+          toast({
+            title: "Submission Failed",
+            description: getAxiosErrorMessage(err, 'Failed to submit form'),
+            variant: "error"
+          });
+          setSubmitting(false);
+        }
+      };
+
+      attemptSubmit();
+    } catch (err) {
+      console.error('Error preparing submission:', err);
       toast({
-        title: "Submission Failed",
-        description: getAxiosErrorMessage(err, 'Failed to submit form'),
+        title: "Preparation Failed",
+        description: "Failed to prepare submission data. Please try again.",
         variant: "error"
       });
-    } finally {
       setSubmitting(false);
     }
   };

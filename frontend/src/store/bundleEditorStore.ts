@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import { FieldType, FieldOptions } from '@/types';
+import { FieldType } from '@/types';
+import type { FieldOptions } from '@/types';
 
 export interface BundleField {
   id: string;

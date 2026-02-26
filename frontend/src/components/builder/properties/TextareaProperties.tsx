@@ -1,6 +1,6 @@
 "use client";
 
-import { Field } from "@/types";
+import type { Field } from "@/types";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
@@ -11,11 +11,14 @@ interface TextareaPropertiesProps {
 
 import { useTranslation } from "react-i18next";
 
-export default function TextareaProperties({ element, onUpdate }: TextareaPropertiesProps) {
+export default function TextareaProperties({
+  element,
+  onUpdate,
+}: TextareaPropertiesProps) {
   const { t } = useTranslation();
   return (
     <div className="space-y-2">
-      <Label>{t('builder.properties.rows', 'Rows')}</Label>
+      <Label>{t("builder.properties.rows", "Rows")}</Label>
       <Input
         type="number"
         value={element.rows || 4}

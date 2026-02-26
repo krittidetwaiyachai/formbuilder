@@ -1,8 +1,7 @@
-import React from 'react';
-import { Field, FullNameFieldOptions } from '@/types';
-import { useFormStore } from '@/store/formStore';
-import { useTranslation } from 'react-i18next';
-
+import React from "react";
+import type { Field, FullNameFieldOptions } from "@/types";
+import { useFormStore } from "@/store/formStore";
+import { useTranslation } from "react-i18next";
 
 interface FullNameFieldProps {
   field: Field;
@@ -15,12 +14,15 @@ interface FullNameFieldProps {
   disabledClass?: string;
 }
 
-export const FullNameField: React.FC<FullNameFieldProps> = ({ field, fieldStyle, disabledClass = "opacity-60 cursor-pointer" }) => {
+export const FullNameField: React.FC<FullNameFieldProps> = ({
+  field,
+  fieldStyle,
+  disabledClass = "opacity-60 cursor-pointer",
+}) => {
   const { updateField } = useFormStore();
   const { t } = useTranslation();
   const { inputBorder } = fieldStyle;
 
-  
   const options = (field.options || {}) as FullNameFieldOptions;
   const showPrefix = options.showPrefix;
   const showMiddleName = options.showMiddleName;
@@ -28,24 +30,32 @@ export const FullNameField: React.FC<FullNameFieldProps> = ({ field, fieldStyle,
   const sublabels = options.sublabels || {};
   const placeholders = options.placeholders || {};
 
-  const handleSubLabelBlur = (key: string, e: React.FormEvent<HTMLDivElement>) => {
+  const handleSubLabelBlur = (
+    key: string,
+    e: React.FormEvent<HTMLDivElement>,
+  ) => {
     const text = e.currentTarget.innerText;
     updateField(field.id, {
-        options: {
-            ...options,
-            sublabels: {
-                ...sublabels,
-                [key]: text
-            }
-        }
+      options: {
+        ...options,
+        sublabels: {
+          ...sublabels,
+          [key]: text,
+        },
+      },
     });
   };
 
-  const renderInput = (key: string, placeholder: string, defaultSublabel: string, minWidth: string) => (
+  const renderInput = (
+    key: string,
+    placeholder: string,
+    defaultSublabel: string,
+    minWidth: string,
+  ) => (
     <div className={`flex-1 min-w-[${minWidth}] relative group`}>
-      {key === 'first' && (
+      {key === "first" && (
         <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-50">
-           { }
+          {}
         </div>
       )}
       <input
@@ -54,7 +64,7 @@ export const FullNameField: React.FC<FullNameFieldProps> = ({ field, fieldStyle,
         readOnly
         tabIndex={-1}
         className={`w-full px-4 py-3.5 border ${inputBorder} rounded-xl bg-gray-50/50 text-black text-sm shadow-sm transition-all duration-300 ${disabledClass}`}
-        style={{ pointerEvents: 'none' }} 
+        style={{ pointerEvents: "none" }}
       />
       <div
         contentEditable
@@ -65,22 +75,52 @@ export const FullNameField: React.FC<FullNameFieldProps> = ({ field, fieldStyle,
         onClick={(e) => e.stopPropagation()}
         onMouseDown={(e) => e.stopPropagation()}
         dangerouslySetInnerHTML={{ __html: sublabels[key] || defaultSublabel }}
-        style={{ 
-          pointerEvents: 'auto', 
-          cursor: 'text',
-          '--placeholder': `"${t('builder.properties.type_sublabel')}"`
-        } as React.CSSProperties}
+        style={
+          {
+            pointerEvents: "auto",
+            cursor: "text",
+            "--placeholder": `"${t("builder.properties.type_sublabel")}"`,
+          } as React.CSSProperties
+        }
       />
     </div>
   );
 
   return (
     <div className="flex flex-wrap gap-4">
-      {showPrefix && renderInput('prefix', placeholders.prefix, t('common.fullname.prefix'), '80px')}
-      {renderInput('first', placeholders.first, t('common.fullname.first'), '150px')}
-      {showMiddleName && renderInput('middle', placeholders.middle, t('common.fullname.middle'), '150px')}
-      {renderInput('last', placeholders.last, t('common.fullname.last'), '150px')}
-      {showSuffix && renderInput('suffix', placeholders.suffix, t('common.fullname.suffix'), '80px')}
+      {showPrefix &&
+        renderInput(
+          "prefix",
+          placeholders.prefix,
+          t("common.fullname.prefix"),
+          "80px",
+        )}
+      {renderInput(
+        "first",
+        placeholders.first,
+        t("common.fullname.first"),
+        "150px",
+      )}
+      {showMiddleName &&
+        renderInput(
+          "middle",
+          placeholders.middle,
+          t("common.fullname.middle"),
+          "150px",
+        )}
+      {renderInput(
+        "last",
+        placeholders.last,
+        t("common.fullname.last"),
+        "150px",
+      )}
+      {showSuffix &&
+        renderInput(
+          "suffix",
+          placeholders.suffix,
+          t("common.fullname.suffix"),
+          "80px",
+        )}
     </div>
   );
 };

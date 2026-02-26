@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Palette, Sparkles } from "lucide-react";
-import { FormTheme } from "@/types";
+import type { FormTheme } from "@/types";
 
 interface FormThemePanelProps {
   theme: FormTheme;

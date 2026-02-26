@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { DropResult, DragStart } from "@hello-pangea/dnd";
-import { Field, FieldType, Form } from "@/types";
+import type { DropResult, DragStart } from "@hello-pangea/dnd";
+import { FieldType } from "@/types";
+import type { Field, Form } from "@/types";
 import { generateUUID } from "@/utils/uuid";
 
 interface UseFormDragAndDropProps {

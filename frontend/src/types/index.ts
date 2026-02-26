@@ -2,26 +2,11 @@ export * from './enums';
 export * from './field-validation';
 export * from './typed-fields';
 import { FieldType, RoleType, FormStatus } from './enums';
-import { FieldWidthType, LabelAlignmentType } from './field-schema';
+
 import type { FieldValidation } from './field-validation';
 import type { FieldOptions } from './typed-fields';
 
-import type { RateOptions } from '@/components/form-builder/fields/rate/schema';
-import type { AddressOptions } from '@/components/form-builder/fields/address/schema';
-import type { CheckboxOption } from '@/components/form-builder/fields/checkbox/schema';
-import type { DateOptions } from '@/components/form-builder/fields/date/schema';
-import type { DropdownValidation } from '@/components/form-builder/fields/dropdown/schema';
-import type { EmailOptions } from '@/components/form-builder/fields/email/schema';
-import type { FullNameOptions } from '@/components/form-builder/fields/full-name/schema';
-import type { HeaderOptions } from '@/components/form-builder/fields/header/schema';
-import type { LongTextOptions } from '@/components/form-builder/fields/long-text/schema';
-import type { NumberOptions } from '@/components/form-builder/fields/number/schema';
-import type { ParagraphOptions } from '@/components/form-builder/fields/paragraph/schema';
-import type { PhoneOptions } from '@/components/form-builder/fields/phone/schema';
-import type { RadioValidation } from '@/components/form-builder/fields/radio/schema';
-import type { ShortTextOptions } from '@/components/form-builder/fields/short-text/schema';
-import type { SubmitOptions } from '@/components/form-builder/fields/submit/schema';
-import type { TimeOptions } from '@/components/form-builder/fields/time/schema';
+
 
 
 
@@ -145,6 +130,8 @@ export interface Form {
   _count?: {
     responses: number;
   };
+  hasWelcome?: boolean;
+  hasThankYou?: boolean;
   welcomeSettings?: WelcomeScreenSettings;
   thankYouSettings?: ThankYouScreenSettings;
   pageSettings?: PageSettings[];

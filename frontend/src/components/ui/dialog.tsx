@@ -1,14 +1,14 @@
-import * as React from "react"
-import { cn } from "@/lib/ui/utils"
+import * as React from "react";
+import { cn } from "@/lib/ui/utils";
 
 interface DialogProps {
-  open?: boolean
-  onOpenChange?: (open: boolean) => void
-  children: React.ReactNode
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  children: React.ReactNode;
 }
 
 const Dialog = ({ open, onOpenChange, children }: DialogProps) => {
-  if (!open) return null
+  if (!open) return null;
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center">
@@ -18,8 +18,8 @@ const Dialog = ({ open, onOpenChange, children }: DialogProps) => {
       />
       <div className="relative z-[100]">{children}</div>
     </div>
-  )
-}
+  );
+};
 
 const DialogContent = React.forwardRef<
   HTMLDivElement,
@@ -29,12 +29,12 @@ const DialogContent = React.forwardRef<
     ref={ref}
     className={cn(
       "fixed left-[50%] top-[50%] z-[100] grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg",
-      className
+      className,
     )}
     {...props}
   />
-))
-DialogContent.displayName = "DialogContent"
+));
+DialogContent.displayName = "DialogContent";
 
 const DialogHeader = ({
   className,
@@ -43,12 +43,12 @@ const DialogHeader = ({
   <div
     className={cn(
       "flex flex-col space-y-1.5 text-center sm:text-left",
-      className
+      className,
     )}
     {...props}
   />
-)
-DialogHeader.displayName = "DialogHeader"
+);
+DialogHeader.displayName = "DialogHeader";
 
 const DialogTitle = React.forwardRef<
   HTMLParagraphElement,
@@ -58,12 +58,12 @@ const DialogTitle = React.forwardRef<
     ref={ref}
     className={cn(
       "text-lg font-semibold leading-none tracking-tight",
-      className
+      className,
     )}
     {...props}
   />
-))
-DialogTitle.displayName = "DialogTitle"
+));
+DialogTitle.displayName = "DialogTitle";
 
 const DialogDescription = React.forwardRef<
   HTMLParagraphElement,
@@ -74,8 +74,8 @@ const DialogDescription = React.forwardRef<
     className={cn("text-sm text-muted-foreground", className)}
     {...props}
   />
-))
-DialogDescription.displayName = "DialogDescription"
+));
+DialogDescription.displayName = "DialogDescription";
 
 const DialogFooter = ({
   className,
@@ -84,12 +84,18 @@ const DialogFooter = ({
   <div
     className={cn(
       "flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2",
-      className
+      className,
     )}
     {...props}
   />
-)
-DialogFooter.displayName = "DialogFooter"
+);
+DialogFooter.displayName = "DialogFooter";
 
-export { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter }
-
+export {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+};

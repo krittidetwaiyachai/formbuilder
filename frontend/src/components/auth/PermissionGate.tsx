@@ -1,6 +1,6 @@
-import { ReactNode } from 'react';
-import { useHasPermission } from '@/hooks/usePermissions';
-import { Permission } from '@/lib/permissions';
+import type { ReactNode } from "react";
+import { useHasPermission } from "@/hooks/usePermissions";
+import type { Permission } from "@/lib/permissions";
 
 interface PermissionGateProps {
   permission: Permission | Permission[];
@@ -8,7 +8,11 @@ interface PermissionGateProps {
   fallback?: ReactNode;
 }
 
-export function PermissionGate({ permission, children, fallback = null }: PermissionGateProps) {
+export function PermissionGate({
+  permission,
+  children,
+  fallback = null,
+}: PermissionGateProps) {
   const hasPermission = useHasPermission(permission);
 
   if (!hasPermission) {
@@ -25,8 +29,13 @@ interface AdminOnlyProps {
 
 export function AdminOnly({ children, fallback = null }: AdminOnlyProps) {
   return (
-    <PermissionGate 
-      permission={['MANAGE_USERS', 'MANAGE_ROLES', 'VIEW_SYSTEM_LOGS', 'VIEW_ANALYTICS']} 
+    <PermissionGate
+      permission={[
+        "MANAGE_USERS",
+        "MANAGE_ROLES",
+        "VIEW_SYSTEM_LOGS",
+        "VIEW_ANALYTICS",
+      ]}
       fallback={fallback}
     >
       {children}
@@ -36,8 +45,8 @@ export function AdminOnly({ children, fallback = null }: AdminOnlyProps) {
 
 export function SuperAdminOnly({ children, fallback = null }: AdminOnlyProps) {
   return (
-    <PermissionGate 
-      permission={['MANAGE_ROLES', 'BYPASS_PDPA']} 
+    <PermissionGate
+      permission={["MANAGE_ROLES", "BYPASS_PDPA"]}
       fallback={fallback}
     >
       {children}

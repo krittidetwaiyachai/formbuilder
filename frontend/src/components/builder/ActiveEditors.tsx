@@ -1,6 +1,6 @@
 "use client";
 
-import { ActiveEditor } from "@/types/collaboration";
+import type { ActiveEditor } from "@/types/collaboration";
 
 interface ActiveEditorsProps {
   editors: ActiveEditor[];
@@ -33,4 +33,3 @@ export default function ActiveEditors({ editors }: ActiveEditorsProps) {
     </div>
   );
 }
-

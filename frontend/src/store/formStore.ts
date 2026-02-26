@@ -2,11 +2,15 @@ import { create, type StoreApi } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { Socket } from 'socket.io-client';
 import throttle from 'lodash.throttle';
-import { Form } from '@/types';
-import { FieldSlice, createFieldSlice } from './slices/createFieldSlice';
-import { SelectionSlice, createSelectionSlice } from './slices/createSelectionSlice';
-import { LogicSlice, createLogicSlice } from './slices/createLogicSlice';
-import { FormSlice, HistorySlice, createFormSlice, createHistorySlice } from './slices/createFormSlice';
+import type { Form } from '@/types';
+import { createFieldSlice } from './slices/createFieldSlice';
+import type { FieldSlice } from './slices/createFieldSlice';
+import { createSelectionSlice } from './slices/createSelectionSlice';
+import type { SelectionSlice } from './slices/createSelectionSlice';
+import { createLogicSlice } from './slices/createLogicSlice';
+import type { LogicSlice } from './slices/createLogicSlice';
+import { createFormSlice, createHistorySlice } from './slices/createFormSlice';
+import type { FormSlice, HistorySlice } from './slices/createFormSlice';
 
 export type FormBuilderState = FieldSlice & SelectionSlice & LogicSlice & FormSlice & HistorySlice & {
     emitChange: (form: Form | null) => void;

@@ -1,7 +1,8 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { Form, FormStatus, FieldType } from '@/types';
+import { FormStatus, FieldType } from '@/types';
+import type { Form } from '@/types';
 import { useAuthStore } from '@/store/authStore';
 import { useFormLogic } from '@/hooks/form/useFormLogic';
 import { useFormSubmission } from '@/hooks/form/useFormSubmission';

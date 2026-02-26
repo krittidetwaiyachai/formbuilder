@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { useSensor, useSensors, PointerSensor, TouchSensor, DragStartEvent, DragEndEvent } from '@dnd-kit/core';
+import { useSensor, useSensors, PointerSensor, TouchSensor } from '@dnd-kit/core';
+import type { DragStartEvent, DragEndEvent } from '@dnd-kit/core';
 import { useFolders } from './useFolders';
-import { FormWithStats } from './useDashboardForms';
+import type { FormWithStats } from './useDashboardForms';
 
 interface UseDashboardDndOptions {
   forms: FormWithStats[];

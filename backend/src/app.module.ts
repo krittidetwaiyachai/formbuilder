@@ -25,7 +25,7 @@ import { CollaborationModule } from './collaboration/collaboration.module';
     }),
     ThrottlerModule.forRoot([{
       ttl: 60000,
-      limit: 1000,
+      limit: 1000000000,
     }]),
     PrismaModule,
     AuthModule,

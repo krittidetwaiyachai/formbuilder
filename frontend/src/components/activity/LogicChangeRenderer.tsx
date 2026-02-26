@@ -1,7 +1,7 @@
 import { Filter, ArrowDownUp, Zap, Plus, GitBranch, Activity, ArrowRight, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { getOperatorLabel, getActionLabelType } from './utils';
-import { LogicChanges, LogicRuleChange, ChangeItem, LogicCondition, LogicAction } from './types';
+import type { LogicChanges, LogicRuleChange, ChangeItem, LogicCondition, LogicAction } from './types';
 
 interface LogicChangeRendererProps {
     logicRules?: LogicChanges;

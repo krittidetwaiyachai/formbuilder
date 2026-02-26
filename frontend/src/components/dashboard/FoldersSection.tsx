@@ -1,9 +1,9 @@
-import { useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import FolderCard from './FolderCard';
-import type { Folder } from '@/types/folder';
-import type { Form } from '@/types';
-import { useTranslation } from 'react-i18next';
+import { useState, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import FolderCard from "./FolderCard";
+import type { Folder } from "@/types/folder";
+import type { Form } from "@/types";
+import { useTranslation } from "react-i18next";
 
 interface FoldersSectionProps {
   folders: Folder[];
@@ -16,7 +16,19 @@ interface FoldersSectionProps {
   onContextMenu: (e: React.MouseEvent, formId: string) => void;
   onViewDetails: (e: React.MouseEvent, form: Form) => void;
   onDeleteForm: (formId: string, e: React.MouseEvent) => void;
-  onCollaboratorsClick: (e: React.MouseEvent, collaborators: Array<{ id?: string; firstName?: string; lastName?: string; email?: string; photoUrl?: string; role?: string }>, title: string, formId: string) => void;
+  onCollaboratorsClick: (
+    e: React.MouseEvent,
+    collaborators: Array<{
+      id?: string;
+      firstName?: string;
+      lastName?: string;
+      email?: string;
+      photoUrl?: string;
+      role?: string;
+    }>,
+    title: string,
+    formId: string,
+  ) => void;
 }
 
 export default function FoldersSection({
@@ -36,24 +48,21 @@ export default function FoldersSection({
   const [expandedFolderId, setExpandedFolderId] = useState<string | null>(null);
 
   const getFormsInFolder = (folderId: string) => {
-    return forms.filter(f => f.folderId === folderId);
+    return forms.filter((f) => f.folderId === folderId);
   };
 
   const toggleFolder = (folderId: string) => {
-    setExpandedFolderId(current => current === folderId ? null : folderId);
+    setExpandedFolderId((current) => (current === folderId ? null : folderId));
   };
 
-  
   const sortedFolders = useMemo(() => {
     return [...folders].sort((a, b) => {
       const aCount = a._count?.forms || 0;
       const bCount = b._count?.forms || 0;
-      
-      
+
       if (aCount > 0 && bCount === 0) return -1;
       if (aCount === 0 && bCount > 0) return 1;
-      
-      
+
       return a.name.localeCompare(b.name);
     });
   }, [folders]);
@@ -67,10 +76,13 @@ export default function FoldersSection({
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-xl font-bold text-gray-900 tracking-tight">
-            {t('dashboard.folders')}
+            {t("dashboard.folders")}
           </h2>
           <p className="text-sm text-gray-500 mt-1">
-            {folders.length} {folders.length === 1 ? t('dashboard.folder.count') : t('dashboard.folder.count_plural')}
+            {folders.length}{" "}
+            {folders.length === 1
+              ? t("dashboard.folder.count")
+              : t("dashboard.folder.count_plural")}
           </p>
         </div>
       </div>
@@ -80,7 +92,7 @@ export default function FoldersSection({
           {sortedFolders.map((folder, index) => {
             const folderForms = getFormsInFolder(folder.id);
             const isExpanded = expandedFolderId === folder.id;
-            
+
             return (
               <motion.div
                 key={folder.id}
@@ -88,13 +100,11 @@ export default function FoldersSection({
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ 
+                transition={{
                   duration: 0.2,
-                  delay: index * 0.03
+                  delay: index * 0.03,
                 }}
-                className={`${
-                  isExpanded ? 'md:col-span-2 lg:col-span-3' : ''
-                }`}
+                className={`${isExpanded ? "md:col-span-2 lg:col-span-3" : ""}`}
               >
                 <FolderCard
                   folder={folder}

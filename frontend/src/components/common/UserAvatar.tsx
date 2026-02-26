@@ -1,4 +1,5 @@
-import { useState, HTMLAttributes } from 'react';
+import { useState } from "react";
+import type { HTMLAttributes } from "react";
 
 interface UserAvatarProps extends HTMLAttributes<HTMLDivElement> {
   user: {
@@ -9,13 +10,17 @@ interface UserAvatarProps extends HTMLAttributes<HTMLDivElement> {
   className?: string;
 }
 
-export default function UserAvatar({ user, className = "w-10 h-10", ...props }: UserAvatarProps) {
+export default function UserAvatar({
+  user,
+  className = "w-10 h-10",
+  ...props
+}: UserAvatarProps) {
   const [imgError, setImgError] = useState(false);
-  const firstName = user?.firstName || 'U';
-  const lastName = user?.lastName || '';
+  const firstName = user?.firstName || "U";
+  const lastName = user?.lastName || "";
   const photoUrl = user?.photoUrl;
 
-  const initials = `${firstName[0] || ''}${lastName[0] || ''}`.toUpperCase();
+  const initials = `${firstName[0] || ""}${lastName[0] || ""}`.toUpperCase();
 
   if (photoUrl && !imgError) {
     return (
@@ -25,15 +30,15 @@ export default function UserAvatar({ user, className = "w-10 h-10", ...props }: 
         onError={() => setImgError(true)}
         className={`${className} rounded-full object-cover border border-gray-200`}
         referrerPolicy="no-referrer"
-        {...(props as React.HTMLAttributes<HTMLImageElement>)} 
+        {...(props as React.HTMLAttributes<HTMLImageElement>)}
       />
     );
   }
 
   return (
-    <div 
+    <div
       className={`${className} rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold border border-gray-200`}
-      style={{ fontSize: `calc(var(--tw-h) * 0.4)` }} 
+      style={{ fontSize: `calc(var(--tw-h) * 0.4)` }}
       {...props}
     >
       <span className="text-[length:40%]">{initials}</span>

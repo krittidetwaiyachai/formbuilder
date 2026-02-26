@@ -11,7 +11,7 @@ export function useSocketLogout() {
     const socketUrl = import.meta.env.VITE_API_URL;
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
     let baseUrl: string;
-    
+
     if (socketUrl) {
       baseUrl = socketUrl.replace('/api', '');
     } else if (backendUrl) {

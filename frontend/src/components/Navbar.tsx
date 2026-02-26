@@ -14,29 +14,31 @@ export default function Navbar() {
             <FileText className="h-6 w-6 text-primary" />
             <span className="text-xl font-bold">FormBuilder</span>
           </Link>
-          
+
           <div className="flex items-center gap-6">
-            <Link 
-              to="/dashboard" 
+            <Link
+              to="/dashboard"
               className="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-primary transition-colors"
             >
               <LayoutDashboard className="h-4 w-4" />
-              {t('dashboard')}
+              {t("dashboard")}
             </Link>
-            <Link 
-              to="/demo" 
+            <Link
+              to="/demo"
               className="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-primary transition-colors"
             >
-              {t('demo')}
+              {t("demo")}
             </Link>
-            
+
             <LanguageSwitcher />
 
             <div className="flex items-center gap-2">
               <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
                 <User className="h-4 w-4 text-primary" />
               </div>
-              <span className="text-sm font-medium text-gray-700">{t('admin')}</span>
+              <span className="text-sm font-medium text-gray-700">
+                {t("admin")}
+              </span>
             </div>
           </div>
         </div>
@@ -44,4 +46,3 @@ export default function Navbar() {
     </nav>
   );
 }
-

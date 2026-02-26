@@ -1,7 +1,7 @@
 "use client";
 
 import { MOCK_USER_FORMS } from "@/lib/mock-data";
-import { Form } from "@/types";
+import type { Form } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Plus, Pencil, BarChart3 } from "lucide-react";
 

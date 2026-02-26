@@ -1,7 +1,12 @@
-
-import FormFieldRenderer from '@/components/form-preview/FormFieldRenderer';
-import { Field, Form } from '@/types';
-import { UseFormRegister, FieldErrors, UseFormWatch, UseFormSetValue, Control } from 'react-hook-form';
+import FormFieldRenderer from "@/components/form-preview/FormFieldRenderer";
+import type { Field, Form } from "@/types";
+import type {
+  UseFormRegister,
+  FieldErrors,
+  UseFormWatch,
+  UseFormSetValue,
+  Control,
+} from "react-hook-form";
 
 interface CardLayoutProps {
   currentField?: Field;
@@ -14,7 +19,7 @@ interface CardLayoutProps {
   form: Form;
 }
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
 export function CardLayout({
   currentField,
@@ -31,25 +36,29 @@ export function CardLayout({
 
   return (
     <div className="focus-within:ring-0 transition-all duration-300 w-full flex-1 flex flex-col justify-center px-8 md:px-12 py-8">
-       <div className="w-full max-w-2xl mx-auto space-y-8">
-         <FormFieldRenderer
-           field={currentField}
-           register={register}
-           errors={errors}
-           watch={watch}
-           setValue={setValue}
-           control={control}
-           questionNumber={form.settings?.showQuestionNumber ? currentCardIndex + 1 : undefined}
-           isPublic
-         />
-         
-         <div className="pt-6 flex items-center justify-center opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-500">
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-100/50 backdrop-blur-sm rounded-full text-xs font-medium text-gray-400">
-                <span>{t('public.press', 'Press')}</span>
-                <kbd className="font-sans font-bold text-gray-500">{t('public.press_enter')}</kbd>
-            </div>
-         </div>
-       </div>
+      <div className="w-full max-w-2xl mx-auto space-y-8">
+        <FormFieldRenderer
+          field={currentField}
+          register={register}
+          errors={errors}
+          watch={watch}
+          setValue={setValue}
+          control={control}
+          questionNumber={
+            form.settings?.showQuestionNumber ? currentCardIndex + 1 : undefined
+          }
+          isPublic
+        />
+
+        <div className="pt-6 flex items-center justify-center opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-500">
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-100/50 backdrop-blur-sm rounded-full text-xs font-medium text-gray-400">
+            <span>{t("public.press", "Press")}</span>
+            <kbd className="font-sans font-bold text-gray-500">
+              {t("public.press_enter")}
+            </kbd>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

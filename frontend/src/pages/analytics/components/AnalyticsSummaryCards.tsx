@@ -1,20 +1,24 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Eye, FileText, TrendingUp } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
-import { Form } from '@/types';
+import React from "react";
+import { motion } from "framer-motion";
+import { Eye, FileText, TrendingUp } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import type { Form } from "@/types";
 
 interface AnalyticsSummaryCardsProps {
   form: Form | null;
   totalResponses: number;
 }
 
-export const AnalyticsSummaryCards: React.FC<AnalyticsSummaryCardsProps> = ({ form, totalResponses }) => {
+export const AnalyticsSummaryCards: React.FC<AnalyticsSummaryCardsProps> = ({
+  form,
+  totalResponses,
+}) => {
   const { t } = useTranslation();
 
-  const conversionRate = form?.viewCount && form.viewCount > 0
-    ? ((totalResponses / form.viewCount) * 100).toFixed(1)
-    : '0';
+  const conversionRate =
+    form?.viewCount && form.viewCount > 0
+      ? ((totalResponses / form.viewCount) * 100).toFixed(1)
+      : "0";
 
   return (
     <div className="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8 overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0">
@@ -31,13 +35,15 @@ export const AnalyticsSummaryCards: React.FC<AnalyticsSummaryCardsProps> = ({ fo
             </div>
           </div>
           <div className="space-y-1">
-            <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('analytics.total_views')}</h3>
+            <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
+              {t("analytics.total_views")}
+            </h3>
             <p className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
               {form?.viewCount || 0}
             </p>
             <p className="text-xs text-gray-500 flex items-center gap-1">
               <TrendingUp className="w-3 h-3" />
-              {t('analytics.unique_visitors')}
+              {t("analytics.unique_visitors")}
             </p>
           </div>
         </div>
@@ -57,13 +63,15 @@ export const AnalyticsSummaryCards: React.FC<AnalyticsSummaryCardsProps> = ({ fo
             </div>
           </div>
           <div className="space-y-1">
-            <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('analytics.total_responses')}</h3>
+            <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
+              {t("analytics.total_responses")}
+            </h3>
             <p className="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">
               {totalResponses.toLocaleString()}
             </p>
             <p className="text-xs text-gray-500 flex items-center gap-1">
               <TrendingUp className="w-3 h-3" />
-              {t('analytics.form_submissions')}
+              {t("analytics.form_submissions")}
             </p>
           </div>
         </div>
@@ -83,13 +91,15 @@ export const AnalyticsSummaryCards: React.FC<AnalyticsSummaryCardsProps> = ({ fo
             </div>
           </div>
           <div className="space-y-1">
-            <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{t('analytics.conversion_rate')}</h3>
+            <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
+              {t("analytics.conversion_rate")}
+            </h3>
             <p className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
               {conversionRate}%
             </p>
             <p className="text-xs text-gray-500 flex items-center gap-1">
               <TrendingUp className="w-3 h-3" />
-              {t('analytics.responses_views')}
+              {t("analytics.responses_views")}
             </p>
           </div>
         </div>

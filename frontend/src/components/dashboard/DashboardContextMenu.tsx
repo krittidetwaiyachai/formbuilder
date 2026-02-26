@@ -1,16 +1,15 @@
-
-import React, { useEffect, useRef } from 'react';
-import { 
-  FileText, 
-  Eye, 
-  BarChart3, 
-  Clock, 
-  Copy, 
-  Trash2, 
+import React, { useEffect, useRef } from "react";
+import {
+  FileText,
+  Eye,
+  BarChart3,
+  Clock,
+  Copy,
+  Trash2,
   Users,
-  Link as LinkIcon
-} from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+  Link as LinkIcon,
+} from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface DashboardContextMenuProps {
   formId: string;
@@ -27,19 +26,19 @@ interface DashboardContextMenuProps {
 }
 
 interface MenuItem {
-    icon: React.ReactNode;
-    label: string;
-    onClick: () => void;
-    danger?: boolean;
+  icon: React.ReactNode;
+  label: string;
+  onClick: () => void;
+  danger?: boolean;
 }
 
 interface MenuGroup {
-    label: string;
-    items: MenuItem[];
+  label: string;
+  items: MenuItem[];
 }
 
-export function DashboardContextMenu({ 
-  position, 
+export function DashboardContextMenu({
+  position,
   onClose,
   onEdit,
   onPreview,
@@ -48,43 +47,40 @@ export function DashboardContextMenu({
   onCopyLink,
   onDuplicate,
   onCollaborators,
-  onDelete
+  onDelete,
 }: DashboardContextMenuProps) {
   const menuRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
 
-  
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         onClose();
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     const handleScroll = () => onClose();
-    window.addEventListener('scroll', handleScroll, true); 
-    
+    window.addEventListener("scroll", handleScroll, true);
+
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      window.removeEventListener('scroll', handleScroll, true);
+      document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("scroll", handleScroll, true);
     };
   }, [onClose]);
 
-  
-  
   const getAdjustedStyle = () => {
-      let top = position.y;
-      let left = position.x;
+    let top = position.y;
+    let left = position.x;
 
-      if (typeof window !== 'undefined') {
-          if (left + 240 > window.innerWidth) {
-              left = window.innerWidth - 250;
-          }
-          if (top + 350 > window.innerHeight) {
-              top = top - 350; 
-          }
+    if (typeof window !== "undefined") {
+      if (left + 240 > window.innerWidth) {
+        left = window.innerWidth - 250;
       }
-      return { top, left };
+      if (top + 350 > window.innerHeight) {
+        top = top - 350;
+      }
+    }
+    return { top, left };
   };
 
   const style = getAdjustedStyle();
@@ -96,33 +92,66 @@ export function DashboardContextMenu({
 
   const menuItems: MenuGroup[] = [
     {
-      label: t('dashboard.context.group.main'),
+      label: t("dashboard.context.group.main"),
       items: [
-        { icon: <FileText className="w-4 h-4" />, label: t('dashboard.context.edit'), onClick: onEdit },
-        { icon: <Eye className="w-4 h-4" />, label: t('dashboard.context.preview'), onClick: onPreview },
-      ]
+        {
+          icon: <FileText className="w-4 h-4" />,
+          label: t("dashboard.context.edit"),
+          onClick: onEdit,
+        },
+        {
+          icon: <Eye className="w-4 h-4" />,
+          label: t("dashboard.context.preview"),
+          onClick: onPreview,
+        },
+      ],
     },
     {
-      label: t('dashboard.context.group.management'),
+      label: t("dashboard.context.group.management"),
       items: [
-        { icon: <BarChart3 className="w-4 h-4" />, label: t('dashboard.context.analytics'), onClick: onAnalytics },
-        { icon: <Clock className="w-4 h-4" />, label: t('dashboard.context.activity'), onClick: onActivity },
-        { icon: <Users className="w-4 h-4" />, label: t('dashboard.context.collaborators'), onClick: onCollaborators },
-      ]
+        {
+          icon: <BarChart3 className="w-4 h-4" />,
+          label: t("dashboard.context.analytics"),
+          onClick: onAnalytics,
+        },
+        {
+          icon: <Clock className="w-4 h-4" />,
+          label: t("dashboard.context.activity"),
+          onClick: onActivity,
+        },
+        {
+          icon: <Users className="w-4 h-4" />,
+          label: t("dashboard.context.collaborators"),
+          onClick: onCollaborators,
+        },
+      ],
     },
     {
-      label: t('dashboard.context.group.share'),
+      label: t("dashboard.context.group.share"),
       items: [
-        { icon: <LinkIcon className="w-4 h-4" />, label: t('dashboard.context.copy_link'), onClick: onCopyLink },
-        { icon: <Copy className="w-4 h-4" />, label: t('dashboard.context.duplicate'), onClick: onDuplicate },
-      ]
+        {
+          icon: <LinkIcon className="w-4 h-4" />,
+          label: t("dashboard.context.copy_link"),
+          onClick: onCopyLink,
+        },
+        {
+          icon: <Copy className="w-4 h-4" />,
+          label: t("dashboard.context.duplicate"),
+          onClick: onDuplicate,
+        },
+      ],
     },
     {
-      label: t('dashboard.context.group.danger'),
+      label: t("dashboard.context.group.danger"),
       items: [
-        { icon: <Trash2 className="w-4 h-4 text-red-500" />, label: t('dashboard.context.delete'), onClick: onDelete, danger: true },
-      ]
-    }
+        {
+          icon: <Trash2 className="w-4 h-4 text-red-500" />,
+          label: t("dashboard.context.delete"),
+          onClick: onDelete,
+          danger: true,
+        },
+      ],
+    },
   ];
 
   return (
@@ -132,7 +161,12 @@ export function DashboardContextMenu({
       style={{ top: style.top, left: style.left }}
     >
       {menuItems.map((group, groupIndex) => (
-        <div key={groupIndex} className={groupIndex !== 0 ? "border-t border-gray-100 mt-1 pt-1" : ""}>
+        <div
+          key={groupIndex}
+          className={
+            groupIndex !== 0 ? "border-t border-gray-100 mt-1 pt-1" : ""
+          }
+        >
           {group.items.map((item, itemIndex) => (
             <button
               key={itemIndex}
@@ -141,12 +175,18 @@ export function DashboardContextMenu({
                 handleAction(item.onClick);
               }}
               className={`w-full flex items-center gap-3 px-4 py-2 text-[13px] font-medium transition-colors ${
-                  item.danger 
-                  ? 'text-red-500 hover:bg-red-50' 
-                  : 'text-gray-700 hover:bg-gray-50 hover:text-black'
+                item.danger
+                  ? "text-red-500 hover:bg-red-50"
+                  : "text-gray-700 hover:bg-gray-50 hover:text-black"
               }`}
             >
-              <span className={item.danger ? 'text-red-500' : 'text-gray-400 group-hover:text-black'}>
+              <span
+                className={
+                  item.danger
+                    ? "text-red-500"
+                    : "text-gray-400 group-hover:text-black"
+                }
+              >
                 {item.icon}
               </span>
               {item.label}

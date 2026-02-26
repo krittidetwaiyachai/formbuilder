@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { io, Socket } from 'socket.io-client';
-import { Form } from '@/types';
+import type { Form } from '@/types';
 import { useFormStore } from '@/store/formStore';
 
 export const useFormSocket = (id: string | undefined) => {

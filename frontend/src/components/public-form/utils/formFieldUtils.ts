@@ -1,4 +1,4 @@
-import { Field } from '@/types';
+import type { Field } from '@/types';
 
 export function splitIntoPages(fields: Field[]): Field[][] {
   const pages: Field[][] = [];

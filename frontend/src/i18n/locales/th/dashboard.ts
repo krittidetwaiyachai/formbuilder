@@ -5,12 +5,12 @@ export default {
   "dashboard.create_form": "สร้างฟอร์มใหม่",
   "dashboard.search_placeholder": "ค้นหาฟอร์ม...",
   "dashboard.loading": "กำลังโหลดแดชบอร์ด...",
-  
+
   "dashboard.filters.all": "ทั้งหมด",
   "dashboard.filters.draft": "ร่าง",
   "dashboard.filters.published": "เผยแพร่แล้ว",
   "dashboard.filters.archived": "เก็บถาวร",
-  
+
   "dashboard.folders": "โฟลเดอร์",
   "dashboard.move_to_folder": "ย้ายไปยังโฟลเดอร์",
   "dashboard.new_folder": "โฟลเดอร์ใหม่",
@@ -18,13 +18,13 @@ export default {
   "dashboard.ungrouped_forms": "ฟอร์ม",
   "dashboard.folder.all": "ทั้งหมด",
   "dashboard.folder.ungrouped": "ไม่ได้จัดกลุ่ม",
-  
+
   "dashboard.empty.title": "ไม่พบฟอร์ม",
   "dashboard.empty.no_search": "ไม่พบฟอร์มที่ตรงกับการค้นหา",
   "dashboard.empty.no_forms": "คุณยังไม่ได้สร้างฟอร์ม เริ่มต้นเลยตอนนี้!",
   "dashboard.empty.create_first": "สร้างฟอร์มแรกของคุณ",
   "dashboard.empty.description": "คลิกปุ่มด้านบนเพื่อสร้างฟอร์มแรกของคุณ",
-  
+
   "dashboard.form.responses": "คำตอบ",
   "dashboard.form.responses_plural": "คำตอบ",
   "dashboard.form.views": "ครั้ง",
@@ -34,22 +34,22 @@ export default {
   "dashboard.form.owner": "เจ้าของ",
   "dashboard.form.shared": "แชร์แล้ว",
   "dashboard.form.no_description": "ไม่มีคำอธิบาย",
-  
+
   "dashboard.modal.folder_name": "ชื่อโฟลเดอร์",
   "dashboard.modal.folder_color": "เลือกสี",
   "dashboard.modal.create": "สร้าง",
   "dashboard.modal.cancel": "ยกเลิก",
   "dashboard.modal.save": "บันทึก",
-  
+
   "dashboard.context.edit": "แก้ไข",
   "dashboard.context.preview": "ตัวอย่าง",
   "dashboard.context.analytics": "สถิติ",
   "dashboard.context.activity": "กิจกรรม",
   "dashboard.context.copy_link": "คัดลอกลิงก์",
   "dashboard.context.duplicate": "ทำสำเนา",
-  "dashboard.context.collaborators": "จัดการผู้ร่วมงาน",
+  "dashboard.context.collaborators": "จัดการสิทธิ์การเข้าถึง",
   "dashboard.context.delete": "ลบ",
-  
+
   "dashboard.confirm.delete_form.title": "ลบฟอร์ม?",
   "dashboard.confirm.delete_form.description": "คุณแน่ใจหรือไม่ว่าต้องการลบฟอร์มนี้? การกระทำนี้ไม่สามารถย้อนกลับได้",
   "dashboard.confirm.delete_folder.title": "ลบโฟลเดอร์?",
@@ -57,7 +57,7 @@ export default {
   "dashboard.confirm.delete": "ลบ",
   "dashboard.confirm.delete_folder": "ลบโฟลเดอร์",
   "dashboard.confirm.cancel": "ยกเลิก",
-  
+
   "dashboard.toast.created": "สร้างฟอร์มสำเร็จ",
   "dashboard.toast.deleted": "ลบฟอร์มสำเร็จ",
   "dashboard.toast.duplicated": "ทำสำเนาฟอร์มสำเร็จ",
@@ -77,12 +77,12 @@ export default {
   "dashboard.context.rename": "เปลี่ยนชื่อ",
   "dashboard.prompt.new_folder_name": "ชื่อโฟลเดอร์ใหม่:",
   "dashboard.modal.folder_placeholder": "เช่น โปรเจกต์ลูกค้า",
-  
+
   "dashboard.context.group.main": "การกระทำหลัก",
   "dashboard.context.group.management": "การจัดการ",
   "dashboard.context.group.share": "การแชร์",
   "dashboard.context.group.danger": "พื้นที่อันตราย",
-  
+
   "dashboard.collaborators.manage_access": "จัดการสิทธิ์การเข้าถึง",
   "dashboard.collaborators.add_people": "เพิ่มผู้คน",
   "dashboard.collaborators.email_placeholder": "ป้อนที่อยู่อีเมล",
@@ -98,13 +98,14 @@ export default {
   "dashboard.collaborators.remove_confirm_title": "ลบผู้ร่วมงาน?",
   "dashboard.collaborators.remove_confirm": "คุณแน่ใจหรือไม่ว่าต้องการลบผู้ร่วมงานนี้?",
   "dashboard.collaborators.remove_error": "ไม่สามารถลบผู้ใช้ได้",
-  
+  "dashboard.collaborators.leave": "ออกจากฟอร์ม",
+
   "dashboard.form.quiz_mode": "โหมดแบบทดสอบ",
   "dashboard.form.statistics": "สถิติ",
   "dashboard.form.timeline": "ไทม์ไลน์",
   "dashboard.form.created": "สร้างเมื่อ",
   "dashboard.form.last_updated": "อัปเดตล่าสุด",
-  
+
   "dashboard.filters.title": "ตัวกรองและการจัดเรียง",
   "dashboard.filters.status": "สถานะ",
   "dashboard.filters.apply": "แสดงผลลัพธ์",
@@ -112,7 +113,7 @@ export default {
   "dashboard.sort.newest": "ใหม่ล่าสุด",
   "dashboard.sort.oldest": "เก่าที่สุด",
   "dashboard.sort.alphabetical": "ตามตัวอักษร (A-Z)",
-  
+
   "dashboard.folder.expand": "ขยาย",
   "dashboard.folder.collapse": "ย่อ",
   "dashboard.folder.actions": "การกระทำ",
@@ -125,7 +126,7 @@ export default {
 
   "dashboard.stats.responses": "คำตอบ",
   "dashboard.stats.views": "การเข้าชม",
-  
+
   "dashboard.theme.popular": "ธีมยอดนิยม",
   "dashboard.theme.exclusive": "ธีมพิเศษ",
   "dashboard.theme.festival": "ธีมเทศกาล",

@@ -12,5 +12,7 @@ export default {
   "error.footer.security": "Security Protocol • Access Level: Restricted",
   "error.footer.diagnostic": "System Diagnostic • Status: Critical",
   "error.footer.upgrade": "System Upgrade • Estimating Time: Unknown",
-  "error.footer.default": "FormBuilder • 404 Error"
+  "error.footer.default": "FormBuilder • 404 Error",
+  "error.rate_limit.title": "Too Many Requests",
+  "error.rate_limit.message": "You have exceeded the rate limit. Please try again later."
 };

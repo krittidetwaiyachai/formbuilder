@@ -421,7 +421,18 @@ export class ResponsesService {
 
       form.fields.forEach(f => {
         if (!['HEADER', 'PARAGRAPH', 'DIVIDER', 'PAGE_BREAK', 'SUBMIT'].includes(f.type)) {
-          headers.push(stripHtml(f.label));
+          if (f.type === 'MATRIX') {
+            const matrixOptions = f.options as unknown as { rows?: { id: string; label: string }[] };
+            if (matrixOptions?.rows && Array.isArray(matrixOptions.rows)) {
+              matrixOptions.rows.forEach(row => {
+                headers.push(`${stripHtml(f.label)} - ${stripHtml(row.label)}`);
+              });
+            } else {
+              headers.push(stripHtml(f.label));
+            }
+          } else {
+            headers.push(stripHtml(f.label));
+          }
         }
       });
 
@@ -469,6 +480,7 @@ export class ResponsesService {
             if (!['HEADER', 'PARAGRAPH', 'DIVIDER', 'PAGE_BREAK', 'SUBMIT'].includes(field.type)) {
               const answer = response.answers.find((a) => a.fieldId === field.id);
               let value = answer?.value || '';
+
               if (answer?.field?.isPII && answer.value) {
                 try {
                   value = this.encryptionService.decrypt(answer.value);
@@ -476,7 +488,63 @@ export class ResponsesService {
                   value = '[Encrypted]';
                 }
               }
-              row.push(escapeCsv(value));
+
+              if (field.type === 'MATRIX') {
+                const matrixOptions = field.options as unknown as { rows?: { id: string; label: string }[]; columns?: { id: string; label: string }[] };
+                if (matrixOptions?.rows && Array.isArray(matrixOptions.rows)) {
+                  let parsedValue: Record<string, any> = {};
+                  try {
+                    parsedValue = typeof value === 'string' && (value.startsWith('{') || value.startsWith('['))
+                      ? JSON.parse(value)
+                      : (typeof value === 'object' ? value : {});
+                  } catch {
+                    parsedValue = {};
+                  }
+
+                  
+                  if (value === '[object Object]') {
+                    matrixOptions.rows.forEach(() => row.push(escapeCsv('Error: Invalid Data')));
+                  } else {
+                    const colMap = new Map((matrixOptions.columns || []).map(c => [c.id, c.label]));
+
+                    matrixOptions.rows.forEach(matrixRow => {
+                      const cellValue = parsedValue[matrixRow.id];
+                      let displayValue = '';
+
+                      if (cellValue) {
+                        displayValue = Array.isArray(cellValue)
+                          ? cellValue.map(v => colMap.get(String(v)) || v).join(', ')
+                          : colMap.get(String(cellValue)) || cellValue;
+                      }
+
+                      row.push(escapeCsv(displayValue));
+                    });
+                  }
+                } else {
+                  row.push(escapeCsv(value));
+                }
+              } else if (field.type === 'TABLE') {
+                
+                
+                try {
+                  const parsed = typeof value === 'string' && value.startsWith('[') ? JSON.parse(value) : value;
+                  if (Array.isArray(parsed)) {
+                    const tableOptions = field.options as unknown as { columns?: { id: string; label: string }[] };
+                    const cols = tableOptions?.columns || [];
+                    const formattedTable = parsed.map((r, i) => {
+                      const cells = cols.map(c => `${c.label}: ${r[c.id] || ''}`).join(', ');
+                      return `[Row ${i + 1}] ${cells}`;
+                    }).join(' | ');
+                    row.push(escapeCsv(formattedTable));
+                  } else {
+                    row.push(escapeCsv(value));
+                  }
+                } catch {
+                  row.push(escapeCsv(value));
+                }
+              } else {
+                row.push(escapeCsv(value));
+              }
             }
           });
 

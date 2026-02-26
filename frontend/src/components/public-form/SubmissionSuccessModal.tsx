@@ -1,13 +1,16 @@
-import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import { motion, AnimatePresence } from "framer-motion";
+import { CheckCircle } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface SubmissionSuccessModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export default function SubmissionSuccessModal({ isOpen, onClose }: SubmissionSuccessModalProps) {
+export default function SubmissionSuccessModal({
+  isOpen,
+  onClose,
+}: SubmissionSuccessModalProps) {
   const { t } = useTranslation();
 
   if (!isOpen) return null;
@@ -35,25 +38,33 @@ export default function SubmissionSuccessModal({ isOpen, onClose }: SubmissionSu
             <motion.div
               initial={{ scale: 0, rotate: -45 }}
               animate={{ scale: 1, rotate: 0 }}
-              transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.1 }}
+              transition={{
+                type: "spring",
+                stiffness: 260,
+                damping: 20,
+                delay: 0.1,
+              }}
               className="mb-6 w-16 h-16 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center"
             >
               <CheckCircle className="w-8 h-8" strokeWidth={3} />
             </motion.div>
 
             <h2 className="text-xl font-bold text-gray-900 mb-2">
-              {t('public.thank_you.title', 'Thank you!')}
+              {t("public.thank_you.title", "Thank you!")}
             </h2>
-            
+
             <p className="text-gray-500 mb-8 leading-relaxed">
-              {t('public.thank_you.message', 'Your submission has been received.')}
+              {t(
+                "public.thank_you.message",
+                "Your submission has been received.",
+              )}
             </p>
 
             <button
               onClick={onClose}
               className="w-full py-3 px-4 bg-black text-white font-medium rounded-xl hover:bg-gray-800 active:scale-95 transition-all shadow-lg shadow-gray-200"
             >
-              {t('common.ok', 'OK')}
+              {t("common.ok", "OK")}
             </button>
           </div>
         </motion.div>

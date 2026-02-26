@@ -1,8 +1,8 @@
-import React, { useState, useRef, useCallback } from 'react';
-import { Field, RadioField as RadioFieldType } from '@/types';
-import { Plus, X, GripVertical } from 'lucide-react';
-import { useFormStore } from '@/store/formStore';
-import { useTranslation } from 'react-i18next';
+import React, { useState, useRef, useCallback } from "react";
+import type { Field, RadioField as RadioFieldType } from "@/types";
+import { Plus, X, GripVertical } from "lucide-react";
+import { useFormStore } from "@/store/formStore";
+import { useTranslation } from "react-i18next";
 
 interface RadioFieldProps {
   field: Field;
@@ -17,98 +17,107 @@ interface RadioFieldProps {
   isSelected?: boolean;
 }
 
-export const RadioField: React.FC<RadioFieldProps> = ({ 
-  field, 
- 
+export const RadioField: React.FC<RadioFieldProps> = ({
+  field,
 
   updateField: propUpdateField,
-  isSelected: propIsSelected
+  isSelected: propIsSelected,
 }) => {
   const { updateField: storeUpdateField, selectedFieldId } = useFormStore();
   const updateField = propUpdateField || storeUpdateField;
-  const isSelected = propIsSelected !== undefined ? propIsSelected : (selectedFieldId === field.id);
+  const isSelected =
+    propIsSelected !== undefined
+      ? propIsSelected
+      : selectedFieldId === field.id;
   const { t } = useTranslation();
 
-  const [newOptionText, setNewOptionText] = useState('');
+  const [newOptionText, setNewOptionText] = useState("");
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [targetIndex, setTargetIndex] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const radioField = field as unknown as RadioFieldType;
-  
+
   const getOptionsRobust = (): { label: string; value: string }[] => {
-       const rawOptions = radioField.options;
-       if (!rawOptions) return [];
-       
-       if (Array.isArray(rawOptions)) {
-            if (rawOptions.length > 0 && typeof rawOptions[0] === 'object') {
-                return (rawOptions as unknown as { label: string; value: string }[]).map(o => ({
-                    label: o.label || '', 
-                    value: o.value || o.label || ''
-                }));
-            }
-           return (rawOptions as string[]).map(o => ({label: o, value: o}));
-       }
-       
-       if (rawOptions.items && Array.isArray(rawOptions.items)) {
-           return rawOptions.items.map((o: string | { label: string; value: string }) => 
-                typeof o === 'string' ? {label:o, value:o} : { label: o.label || '', value: o.value || o.label || '' }
-           );
-       }
-       return [];
-  }
+    const rawOptions = radioField.options;
+    if (!rawOptions) return [];
+
+    if (Array.isArray(rawOptions)) {
+      if (rawOptions.length > 0 && typeof rawOptions[0] === "object") {
+        return (
+          rawOptions as unknown as { label: string; value: string }[]
+        ).map((o) => ({
+          label: o.label || "",
+          value: o.value || o.label || "",
+        }));
+      }
+      return (rawOptions as string[]).map((o) => ({ label: o, value: o }));
+    }
+
+    if (rawOptions.items && Array.isArray(rawOptions.items)) {
+      return rawOptions.items.map(
+        (o: string | { label: string; value: string }) =>
+          typeof o === "string"
+            ? { label: o, value: o }
+            : { label: o.label || "", value: o.value || o.label || "" },
+      );
+    }
+    return [];
+  };
 
   const options = getOptionsRobust();
-  const optionsObj = (radioField.options && !Array.isArray(radioField.options)) ? radioField.options : {};
+  const optionsObj =
+    radioField.options && !Array.isArray(radioField.options)
+      ? radioField.options
+      : {};
   const validation = radioField.validation || {};
-  
-  const spreadToColumns = optionsObj.spreadToColumns || validation.spreadToColumns;
+
+  const spreadToColumns =
+    optionsObj.spreadToColumns || validation.spreadToColumns;
   const columns = optionsObj.columns || validation.columns || 2;
   const otherOption = optionsObj.otherOption || validation.otherOption;
 
-
-  
   const handleAddOption = () => {
     if (!updateField) return;
     const optionText = newOptionText.trim() || `Option ${options.length + 1}`;
     const newOption = { label: optionText, value: optionText };
-    
+
     const newItems = [...options, newOption];
     let newOptionsObj: Record<string, unknown>;
     if (Array.isArray(field.options)) {
-         newOptionsObj = { items: newItems };
+      newOptionsObj = { items: newItems };
     } else {
-         newOptionsObj = { ...field.options, items: newItems };
+      newOptionsObj = { ...field.options, items: newItems };
     }
     updateField(field.id, { options: newOptionsObj });
-    setNewOptionText('');
+    setNewOptionText("");
   };
 
   const handleRemoveOption = (index: number) => {
     if (!updateField) return;
     const newItems = options.filter((_, i) => i !== index);
-    const newOptionsObj = Array.isArray(field.options) 
-        ? { items: newItems } 
-        : { ...field.options, items: newItems };
+    const newOptionsObj = Array.isArray(field.options)
+      ? { items: newItems }
+      : { ...field.options, items: newItems };
     updateField(field.id, { options: newOptionsObj });
   };
 
   const handleUpdateOption = (index: number, newLabel: string) => {
     if (!updateField) return;
-    const newItems = options.map((opt, i) => 
-      i === index ? { label: newLabel, value: newLabel } : opt
+    const newItems = options.map((opt, i) =>
+      i === index ? { label: newLabel, value: newLabel } : opt,
     );
-    const newOptionsObj = Array.isArray(field.options) 
-        ? { items: newItems } 
-        : { ...field.options, items: newItems };
+    const newOptionsObj = Array.isArray(field.options)
+      ? { items: newItems }
+      : { ...field.options, items: newItems };
     updateField(field.id, { options: newOptionsObj });
   };
 
   const handleDragStart = (e: React.DragEvent, index: number) => {
     setDragIndex(index);
     setTargetIndex(index);
-    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.effectAllowed = "move";
   };
 
   const calculateTargetIndex = useCallback((clientY: number) => {
@@ -118,24 +127,24 @@ export const RadioField: React.FC<RadioFieldProps> = ({
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
       if (!item) continue;
-      
+
       const rect = item.getBoundingClientRect();
       const midPoint = rect.top + rect.height / 2;
-      
+
       if (clientY < midPoint) {
         return i;
       }
     }
-    
+
     return items.length;
   }, []);
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-    
+    e.dataTransfer.dropEffect = "move";
+
     if (dragIndex === null) return;
-    
+
     const newTarget = calculateTargetIndex(e.clientY);
     if (newTarget !== null && newTarget !== targetIndex) {
       setTargetIndex(newTarget);
@@ -144,21 +153,22 @@ export const RadioField: React.FC<RadioFieldProps> = ({
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
-    
+
     if (dragIndex !== null && targetIndex !== null && updateField) {
-      const actualTarget = targetIndex > dragIndex ? targetIndex - 1 : targetIndex;
-      
+      const actualTarget =
+        targetIndex > dragIndex ? targetIndex - 1 : targetIndex;
+
       if (actualTarget !== dragIndex) {
         const newItems = [...options];
         const [draggedItem] = newItems.splice(dragIndex, 1);
         newItems.splice(actualTarget, 0, draggedItem);
-        const newOptionsObj = Array.isArray(field.options) 
-            ? { items: newItems } 
-            : { ...field.options, items: newItems };
+        const newOptionsObj = Array.isArray(field.options)
+          ? { items: newItems }
+          : { ...field.options, items: newItems };
         updateField(field.id, { options: newOptionsObj });
       }
     }
-    
+
     setDragIndex(null);
     setTargetIndex(null);
   };
@@ -169,7 +179,7 @@ export const RadioField: React.FC<RadioFieldProps> = ({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       e.preventDefault();
       handleAddOption();
     }
@@ -177,45 +187,56 @@ export const RadioField: React.FC<RadioFieldProps> = ({
 
   const getTransformStyle = (index: number): React.CSSProperties => {
     if (dragIndex === null || targetIndex === null) {
-      return { transform: 'translateY(0px)', transition: 'transform 150ms ease' };
-    }
-    
-    const itemHeight = 44;
-    
-    if (index === dragIndex) {
-      return { 
-        opacity: 0, 
-        transform: 'translateY(0px)',
-        transition: 'transform 150ms ease, opacity 150ms ease'
+      return {
+        transform: "translateY(0px)",
+        transition: "transform 150ms ease",
       };
     }
-    
+
+    const itemHeight = 44;
+
+    if (index === dragIndex) {
+      return {
+        opacity: 0,
+        transform: "translateY(0px)",
+        transition: "transform 150ms ease, opacity 150ms ease",
+      };
+    }
+
     if (dragIndex < targetIndex) {
       if (index > dragIndex && index < targetIndex) {
-        return { transform: `translateY(-${itemHeight}px)`, transition: 'transform 150ms ease' };
+        return {
+          transform: `translateY(-${itemHeight}px)`,
+          transition: "transform 150ms ease",
+        };
       }
     } else {
       if (index >= targetIndex && index < dragIndex) {
-        return { transform: `translateY(${itemHeight}px)`, transition: 'transform 150ms ease' };
+        return {
+          transform: `translateY(${itemHeight}px)`,
+          transition: "transform 150ms ease",
+        };
       }
     }
-    
-    return { transform: 'translateY(0px)', transition: 'transform 150ms ease' };
+
+    return { transform: "translateY(0px)", transition: "transform 150ms ease" };
   };
 
   if (isSelected) {
     return (
       <div className="w-full space-y-2" onClick={(e) => e.stopPropagation()}>
-        <div 
+        <div
           ref={containerRef}
           className="relative"
           onDragOver={handleDragOver}
           onDrop={handleDrop}
         >
           {options.map((opt, idx) => (
-            <div 
+            <div
               key={idx}
-              ref={(el) => { itemRefs.current[idx] = el; }}
+              ref={(el) => {
+                itemRefs.current[idx] = el;
+              }}
               className="flex items-center gap-2 group mb-1"
               style={getTransformStyle(idx)}
               draggable
@@ -245,7 +266,7 @@ export const RadioField: React.FC<RadioFieldProps> = ({
             </div>
           ))}
         </div>
-        
+
         <div className="flex items-center gap-2">
           <div className="w-6" />
           <div className="w-5 h-5 border-2 border-dashed border-gray-300 rounded-full shrink-0" />
@@ -264,36 +285,50 @@ export const RadioField: React.FC<RadioFieldProps> = ({
               onKeyDown={handleKeyDown}
               onBlur={handleAddOption}
               className="flex-1 bg-transparent text-sm text-gray-700 focus:outline-none placeholder:text-gray-400"
-              placeholder={t('common.options.add_option')}
+              placeholder={t("common.options.add_option")}
             />
           </div>
         </div>
-        
+
         {options.length === 0 && (
           <p className="text-xs text-gray-400 text-center py-2">
-            {t('common.options.no_options')}
+            {t("common.options.no_options")}
           </p>
         )}
-        
-
       </div>
     );
   }
 
   return (
-    <div className={`pt-1 ${spreadToColumns ? 'grid gap-3' : 'space-y-3'}`} style={spreadToColumns ? { gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` } : {}}>
-      {options.length > 0 ? options.map((opt, idx) => (
-        <div key={idx} className="flex items-center gap-4 p-3 rounded-xl border border-transparent hover:bg-pink-50/50 transition-colors duration-200 group">
-          <div className="relative flex items-center justify-center shrink-0">
-            <div className="w-6 h-6 border-2 border-pink-200 rounded-full group-hover/field:border-pink-500 transition-colors"></div>
-            {idx === 0 && <div className="absolute w-3 h-3 bg-pink-500 rounded-full"></div>}
+    <div
+      className={`pt-1 ${spreadToColumns ? "grid gap-3" : "space-y-3"}`}
+      style={
+        spreadToColumns
+          ? { gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }
+          : {}
+      }
+    >
+      {options.length > 0 ? (
+        options.map((opt, idx) => (
+          <div
+            key={idx}
+            className="flex items-center gap-4 p-3 rounded-xl border border-transparent hover:bg-pink-50/50 transition-colors duration-200 group"
+          >
+            <div className="relative flex items-center justify-center shrink-0">
+              <div className="w-6 h-6 border-2 border-pink-200 rounded-full group-hover/field:border-pink-500 transition-colors"></div>
+              {idx === 0 && (
+                <div className="absolute w-3 h-3 bg-pink-500 rounded-full"></div>
+              )}
+            </div>
+            <span className="text-base font-medium text-gray-700">
+              {opt.label || opt.value}
+            </span>
           </div>
-          <span className="text-base font-medium text-gray-700">{opt.label || opt.value}</span>
-        </div>
-      )) : (
+        ))
+      ) : (
         <div className="flex items-center gap-4 p-3 text-gray-400 italic">
           <div className="w-6 h-6 border-2 border-gray-200 rounded-full"></div>
-          <span>{t('common.options.click_to_add')}</span>
+          <span>{t("common.options.click_to_add")}</span>
         </div>
       )}
       {otherOption && (
@@ -301,12 +336,14 @@ export const RadioField: React.FC<RadioFieldProps> = ({
           <div className="relative flex items-center justify-center shrink-0">
             <div className="w-6 h-6 border-2 border-pink-200 rounded-full group-hover/field:border-pink-500 transition-colors"></div>
           </div>
-          <span className="text-base font-medium text-gray-700">{t('common.options.other')}</span>
-          <div className="ml-2 px-2 py-1 border-b border-gray-300 w-full text-xs text-gray-400 italic">{t('common.options.type_here')}</div>
+          <span className="text-base font-medium text-gray-700">
+            {t("common.options.other")}
+          </span>
+          <div className="ml-2 px-2 py-1 border-b border-gray-300 w-full text-xs text-gray-400 italic">
+            {t("common.options.type_here")}
+          </div>
         </div>
       )}
-      
-
     </div>
   );
 };

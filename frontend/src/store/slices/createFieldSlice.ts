@@ -1,6 +1,7 @@
-import { StateCreator } from 'zustand';
-import { FormBuilderState } from '../formStore';
-import { Field, FieldType, Form } from '@/types';
+import type { StateCreator } from 'zustand';
+import type { FormBuilderState } from '../formStore';
+import { FieldType } from '@/types';
+import type { Field, Form } from '@/types';
 import { generateUUID } from '@/utils/uuid';
 import { generateGroupTemplate } from '@/utils/form-templates';
 

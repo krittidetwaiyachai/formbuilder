@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Settings, Mail, Lock, Link as LinkIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { FormSettings } from "@/types";
+import type { FormSettings } from "@/types";
 
 interface FormSettingsPanelProps {
   settings: FormSettings;

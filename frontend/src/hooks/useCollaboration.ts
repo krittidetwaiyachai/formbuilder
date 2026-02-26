@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { collaborationService } from '@/services/collaboration.service';
-import { ActiveUser } from '@/types/collaboration';
+import type { ActiveUser } from '@/types/collaboration';
 import { useAuthStore } from '@/store/authStore';
 
 interface UseCollaborationOptions {

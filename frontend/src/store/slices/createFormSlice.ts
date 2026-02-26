@@ -1,6 +1,6 @@
-import { StateCreator } from 'zustand';
-import { FormBuilderState } from '../formStore';
-import { Form } from '@/types';
+import type { StateCreator } from 'zustand';
+import type { FormBuilderState } from '../formStore';
+import type { Form } from '@/types';
 import { Socket } from 'socket.io-client';
 import api from '@/lib/api';
 

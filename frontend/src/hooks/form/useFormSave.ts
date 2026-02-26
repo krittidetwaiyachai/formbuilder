@@ -100,13 +100,13 @@ export const useFormSave = (id: string | undefined) => {
             const { updatedAt, createdAt, ...contentToTrack } = currentForm;
             const currentFormStr = JSON.stringify(contentToTrack);
             if (currentFormStr !== previousFormStrRef.current) {
-                // Return a string to trigger the browser's confirmation dialog (though modern browsers might ignore the text)
+
                 return 'You have unsaved changes.';
             }
         }, [currentForm])
     );
 
-    // Navigation protection logic
+
     useEffect(() => {
         const handleLinkClick = async (e: MouseEvent) => {
             const target = e.target as HTMLElement;

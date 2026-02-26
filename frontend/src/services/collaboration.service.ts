@@ -1,5 +1,5 @@
 import { io, Socket } from 'socket.io-client';
-import { ActiveUser, JoinFormPayload, FieldSelectionPayload } from '@/types/collaboration';
+import type { ActiveUser, JoinFormPayload, FieldSelectionPayload } from '../types/collaboration';
 
 class CollaborationService {
     private socket: Socket | null = null;

@@ -1,8 +1,8 @@
 import { useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Form, FormResponse, Row, Column, MatrixFieldOptions, TableFieldOptions } from '@/types';
-import { FieldStats, QuizStats } from '../types';
-import { TFunction } from 'i18next';
+import type { Form, FormResponse, Row, Column, MatrixFieldOptions, TableFieldOptions } from '@/types';
+import type { FieldStats, QuizStats } from '../types';
+import type { TFunction } from 'i18next';
 
 const stripHtml = (html: string): string => {
   if (!html) return '';

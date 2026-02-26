@@ -1,7 +1,8 @@
 "use client";
 
 import { MOCK_FORM_ELEMENTS } from "@/lib/mock-data";
-import { Field, FieldType } from "@/types";
+import { FieldType } from '@/types';
+import type { Field } from '@/types';;
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";

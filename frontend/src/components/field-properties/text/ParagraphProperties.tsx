@@ -1,27 +1,36 @@
-import React, { useState } from 'react';
-import { ParagraphField, ParagraphFieldOptions } from '@/types/typed-fields';
-import { Copy } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
-import { PropertiesTabs } from '../common/PropertiesTabs';
+import React, { useState } from "react";
+import type {
+  ParagraphField,
+  ParagraphFieldOptions,
+} from "@/types/typed-fields";
+import { Copy } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { PropertiesTabs } from "../common/PropertiesTabs";
 
 interface ParagraphPropertiesProps {
   field: ParagraphField;
   updateField: (id: string, updates: Partial<ParagraphField>) => void;
-  duplicatesField: (field: Omit<ParagraphField, 'id' | 'formId'>) => void;
+  duplicatesField: (field: Omit<ParagraphField, "id" | "formId">) => void;
 }
 
-export const ParagraphProperties: React.FC<ParagraphPropertiesProps> = ({ field, updateField, duplicatesField }) => {
+export const ParagraphProperties: React.FC<ParagraphPropertiesProps> = ({
+  field,
+  updateField,
+  duplicatesField,
+}) => {
   const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState<'general' | 'options' | 'advanced'>('general');
+  const [activeTab, setActiveTab] = useState<
+    "general" | "options" | "advanced"
+  >("general");
 
   const stripHtml = (html: string) => {
-    const tmp = document.createElement('DIV');
+    const tmp = document.createElement("DIV");
     tmp.innerHTML = html;
-    return tmp.textContent || tmp.innerText || '';
+    return tmp.textContent || tmp.innerText || "";
   };
 
   const wrapWithParagraph = (text: string) => {
-    if (!text.trim()) return '';
+    if (!text.trim()) return "";
     return `<p>${text}</p>`;
   };
 
@@ -31,7 +40,10 @@ export const ParagraphProperties: React.FC<ParagraphPropertiesProps> = ({ field,
     updateField(field.id, updates);
   };
 
-  const handleOptionUpdate = <K extends keyof ParagraphFieldOptions>(key: K, value: ParagraphFieldOptions[K]) => {
+  const handleOptionUpdate = <K extends keyof ParagraphFieldOptions>(
+    key: K,
+    value: ParagraphFieldOptions[K],
+  ) => {
     handleUpdate({
       options: {
         ...options,
@@ -54,105 +66,114 @@ export const ParagraphProperties: React.FC<ParagraphPropertiesProps> = ({ field,
 
   return (
     <div className="space-y-4">
-      { }
+      {}
       <PropertiesTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
-      {activeTab === 'general' && (
+      {activeTab === "general" && (
         <div className="space-y-4">
-          { }
+          {}
           <div>
             <label className="block text-sm font-medium text-black mb-2">
-              {t('builder.properties.paragraph_text')}
+              {t("builder.properties.paragraph_text")}
             </label>
             <textarea
               value={stripHtml(field.label)}
-              onChange={(e) => updateField(field.id, { label: wrapWithParagraph(e.target.value) })}
+              onChange={(e) =>
+                updateField(field.id, {
+                  label: wrapWithParagraph(e.target.value),
+                })
+              }
               className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white resize-none"
-              placeholder={t('builder.properties.paragraph_placeholder') || 'Enter your text here...'}
+              placeholder={
+                t("builder.properties.paragraph_placeholder") ||
+                "Enter your text here..."
+              }
               rows={6}
             />
           </div>
 
-          { }
+          {}
           <button
-             type="button"
-             onClick={handleDuplicate}
-             className="w-full mt-4 px-3 py-2 text-sm font-medium text-black bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
-           >
-             <Copy className="h-4 w-4" />
-             {t('builder.properties.duplicate')}
-           </button>
+            type="button"
+            onClick={handleDuplicate}
+            className="w-full mt-4 px-3 py-2 text-sm font-medium text-black bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
+          >
+            <Copy className="h-4 w-4" />
+            {t("builder.properties.duplicate")}
+          </button>
         </div>
       )}
 
-      {activeTab === 'options' && (
-         <div className="space-y-6">
-            { }
-           <div>
-             <div className="flex items-center justify-between mb-1">
-                 <label className="block text-sm font-medium text-black">
-                     {t('builder.properties.move_to_new_line')}
-                 </label>
-             </div>
-             <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                     type="checkbox"
-                     checked={options.moveToNewLine || false}
-                     onChange={(e) => handleOptionUpdate('moveToNewLine', e.target.checked)}
-                     className="sr-only peer"
-                 />
-                 <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
-             </label>
-              <p className="mt-1 text-xs text-gray-500">
-                  {t('builder.properties.move_to_new_line_desc')}
-              </p>
-           </div>
-         </div>
-      )}
-
-      {activeTab === 'advanced' && (
+      {activeTab === "options" && (
         <div className="space-y-6">
-           { }
-           <div>
-            <div className="flex items-center justify-between mb-1">
-                <label className="block text-sm font-medium text-black">
-                    {t('builder.properties.shrink')}
-                </label>
-            </div>
-            <label className="relative inline-flex items-center cursor-pointer">
-                 <input
-                     type="checkbox"
-                     checked={options.shrink || false}
-                     onChange={(e) => handleOptionUpdate('shrink', e.target.checked)}
-                     className="sr-only peer"
-                 />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
-            </label>
-             <p className="mt-1 text-xs text-gray-500">
-                 {t('builder.properties.shrink_desc')}
-             </p>
-          </div>
-
-          <hr className="border-gray-200" />
-
-          { }
+          {}
           <div>
             <div className="flex items-center justify-between mb-1">
-                <label className="block text-sm font-medium text-black">
-                    {t('builder.properties.hide_field')}
-                </label>
+              <label className="block text-sm font-medium text-black">
+                {t("builder.properties.move_to_new_line")}
+              </label>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
               <input
                 type="checkbox"
-                checked={options.hidden || false}
-                onChange={(e) => handleOptionUpdate('hidden', e.target.checked)}
+                checked={options.moveToNewLine || false}
+                onChange={(e) =>
+                  handleOptionUpdate("moveToNewLine", e.target.checked)
+                }
                 className="sr-only peer"
               />
               <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
             </label>
             <p className="mt-1 text-xs text-gray-500">
-                {t('builder.properties.hide_field_desc')}
+              {t("builder.properties.move_to_new_line_desc")}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {activeTab === "advanced" && (
+        <div className="space-y-6">
+          {}
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <label className="block text-sm font-medium text-black">
+                {t("builder.properties.shrink")}
+              </label>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                checked={options.shrink || false}
+                onChange={(e) => handleOptionUpdate("shrink", e.target.checked)}
+                className="sr-only peer"
+              />
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
+            </label>
+            <p className="mt-1 text-xs text-gray-500">
+              {t("builder.properties.shrink_desc")}
+            </p>
+          </div>
+
+          <hr className="border-gray-200" />
+
+          {}
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <label className="block text-sm font-medium text-black">
+                {t("builder.properties.hide_field")}
+              </label>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                checked={options.hidden || false}
+                onChange={(e) => handleOptionUpdate("hidden", e.target.checked)}
+                className="sr-only peer"
+              />
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
+            </label>
+            <p className="mt-1 text-xs text-gray-500">
+              {t("builder.properties.hide_field_desc")}
             </p>
           </div>
         </div>

@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { useAuthStore } from '@/store/authStore';
+import { globalToast } from '@/lib/toast-utils';
 
 const API_URL = import.meta.env.VITE_API_URL || '/api';
-const RETRY_MAX_ATTEMPTS = 5;
+const RETRY_MAX_ATTEMPTS = 0;
 const REQUEST_TIMEOUT_MS = 30000;
 const RETRY_BASE_DELAY_MS = 1000;
 
@@ -30,14 +31,22 @@ api.interceptors.response.use(
     if (error.response?.status === 429 && !originalRequest._retry) {
       originalRequest._retry = true;
       const retryCount = originalRequest._retryCount || 0;
-      
-      if (retryCount < RETRY_MAX_ATTEMPTS) { 
+
+      if (retryCount < RETRY_MAX_ATTEMPTS) {
         originalRequest._retryCount = retryCount + 1;
-        
+
         const waitTime = Math.pow(2, retryCount) * RETRY_BASE_DELAY_MS + Math.random() * 1000;
-        
+
         await new Promise(resolve => setTimeout(resolve, waitTime));
         return api(originalRequest);
+      } else {
+
+        globalToast({
+          title: "error.rate_limit.title",
+          description: "error.rate_limit.message",
+          variant: "error",
+          duration: 5000,
+        });
       }
     }
 
@@ -56,8 +65,8 @@ api.interceptors.response.use(
 
     if (error.response?.status === 403) {
       const message = error.response?.data?.message || 'Access Denied: You do not have permission to perform this action.';
-      window.dispatchEvent(new CustomEvent('permission-denied', { 
-        detail: { message } 
+      window.dispatchEvent(new CustomEvent('permission-denied', {
+        detail: { message }
       }));
     }
 

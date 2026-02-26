@@ -1,4 +1,5 @@
-import { Field, FieldType } from '@/types';
+import { FieldType } from '@/types';
+import type { Field } from '@/types';
 import { generateUUID } from '@/utils/uuid';
 
 export const generateGroupTemplate = (template: string, formId: string): Field[] => {
@@ -9,10 +10,10 @@ export const generateGroupTemplate = (template: string, formId: string): Field[]
         id: groupFieldId,
         formId: formId,
         type: FieldType.GROUP,
-        label: template === 'address' ? 'Address Block' : 
-               template === 'contact' ? 'Contact Information' : 'Shipping Details',
+        label: template === 'address' ? 'Address Block' :
+            template === 'contact' ? 'Contact Information' : 'Shipping Details',
         required: false,
-        order: 0, 
+        order: 0,
         options: { collapsible: true }
     };
     fields.push(groupField);
@@ -113,8 +114,8 @@ export const generateGroupTemplate = (template: string, formId: string): Field[]
             id: generateUUID(), formId: formId, groupId: groupFieldId, type: FieldType.TEXT, label: 'Username', order: 0, required: true, options: {}
         });
         fields.push({
-            id: generateUUID(), formId: formId, groupId: groupFieldId, type: FieldType.TEXT, label: 'Password', order: 1, required: true, options: { 
-               placeholder: '••••••••'
+            id: generateUUID(), formId: formId, groupId: groupFieldId, type: FieldType.TEXT, label: 'Password', order: 1, required: true, options: {
+                placeholder: '••••••••'
             }
         });
         fields.push({

@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
 interface PropertiesTabsProps<T extends string> {
   activeTab: T;
@@ -6,7 +6,11 @@ interface PropertiesTabsProps<T extends string> {
   tabs?: T[];
 }
 
-export const PropertiesTabs = <T extends string>({ activeTab, setActiveTab, tabs = ['general', 'options', 'advanced'] as unknown as T[] }: PropertiesTabsProps<T>) => {
+export const PropertiesTabs = <T extends string>({
+  activeTab,
+  setActiveTab,
+  tabs = ["general", "options", "advanced"] as unknown as T[],
+}: PropertiesTabsProps<T>) => {
   const { t } = useTranslation();
 
   return (
@@ -17,8 +21,8 @@ export const PropertiesTabs = <T extends string>({ activeTab, setActiveTab, tabs
           onClick={() => setActiveTab(tab)}
           className={`flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-colors uppercase whitespace-nowrap ${
             activeTab === tab
-              ? 'bg-white text-black shadow-sm'
-              : 'text-gray-600 hover:text-black'
+              ? "bg-white text-black shadow-sm"
+              : "text-gray-600 hover:text-black"
           }`}
         >
           {t(`builder.tabs.${tab}`)}

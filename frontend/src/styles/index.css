@@ -601,3 +601,30 @@ body {
 .rich-text-editor-wrapper a:hover {
   color: #1d4ed8 !important;
 }
+
+/* Form Builder - Custom Drag Placeholder Styling */
+[data-rbd-droppable-id="CANVAS"] > div[data-rbd-placeholder-context-id] {
+  position: relative !important;
+  background: transparent !important;
+}
+
+[data-rbd-droppable-id="CANVAS"] > div[data-rbd-placeholder-context-id]::after {
+  content: "วางช่องกรอกข้อมูลที่นี่";
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: calc(100% - 2rem) !important;
+  max-width: 400px !important;
+  height: 60px !important;
+  background: rgba(99, 102, 241, 0.05) !important;
+  border: 2px dashed rgba(99, 102, 241, 0.4) !important;
+  border-radius: 0.75rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: rgba(99, 102, 241, 0.8) !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+  pointer-events: none !important;
+}

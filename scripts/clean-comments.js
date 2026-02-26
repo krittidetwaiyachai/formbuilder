@@ -32,7 +32,30 @@ function removeComments(code) {
                 state = 'block_comment';
                 i++; // Skip *
             } else if (char === '/' && nextChar === '/') {
-                state = 'line_comment';
+                // Check if the current line is empty (whitespace only) so far
+                let isLineEmpty = true;
+                let j = output.length - 1;
+                while (j >= 0) {
+                    const c = output[j];
+                    if (c === '\n') break;
+                    if (c !== ' ' && c !== '\t') {
+                        isLineEmpty = false;
+                        break;
+                    }
+                    j--;
+                }
+
+                if (isLineEmpty) {
+                    // Remove the preceding whitespace
+                    if (j === -1) {
+                         output = '';
+                    } else {
+                         output = output.substring(0, j + 1); // Keep the \n before this line
+                    }
+                    state = 'line_comment_strip_newline';
+                } else {
+                    state = 'line_comment';
+                }
                 i++; // Skip /
             } else {
                 output += char;
@@ -56,6 +79,11 @@ function removeComments(code) {
             if (char === '\n') {
                 state = 'code';
                 output += char; // Keep the newline
+            }
+        } else if (state === 'line_comment_strip_newline') {
+            if (char === '\n') {
+                state = 'code';
+                // Do NOT add char (skip the newline)
             }
         }
         i++;

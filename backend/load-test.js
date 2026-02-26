@@ -144,7 +144,7 @@ async function runLoadTest() {
                  attempt++;
                  await axios.post(API_URL, payload);
                  success++;
-                 process.stdout.write('.');
+                 process.stdout.write('▆');
                  break;
              } catch (error) {
                  if (error.response && error.response.status === 429) {
@@ -172,7 +172,7 @@ async function runLoadTest() {
             activePromises.length = 0;
         }
     }
-
+    
     await Promise.all(activePromises);
 
     const duration = (Date.now() - startTime) / 1000;

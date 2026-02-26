@@ -1,7 +1,13 @@
 "use client";
 
 import * as React from "react";
-import { X, CheckCircle2, AlertCircle, Info, AlertTriangle } from "lucide-react";
+import {
+  X,
+  CheckCircle2,
+  AlertCircle,
+  Info,
+  AlertTriangle,
+} from "lucide-react";
 import { cn } from "@/lib/ui/utils";
 
 export interface ToastProps {
@@ -14,7 +20,10 @@ export interface ToastProps {
 }
 
 const Toast = React.forwardRef<HTMLDivElement, ToastProps>(
-  ({ title, description, variant = "default", duration = 3000, onClose }, ref) => {
+  (
+    { title, description, variant = "default", duration = 3000, onClose },
+    ref,
+  ) => {
     const [isVisible, setIsVisible] = React.useState(true);
     const [progress, setProgress] = React.useState(100);
 
@@ -32,7 +41,6 @@ const Toast = React.forwardRef<HTMLDivElement, ToastProps>(
         }, 300);
       }, duration);
 
-      
       const progressTimer = setTimeout(() => {
         setProgress(0);
       }, 100);
@@ -78,14 +86,20 @@ const Toast = React.forwardRef<HTMLDivElement, ToastProps>(
         className={cn(
           "relative flex flex-col gap-0 rounded-lg border shadow-lg min-w-[300px] max-w-[400px] transition-all duration-300 overflow-hidden",
           styles[variant],
-          isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-full"
+          isVisible
+            ? "opacity-100 translate-x-0"
+            : "opacity-0 translate-x-full",
         )}
       >
         <div className="flex items-start gap-3 p-4">
-          {icons[variant] && <div className="flex-shrink-0">{icons[variant]}</div>}
+          {icons[variant] && (
+            <div className="flex-shrink-0">{icons[variant]}</div>
+          )}
           <div className="flex-1">
             {title && <div className="font-semibold text-sm mb-1">{title}</div>}
-            {description && <div className="text-sm opacity-90">{description}</div>}
+            {description && (
+              <div className="text-sm opacity-90">{description}</div>
+            )}
           </div>
           <button
             onClick={handleClose}
@@ -94,21 +108,23 @@ const Toast = React.forwardRef<HTMLDivElement, ToastProps>(
             <X className="h-4 w-4" />
           </button>
         </div>
-        
+
         <div className="h-1 w-full bg-black/5 mt-auto">
-          <div 
-            className={cn("h-full transition-all ease-linear", progressStyles[variant])}
-            style={{ 
-              width: `${progress}%`, 
-              transitionDuration: `${duration}ms` 
+          <div
+            className={cn(
+              "h-full transition-all ease-linear",
+              progressStyles[variant],
+            )}
+            style={{
+              width: `${progress}%`,
+              transitionDuration: `${duration}ms`,
             }}
           />
         </div>
       </div>
     );
-  }
+  },
 );
 Toast.displayName = "Toast";
 
 export { Toast };
-

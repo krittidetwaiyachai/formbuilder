@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
-import { Field, FieldType } from '@/types';
+import { FieldType } from '@/types';
+import type { Field } from '@/types';
 
 export const useFieldStyle = (field: Field, disableHover: boolean = false) => {
     const getFieldStyle = () => {

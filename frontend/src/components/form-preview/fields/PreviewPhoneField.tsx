@@ -1,21 +1,33 @@
-import React from 'react';
-import { Field, PhoneField, PhoneFieldOptions, PhoneValidation } from '@/types';
-import { useForm, FieldErrors, RegisterOptions } from 'react-hook-form';
-import { Phone } from 'lucide-react';
-import { PreviewLabel } from '../PreviewLabel';
-import { stripHtml } from '@/lib/ui/utils';
+import React from "react";
+import type {
+  Field,
+  PhoneField,
+  PhoneFieldOptions,
+  PhoneValidation,
+} from "@/types";
+import { useForm } from "react-hook-form";
+import type { FieldErrors, RegisterOptions } from "react-hook-form";
+import { Phone } from "lucide-react";
+import { PreviewLabel } from "../PreviewLabel";
+import { stripHtml } from "@/lib/ui/utils";
 
 interface PreviewFieldProps {
   field: Field;
-  register: ReturnType<typeof useForm>['register'];
+  register: ReturnType<typeof useForm>["register"];
   errors: FieldErrors;
   questionNumber?: number;
   isPublic?: boolean;
 }
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
-export const PreviewPhoneField: React.FC<PreviewFieldProps> = ({ field, register, errors, questionNumber, isPublic }) => {
+export const PreviewPhoneField: React.FC<PreviewFieldProps> = ({
+  field,
+  register,
+  errors,
+  questionNumber,
+  isPublic,
+}) => {
   const { t } = useTranslation();
   const fieldName = `field_${field.id}`;
   const fieldError = errors[fieldName];
@@ -23,28 +35,43 @@ export const PreviewPhoneField: React.FC<PreviewFieldProps> = ({ field, register
 
   const options = (typedField.options || {}) as PhoneFieldOptions;
   const validation = (field.validation || {}) as PhoneValidation;
-  const { labelAlignment = 'TOP', subLabel, width, customWidth, hoverText, readOnly, defaultValue, shrink, showCountryCode } = options;
+  const {
+    labelAlignment = "TOP",
+    subLabel,
+    width,
+    customWidth,
+    hoverText,
+    readOnly,
+    defaultValue,
+    shrink,
+    showCountryCode,
+  } = options;
   const { hasInputMask, inputMask } = validation;
 
-  const isRowLayout = labelAlignment === 'LEFT' || labelAlignment === 'RIGHT';
+  const isRowLayout = labelAlignment === "LEFT" || labelAlignment === "RIGHT";
 
   const validationRules: RegisterOptions = {
-    required: field.required ? t('public.validation.required_field', { label: stripHtml(field.label) }) : false,
+    required: field.required
+      ? t("public.validation.required_field", { label: stripHtml(field.label) })
+      : false,
     pattern: {
       value: /^[\d\s\-\(\)\+]{9,}$/,
-      message: t('public.validation.phone_invalid', "Please enter a valid phone number")
-    }
+      message: t(
+        "public.validation.phone_invalid",
+        "Please enter a valid phone number",
+      ),
+    },
   };
 
   const formatPhoneMask = (value: string, maskPattern: string) => {
-    let formatted = '';
+    let formatted = "";
     let rawPtr = 0;
-    
+
     for (let i = 0; i < maskPattern.length; i++) {
       const maskChar = maskPattern[i];
       if (rawPtr >= value.length) break;
 
-      if (maskChar === '#') {
+      if (maskChar === "#") {
         while (rawPtr < value.length) {
           const char = value[rawPtr];
           if (/\d/.test(char)) {
@@ -66,20 +93,32 @@ export const PreviewPhoneField: React.FC<PreviewFieldProps> = ({ field, register
   };
 
   return (
-    <div className={`mb-4 w-full ${isRowLayout ? 'flex items-start gap-4' : ''}`}>
-      <div className={`${isRowLayout ? 'w-40 flex-shrink-0 pt-2' : 'mb-3'} ${labelAlignment === 'RIGHT' ? 'text-right' : ''}`}>
-        <PreviewLabel field={field} questionNumber={questionNumber} isPublic={isPublic} htmlFor={fieldName} />
-        {subLabel && subLabel !== 'Sublabel' && (
-           <p className="mt-1 text-sm text-gray-500 font-normal">{subLabel}</p>
+    <div
+      className={`mb-4 w-full ${isRowLayout ? "flex items-start gap-4" : ""}`}
+    >
+      <div
+        className={`${isRowLayout ? "w-40 flex-shrink-0 pt-2" : "mb-3"} ${labelAlignment === "RIGHT" ? "text-right" : ""}`}
+      >
+        <PreviewLabel
+          field={field}
+          questionNumber={questionNumber}
+          isPublic={isPublic}
+          htmlFor={fieldName}
+        />
+        {subLabel && subLabel !== "Sublabel" && (
+          <p className="mt-1 text-sm text-gray-500 font-normal">{subLabel}</p>
         )}
       </div>
 
       <div className={`flex-1 min-w-0`}>
-        <div className="relative group flex items-center gap-2" title={hoverText}>
+        <div
+          className="relative group flex items-center gap-2"
+          title={hoverText}
+        >
           {showCountryCode && isPublic && (
             <select
-              className={`${shrink ? 'py-2 text-base' : 'py-3 text-base'} px-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all appearance-none cursor-pointer`}
-              style={{ backgroundColor: 'transparent', color: 'var(--text)' }}
+              className={`${shrink ? "py-2 text-base" : "py-3 text-base"} px-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all appearance-none cursor-pointer`}
+              style={{ backgroundColor: "transparent", color: "var(--text)" }}
               defaultValue="+66"
             >
               <option value="+66">🇹🇭 +66</option>
@@ -93,59 +132,79 @@ export const PreviewPhoneField: React.FC<PreviewFieldProps> = ({ field, register
 
           {!isPublic && (
             <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
-                <Phone className="h-4 w-4 text-gray-400" />
+              <Phone className="h-4 w-4 text-gray-400" />
             </div>
           )}
-          
+
           {isPublic ? (
             <input
-                type="tel"
-                id={fieldName}
-                {...register(fieldName, {
-                    ...validationRules,
-                    onChange: (e) => {
-                        if (hasInputMask && inputMask) {
-                            const newValue = formatPhoneMask(e.target.value, inputMask);
-                            if (newValue !== e.target.value) {
-                                e.target.value = newValue;
-                            }
-                        }
+              type="tel"
+              id={fieldName}
+              {...register(fieldName, {
+                ...validationRules,
+                onChange: (e) => {
+                  if (hasInputMask && inputMask) {
+                    const newValue = formatPhoneMask(e.target.value, inputMask);
+                    if (newValue !== e.target.value) {
+                      e.target.value = newValue;
                     }
-                })}
-                placeholder={field.placeholder || "081-234-5678"}
-                defaultValue={defaultValue}
-                readOnly={readOnly}
-                maxLength={hasInputMask && inputMask ? inputMask.length : undefined}
-                style={isPublic ? { 
-                  ...(width === 'FIXED' && customWidth ? { maxWidth: `${customWidth}px` } : {}),
-                  color: 'var(--text)', 
-                  backgroundColor: 'var(--input-bg)', 
-                  borderColor: 'var(--input-border)' 
-                } : (width === 'FIXED' && customWidth ? { maxWidth: `${customWidth}px` } : {})}
-                className={`flex-1 px-4 ${shrink ? 'py-2 text-base' : 'py-3 text-base'} border rounded-lg placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all ${
-                    fieldError ? 'border-red-500 bg-red-50' : 'hover:border-gray-300'
-                } ${readOnly ? 'bg-gray-50 cursor-not-allowed' : ''}`}
+                  }
+                },
+              })}
+              placeholder={field.placeholder || "081-234-5678"}
+              defaultValue={defaultValue}
+              readOnly={readOnly}
+              maxLength={
+                hasInputMask && inputMask ? inputMask.length : undefined
+              }
+              style={
+                isPublic
+                  ? {
+                      ...(width === "FIXED" && customWidth
+                        ? { maxWidth: `${customWidth}px` }
+                        : {}),
+                      color: "var(--text)",
+                      backgroundColor: "var(--input-bg)",
+                      borderColor: "var(--input-border)",
+                    }
+                  : width === "FIXED" && customWidth
+                    ? { maxWidth: `${customWidth}px` }
+                    : {}
+              }
+              className={`flex-1 px-4 ${shrink ? "py-2 text-base" : "py-3 text-base"} border rounded-lg placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all ${
+                fieldError
+                  ? "border-red-500 bg-red-50"
+                  : "hover:border-gray-300"
+              } ${readOnly ? "bg-gray-50 cursor-not-allowed" : ""}`}
             />
           ) : (
             <input
-                type="tel"
-                id={fieldName}
-                {...register(fieldName, validationRules)}
-                placeholder={field.placeholder}
-                defaultValue={defaultValue}
-                readOnly={readOnly}
-                style={width === 'FIXED' && customWidth ? { maxWidth: `${customWidth}px` } : {}}
-                className={`w-full pl-10 pr-4 py-3 border-2 ${
-                fieldError ? 'border-red-500 bg-red-50' : 'border-gray-300 bg-white'
-                } rounded-lg text-black text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-black transition-all ${
-                readOnly ? 'bg-gray-100 cursor-not-allowed text-gray-500' : ''
-                }`}
+              type="tel"
+              id={fieldName}
+              {...register(fieldName, validationRules)}
+              placeholder={field.placeholder}
+              defaultValue={defaultValue}
+              readOnly={readOnly}
+              style={
+                width === "FIXED" && customWidth
+                  ? { maxWidth: `${customWidth}px` }
+                  : {}
+              }
+              className={`w-full pl-10 pr-4 py-3 border-2 ${
+                fieldError
+                  ? "border-red-500 bg-red-50"
+                  : "border-gray-300 bg-white"
+              } rounded-lg text-black text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-black transition-all ${
+                readOnly ? "bg-gray-100 cursor-not-allowed text-gray-500" : ""
+              }`}
             />
           )}
         </div>
 
         {fieldError && (
-          <p className="mt-1 text-sm text-red-600">{fieldError.message as string}</p>
+          <p className="mt-1 text-sm text-red-600">
+            {fieldError.message as string}
+          </p>
         )}
       </div>
     </div>

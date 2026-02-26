@@ -1,6 +1,7 @@
 "use client";
 
-import { Field, FieldType, CheckboxOption, DropdownField, CheckboxField, RadioField } from "@/types";
+import { FieldType } from '@/types';
+import type { Field, CheckboxOption, DropdownField, CheckboxField, RadioField } from '@/types';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
