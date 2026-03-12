@@ -5,15 +5,14 @@ const prisma = new PrismaClient();
 async function checkConstraints() {
   console.log('Checking Database Constraints and Triggers...\n');
 
-  
   const totalResponses = await prisma.formResponse.count();
   const totalAnswers = await prisma.responseAnswer.count();
-  
+
   console.log(`Total Responses: ${totalResponses}`);
   console.log(`Total Answers: ${totalAnswers}`);
   console.log(`Average Answers per Response: ${(totalAnswers / totalResponses).toFixed(2)}\n`);
 
-  
+
   const responsesWithoutAnswers = await prisma.formResponse.findMany({
     where: {
       answers: {
@@ -31,7 +30,7 @@ async function checkConstraints() {
   if (responsesWithoutAnswers.length > 0) {
     console.log(`First 10:`);
     responsesWithoutAnswers.forEach((r, i) => {
-      console.log(`  ${i+1}. ID: ${r.id}, Submitted: ${r.submittedAt}`);
+      console.log(`  ${i + 1}. ID: ${r.id}, Submitted: ${r.submittedAt}`);
     });
   }
 
