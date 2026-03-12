@@ -19,7 +19,6 @@ import {
 import { FieldType } from "@/types";
 import type { Field } from "@/types";
 import Loader from "@/components/common/Loader";
-
 const IconMap: Record<string, React.ElementType> = {
   User,
   MapPin,
@@ -31,13 +30,11 @@ const IconMap: Record<string, React.ElementType> = {
   Star,
   Lock,
 };
-
 interface BundleField {
   label?: string;
   type: FieldType;
   [key: string]: unknown;
 }
-
 interface Bundle {
   id: string;
   name: string;
@@ -49,15 +46,12 @@ interface Bundle {
     bg?: string;
   };
 }
-
 export const TemplatePopup = ({ onClose }: { onClose: () => void }) => {
   if (typeof document === "undefined") return null;
-
   const { t } = useTranslation();
   const { addBundle } = useFormStore();
   const [bundles, setBundles] = useState<Bundle[]>([]);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     const fetchBundles = async () => {
       try {
@@ -71,13 +65,8 @@ export const TemplatePopup = ({ onClose }: { onClose: () => void }) => {
         setLoading(false);
       }
     };
-
     fetchBundles();
-
-    const interval = setInterval(fetchBundles, 2000);
-    return () => clearInterval(interval);
   }, []);
-
   const handleAddBundle = (bundle: Bundle) => {
     const mappedBundle = {
       title: bundle.name,
@@ -88,7 +77,6 @@ export const TemplatePopup = ({ onClose }: { onClose: () => void }) => {
     addBundle(mappedBundle);
     onClose();
   };
-
   return createPortal(
     <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-150">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[80vh] overflow-hidden flex flex-col animate-in zoom-in-95 duration-150">
@@ -108,7 +96,6 @@ export const TemplatePopup = ({ onClose }: { onClose: () => void }) => {
             <span className="text-xl leading-none">&times;</span>
           </button>
         </div>
-
         <div className="p-6 overflow-y-auto flex-1">
           {loading ? (
             <div className="flex justify-center items-center h-48">
@@ -123,7 +110,6 @@ export const TemplatePopup = ({ onClose }: { onClose: () => void }) => {
                     : Layers;
                 const bundleColor = bundle.options?.color || "text-gray-600";
                 const bundleBg = bundle.options?.bg || "bg-gray-50";
-
                 return (
                   <button
                     key={bundle.id}
@@ -133,11 +119,9 @@ export const TemplatePopup = ({ onClose }: { onClose: () => void }) => {
                     <h4 className="text-base font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors">
                       {bundle.name}
                     </h4>
-
                     <p className="text-xs text-gray-400 mt-1 line-clamp-2 leading-relaxed group-hover:hidden">
                       {bundle.description}
                     </p>
-
                     <div className="hidden group-hover:block mt-2">
                       <div className="flex flex-wrap gap-1">
                         {bundle.fields?.slice(0, 4).map((f, i) => (
@@ -157,7 +141,6 @@ export const TemplatePopup = ({ onClose }: { onClose: () => void }) => {
                         )}
                       </div>
                     </div>
-
                     <div className="mt-3 flex items-center gap-2 group-hover:hidden">
                       <span className="px-2 py-0.5 bg-gray-100 rounded text-[10px] font-medium text-gray-500">
                         {t("builder.group.fields_count", {
@@ -165,7 +148,6 @@ export const TemplatePopup = ({ onClose }: { onClose: () => void }) => {
                         })}
                       </span>
                     </div>
-
                     <div className="absolute top-5 right-5 opacity-0 group-hover:opacity-100 transition-opacity">
                       <div className="w-6 h-6 rounded-full bg-indigo-500 flex items-center justify-center">
                         <Plus
@@ -174,7 +156,6 @@ export const TemplatePopup = ({ onClose }: { onClose: () => void }) => {
                         />
                       </div>
                     </div>
-
                     <div
                       className={`absolute top-5 right-5 w-8 h-8 rounded-lg ${bundleBg} flex items-center justify-center group-hover:opacity-0 transition-opacity`}
                     >
@@ -186,7 +167,6 @@ export const TemplatePopup = ({ onClose }: { onClose: () => void }) => {
             </div>
           )}
         </div>
-
         <div className="px-8 py-4 border-t border-gray-100 bg-gray-50/50">
           <p className="text-xs text-gray-400 text-center">
             {t("builder.bundles.click_to_add")}

@@ -7,8 +7,8 @@ import {
   Param,
   Delete,
   UseGuards,
-  Query,
-} from '@nestjs/common';
+  Query } from
+'@nestjs/common';
 import { FormsService } from './forms.service';
 import { CreateFormDto } from './dto/create-form.dto';
 import { UpdateFormDto } from './dto/update-form.dto';
@@ -19,116 +19,103 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { RoleType } from '@prisma/client';
 import { Public } from '../auth/decorators/public.decorator';
 import { ActivityLogService } from '../activity-log/activity-log.service';
-
 interface User {
   id: string;
   email: string;
   role: RoleType;
 }
-
 @Controller('forms')
-@UseGuards(JwtAuthGuard, RolesGuard)
-export class FormsController {
+@UseGuards(JwtAuthGuard, RolesGuard)export class
+FormsController {
   constructor(
-    private readonly formsService: FormsService,
-    private readonly activityLogService: ActivityLogService,
-  ) { }
-
+  private readonly formsService: FormsService,
+  private readonly activityLogService: ActivityLogService)
+  {}
   @Post()
   @Roles(RoleType.SUPER_ADMIN, RoleType.ADMIN, RoleType.EDITOR)
   create(
-    @CurrentUser() user: User,
-    @Body() createFormDto: CreateFormDto,
-  ) {
-    return this.formsService.create(user.id, createFormDto).then(form => ({ form }));
+    @CurrentUser()user: User,
+    @Body()createFormDto: CreateFormDto)
+  {
+    return this.formsService.create(user.id, createFormDto).then((form) => ({ form }));
   }
-
   @Get()
-  findAll(@CurrentUser() user: User) {
-    return this.formsService.findAll(user.id, user.role).then(forms => ({ forms }));
+  findAll(@CurrentUser()user: User) {
+    return this.formsService.findAll(user.id, user.role).then((forms) => ({ forms }));
   }
-
   @Get(':id')
   findOne(
-    @Param('id') id: string,
-    @CurrentUser() user: User,
-  ) {
-    return this.formsService.findOne(id, user.id, user.role).then(form => ({ form }));
+    @Param('id')id: string,
+    @CurrentUser()user: User)
+  {
+    return this.formsService.findOne(id, user.id, user.role).then((form) => ({ form }));
   }
-
   @Patch(':id')
   @Roles(RoleType.SUPER_ADMIN, RoleType.ADMIN, RoleType.EDITOR)
   update(
-    @Param('id') id: string,
-    @CurrentUser() user: User,
-    @Body() updateFormDto: UpdateFormDto,
-  ) {
+    @Param('id')id: string,
+    @CurrentUser()user: User,
+    @Body()updateFormDto: UpdateFormDto)
+  {
     return this.formsService.update(id, user.id, user.role, updateFormDto);
   }
-
   @Delete(':id')
   @Roles(RoleType.SUPER_ADMIN, RoleType.ADMIN, RoleType.EDITOR)
-  remove(@Param('id') id: string, @CurrentUser() user: User) {
-    return this.formsService.remove(id, user.id, user.role).then(result => ({ ...result }));
+  remove(@Param('id')id: string, @CurrentUser()user: User) {
+    return this.formsService.remove(id, user.id, user.role).then((result) => ({ ...result }));
   }
-
   @Post(':id/clone')
   @Roles(RoleType.SUPER_ADMIN, RoleType.ADMIN, RoleType.EDITOR)
-  clone(@Param('id') id: string, @CurrentUser() user: User) {
+  clone(@Param('id')id: string, @CurrentUser()user: User) {
     return this.formsService.clone(id, user.id);
   }
-
   @Get(':id/activity')
   async getFormActivity(
-    @Param('id') id: string,
-    @Query('page') page: string = '1',
-    @Query('limit') limit: string = '20',
-    @Query('sort') sort: 'asc' | 'desc' = 'desc',
-    @Query('action') action?: string,
-    @Query('userId') userId?: string,
-  ) {
+    @Param('id')id: string,
+  page: string = '1',
+  limit: string = '20',
+  sort: 'asc' | 'desc' = 'desc',
+    @Query('action')action?: string,
+    @Query('userId')userId?: string)
+  {
     return this.activityLogService.getFormActivity(
       id,
       parseInt(page),
       parseInt(limit),
       sort,
       action,
-      userId,
+      userId
     );
   }
-
   @Get(':id/activity/editors')
-  async getFormEditors(@Param('id') id: string) {
+  async getFormEditors(@Param('id')id: string) {
     return this.activityLogService.getFormEditors(id);
   }
-
   @Get(':id/public')
   @Public()
   findPublic(
-    @Param('id') id: string,
-    @Query('fingerprint') fingerprint?: string,
-    @Query('ip') ipAddress?: string,
-    @Query('ua') userAgent?: string,
-  ) {
-    return this.formsService.findPublic(id, fingerprint, ipAddress, userAgent).then(form => ({ form }));
+    @Param('id')id: string,
+    @Query('fingerprint')fingerprint?: string,
+    @Query('ip')ipAddress?: string,
+    @Query('ua')userAgent?: string)
+  {
+    return this.formsService.findPublic(id, fingerprint, ipAddress, userAgent).then((form) => ({ form }));
   }
-
   @Post(':id/collaborators')
   @Roles(RoleType.SUPER_ADMIN, RoleType.ADMIN, RoleType.EDITOR)
   async addCollaborator(
-    @Param('id') id: string,
-    @Body('email') email: string,
-  ) {
+    @Param('id')id: string,
+    @Body('email')email: string)
+  {
     return this.formsService.addCollaborator(id, email);
   }
-
   @Delete(':id/collaborators/:userId')
   @Roles(RoleType.SUPER_ADMIN, RoleType.ADMIN, RoleType.EDITOR)
   async removeCollaborator(
-    @Param('id') id: string,
-    @Param('userId') userIdToRemove: string,
-    @CurrentUser() user: User,
-  ) {
+    @Param('id')id: string,
+    @Param('userId')userIdToRemove: string,
+    @CurrentUser()user: User)
+  {
     return this.formsService.removeCollaborator(id, userIdToRemove, user.id, user.role);
   }
 }

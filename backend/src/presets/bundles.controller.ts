@@ -7,8 +7,8 @@ import {
   Param,
   Delete,
   UseGuards,
-  Query,
-} from '@nestjs/common';
+  Query } from
+'@nestjs/common';
 import { BundlesService } from './bundles.service';
 import { CreateBundleDto } from './dto/create-bundle.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -18,66 +18,58 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { Permissions } from '../auth/decorators/permissions.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { RoleType } from '@prisma/client';
-
 interface User {
   id: string;
   email: string;
   role: RoleType;
 }
-
 @Controller('bundles')
-@UseGuards(JwtAuthGuard, RolesGuard)
-export class BundlesController {
-  constructor(private readonly bundlesService: BundlesService) { }
-
+@UseGuards(JwtAuthGuard, RolesGuard)export class
+BundlesController {
+  constructor(private readonly bundlesService: BundlesService) {}
   @Post()
   @UseGuards(PermissionsGuard)
   @Permissions('MANAGE_BUNDLES')
-  create(@CurrentUser() user: User, @Body() createBundleDto: CreateBundleDto) {
+  create(@CurrentUser()user: User, @Body()createBundleDto: CreateBundleDto) {
     return this.bundlesService.create(user.id, createBundleDto);
   }
-
   @Get()
-  findAll(@Query('isActive') isActive?: string) {
+  findAll(@Query('isActive')isActive?: string) {
     const isActiveBool = isActive === 'true' ? true : isActive === 'false' ? false : undefined;
     return this.bundlesService.findAll(isActiveBool);
   }
-
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id')id: string) {
     return this.bundlesService.findOne(id);
   }
-
   @Post(':id/apply/:formId')
   @Roles(RoleType.SUPER_ADMIN, RoleType.ADMIN, RoleType.EDITOR)
   applyBundle(
-    @Param('id') bundleId: string,
-    @Param('formId') formId: string,
-    @CurrentUser() user: User,
-  ) {
+    @Param('id')bundleId: string,
+    @Param('formId')formId: string,
+    @CurrentUser()user: User)
+  {
     return this.bundlesService.applyBundleToForm(
       bundleId,
       formId,
       user.id,
-      user.role,
+      user.role
     );
   }
-
   @Patch(':id')
   @UseGuards(PermissionsGuard)
   @Permissions('MANAGE_BUNDLES')
   update(
-    @Param('id') id: string,
-    @CurrentUser() user: User,
-    @Body() updateData: Partial<CreateBundleDto>,
-  ) {
+    @Param('id')id: string,
+    @CurrentUser()user: User,
+    @Body()updateData: Partial<CreateBundleDto>)
+  {
     return this.bundlesService.update(id, user.id, updateData);
   }
-
   @Delete(':id')
   @UseGuards(PermissionsGuard)
   @Permissions('MANAGE_BUNDLES')
-  remove(@Param('id') id: string) {
+  remove(@Param('id')id: string) {
     return this.bundlesService.remove(id);
   }
 }

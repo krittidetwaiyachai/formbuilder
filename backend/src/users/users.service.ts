@@ -1,10 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-
-@Injectable()
-export class UsersService {
+@Injectable()export class
+UsersService {
   constructor(private prisma: PrismaService) {}
-
   async getProfile(userId: string) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
@@ -18,46 +16,40 @@ export class UsersService {
             id: true,
             name: true,
             description: true,
-            permissions: true,
-          },
+            permissions: true
+          }
         },
         createdAt: true,
-        updatedAt: true,
-      },
+        updatedAt: true
+      }
     });
-
     if (!user) {
       throw new NotFoundException('User not found');
     }
-
     return user;
   }
-
   async deleteUserData(userId: string) {
     const user = await this.prisma.user.findUnique({
-      where: { id: userId },
+      where: { id: userId }
     });
-
     if (!user) {
       throw new NotFoundException('User not found');
     }
-
     await this.prisma.$transaction([
-      this.prisma.responseAnswer.deleteMany({
-        where: {
-          response: {
-            userId: userId,
-          },
-        },
-      }),
-      this.prisma.formResponse.deleteMany({
-        where: { userId: userId },
-      }),
-      this.prisma.activityLog.deleteMany({
-        where: { userId: userId },
-      }),
-    ]);
-
+    this.prisma.responseAnswer.deleteMany({
+      where: {
+        response: {
+          userId: userId
+        }
+      }
+    }),
+    this.prisma.formResponse.deleteMany({
+      where: { userId: userId }
+    }),
+    this.prisma.activityLog.deleteMany({
+      where: { userId: userId }
+    })]
+    );
     return { message: 'User data has been deleted successfully' };
   }
 }

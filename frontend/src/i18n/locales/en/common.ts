@@ -28,8 +28,6 @@ export default {
   "common.status.archived": "Archived",
   "common.copied": "Copied",
   "common.copied_to_clipboard": "Copied to clipboard",
-
-
   "common.address.street": "Street Address",
   "common.address.street2": "Street Address Line 2",
   "common.address.city": "City",
@@ -38,22 +36,16 @@ export default {
   "common.address.zip": "Postal / Zip Code",
   "common.address.country": "Country",
   "common.address.select_country": "Select Country",
-
-
   "common.fullname.prefix": "Prefix",
   "common.fullname.first": "First Name",
   "common.fullname.middle": "Middle Name",
   "common.fullname.last": "Last Name",
   "common.fullname.suffix": "Suffix",
-
-
   "common.options.add_option": "Add option...",
   "common.options.click_to_add": "Click to add options",
   "common.options.other": "Other",
   "common.options.type_here": "type here...",
   "common.options.no_options": "No options yet. Type above to add.",
-
-
   "common.date.month": "Month",
   "common.date.day": "Day",
   "common.date.year": "Year",

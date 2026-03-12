@@ -252,6 +252,7 @@ model FormResponse {
   @@index([formId, userId])
   @@index([formId, fingerprint])
   @@index([formId, respondentEmail])
+  @@index([formId, submittedAt])
   @@map("form_responses")
 }
 
@@ -265,6 +266,8 @@ model ResponseAnswer {
   field      Field?       @relation(fields: [fieldId], references: [id], onDelete: SetNull)
   response   FormResponse @relation(fields: [responseId], references: [id], onDelete: Cascade)
 
+  @@index([responseId])
+  @@index([fieldId])
   @@map("response_answers")
 }
 

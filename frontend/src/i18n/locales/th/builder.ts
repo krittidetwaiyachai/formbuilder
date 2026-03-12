@@ -15,18 +15,15 @@ export default {
   "builder.access_denied": "การเข้าถึงถูกปฏิเสธ",
   "builder.access_denied_msg": "คุณไม่มีสิทธิ์ในการเข้าถึงฟอร์มนี้",
   "builder.back_to_dashboard": "กลับไปหน้าแดชบอร์ด",
-
   "builder.field_bundles": "ชุดฟิลด์",
   "builder.bundles_subtitle": "ชุดสำเร็จรูป",
   "builder.bundles_description": "เลือกเทมเพลตสำเร็จรูปเพื่อเพิ่มในฟอร์ม",
   "builder.bundles_click": "คลิกเทมเพลตเพื่อเพิ่มในฟอร์ม",
-
   "builder.categories.text": "ฟิลด์ข้อความ",
   "builder.categories.choice": "ฟิลด์ตัวเลือก",
   "builder.categories.datetime": "วันที่และเวลา",
   "builder.categories.rating": "คะแนน",
   "builder.categories.layout": "เลย์เอาต์",
-
   "builder.fields.short_text": "ข้อความสั้น",
   "builder.fields.long_text": "ข้อความยาว",
   "builder.fields.email": "อีเมล",
@@ -47,7 +44,6 @@ export default {
   "builder.fields.separator": "เส้นแบ่ง",
   "builder.fields.page_break": "แบ่งหน้า",
   "builder.fields.group": "กลุ่มฟิลด์",
-
   "builder.tabs.properties": "คุณสมบัติ",
   "builder.tabs.logic": "ตรรกะ",
   "builder.tabs.settings": "ตั้งค่า",
@@ -57,7 +53,6 @@ export default {
   "builder.tabs.columns": "คอลัมน์",
   "builder.tabs.surveying": "การสำรวจ",
   "builder.tabs.fields": "ฟิลด์",
-
   "builder_header.saving": "กำลังบันทึก...",
   "builder_header.loading": "กำลังโหลด...",
   "builder_header.all_saved": "บันทึกทั้งหมดเรียบร้อยเมื่อ",
@@ -70,7 +65,6 @@ export default {
   "builder_header.undo": "ย้อนกลับ",
   "builder_header.redo": "ทำซ้ำ",
   "builder_header.invite_collaborators": "เชิญผู้ร่วมงาน",
-
   "builder.logic.title": "ตรรกะแบบมีเงื่อนไข",
   "builder.logic.subtitle": "สร้างกฎเพื่อแสดงหรือซ่อนฟิลด์ตามข้อมูลที่ผู้ใช้ระบุ",
   "builder.logic.add_rule": "เพิ่มกฎ",
@@ -99,7 +93,6 @@ export default {
   "builder.logic.click_expand": "คลิกที่กฎเพื่อดูรายละเอียด",
   "builder.logic.conditions": "เงื่อนไข",
   "builder.logic.actions": "การกระทำ",
-
   "builder.logic.op.equals": "เท่ากับ",
   "builder.logic.op.not_equals": "ไม่เท่ากับ",
   "builder.logic.op.contains": "ประกอบด้วย",
@@ -110,7 +103,6 @@ export default {
   "builder.logic.rules_count_label": "กฎ",
   "builder.logic.and": "และ",
   "builder.logic.or": "หรือ",
-
   "builder.quiz.mode": "โหมดแบบทดสอบ",
   "builder.quiz.total": "คะแนนรวม:",
   "builder.quiz.used": "ใช้ไป:",
@@ -126,7 +118,6 @@ export default {
   "builder.quiz.options": "ตัวเลือก",
   "builder.quiz.answers": "คำตอบ",
   "builder.quiz.remaining": "คงเหลือ:",
-
   "builder.pagination.page": "หน้า {{index}}",
   "builder.pagination.page_generic": "หน้า",
   "builder.pagination.welcome_page": "หน้าต้อนรับ",
@@ -137,7 +128,6 @@ export default {
   "builder.pagination.added": "(เพิ่มแล้ว)",
   "builder.pagination.delete_page_title": "ลบหน้านี้?",
   "builder.pagination.delete_page_desc": "คุณแน่ใจหรือไม่ว่าต้องการลบหน้านี้? ฟิลด์ทั้งหมดในหน้านี้จะถูกลบไปด้วย",
-
   "builder.special_page.appearance": "รูปลักษณ์",
   "builder.special_page.icon": "ไอคอน",
   "builder.special_page.icon_color": "สีไอคอน",
@@ -150,7 +140,6 @@ export default {
   "builder.special_page.button_text": "ข้อความบนปุ่ม",
   "builder.special_page.button_link": "ลิงก์ของปุ่ม",
   "builder.special_page.show_start_button": "แสดงปุ่มเริ่มต้น",
-
   "builder.sidebar.fields": "องค์ประกอบฟอร์ม",
   "builder.sidebar.drag": "ลากมาวาง",
   "builder.canvas.drop_here": "วางที่นี่เพื่อเพิ่มองค์ประกอบ",
@@ -158,7 +147,6 @@ export default {
   "builder.properties.element_properties": "คุณสมบัติองค์ประกอบ",
   "builder.properties.tooltip_duplicate": "ทำซ้ำ (Ctrl+D)",
   "builder.properties.tooltip_delete": "ลบ (Delete)",
-
   "builder.theme.title": "ธีมของฟอร์ม",
   "builder.theme.settings_title": "ตั้งค่าธีม",
   "builder.insert_link": "แทรกลิงก์",
@@ -175,7 +163,6 @@ export default {
   "builder.theme.btn_style": "สไตล์ปุ่ม",
   "builder.theme.border_radius": "ความโค้งมุม",
   "builder.theme.font_family": "แบบอักษร",
-
   "builder.theme.type_color": "สีล้วน",
   "builder.theme.type_gradient": "ไล่สี",
   "builder.theme.type_image": "รูปภาพ",
@@ -186,14 +173,12 @@ export default {
   "builder.theme.radius_small": "เล็ก",
   "builder.theme.radius_medium": "กลาง",
   "builder.theme.radius_large": "ใหญ่",
-
   "builder.settings.redirect_url": "URL ปลายทาง (ไม่บังคับ)",
   "builder.settings.redirect_desc": "เปลี่ยนหน้าผู้ใช้หลังจากส่งฟอร์มสำเร็จ",
   "builder.settings.notifications": "การแจ้งเตือนทางอีเมล",
   "builder.settings.notify_emails": "อีเมลผู้รับแจ้งเตือน",
   "builder.settings.remove_email": "ลบ",
   "builder.settings.add_email_placeholder": "กด Enter เพื่อเพิ่มอีเมล",
-
   "builder.properties.content": "เนื้อหา",
   "builder.properties.general": "ทั่วไป",
   "builder.properties.heading_image": "รูปหัวเรื่อง",
@@ -209,7 +194,6 @@ export default {
   "builder.properties.max_value": "ค่ามากสุด",
   "builder.properties.max_rating": "คะแนนสูงสุด",
   "builder.properties.rows": "จำนวนแถว",
-
   "builder.element.delete_confirm": "ลบองค์ประกอบ?",
   "builder.element.delete_confirm_desc": "คุณแน่ใจหรือไม่ว่าต้องการลบองค์ประกอบนี้? การกระทำนี้ไม่สามารถย้อนกลับได้",
   "builder.field.delete_confirm": "ลบฟิลด์?",
@@ -223,7 +207,6 @@ export default {
   "builder.placeholder.date": "เลือกวันที่...",
   "builder.placeholder.time": "เลือกเวลา...",
   "builder.placeholder.header_subheading": "เพิ่มรายละเอียด...",
-
   "builder.media.insert_image": "แทรกรูปภาพ",
   "builder.media.insert_video": "แทรกวิดีโอ",
   "builder.media.paste_image_url": "วาง URL รูปภาพ...",
@@ -232,16 +215,13 @@ export default {
   "builder.media.remove_image": "ลบรูปภาพ",
   "builder.media.remove_video": "ลบวิดีโอ",
   "builder.properties.type_sublabel": "พิมพ์ป้ายกำกับย่อย...",
-
   "builder.submit.default_label": "ส่ง",
   "builder.submit.clear_form": "ล้างฟอร์ม",
   "builder.submit.print": "พิมพ์",
-
   "builder.toast.element_deleted": "ลบ Element แล้ว",
   "builder.toast.element_deleted_desc": "Element ถูกลบออกจากฟอร์มแล้ว",
   "builder.toast.element_duplicated": "ทำซ้ำ Element แล้ว",
   "builder.toast.element_duplicated_desc": "Element ถูกทำซ้ำเรียบร้อยแล้ว",
-
   "builder.toast.save_success": "บันทึกฟอร์มสำเร็จ",
   "builder.toast.save_error": "ไม่สามารถบันทึกฟอร์มได้",
   "builder.toast.load_error": "ไม่สามารถโหลดฟอร์มได้",

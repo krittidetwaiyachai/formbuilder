@@ -1,19 +1,23 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  useMotionValue,
+  animate,
+  useTransform,
+} from "framer-motion";
 import { BarChart3 } from "lucide-react";
-
 import Loader from "@/components/common/Loader";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import { useToast } from "@/components/ui/toaster";
 import { useHasPermission } from "@/hooks/usePermissions";
 import api from "@/lib/api";
-
 import { useAnalyticsData } from "./analytics/hooks/useAnalyticsData";
 import { useAnalyticsStats } from "./analytics/hooks/useAnalyticsStats";
 import { useChartExport } from "./analytics/hooks/useChartExport";
-
+import { useExportCSV } from "./analytics/hooks/useExportCSV";
 import { AnalyticsHeader } from "./analytics/components/AnalyticsHeader";
 import { AnalyticsSummaryCards } from "./analytics/components/AnalyticsSummaryCards";
 import { ResponseTrendChart } from "./analytics/components/ResponseTrendChart";
@@ -24,16 +28,13 @@ import {
 } from "./analytics/components/FieldAnalytics";
 import { ResponseViewer } from "./analytics/components/ResponseViewer";
 import { useSmoothScroll } from "@/hooks/useSmoothScroll";
-
 export default function AnalyticsPage() {
   const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const { toast } = useToast();
   const canDelete = useHasPermission("DELETE_RESPONSES");
-
   const {
     form,
-    responses,
     viewResponses,
     totalResponses,
     loading,
@@ -41,40 +42,67 @@ export default function AnalyticsPage() {
     totalPages,
     responsePage,
     responseSort,
-    setResponses,
     setTotalResponses,
     loadResponses,
   } = useAnalyticsData(id);
-
-  const {
-    fieldStats,
-    quizStats,
-    responseTrend,
-    calculateFieldStats,
-    calculateResponseTrend,
-    calculateQuizStats,
-  } = useAnalyticsStats();
-
+  const { fieldStats, quizStats, responseTrend, loadStats } =
+    useAnalyticsStats();
   const { copyChartToClipboard, copySuccess } = useChartExport();
-
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [responseToDelete, setResponseToDelete] = useState<string | null>(null);
   const [showResponseViewer, setShowResponseViewer] = useState(false);
   const [selectedField, setSelectedField] = useState<string>("all");
-  const [exporting, setExporting] = useState(false);
-  const [exportProgress, setExportProgress] = useState(0);
 
-  useSmoothScroll(undefined, { enabled: !showResponseViewer });
+  const {
+    isExporting,
+    progress: exportState,
+    startExport,
+  } = useExportCSV(id || "");
+
+  const countMotion = useMotionValue(0);
+  const displayPercentage = useTransform(
+    countMotion,
+    (latest: any) =>
+      `${Math.round((latest / (exportState?.total || 1)) * 100)}%`,
+  );
+  const displayLoadedCount = useTransform(countMotion, (latest: any) =>
+    Math.round(latest).toLocaleString(),
+  );
+
+  const lastUpdateRef = useRef<number>(Date.now());
+  const initialLoadRef = useRef(true);
 
   useEffect(() => {
-    if (form && responses.length > 0) {
-      calculateFieldStats(form, responses);
-      calculateResponseTrend(responses);
+    if (exportState?.loaded !== undefined) {
+      if (initialLoadRef.current) {
+        // รอบแรกให้ใช้ 0.8 วิเหมือนเดิม
+        animate(countMotion, exportState.loaded, {
+          duration: 0.8,
+          ease: "linear",
+        });
+        initialLoadRef.current = false;
+        lastUpdateRef.current = Date.now();
+      } else {
+        // รอบต่อๆ ไป ให้คำนวณว่ารอบที่แล้วใช้เวลาโหลด 5000 row นานแค่ไหน
+        const now = Date.now();
+        const timeDiff = (now - lastUpdateRef.current) / 1000; // แปลงเป็นวินาที
+        lastUpdateRef.current = now;
 
-      if (form.isQuiz) {
-        calculateQuizStats(form, responses);
+        // ให้ความยาว Duration เท่ากับเวลาที่รอรอบที่แล้ว บวกเผื่อเวลาไว้เล็กน้อย เพื่อให้แอนิเมชันเนียนไม่จบก่อนที่รอบใหม่จะมาถึง
+        const dynamicDuration = Math.max(1.0, timeDiff + 0.3);
+
+        animate(countMotion, exportState.loaded, {
+          duration: dynamicDuration,
+          ease: "easeInOut",
+        });
       }
+    }
+  }, [exportState?.loaded, countMotion]);
 
+  useSmoothScroll(undefined, { enabled: !showResponseViewer });
+  useEffect(() => {
+    if (form && id) {
+      loadStats(id);
       if (form.fields && form.fields.length > 0) {
         const firstAnalyzableField = form.fields.find(
           (f) =>
@@ -91,22 +119,13 @@ export default function AnalyticsPage() {
         }
       }
     }
-  }, [
-    form,
-    responses,
-    calculateFieldStats,
-    calculateResponseTrend,
-    calculateQuizStats,
-  ]);
-
+  }, [form, id, loadStats]);
   const confirmDeleteResponse = async () => {
     if (!responseToDelete) return;
-
     try {
       await api.delete(`/responses/${responseToDelete}`);
-      setResponses((prev) => prev.filter((r) => r.id !== responseToDelete));
-      setTotalResponses((prev) => prev - 1);
-
+      setTotalResponses((prev: number) => prev - 1);
+      loadResponses(responsePage, responseSort);
       toast({
         title: t("analytics.delete_success"),
         description: t("analytics.delete_response_success"),
@@ -123,7 +142,6 @@ export default function AnalyticsPage() {
       setResponseToDelete(null);
     }
   };
-
   const handleDeleteClick = (responseId: string) => {
     if (!canDelete) {
       toast({
@@ -133,71 +151,13 @@ export default function AnalyticsPage() {
       });
       return;
     }
-
     setResponseToDelete(responseId);
     setDeleteConfirmOpen(true);
   };
-
   const handleExport = async () => {
-    if (exporting || !id) return;
-    setExporting(true);
-    setExportProgress(0);
-
-    const progressInterval = setInterval(() => {
-      setExportProgress((prev) => {
-        if (prev >= 99) return 99;
-        const remaining = 99 - prev;
-        const increment = remaining * 0.015;
-        return prev + Math.max(increment, 0.02);
-      });
-    }, 200);
-
-    try {
-      const response = await api.get(`/responses/form/${id}/export/csv`, {
-        responseType: "blob",
-        timeout: 300000,
-      });
-
-      clearInterval(progressInterval);
-      setExportProgress(100);
-
-      await new Promise((resolve) => setTimeout(resolve, 400));
-
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      const safeTitle = (form?.title || "form").replace(
-        /[^a-z0-9\u0E00-\u0E7F-_ ]/gi,
-        "_",
-      );
-      link.setAttribute("download", `${safeTitle}_responses.csv`);
-      document.body.appendChild(link);
-
-      setExporting(false);
-      setExportProgress(0);
-
-      link.click();
-      link.remove();
-
-      toast({
-        title: t("analytics.export_success"),
-        description: t("analytics.export_success_desc"),
-        variant: "success",
-      });
-    } catch (error) {
-      clearInterval(progressInterval);
-      console.error("Failed to export CSV:", error);
-      toast({
-        title: t("analytics.export_failed"),
-        description: t("analytics.export_failed_desc"),
-        variant: "error",
-      });
-    } finally {
-      setExporting(false);
-      setExportProgress(0);
-    }
+    if (isExporting || !id) return;
+    await startExport();
   };
-
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
@@ -212,7 +172,6 @@ export default function AnalyticsPage() {
       </div>
     );
   }
-
   return (
     <div className="min-h-screen bg-white pb-32 md:pb-12">
       <AnalyticsHeader
@@ -221,11 +180,9 @@ export default function AnalyticsPage() {
         onViewResponses={() => setShowResponseViewer(true)}
         onExport={handleExport}
       />
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 md:mt-8">
         <AnalyticsSummaryCards form={form} totalResponses={totalResponses} />
-
-        {responses.length === 0 ? (
+        {totalResponses === 0 ? (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -256,7 +213,6 @@ export default function AnalyticsPage() {
                 copySuccess={copySuccess}
               />
             </div>
-
             {form?.isQuiz && (
               <QuizStatsCards
                 stats={quizStats}
@@ -264,7 +220,6 @@ export default function AnalyticsPage() {
                 copySuccess={copySuccess}
               />
             )}
-
             <FieldDetailedAnalysis
               form={form}
               fieldStats={fieldStats}
@@ -278,7 +233,6 @@ export default function AnalyticsPage() {
           </>
         )}
       </div>
-
       <ResponseViewer
         isOpen={showResponseViewer}
         onClose={() => setShowResponseViewer(false)}
@@ -292,47 +246,60 @@ export default function AnalyticsPage() {
         onPageChange={loadResponses}
         onDeleteResponse={handleDeleteClick}
       />
-
       <AnimatePresence>
-        {exporting && (
+        {isExporting && exportState && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm"
+            className="fixed inset-0 z-[100] flex flex-col items-center justify-center p-4 bg-white/80 backdrop-blur-sm"
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-3xl shadow-2xl p-10 flex flex-col items-center gap-6 max-w-sm mx-4 w-80"
+              className="w-full max-w-md bg-white p-8 rounded-3xl shadow-2xl flex flex-col items-center text-center mx-4"
             >
-              <div className="text-center">
-                <p className="text-sm text-gray-400 mb-2">
-                  {t("analytics.exporting")}
-                </p>
-                <p className="text-5xl font-bold text-gray-900">
-                  {Math.round(exportProgress)}%
-                </p>
+              <div className="mb-6 relative w-16 h-16 flex items-center justify-center">
+                <Loader className="w-12 h-12 text-blue-600 animate-spin absolute" />
+                <BarChart3 className="w-5 h-5 text-blue-600 absolute" />
               </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">
+                {exportState.status === "processing"
+                  ? t("analytics.exporting_csv", "Exporting CSV...")
+                  : t("analytics.export_success", "Export Ready")}
+              </h3>
+              <p className="text-gray-500 mb-6 font-medium text-sm">
+                {exportState.status === "processing"
+                  ? t(
+                      "analytics.export_dont_close",
+                      "Please don't close this page",
+                    )
+                  : t(
+                      "analytics.downloading_now",
+                      "Your download will start automatically...",
+                    )}
+              </p>
+
               <div className="w-full">
-                <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div className="flex justify-between text-xs font-semibold text-gray-500 mb-2">
+                  <motion.span>{displayLoadedCount}</motion.span>
+                  <span>{exportState.total.toLocaleString()} rows</span>
+                </div>
+                <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden shadow-inner">
                   <motion.div
-                    className="h-full bg-gray-900 rounded-full"
-                    initial={{ width: 0 }}
-                    animate={{ width: `${Math.round(exportProgress)}%` }}
-                    transition={{ duration: 0.2, ease: "easeOut" }}
+                    style={{ width: displayPercentage }}
+                    className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full"
                   />
                 </div>
+                <div className="mt-3 text-2xl font-bold text-gray-900">
+                  <motion.span>{displayPercentage}</motion.span>
+                </div>
               </div>
-              <p className="text-xs text-gray-400">
-                {t("analytics.exporting_desc")}
-              </p>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-
       <ConfirmDialog
         open={deleteConfirmOpen}
         onOpenChange={setDeleteConfirmOpen}

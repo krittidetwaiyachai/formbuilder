@@ -1,7 +1,6 @@
 export default {
   "admin.bundles.delete_confirm": "ลบ Bundle?",
   "admin.bundles.delete_confirm_desc": "ต้องการลบ Bundle นี้หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้",
-
   "admin.dashboard.title": "แดชบอร์ด",
   "admin.dashboard.subtitle": "ภาพรวมระบบ Form Builder",
   "admin.dashboard.monthly_submissions": "สถิติการตอบกลับย้อนหลัง 6 เดือน",
@@ -13,7 +12,6 @@ export default {
   "admin.dashboard.forms_created": "ฟอร์มที่สร้าง",
   "admin.dashboard.total_users": "ผู้ใช้ทั้งหมด",
   "admin.dashboard.active_now": "ใช้งานอยู่",
-
   "admin.bundles.title": "จัดการ Field Bundles",
   "admin.bundles.description": "สร้างและแก้ไข Field Bundles สำหรับนำไปใช้ในฟอร์ม",
   "admin.bundles.search_placeholder": "ค้นหา Bundle...",
@@ -26,10 +24,8 @@ export default {
   "admin.bundles.table.status": "สถานะ",
   "admin.bundles.status.draft": "ร่าง",
   "admin.bundles.status.published": "เผยแพร่",
-
   "admin.users.title": "จัดการผู้ใช้",
   "admin.users.description": "ดูรายชื่อผู้ใช้ทั้งหมด แบน/ปลดแบน และเปลี่ยน Role",
-
   "admin.editor.untitled": "บันเดิลไม่มีชื่อ",
   "admin.editor.undo_shortcut": "ยกเลิก (Ctrl+Z)",
   "admin.editor.redo_shortcut": "ทำซ้ำ (Ctrl+Shift+Z)",
@@ -56,7 +52,6 @@ export default {
   "admin.editor.field.fullname": "ชื่อ-นามสกุล",
   "admin.editor.field.matrix": "ตารางตัวเลือก",
   "admin.editor.field.table": "ตารางกรอกข้อมูล",
-
   "admin.users.table.user": "ผู้ใช้",
   "admin.users.table.role": "Role",
   "admin.users.table.provider": "Provider",
@@ -71,12 +66,10 @@ export default {
   "admin.users.search_placeholder": "ค้นหาผู้ใช้...",
   "admin.users.no_users": "ไม่พบผู้ใช้",
   "admin.users.page_info": "หน้า {{page}} จาก {{total}}",
-
   "admin.stats.total_users": "ผู้ใช้ทั้งหมด",
   "admin.stats.total_forms": "ฟอร์มทั้งหมด",
   "admin.stats.total_submissions": "การตอบกลับทั้งหมด",
   "admin.stats.growth_rate": "อัตราการเติบโต",
-
   "admin.activity.title": "กิจกรรมล่าสุด",
   "admin.activity.no_activity": "ยังไม่มีกิจกรรม",
   "admin.activity.deleted_form": "ฟอร์มที่ถูกลบ",

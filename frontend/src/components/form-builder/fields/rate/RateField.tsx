@@ -1,7 +1,6 @@
 import React from "react";
 import type { Field, RateFieldOptions } from "@/types";
 import { Star, Heart, Shield, Zap, Flag, ThumbsUp, Smile } from "lucide-react";
-
 interface RateFieldProps {
   field: Field;
   fieldStyle: {
@@ -12,17 +11,15 @@ interface RateFieldProps {
   };
   disabledClass?: string;
 }
-
 export const RateField: React.FC<RateFieldProps> = ({
   field,
   fieldStyle,
-  disabledClass = "opacity-60 cursor-pointer",
+  disabledClass = "opacity-60 cursor-pointer"
 }) => {
   const options = (field.options || {}) as RateFieldOptions;
   const maxRating = options.maxRating || 5;
   const iconType = options.icon || "star";
   const defaultValue = options.defaultValue || 0;
-
   const getIcon = () => {
     switch (iconType) {
       case "heart":
@@ -42,9 +39,7 @@ export const RateField: React.FC<RateFieldProps> = ({
         return Star;
     }
   };
-
   const Icon = getIcon();
-
   const getColorClass = (active: boolean) => {
     if (!active) return "text-gray-300 fill-gray-100";
     if (iconType === "heart") return "text-red-400 fill-red-400";
@@ -55,24 +50,16 @@ export const RateField: React.FC<RateFieldProps> = ({
     if (iconType === "smile") return "text-yellow-500 fill-yellow-500";
     return "text-yellow-400 fill-yellow-400";
   };
-
   const labelAlignment = options.labelAlignment || "TOP";
-
   return (
     <div
-      className={`flex items-center gap-2 py-2 px-4 rounded-xl border ${fieldStyle.inputBorder} bg-white max-w-fit ${disabledClass} ${labelAlignment === "CENTER" ? "mx-auto" : ""}`}
-    >
+      className={`flex items-center gap-2 py-2 px-4 rounded-xl border ${fieldStyle.inputBorder} bg-white max-w-fit ${disabledClass} ${labelAlignment === "CENTER" ? "mx-auto" : ""}`}>
       {Array.from({ length: maxRating }).map((_, index) => {
         const star = index + 1;
         const isActive = star <= defaultValue;
         return (
-          <div key={star} className="relative group">
-            <Icon
-              className={`w-8 h-8 transition-all duration-300 ${getColorClass(isActive)}`}
-            />
-          </div>
-        );
-      })}
-    </div>
-  );
+          <div key={star} className="relative group">            <Icon
+              className={`w-8 h-8 transition-all duration-300 ${getColorClass(isActive)}`} />
+          </div>);
+      })}    </div>);
 };

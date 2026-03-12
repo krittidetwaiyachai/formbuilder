@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useToast } from '@/components/ui/toaster';
 import { useTranslation } from 'react-i18next';
-
 const downloadImage = (blob: Blob, filename: string) => {
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
@@ -12,31 +11,26 @@ const downloadImage = (blob: Blob, filename: string) => {
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
 };
-
 export const useChartExport = () => {
   const { t } = useTranslation();
   const { toast } = useToast();
   const [copySuccess, setCopySuccess] = useState<string | null>(null);
-
   const copyChartToClipboard = async (chartId: string) => {
     try {
       const chartElement = document.getElementById(chartId);
       if (!chartElement) return;
-
       const html2canvas = (await import('html2canvas')).default;
       const canvas = await html2canvas(chartElement, { backgroundColor: '#ffffff' });
-
       canvas.toBlob(async (blob) => {
         if (blob) {
           const isSecureContext = window.isSecureContext ||
-            window.location.hostname === 'localhost' ||
-            window.location.hostname === '127.0.0.1';
-
+          window.location.hostname === 'localhost' ||
+          window.location.hostname === '127.0.0.1';
           if (isSecureContext && navigator.clipboard && navigator.clipboard.write) {
             try {
               await navigator.clipboard.write([
-                new ClipboardItem({ 'image/png': blob })
-              ]);
+              new ClipboardItem({ 'image/png': blob })]
+              );
               setCopySuccess(chartId);
               setTimeout(() => setCopySuccess(null), 2000);
               toast({
@@ -75,6 +69,5 @@ export const useChartExport = () => {
       });
     }
   };
-
   return { copyChartToClipboard, copySuccess };
 };

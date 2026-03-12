@@ -2,7 +2,6 @@ import React from "react";
 import type { Field, PhoneValidation } from "@/types";
 import { Phone } from "lucide-react";
 import { useTranslation } from "react-i18next";
-
 interface PhoneFieldProps {
   field: Field;
   fieldStyle: {
@@ -13,53 +12,37 @@ interface PhoneFieldProps {
   };
   disabledClass?: string;
 }
-
 export const PhoneField: React.FC<PhoneFieldProps> = ({
   field,
   fieldStyle,
-  disabledClass = "opacity-60 cursor-pointer",
+  disabledClass = "opacity-60 cursor-pointer"
 }) => {
   const { t } = useTranslation();
   const validation = field.validation as PhoneValidation | undefined;
   const showCountryCode = validation?.countryCode || false;
   const phoneSublabel = validation?.sublabels?.masked;
   const phonePlaceholder =
-    validation?.placeholders?.masked ||
-    validation?.maskPattern ||
-    t("builder.phone.default_placeholder");
-
+  validation?.placeholders?.masked ||
+  validation?.maskPattern ||
+  t("builder.phone.default_placeholder");
   return (
-    <div className="space-y-2 max-w-full group">
-      <div className="flex gap-4">
-        {showCountryCode && (
-          <div className="w-[80px]">
-            <input
-              type="text"
-              placeholder={t("builder.phone.country_code_placeholder")}
-              readOnly
-              tabIndex={-1}
-              className={`w-full px-4 py-3.5 border ${fieldStyle.inputBorder} rounded-xl bg-green-50/20 text-black text-base shadow-sm text-center transition-all duration-300 ${disabledClass} group-hover/field:bg-white group-hover/field:shadow-md`}
-            />
+    <div className="space-y-2 max-w-full group">      <div className="flex gap-4">        {showCountryCode &&
+        <div className="w-[80px]">            <input
+            type="text"
+            placeholder={t("builder.phone.country_code_placeholder")}
+            readOnly
+            tabIndex={-1}
+            className={`w-full px-4 py-3.5 border ${fieldStyle.inputBorder} rounded-xl bg-green-50/20 text-black text-base shadow-sm text-center transition-all duration-300 ${disabledClass} group-hover/field:bg-white group-hover/field:shadow-md`} />
           </div>
-        )}
-        <div className="flex-1 relative">
-          <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none transition-colors duration-300">
-            <Phone
-              className={`h-5 w-5 ${fieldStyle.iconColor} opacity-70 group-hover/field:opacity-100`}
-            />
-          </div>
-          <input
+        }        <div className="flex-1 relative">          <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none transition-colors duration-300">            <Phone
+              className={`h-5 w-5 ${fieldStyle.iconColor} opacity-70 group-hover/field:opacity-100`} />
+          </div>          <input
             type="tel"
             placeholder={phonePlaceholder}
             readOnly
             tabIndex={-1}
-            className={`w-full pl-12 pr-4 py-3.5 border ${fieldStyle.inputBorder} rounded-xl bg-green-50/20 text-black text-base shadow-sm transition-all duration-300 ${disabledClass} pointer-events-none group-hover/field:bg-white group-hover/field:shadow-md`}
-          />
-        </div>
-      </div>
-      {phoneSublabel && (
-        <p className="text-xs text-gray-500">{phoneSublabel}</p>
-      )}
-    </div>
-  );
+            className={`w-full pl-12 pr-4 py-3.5 border ${fieldStyle.inputBorder} rounded-xl bg-green-50/20 text-black text-base shadow-sm transition-all duration-300 ${disabledClass} pointer-events-none group-hover/field:bg-white group-hover/field:shadow-md`} />
+        </div>      </div>      {phoneSublabel &&
+      <p className="text-xs text-gray-500">{phoneSublabel}</p>
+      }    </div>);
 };

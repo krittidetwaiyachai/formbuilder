@@ -1,6 +1,5 @@
 import React from "react";
 import type { Field } from "@/types";
-
 interface DividerFieldProps {
   field: Field;
   fieldStyle: {
@@ -10,11 +9,7 @@ interface DividerFieldProps {
     iconColor: string;
   };
 }
-
 export const DividerField: React.FC<DividerFieldProps> = () => {
   return (
-    <div className="w-full py-4">
-      <hr className="border-t border-gray-300" />
-    </div>
-  );
+    <div className="w-full py-4">      <hr className="border-t border-gray-300" />    </div>);
 };

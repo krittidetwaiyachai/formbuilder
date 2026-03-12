@@ -1,13 +1,11 @@
 import { FieldType } from '@/types/enums';
 import { FieldWidth, LabelAlignment } from '@/types/field-schema';
 import type { FieldWidthType, LabelAlignmentType } from '@/types/field-schema';
-
 export interface ShortTextOptions {
   width: FieldWidthType;
   labelAlignment: LabelAlignmentType;
   subLabel: string;
 }
-
 export const shortTextDefaultValues = {
   type: FieldType.TEXT,
   label: 'Short Text',
@@ -16,12 +14,12 @@ export const shortTextDefaultValues = {
   options: {
     width: FieldWidth.FULL,
     labelAlignment: LabelAlignment.TOP,
-    subLabel: '',
+    subLabel: ''
   } satisfies ShortTextOptions,
   validation: {
     required: false,
     readOnly: false,
     maxLength: 100,
-    hasMaxLength: false,
+    hasMaxLength: false
   }
 } as const;

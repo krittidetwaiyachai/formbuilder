@@ -1,21 +1,16 @@
 import { FieldType } from '@/types/enums';
-
 export const HeaderSize = {
   SMALL: 'SMALL',
   MEDIUM: 'MEDIUM',
-  LARGE: 'LARGE',
+  LARGE: 'LARGE'
 } as const;
-
 export type HeaderSizeType = keyof typeof HeaderSize;
-
 export const HeaderAlign = {
   LEFT: 'LEFT',
   CENTER: 'CENTER',
-  RIGHT: 'RIGHT',
+  RIGHT: 'RIGHT'
 } as const;
-
 export type HeaderAlignType = keyof typeof HeaderAlign;
-
 export interface HeaderOptions {
   text: string;
   subText: string;
@@ -23,7 +18,6 @@ export interface HeaderOptions {
   align: HeaderAlignType;
   showImage: boolean;
 }
-
 export const headerDefaultValues = {
   type: FieldType.HEADER,
   label: 'Header',
@@ -33,9 +27,9 @@ export const headerDefaultValues = {
     subText: 'Description goes here',
     size: HeaderSize.LARGE,
     align: HeaderAlign.LEFT,
-    showImage: false,
+    showImage: false
   } satisfies HeaderOptions,
   validation: {
-    readOnly: true,
+    readOnly: true
   }
 } as const;

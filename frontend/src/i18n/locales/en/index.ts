@@ -9,7 +9,6 @@ import publicForm from './public';
 import analytics from './analytics';
 import activity from './activity';
 import admin from './admin';
-
 export default {
   ...common,
   ...dashboard,

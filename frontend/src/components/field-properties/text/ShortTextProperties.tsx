@@ -3,455 +3,216 @@ import { useTranslation } from "react-i18next";
 import type {
   TextField,
   TextFieldOptions,
-  ShortTextValidation,
-} from "@/types/typed-fields";
+  ShortTextValidation } from
+"@/types/typed-fields";
 import { Copy } from "lucide-react";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
-} from "@/components/ui/custom-select";
+  SelectValue } from
+"@/components/ui/custom-select";
 import { stripHtml } from "@/lib/ui/utils";
 import { PdpaToggle } from "../common/PdpaToggle";
 import { PropertiesTabs } from "../common/PropertiesTabs";
-
 interface ShortTextPropertiesProps {
   field: TextField;
   updateField: (id: string, updates: Partial<TextField>) => void;
   duplicatesField: (field: Omit<TextField, "id" | "formId">) => void;
 }
-
 export const ShortTextProperties = ({
   field,
   updateField,
-  duplicatesField,
+  duplicatesField
 }: ShortTextPropertiesProps) => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<
-    "general" | "options" | "advanced"
-  >("general");
-
+    "general" | "options" | "advanced">(
+    "general");
   const options: TextFieldOptions = field.options || {};
   const validation: ShortTextValidation = field.validation || {};
-
   const handleUpdate = (updates: Partial<TextField>) => {
     updateField(field.id, updates);
   };
-
-  const handleOptionUpdate = <K extends keyof TextFieldOptions>(
-    key: K,
-    value: TextFieldOptions[K],
-  ) => {
+  const handleOptionUpdate = <K extends keyof TextFieldOptions,>(
+  key: K,
+  value: TextFieldOptions[K]) =>
+  {
     handleUpdate({
       options: {
         ...options,
-        [key]: value,
-      },
+        [key]: value
+      }
     });
   };
-
-  const handleValidationUpdate = <K extends keyof ShortTextValidation>(
-    key: K,
-    value: ShortTextValidation[K],
-  ) => {
+  const handleValidationUpdate = <K extends keyof ShortTextValidation,>(
+  key: K,
+  value: ShortTextValidation[K]) =>
+  {
     handleUpdate({
       validation: {
         ...validation,
-        [key]: value,
-      },
+        [key]: value
+      }
     });
   };
-
   return (
-    <>
-      <PropertiesTabs activeTab={activeTab} setActiveTab={setActiveTab} />
-
-      <div className="space-y-4">
-        {}
-        {activeTab === "general" && (
-          <div className="space-y-4">
-            {}
-            <div>
-              <label className="block text-sm font-medium text-black mb-1">
-                {t("builder.properties.field_label")}
-              </label>
-              <input
-                type="text"
-                value={stripHtml(field.label)}
-                onChange={(e) => handleUpdate({ label: e.target.value })}
+    <>      <PropertiesTabs activeTab={activeTab} setActiveTab={setActiveTab} />      <div className="space-y-4">        {}        {activeTab === "general" &&
+        <div className="space-y-4">            {}            <div>              <label className="block text-sm font-medium text-black mb-1">                {t("builder.properties.field_label")}              </label>              <input
+              type="text"
+              value={stripHtml(field.label)}
+              onChange={(e) => handleUpdate({ label: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text" />
+            </div>            {}            <div>              <label className="block text-sm font-medium text-black mb-2">                {t("builder.properties.label_alignment")}              </label>              <div className="flex gap-2">                {(["LEFT", "CENTER", "TOP"] as const).map((align) =>
+              <button
+                key={align}
+                onClick={() => handleOptionUpdate("labelAlignment", align)}
+                className={`flex-1 px-3 py-2 text-xs font-medium rounded-md border transition-colors ${
+                options.labelAlignment === align ||
+                !options.labelAlignment && align === "TOP" ?
+                "bg-black text-white border-black" :
+                "bg-white text-black border-gray-400 hover:bg-gray-50"}`
+                }>
+                    {t(`builder.properties.${align.toLowerCase()}`)}                  </button>
+              )}              </div>            </div>            {}            <div>              <label className="block text-sm font-medium text-black mb-1">                {t("builder.properties.required")}              </label>              <label className="relative inline-flex items-center cursor-pointer">                <input
+                type="checkbox"
+                checked={field.required}
+                onChange={(e) => handleUpdate({ required: e.target.checked })}
+                className="sr-only peer" />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>              </label>              <p className="mt-1 text-xs text-gray-500">                {t("builder.properties.required_desc")}              </p>            </div>            {}            <div>              <label className="block text-sm font-medium text-black mb-1">                {t("builder.properties.sublabel")}              </label>              <input
+              type="text"
+              value={stripHtml(options.subLabel || "")}
+              onChange={(e) => handleOptionUpdate("subLabel", e.target.value)}
+              className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text" />
+              <p className="mt-1 text-xs text-gray-500">                {t("builder.properties.sublabel_desc")}              </p>            </div>            {}            {}            <button
+            onClick={() =>
+            duplicatesField({
+              type: field.type,
+              label: field.label,
+              placeholder: field.placeholder,
+              required: field.required,
+              validation: field.validation,
+              options: field.options,
+              order: 0
+            })
+            }
+            className="w-full mt-4 px-3 py-2 text-sm font-medium text-black bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors flex items-center justify-center gap-2">
+              <Copy className="h-4 w-4" />              {t("builder.properties.duplicate")}            </button>            <PdpaToggle
+            value={field.isPII || false}
+            onChange={(val) => handleUpdate({ isPII: val })} />
+          </div>
+        }        {}        {activeTab === "options" &&
+        <div className="space-y-6">            {}            <div>              <label className="block text-sm font-medium text-black mb-1">                {t("builder.properties.width")}              </label>              <label className="relative inline-flex items-center cursor-pointer">                <input
+                type="checkbox"
+                checked={options.width === "FIXED"}
+                onChange={(e) =>
+                handleOptionUpdate(
+                  "width",
+                  e.target.checked ? "FIXED" : "FULL"
+                )
+                }
+                className="sr-only peer" />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>              </label>              {options.width === "FIXED" &&
+            <div className="mt-2">                  <input
+                type="number"
+                value={options.customWidth || 300}
+                onChange={(e) =>
+                handleOptionUpdate(
+                  "customWidth",
+                  parseInt(e.target.value)
+                )
+                }
                 className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
-              />
-            </div>
-
-            {}
-            <div>
-              <label className="block text-sm font-medium text-black mb-2">
-                {t("builder.properties.label_alignment")}
-              </label>
-              <div className="flex gap-2">
-                {(["LEFT", "CENTER", "TOP"] as const).map((align) => (
-                  <button
-                    key={align}
-                    onClick={() => handleOptionUpdate("labelAlignment", align)}
-                    className={`flex-1 px-3 py-2 text-xs font-medium rounded-md border transition-colors ${
-                      options.labelAlignment === align ||
-                      (!options.labelAlignment && align === "TOP")
-                        ? "bg-black text-white border-black"
-                        : "bg-white text-black border-gray-400 hover:bg-gray-50"
-                    }`}
-                  >
-                    {t(`builder.properties.${align.toLowerCase()}`)}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {}
-            <div>
-              <label className="block text-sm font-medium text-black mb-1">
-                {t("builder.properties.required")}
-              </label>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={field.required}
-                  onChange={(e) => handleUpdate({ required: e.target.checked })}
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
-              </label>
-              <p className="mt-1 text-xs text-gray-500">
-                {t("builder.properties.required_desc")}
-              </p>
-            </div>
-
-            {}
-            <div>
-              <label className="block text-sm font-medium text-black mb-1">
-                {t("builder.properties.sublabel")}
-              </label>
-              <input
+                placeholder={t("builder.properties.width_px_placeholder")} />
+                </div>
+            }              <p className="mt-1 text-xs text-gray-500">                {t("builder.properties.width_desc")}              </p>            </div>            {}            <div>              <label className="block text-sm font-medium text-black mb-1">                {t("builder.properties.input_mask")}              </label>              <label className="relative inline-flex items-center cursor-pointer">                <input
+                type="checkbox"
+                checked={validation.hasInputMask || false}
+                onChange={(e) =>
+                handleValidationUpdate("hasInputMask", e.target.checked)
+                }
+                className="sr-only peer" />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>              </label>              {validation.hasInputMask &&
+            <div className="mt-2">                  <input
                 type="text"
-                value={stripHtml(options.subLabel || "")}
-                onChange={(e) => handleOptionUpdate("subLabel", e.target.value)}
+                value={validation.inputMask || ""}
+                onChange={(e) =>
+                handleValidationUpdate("inputMask", e.target.value)
+                }
                 className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
-              />
-              <p className="mt-1 text-xs text-gray-500">
-                {t("builder.properties.sublabel_desc")}
-              </p>
-            </div>
-
-            {}
-            {}
-            <button
-              onClick={() =>
-                duplicatesField({
-                  type: field.type,
-                  label: field.label,
-                  placeholder: field.placeholder,
-                  required: field.required,
-                  validation: field.validation,
-                  options: field.options,
-                  order: 0,
-                })
+                placeholder={t("builder.properties.input_mask_placeholder")} />
+                </div>
+            }              <p className="mt-1 text-xs text-gray-500">                {t("builder.properties.input_mask_format_desc")}              </p>            </div>          </div>
+        }        {}        {activeTab === "advanced" &&
+        <div className="space-y-6">            {}            <div>              <label className="block text-sm font-medium text-black mb-1">                {t("builder.properties.placeholder")}              </label>              <input
+              type="text"
+              value={field.placeholder || ""}
+              onChange={(e) => handleUpdate({ placeholder: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text" />
+              <p className="mt-1 text-xs text-gray-500">                {t("builder.properties.placeholder_desc")}              </p>            </div>            {}            <div>              <label className="block text-sm font-medium text-black mb-1">                {t("builder.properties.hover_text")}              </label>              <textarea
+              value={options.hoverText || ""}
+              onChange={(e) =>
+              handleOptionUpdate("hoverText", e.target.value)
               }
-              className="w-full mt-4 px-3 py-2 text-sm font-medium text-black bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
-            >
-              <Copy className="h-4 w-4" />
-              {t("builder.properties.duplicate")}
-            </button>
-
-            <PdpaToggle
-              value={field.isPII || false}
-              onChange={(val) => handleUpdate({ isPII: val })}
-            />
-          </div>
-        )}
-
-        {}
-        {activeTab === "options" && (
-          <div className="space-y-6">
-            {}
-            <div>
-              <label className="block text-sm font-medium text-black mb-1">
-                {t("builder.properties.width")}
-              </label>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={options.width === "FIXED"}
-                  onChange={(e) =>
-                    handleOptionUpdate(
-                      "width",
-                      e.target.checked ? "FIXED" : "FULL",
-                    )
-                  }
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
-              </label>
-
-              {options.width === "FIXED" && (
-                <div className="mt-2">
-                  <input
-                    type="number"
-                    value={options.customWidth || 300}
-                    onChange={(e) =>
-                      handleOptionUpdate(
-                        "customWidth",
-                        parseInt(e.target.value),
-                      )
-                    }
-                    className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
-                    placeholder={t("builder.properties.width_px_placeholder")}
-                  />
-                </div>
-              )}
-              <p className="mt-1 text-xs text-gray-500">
-                {t("builder.properties.width_desc")}
-              </p>
-            </div>
-
-            {}
-            <div>
-              <label className="block text-sm font-medium text-black mb-1">
-                {t("builder.properties.input_mask")}
-              </label>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={validation.hasInputMask || false}
-                  onChange={(e) =>
-                    handleValidationUpdate("hasInputMask", e.target.checked)
-                  }
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
-              </label>
-
-              {validation.hasInputMask && (
-                <div className="mt-2">
-                  <input
-                    type="text"
-                    value={validation.inputMask || ""}
-                    onChange={(e) =>
-                      handleValidationUpdate("inputMask", e.target.value)
-                    }
-                    className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
-                    placeholder={t("builder.properties.input_mask_placeholder")}
-                  />
-                </div>
-              )}
-              <p className="mt-1 text-xs text-gray-500">
-                {t("builder.properties.input_mask_format_desc")}
-              </p>
-            </div>
-          </div>
-        )}
-
-        {}
-        {activeTab === "advanced" && (
-          <div className="space-y-6">
-            {}
-            <div>
-              <label className="block text-sm font-medium text-black mb-1">
-                {t("builder.properties.placeholder")}
-              </label>
-              <input
-                type="text"
-                value={field.placeholder || ""}
-                onChange={(e) => handleUpdate({ placeholder: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
-              />
-              <p className="mt-1 text-xs text-gray-500">
-                {t("builder.properties.placeholder_desc")}
-              </p>
-            </div>
-
-            {}
-            <div>
-              <label className="block text-sm font-medium text-black mb-1">
-                {t("builder.properties.hover_text")}
-              </label>
-              <textarea
-                value={options.hoverText || ""}
+              rows={2}
+              className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text" />
+              <p className="mt-1 text-xs text-gray-500">                {t("builder.properties.hover_text_desc")}              </p>            </div>            {}            <div>              <label className="block text-sm font-medium text-black mb-1">                {t("builder.properties.default_value")}              </label>              <input
+              type="text"
+              value={options.defaultValue || ""}
+              onChange={(e) =>
+              handleOptionUpdate("defaultValue", e.target.value)
+              }
+              className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text" />
+              <p className="mt-1 text-xs text-gray-500">                {t("builder.properties.default_value_desc")}              </p>            </div>            {}            <div>              <label className="block text-sm font-medium text-black mb-1">                {t("builder.properties.validation")}              </label>              <Select
+              value={validation.type || "None"}
+              onValueChange={(val) =>
+              handleValidationUpdate(
+                "type",
+                val as ShortTextValidation["type"]
+              )
+              }>
+                <SelectTrigger className="w-full bg-white border-gray-400">                  <SelectValue
+                  placeholder={t("builder.properties.select_validation")} />
+                </SelectTrigger>                <SelectContent>                  <SelectItem value="None">                    {t("builder.properties.validation_none")}                  </SelectItem>                  <SelectItem value="Email">                    {t("builder.properties.validation_email")}                  </SelectItem>                  <SelectItem value="URL">                    {t("builder.properties.validation_url")}                  </SelectItem>                  <SelectItem value="Alphabetic">                    {t("builder.properties.validation_alphabetic")}                  </SelectItem>                  <SelectItem value="Alphanumeric">                    {t("builder.properties.validation_alphanumeric")}                  </SelectItem>                  <SelectItem value="Numeric">                    {t("builder.properties.validation_numeric")}                  </SelectItem>                  <SelectItem value="Regex">                    {t("builder.properties.validation_regex")}                  </SelectItem>                </SelectContent>              </Select>              <p className="mt-1 text-xs text-gray-500">                {t("builder.properties.validation_desc")}              </p>            </div>            {}            <div>              <label className="block text-sm font-medium text-black mb-1">                {t("builder.properties.character_limit")}              </label>              <label className="relative inline-flex items-center cursor-pointer">                <input
+                type="checkbox"
+                checked={validation.hasMaxLength || false}
                 onChange={(e) =>
-                  handleOptionUpdate("hoverText", e.target.value)
+                handleValidationUpdate("hasMaxLength", e.target.checked)
                 }
-                rows={2}
-                className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
-              />
-              <p className="mt-1 text-xs text-gray-500">
-                {t("builder.properties.hover_text_desc")}
-              </p>
-            </div>
-
-            {}
-            <div>
-              <label className="block text-sm font-medium text-black mb-1">
-                {t("builder.properties.default_value")}
-              </label>
-              <input
-                type="text"
-                value={options.defaultValue || ""}
+                className="sr-only peer" />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>              </label>              {validation.hasMaxLength &&
+            <div className="mt-2">                  <input
+                type="number"
+                value={validation.maxLength || 100}
                 onChange={(e) =>
-                  handleOptionUpdate("defaultValue", e.target.value)
+                handleValidationUpdate(
+                  "maxLength",
+                  parseInt(e.target.value)
+                )
                 }
                 className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
-              />
-              <p className="mt-1 text-xs text-gray-500">
-                {t("builder.properties.default_value_desc")}
-              </p>
-            </div>
-
-            {}
-            <div>
-              <label className="block text-sm font-medium text-black mb-1">
-                {t("builder.properties.validation")}
-              </label>
-              <Select
-                value={validation.type || "None"}
-                onValueChange={(val) =>
-                  handleValidationUpdate(
-                    "type",
-                    val as ShortTextValidation["type"],
-                  )
-                }
-              >
-                <SelectTrigger className="w-full bg-white border-gray-400">
-                  <SelectValue
-                    placeholder={t("builder.properties.select_validation")}
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="None">
-                    {t("builder.properties.validation_none")}
-                  </SelectItem>
-                  <SelectItem value="Email">
-                    {t("builder.properties.validation_email")}
-                  </SelectItem>
-                  <SelectItem value="URL">
-                    {t("builder.properties.validation_url")}
-                  </SelectItem>
-                  <SelectItem value="Alphabetic">
-                    {t("builder.properties.validation_alphabetic")}
-                  </SelectItem>
-                  <SelectItem value="Alphanumeric">
-                    {t("builder.properties.validation_alphanumeric")}
-                  </SelectItem>
-                  <SelectItem value="Numeric">
-                    {t("builder.properties.validation_numeric")}
-                  </SelectItem>
-                  <SelectItem value="Regex">
-                    {t("builder.properties.validation_regex")}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-              <p className="mt-1 text-xs text-gray-500">
-                {t("builder.properties.validation_desc")}
-              </p>
-            </div>
-
-            {}
-            <div>
-              <label className="block text-sm font-medium text-black mb-1">
-                {t("builder.properties.character_limit")}
-              </label>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={validation.hasMaxLength || false}
-                  onChange={(e) =>
-                    handleValidationUpdate("hasMaxLength", e.target.checked)
-                  }
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
-              </label>
-
-              {validation.hasMaxLength && (
-                <div className="mt-2">
-                  <input
-                    type="number"
-                    value={validation.maxLength || 100}
-                    onChange={(e) =>
-                      handleValidationUpdate(
-                        "maxLength",
-                        parseInt(e.target.value),
-                      )
-                    }
-                    className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
-                    placeholder={t("builder.properties.max_characters")}
-                  />
+                placeholder={t("builder.properties.max_characters")} />
                 </div>
-              )}
-              <p className="mt-1 text-xs text-gray-500">
-                {t("builder.properties.char_limit_desc")}
-              </p>
-            </div>
-
-            {}
-            <div>
-              <label className="block text-sm font-medium text-black mb-1">
-                {t("builder.properties.read_only")}
-              </label>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={options.readOnly || false}
-                  onChange={(e) =>
-                    handleOptionUpdate("readOnly", e.target.checked)
-                  }
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
-              </label>
-              <p className="mt-1 text-xs text-gray-500">
-                {t("builder.properties.read_only_desc")}
-              </p>
-            </div>
-
-            {}
-            <div>
-              <label className="block text-sm font-medium text-black mb-1">
-                {t("builder.properties.shrink")}
-              </label>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={field.shrink || false}
-                  onChange={(e) => handleUpdate({ shrink: e.target.checked })}
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
-              </label>
-              <p className="mt-1 text-xs text-gray-500">
-                {t("builder.properties.shrink_desc")}
-              </p>
-            </div>
-
-            {}
-            <div>
-              <label className="block text-sm font-medium text-black mb-1">
-                {t("builder.properties.hide_field")}
-              </label>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={options.hidden || false}
-                  onChange={(e) =>
-                    handleOptionUpdate("hidden", e.target.checked)
-                  }
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>
-              </label>
-            </div>
-          </div>
-        )}
-      </div>
-    </>
-  );
+            }              <p className="mt-1 text-xs text-gray-500">                {t("builder.properties.char_limit_desc")}              </p>            </div>            {}            <div>              <label className="block text-sm font-medium text-black mb-1">                {t("builder.properties.read_only")}              </label>              <label className="relative inline-flex items-center cursor-pointer">                <input
+                type="checkbox"
+                checked={options.readOnly || false}
+                onChange={(e) =>
+                handleOptionUpdate("readOnly", e.target.checked)
+                }
+                className="sr-only peer" />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>              </label>              <p className="mt-1 text-xs text-gray-500">                {t("builder.properties.read_only_desc")}              </p>            </div>            {}            <div>              <label className="block text-sm font-medium text-black mb-1">                {t("builder.properties.shrink")}              </label>              <label className="relative inline-flex items-center cursor-pointer">                <input
+                type="checkbox"
+                checked={field.shrink || false}
+                onChange={(e) => handleUpdate({ shrink: e.target.checked })}
+                className="sr-only peer" />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>              </label>              <p className="mt-1 text-xs text-gray-500">                {t("builder.properties.shrink_desc")}              </p>            </div>            {}            <div>              <label className="block text-sm font-medium text-black mb-1">                {t("builder.properties.hide_field")}              </label>              <label className="relative inline-flex items-center cursor-pointer">                <input
+                type="checkbox"
+                checked={options.hidden || false}
+                onChange={(e) =>
+                handleOptionUpdate("hidden", e.target.checked)
+                }
+                className="sr-only peer" />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>              </label>            </div>          </div>
+        }      </div>    </>);
 };

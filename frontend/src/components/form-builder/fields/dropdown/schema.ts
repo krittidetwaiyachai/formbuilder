@@ -1,14 +1,12 @@
 import { FieldType } from '@/types/enums';
 import { FieldWidth, LabelAlignment } from '@/types/field-schema';
 import type { FieldWidthType, LabelAlignmentType } from '@/types/field-schema';
-
 export interface DropdownValidation {
   readOnly: boolean;
   multiple: boolean;
   width: FieldWidthType;
   labelAlignment: LabelAlignmentType;
 }
-
 export const dropdownDefaultValues = {
   type: FieldType.DROPDOWN,
   label: 'Dropdown',
@@ -19,6 +17,6 @@ export const dropdownDefaultValues = {
     readOnly: false,
     multiple: false,
     width: FieldWidth.FULL,
-    labelAlignment: LabelAlignment.TOP,
-  } satisfies DropdownValidation,
+    labelAlignment: LabelAlignment.TOP
+  } satisfies DropdownValidation
 } as const;

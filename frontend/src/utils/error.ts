@@ -1,11 +1,10 @@
 import axios from 'axios';
-
 export const getAxiosErrorMessage = (error: unknown, fallback: string): string => {
-    if (axios.isAxiosError(error)) {
-        return error.response?.data?.message || fallback;
-    }
-    if (error instanceof Error) {
-        return error.message;
-    }
-    return fallback;
+  if (axios.isAxiosError(error)) {
+    return error.response?.data?.message || fallback;
+  }
+  if (error instanceof Error) {
+    return error.message;
+  }
+  return fallback;
 };

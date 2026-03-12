@@ -6,10 +6,8 @@ export interface ActiveEditor {
   isActive?: boolean;
   lastSeen?: string;
 }
-
 export type ActivityAction = 'created' | 'updated' | 'deleted' | 'published' | 'unpublished' | 'viewed';
 export type ActivityTarget = 'form' | 'element' | 'settings';
-
 export interface ActivityLog {
   id: string;
   userId: string;
@@ -23,7 +21,6 @@ export interface ActivityLog {
   metadata?: Record<string, unknown>;
   formId: string;
 }
-
 export interface ActiveUser {
   id: string;
   name: string;
@@ -32,17 +29,14 @@ export interface ActiveUser {
   selectedFieldId: string | null;
   socketId: string;
 }
-
 export interface FieldSelectionPayload {
   formId: string;
   fieldId: string;
   userId: string;
 }
-
 export interface JoinFormPayload {
   formId: string;
   userId: string;
   userName: string;
   userEmail: string;
 }
-

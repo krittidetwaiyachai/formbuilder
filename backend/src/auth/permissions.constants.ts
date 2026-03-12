@@ -12,13 +12,10 @@ export const Permissions = {
   VIEW_AUDIT_LOG: 'VIEW_AUDIT_LOG',
   EXPORT_DATA: 'EXPORT_DATA',
   DELETE_RESPONSES: 'DELETE_RESPONSES',
-  BYPASS_PDPA: 'BYPASS_PDPA',
+  BYPASS_PDPA: 'BYPASS_PDPA'
 } as const;
-
 export type Permission = keyof typeof Permissions;
-
 export const ALL_PERMISSIONS = Object.values(Permissions);
-
 export const PERMISSION_LABELS: Record<Permission, string> = {
   MANAGE_USERS: 'จัดการผู้ใช้ (แบน/แก้ไข)',
   MANAGE_BUNDLES: 'จัดการ Field Bundles',
@@ -33,9 +30,8 @@ export const PERMISSION_LABELS: Record<Permission, string> = {
   VIEW_AUDIT_LOG: 'ดู Security Audit Log',
   EXPORT_DATA: 'Export ข้อมูล (CSV/Excel)',
   DELETE_RESPONSES: '⚠️ ลบ Responses',
-  BYPASS_PDPA: '⚠️ ดูข้อมูล Encrypted (ฉุกเฉิน)',
+  BYPASS_PDPA: '⚠️ ดูข้อมูล Encrypted (ฉุกเฉิน)'
 };
-
 export const PERMISSION_DESCRIPTIONS: Record<Permission, string> = {
   MANAGE_USERS: 'สามารถแบน/ปลดแบน และเปลี่ยน Role ของผู้ใช้ได้',
   MANAGE_BUNDLES: 'สามารถสร้าง แก้ไข และลบ Field Bundles ได้',
@@ -50,29 +46,17 @@ export const PERMISSION_DESCRIPTIONS: Record<Permission, string> = {
   VIEW_AUDIT_LOG: 'ดู Security Audit Log รวมถึง Login/Logout',
   EXPORT_DATA: 'Export ข้อมูลเป็น CSV หรือ Excel ได้',
   DELETE_RESPONSES: 'ลบคำตอบฟอร์มได้ (ข้อมูลจะหายถาวร)',
-  BYPASS_PDPA: 'ดูข้อมูลที่ encrypt ไว้ในกรณีฉุกเฉิน (อันตราย!)',
+  BYPASS_PDPA: 'ดูข้อมูลที่ encrypt ไว้ในกรณีฉุกเฉิน (อันตราย!)'
 };
-
 export const DEFAULT_ROLE_PERMISSIONS: Record<string, Permission[]> = {
-  SUPER_ADMIN: [...ALL_PERMISSIONS], 
-  
+  SUPER_ADMIN: [...ALL_PERMISSIONS],
   ADMIN: [
-    
-    'MANAGE_FORMS', 'VIEW_RESPONSES', 'EXPORT_DATA',
-    
-    'MANAGE_BUNDLES', 'MANAGE_USERS', 'VIEW_ANALYTICS', 'VIEW_SYSTEM_LOGS', 'VIEW_USER_DATA', 'VIEW_AUDIT_LOG', 'DELETE_RESPONSES'
-  ],
-  
+  'MANAGE_FORMS', 'VIEW_RESPONSES', 'EXPORT_DATA',
+  'MANAGE_BUNDLES', 'MANAGE_USERS', 'VIEW_ANALYTICS', 'VIEW_SYSTEM_LOGS', 'VIEW_USER_DATA', 'VIEW_AUDIT_LOG', 'DELETE_RESPONSES'],
   EDITOR: [
-    
-    'VIEW_RESPONSES',
-    
-    'MANAGE_FORMS', 'EXPORT_DATA', 'MANAGE_TEMPLATES'
-  ],
-  
+  'VIEW_RESPONSES',
+  'MANAGE_FORMS', 'EXPORT_DATA', 'MANAGE_TEMPLATES'],
   VIEWER: [
-    'VIEW_RESPONSES'
-  ],
-  
-  USER: [] 
+  'VIEW_RESPONSES'],
+  USER: []
 };

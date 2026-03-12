@@ -1,20 +1,17 @@
 import axios from 'axios';
 import { useAuthStore } from '@/store/authStore';
 import { globalToast } from '@/lib/toast-utils';
-
 const API_URL = import.meta.env.VITE_API_URL || '/api';
 const RETRY_MAX_ATTEMPTS = 0;
 const REQUEST_TIMEOUT_MS = 30000;
 const RETRY_BASE_DELAY_MS = 1000;
-
 export const api = axios.create({
   baseURL: API_URL,
   headers: {
-    'Content-Type': 'application/json',
+    'Content-Type': 'application/json'
   },
-  timeout: REQUEST_TIMEOUT_MS,
+  timeout: REQUEST_TIMEOUT_MS
 });
-
 api.interceptors.request.use((config) => {
   const token = useAuthStore.getState().token;
   if (token) {
@@ -22,56 +19,43 @@ api.interceptors.request.use((config) => {
   }
   return config;
 });
-
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-
     if (error.response?.status === 429 && !originalRequest._retry) {
       originalRequest._retry = true;
       const retryCount = originalRequest._retryCount || 0;
-
       if (retryCount < RETRY_MAX_ATTEMPTS) {
         originalRequest._retryCount = retryCount + 1;
-
         const waitTime = Math.pow(2, retryCount) * RETRY_BASE_DELAY_MS + Math.random() * 1000;
-
-        await new Promise(resolve => setTimeout(resolve, waitTime));
+        await new Promise((resolve) => setTimeout(resolve, waitTime));
         return api(originalRequest);
       } else {
-
         globalToast({
           title: "error.rate_limit.title",
           description: "error.rate_limit.message",
           variant: "error",
-          duration: 5000,
+          duration: 5000
         });
       }
     }
-
     if (error.response?.status === 401) {
       const errorData = error.response?.data;
       const isSessionExpired = errorData?.code === 'SESSION_EXPIRED' || errorData?.message === 'Session expired';
-
       useAuthStore.getState().logout();
-
       if (isSessionExpired) {
         window.dispatchEvent(new CustomEvent('session-expired'));
       }
-
       window.location.href = '/';
     }
-
     if (error.response?.status === 403) {
       const message = error.response?.data?.message || 'Access Denied: You do not have permission to perform this action.';
       window.dispatchEvent(new CustomEvent('permission-denied', {
         detail: { message }
       }));
     }
-
     return Promise.reject(error);
-  },
+  }
 );
-
 export default api;

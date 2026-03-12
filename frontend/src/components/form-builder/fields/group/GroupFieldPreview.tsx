@@ -1,15 +1,12 @@
 import type { Field } from "@/types";
 import { ChevronDown, ChevronRight, Layers } from "lucide-react";
 import { useState } from "react";
-
 interface GroupFieldPreviewProps {
   field: Field;
   children?: React.ReactNode;
 }
-
 export function GroupFieldPreview({ field, children }: GroupFieldPreviewProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
-
   return (
     <fieldset
       style={{
@@ -18,9 +15,8 @@ export function GroupFieldPreview({ field, children }: GroupFieldPreviewProps) {
         padding: 0,
         margin: "16px 0",
         backgroundColor: "#ffffff",
-        overflow: "hidden",
-      }}
-    >
+        overflow: "hidden"
+      }}>
       <legend
         style={{
           display: "flex",
@@ -34,24 +30,12 @@ export function GroupFieldPreview({ field, children }: GroupFieldPreviewProps) {
           fontSize: "14px",
           fontWeight: 600,
           color: "#374151",
-          cursor: "pointer",
+          cursor: "pointer"
         }}
-        onClick={() => setIsCollapsed(!isCollapsed)}
-      >
-        {isCollapsed ? <ChevronRight size={16} /> : <ChevronDown size={16} />}
-        <Layers size={16} style={{ color: "#6366f1" }} />
-        {field.label || "Field Group"}
-      </legend>
-
-      {!isCollapsed && (
-        <div style={{ padding: "16px 20px" }}>
-          {children || (
-            <p style={{ color: "#9ca3af", fontSize: "14px", margin: 0 }}>
-              No fields in this group
-            </p>
-          )}
-        </div>
-      )}
-    </fieldset>
-  );
+        onClick={() => setIsCollapsed(!isCollapsed)}>
+        {isCollapsed ? <ChevronRight size={16} /> : <ChevronDown size={16} />}        <Layers size={16} style={{ color: "#6366f1" }} />        {field.label || "Field Group"}      </legend>      {!isCollapsed &&
+      <div style={{ padding: "16px 20px" }}>          {children ||
+        <p style={{ color: "#9ca3af", fontSize: "14px", margin: 0 }}>              No fields in this group            </p>
+        }        </div>
+      }    </fieldset>);
 }

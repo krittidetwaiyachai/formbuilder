@@ -3,5 +3,5 @@ export const DEFAULT_THEME = {
   fontFamily: 'Inter',
   textColor: '#1F2937',
   backgroundColor: '#ffffff',
-  borderRadius: 'medium',
+  borderRadius: 'medium'
 };

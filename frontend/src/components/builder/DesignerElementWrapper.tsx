@@ -1,51 +1,41 @@
 "use client";
-
 import { useSortable } from "@dnd-kit/sortable";
-
 import type { Field as FormElement } from "@/types";
 import { useFormStore } from "@/store/formStore";
 import DesignerElementCard from "./DesignerElementCard";
 import { cn } from "@/lib/utils";
 import * as React from "react";
-
 interface DesignerElementWrapperProps {
   element: FormElement;
   index?: number;
 }
-
 function DesignerElementWrapperComponent({
   element,
-  index,
+  index
 }: DesignerElementWrapperProps) {
   const selectedFieldId = useFormStore((state) => state.selectedFieldId);
   const selectField = useFormStore((state) => state.selectField);
   const deleteField = useFormStore((state) => state.deleteField);
-
   const isSelected = selectedFieldId === element.id;
-
   const {
     attributes,
     listeners,
     setNodeRef,
     transform,
     transition,
-    isDragging,
+    isDragging
   } = useSortable({
     id: element.id,
     data: {
       source: "canvas",
       elementId: element.id,
-      index: index,
-    },
+      index: index
+    }
   });
-
   const elementRef = React.useRef<HTMLDivElement | null>(null);
-
   React.useLayoutEffect(() => {
     if (!elementRef.current) return;
-
     const element = elementRef.current;
-
     if (isDragging) {
       const lockPosition = () => {
         if (element && isDragging) {
@@ -57,69 +47,62 @@ function DesignerElementWrapperComponent({
           }
         }
       };
-
       const observer = new MutationObserver(lockPosition);
       observer.observe(element, {
         attributes: true,
-        attributeFilter: ["style"],
+        attributeFilter: ["style"]
       });
-
       const rafId = requestAnimationFrame(function animate() {
         lockPosition();
         if (isDragging) {
           requestAnimationFrame(animate);
         }
       });
-
       return () => {
         observer.disconnect();
         cancelAnimationFrame(rafId);
       };
     }
   }, [isDragging]);
-
   const style = {
-    transform: isDragging
-      ? undefined
-      : transform
-        ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
-        : undefined,
+    transform: isDragging ?
+    undefined :
+    transform ?
+    `translate3d(${transform.x}px, ${transform.y}px, 0)` :
+    undefined,
     transition: isDragging ? "none" : transition,
     opacity: isDragging ? 0.3 : 1,
-    visibility: "visible" as const,
+    visibility: "visible" as const
   };
-
   const customListeners = React.useMemo(() => {
     if (!listeners) return {};
-
     const customHandlers: Record<
       string,
-      (e: React.SyntheticEvent | Event) => void
-    > = {};
+      (e: React.SyntheticEvent | Event) => void> =
+    {};
     Object.keys(listeners).forEach((key) => {
       const originalHandler = (listeners as Record<string, Function>)[key];
       if (typeof originalHandler === "function") {
         customHandlers[key] = (e: React.SyntheticEvent | Event) => {
           const target = e.target as HTMLElement;
-
           if (
-            target.isContentEditable ||
-            target.closest('[contenteditable="true"]') ||
-            [
-              "INPUT",
-              "TEXTAREA",
-              "SELECT",
-              "BUTTON",
-              "LABEL",
-              "H1",
-              "H2",
-              "H3",
-              "H4",
-              "H5",
-              "H6",
-              "P",
-            ].includes(target.tagName)
-          ) {
+          target.isContentEditable ||
+          target.closest('[contenteditable="true"]') ||
+          [
+          "INPUT",
+          "TEXTAREA",
+          "SELECT",
+          "BUTTON",
+          "LABEL",
+          "H1",
+          "H2",
+          "H3",
+          "H4",
+          "H5",
+          "H6",
+          "P"].
+          includes(target.tagName))
+          {
             return;
           }
           originalHandler(e);
@@ -130,7 +113,6 @@ function DesignerElementWrapperComponent({
     });
     return customHandlers;
   }, [listeners]);
-
   return (
     <div
       ref={(node) => {
@@ -142,9 +124,8 @@ function DesignerElementWrapperComponent({
       {...customListeners}
       className={cn(
         "relative cursor-move",
-        isDragging && "pointer-events-none flex justify-center",
-      )}
-    >
+        isDragging && "pointer-events-none flex justify-center"
+      )}>
       <DesignerElementCard
         element={element}
         isSelected={isSelected}
@@ -152,9 +133,9 @@ function DesignerElementWrapperComponent({
         onClick={(e) => {
           const target = e.target as HTMLElement;
           if (
-            target.isContentEditable ||
-            target.closest('[contenteditable="true"]')
-          ) {
+          target.isContentEditable ||
+          target.closest('[contenteditable="true"]'))
+          {
             return;
           }
           e.stopPropagation();
@@ -163,12 +144,9 @@ function DesignerElementWrapperComponent({
         onDelete={(e) => {
           e.stopPropagation();
           deleteField(element.id);
-        }}
-      />
-    </div>
-  );
+        }} />
+    </div>);
 }
-
 export default React.memo(DesignerElementWrapperComponent, (prev, next) => {
   return prev.element === next.element && prev.index === next.index;
 });

@@ -1,7 +1,6 @@
 export default {
   "admin.bundles.delete_confirm": "Delete Bundle?",
   "admin.bundles.delete_confirm_desc": "Are you sure you want to delete this bundle? This action cannot be undone.",
-
   "admin.dashboard.title": "Dashboard",
   "admin.dashboard.subtitle": "System Overview",
   "admin.dashboard.monthly_submissions": "Submission History (6 Months)",
@@ -13,7 +12,6 @@ export default {
   "admin.dashboard.forms_created": "Forms Created",
   "admin.dashboard.total_users": "Total Users",
   "admin.dashboard.active_now": "Active Now",
-
   "admin.bundles.title": "Manage Field Bundles",
   "admin.bundles.description": "Create and manage field bundles for use in forms",
   "admin.bundles.search_placeholder": "Search bundles...",
@@ -26,10 +24,8 @@ export default {
   "admin.bundles.table.status": "Status",
   "admin.bundles.status.draft": "Draft",
   "admin.bundles.status.published": "Published",
-
   "admin.users.title": "Manage Users",
   "admin.users.description": "View all users, ban/unban, and manage roles",
-
   "admin.editor.untitled": "Untitled Bundle",
   "admin.editor.undo_shortcut": "Undo (Ctrl+Z)",
   "admin.editor.redo_shortcut": "Redo (Ctrl+Shift+Z)",
@@ -56,7 +52,6 @@ export default {
   "admin.editor.field.fullname": "Full Name",
   "admin.editor.field.matrix": "Input Matrix",
   "admin.editor.field.table": "Input Table",
-
   "admin.users.table.user": "User",
   "admin.users.table.role": "Role",
   "admin.users.table.provider": "Provider",
@@ -71,12 +66,10 @@ export default {
   "admin.users.search_placeholder": "Search users...",
   "admin.users.no_users": "No users found",
   "admin.users.page_info": "Page {{page}} of {{total}}",
-
   "admin.stats.total_users": "Total Users",
   "admin.stats.total_forms": "Total Forms",
   "admin.stats.total_submissions": "Total Submissions",
   "admin.stats.growth_rate": "Growth Rate",
-
   "admin.activity.title": "Recent Activity",
   "admin.activity.no_activity": "No activity yet",
   "admin.activity.deleted_form": "Deleted Form",

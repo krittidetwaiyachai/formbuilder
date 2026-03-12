@@ -5,8 +5,8 @@ import type {
   Control,
   UseFormRegister,
   UseFormWatch,
-  UseFormSetValue,
-} from "react-hook-form";
+  UseFormSetValue } from
+"react-hook-form";
 import { TextPreview } from "./fields/TextPreview";
 import { EmailPreview } from "./fields/EmailPreview";
 import { PreviewPhoneField } from "./fields/PreviewPhoneField";
@@ -23,7 +23,6 @@ import { PreviewSubmitField } from "./fields/PreviewSubmitField";
 import { PreviewGroupField } from "./fields/PreviewGroupField";
 import { PreviewMatrixField } from "./fields/PreviewMatrixField";
 import { PreviewTableField } from "./fields/PreviewTableField";
-
 interface FormFieldRendererProps {
   field: Field;
   register: UseFormRegister<Record<string, unknown>>;
@@ -34,7 +33,6 @@ interface FormFieldRendererProps {
   questionNumber?: number;
   isPublic?: boolean;
 }
-
 export default function FormFieldRenderer({
   field,
   register,
@@ -43,33 +41,25 @@ export default function FormFieldRenderer({
   setValue,
   control,
   questionNumber,
-  isPublic,
+  isPublic
 }: FormFieldRendererProps) {
   const commonProps = { field, register, errors, questionNumber, isPublic };
-
   switch (field.type) {
     case FieldType.TEXT:
       return <TextPreview {...commonProps} />;
-
     case FieldType.EMAIL:
       return <EmailPreview {...commonProps} />;
-
     case FieldType.PHONE:
       return <PreviewPhoneField {...commonProps} />;
-
     case FieldType.NUMBER:
       return <NumberPreview {...commonProps} />;
-
     case FieldType.TEXTAREA:
       return (
         <PreviewTextAreaField
           {...commonProps}
           watch={watch}
           setValue={setValue}
-          control={control}
-        />
-      );
-
+          control={control} />);
     case FieldType.DROPDOWN:
     case FieldType.RADIO:
     case FieldType.CHECKBOX:
@@ -78,55 +68,39 @@ export default function FormFieldRenderer({
         <PreviewSelectField
           {...commonProps}
           watch={watch}
-          setValue={setValue}
-        />
-      );
-
+          setValue={setValue} />);
     case FieldType.MATRIX:
       if (!watch || !setValue) return null;
       return (
         <PreviewMatrixField
           {...commonProps}
           watch={watch}
-          setValue={setValue}
-        />
-      );
-
+          setValue={setValue} />);
     case FieldType.TABLE:
       if (!watch || !control) return null;
       return <PreviewTableField {...commonProps} control={control} />;
-
     case FieldType.DATE:
     case FieldType.TIME:
       return <PreviewDateField {...commonProps} control={control} />;
-
     case FieldType.RATE:
       if (!watch || !setValue) return null;
       return (
-        <PreviewRateField {...commonProps} watch={watch} setValue={setValue} />
-      );
-
+        <PreviewRateField {...commonProps} watch={watch} setValue={setValue} />);
     case FieldType.HEADER:
     case FieldType.DIVIDER:
     case FieldType.SECTION_COLLAPSE:
     case FieldType.PAGE_BREAK:
       return <PreviewHeaderField field={field} />;
-
     case FieldType.PARAGRAPH:
       return <PreviewParagraphField field={field} />;
-
     case FieldType.FULLNAME:
       return <PreviewFullNameField {...commonProps} />;
-
     case FieldType.ADDRESS:
       return <PreviewAddressField {...commonProps} />;
-
     case FieldType.SUBMIT:
       return <PreviewSubmitField {...commonProps} />;
-
     case FieldType.GROUP:
       return <PreviewGroupField field={field} />;
-
     default:
       return null;
   }

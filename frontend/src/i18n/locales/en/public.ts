@@ -109,7 +109,6 @@ export default {
   "public.rte.size_large": "Large",
   "public.rte.size_huge": "Huge",
   "public.rte.enter_url": "Enter URL",
-
   "public.preview.desktop": "Desktop",
   "public.preview.tablet": "Tablet",
   "public.preview.mobile": "Mobile",

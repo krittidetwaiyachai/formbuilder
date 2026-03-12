@@ -15,18 +15,15 @@ export default {
   "builder.access_denied": "Access Denied",
   "builder.access_denied_msg": "You don't have permission to access this form.",
   "builder.back_to_dashboard": "Back to Dashboard",
-
   "builder.field_bundles": "Field Bundles",
   "builder.bundles_subtitle": "Common Sets",
   "builder.bundles_description": "Choose a pre-built template to add to your form",
   "builder.bundles_click": "Click on a template to add it to your form",
-
   "builder.categories.text": "Text Fields",
   "builder.categories.choice": "Choice Fields",
   "builder.categories.datetime": "Date & Time",
   "builder.categories.rating": "Rating",
   "builder.categories.layout": "Layout",
-
   "builder.fields.short_text": "Short Text",
   "builder.fields.long_text": "Long Text",
   "builder.fields.email": "Email",
@@ -47,7 +44,6 @@ export default {
   "builder.fields.separator": "Separator",
   "builder.fields.page_break": "Page Break",
   "builder.fields.group": "Field Group",
-
   "builder.tabs.properties": "Properties",
   "builder.tabs.logic": "Logic",
   "builder.tabs.settings": "Settings",
@@ -57,7 +53,6 @@ export default {
   "builder.tabs.columns": "Columns",
   "builder.tabs.surveying": "Surveying",
   "builder.tabs.fields": "Fields",
-
   "builder_header.saving": "Saving...",
   "builder_header.loading": "Loading...",
   "builder_header.all_saved": "All changes saved at",
@@ -70,7 +65,6 @@ export default {
   "builder_header.undo": "Undo",
   "builder_header.redo": "Redo",
   "builder_header.invite_collaborators": "Invite collaborators",
-
   "builder.logic.title": "Conditional Logic",
   "builder.logic.subtitle": "Create rules to show or hide fields based on user input",
   "builder.logic.add_rule": "Add Rule",
@@ -99,7 +93,6 @@ export default {
   "builder.logic.click_expand": "Click a rule to expand details",
   "builder.logic.conditions": "Conditions",
   "builder.logic.actions": "Actions",
-
   "builder.logic.op.equals": "Equals",
   "builder.logic.op.not_equals": "Not Equals",
   "builder.logic.op.contains": "Contains",
@@ -110,7 +103,6 @@ export default {
   "builder.logic.rules_count_label": "rules",
   "builder.logic.and": "AND",
   "builder.logic.or": "OR",
-
   "builder.quiz.mode": "Quiz Mode",
   "builder.quiz.total": "Total:",
   "builder.quiz.used": "Used:",
@@ -126,7 +118,6 @@ export default {
   "builder.quiz.options": "options",
   "builder.quiz.answers": "answers",
   "builder.quiz.remaining": "Remaining:",
-
   "builder.pagination.page": "Page {{index}}",
   "builder.pagination.page_generic": "Page",
   "builder.pagination.welcome_page": "Welcome Page",
@@ -137,7 +128,6 @@ export default {
   "builder.pagination.added": "(Added)",
   "builder.pagination.delete_page_title": "Delete Page?",
   "builder.pagination.delete_page_desc": "Are you sure you want to delete this page? All fields in it will be removed.",
-
   "builder.special_page.appearance": "Appearance",
   "builder.special_page.icon": "Icon",
   "builder.special_page.icon_color": "Icon Color",
@@ -150,7 +140,6 @@ export default {
   "builder.special_page.button_text": "Button Text",
   "builder.special_page.button_link": "Button Link",
   "builder.special_page.show_start_button": "Show Start Button",
-
   "builder.sidebar.fields": "Form Elements",
   "builder.sidebar.drag": "Drag to add",
   "builder.canvas.drop_here": "Drop here to add element",
@@ -158,7 +147,6 @@ export default {
   "builder.properties.element_properties": "Element Properties",
   "builder.properties.tooltip_duplicate": "Duplicate (Ctrl+D)",
   "builder.properties.tooltip_delete": "Delete (Delete key)",
-
   "builder.theme.title": "Form Theme",
   "builder.theme.settings_title": "Theme Settings",
   "builder.insert_link": "Insert Link",
@@ -175,7 +163,6 @@ export default {
   "builder.theme.btn_style": "Button Style",
   "builder.theme.border_radius": "Border Radius",
   "builder.theme.font_family": "Font Family",
-
   "builder.theme.type_color": "Solid Color",
   "builder.theme.type_gradient": "Gradient",
   "builder.theme.type_image": "Image",
@@ -186,14 +173,12 @@ export default {
   "builder.theme.radius_small": "Small",
   "builder.theme.radius_medium": "Medium",
   "builder.theme.radius_large": "Large",
-
   "builder.settings.redirect_url": "Redirect URL (Optional)",
   "builder.settings.redirect_desc": "Redirect users after form submission",
   "builder.settings.notifications": "Email notifications",
   "builder.settings.notify_emails": "Notification Emails",
   "builder.settings.remove_email": "Remove",
   "builder.settings.add_email_placeholder": "Press Enter to add email",
-
   "builder.properties.content": "Content",
   "builder.properties.general": "GENERAL",
   "builder.properties.heading_image": "HEADING IMAGE",
@@ -209,7 +194,6 @@ export default {
   "builder.properties.max_value": "Max",
   "builder.properties.max_rating": "Max Rating",
   "builder.properties.rows": "Rows",
-
   "builder.element.delete_confirm": "Delete Element?",
   "builder.element.delete_confirm_desc": "Are you sure you want to delete this element? This action cannot be undone.",
   "builder.field.delete_confirm": "Delete Field?",
@@ -223,7 +207,6 @@ export default {
   "builder.placeholder.date": "Pick a date...",
   "builder.placeholder.time": "Pick a time...",
   "builder.placeholder.header_subheading": "Add a subheading...",
-
   "builder.media.insert_image": "Insert Image",
   "builder.media.insert_video": "Insert Video",
   "builder.media.paste_image_url": "Paste image URL...",
@@ -232,16 +215,13 @@ export default {
   "builder.media.remove_image": "Remove Image",
   "builder.media.remove_video": "Remove Video",
   "builder.properties.type_sublabel": "Type sublabel...",
-
   "builder.submit.default_label": "Submit",
   "builder.submit.clear_form": "Clear Form",
   "builder.submit.print": "Print",
-
   "builder.toast.element_deleted": "Element deleted",
   "builder.toast.element_deleted_desc": "The element has been removed from your form.",
   "builder.toast.element_duplicated": "Element duplicated",
   "builder.toast.element_duplicated_desc": "The element has been duplicated.",
-
   "builder.toast.save_success": "Form saved successfully",
   "builder.toast.save_error": "Failed to save form",
   "builder.toast.load_error": "Failed to load form.",

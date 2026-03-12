@@ -5,7 +5,6 @@ import type { FieldErrors } from "react-hook-form";
 import { User } from "lucide-react";
 import { useFormStore } from "@/store/formStore";
 import { PreviewLabel } from "../PreviewLabel";
-
 interface PreviewFieldProps {
   field: Field;
   register: ReturnType<typeof useForm>["register"];
@@ -13,21 +12,18 @@ interface PreviewFieldProps {
   questionNumber?: number;
   isPublic?: boolean;
 }
-
 import { useTranslation } from "react-i18next";
-
 export const PreviewFullNameField: React.FC<PreviewFieldProps> = ({
   field,
   register,
   errors,
   questionNumber,
-  isPublic,
+  isPublic
 }) => {
   const { t } = useTranslation();
   const fieldName = `field_${field.id}`;
   const { updateField } = useFormStore();
   const typedField = field as FullNameField;
-
   const options = typedField.options || {};
   const {
     labelAlignment = "TOP",
@@ -38,27 +34,23 @@ export const PreviewFullNameField: React.FC<PreviewFieldProps> = ({
     shrink,
     showMiddleName,
     showPrefix,
-    showSuffix,
+    showSuffix
   } = options;
-
   const isRowLayout = labelAlignment === "LEFT" || labelAlignment === "RIGHT";
-
-  const inputClass = isPublic
-    ? `flex-1 px-4 ${shrink ? "py-2 text-base" : "py-3 text-base"} border rounded-lg placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all hover:border-gray-300 ${readOnly ? "bg-gray-50 cursor-not-allowed" : ""}`
-    : `flex-1 pl-10 pr-4 py-3 border-2 border-gray-300 bg-white text-black text-sm shadow-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black transition-all ${readOnly ? "bg-gray-100 cursor-not-allowed text-gray-500" : ""}`;
-
-  const inputStyle = isPublic
-    ? {
-        color: "var(--text)",
-        backgroundColor: "var(--input-bg)",
-        borderColor: "var(--input-border)",
-      }
-    : {};
-
+  const inputClass = isPublic ?
+  `flex-1 px-4 ${shrink ? "py-2 text-base" : "py-3 text-base"} border rounded-lg placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all hover:border-gray-300 ${readOnly ? "bg-gray-50 cursor-not-allowed" : ""}` :
+  `flex-1 pl-10 pr-4 py-3 border-2 border-gray-300 bg-white text-black text-sm shadow-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black transition-all ${readOnly ? "bg-gray-100 cursor-not-allowed text-gray-500" : ""}`;
+  const inputStyle = isPublic ?
+  {
+    color: "var(--text)",
+    backgroundColor: "var(--input-bg)",
+    borderColor: "var(--input-border)"
+  } :
+  {};
   const handleSubLabelBlur = (
-    key: string,
-    e: React.FormEvent<HTMLDivElement>,
-  ) => {
+  key: string,
+  e: React.FormEvent<HTMLDivElement>) =>
+  {
     if (isPublic) return;
     const text = e.currentTarget.innerText;
     updateField(field.id, {
@@ -66,121 +58,84 @@ export const PreviewFullNameField: React.FC<PreviewFieldProps> = ({
         ...options,
         sublabels: {
           ...sublabels,
-          [key]: text,
-        },
-      },
+          [key]: text
+        }
+      }
     });
   };
-
   const renderInput = (
-    name: string,
-    placeholder: string,
-    sublabel: string,
-    defaultSublabel: string,
-  ) => (
-    <div className="flex-1">
-      <div className="relative" title={hoverText}>
-        {!isPublic && (
-          <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
-            <User className="h-4 w-4 text-gray-400" />
-          </div>
-        )}
-        <input
-          type="text"
-          id={`${fieldName}_${name}`}
-          {...register(`${fieldName}_${name}`, {
-            required: field.required
-              ? t("public.validation.required_field", { label: sublabel })
-              : false,
-          })}
-          placeholder={placeholder || sublabel}
-          readOnly={readOnly}
-          className={inputClass}
-          style={inputStyle}
-        />
-      </div>
-
-      {}
-      {!isPublic && (
-        <div
-          contentEditable
-          suppressContentEditableWarning
-          spellCheck={false}
-          className="mt-1 text-xs text-gray-500 font-normal outline-none focus:outline-none focus:ring-0 border border-transparent hover:border-gray-200 rounded px-1 transition-colors empty:before:content-['Type_sublabel...']"
-          onBlur={(e) => handleSubLabelBlur(name, e)}
-          onClick={(e) => e.stopPropagation()}
-          onMouseDown={(e) => e.stopPropagation()}
-          dangerouslySetInnerHTML={{
-            __html: sublabels[name] || defaultSublabel,
-          }}
-        />
-      )}
-
-      {}
-      {isPublic && sublabel !== defaultSublabel && (
-        <p className="mt-1 text-xs text-gray-400">{sublabel}</p>
-      )}
-
-      {errors[`${fieldName}_${name}`] && (
-        <p className="mt-1 text-sm text-red-600">
-          {errors[`${fieldName}_${name}`]?.message as string}
-        </p>
-      )}
-    </div>
-  );
-
+  name: string,
+  placeholder: string,
+  sublabel: string,
+  defaultSublabel: string) =>
+  <div className="flex-1">      <div className="relative" title={hoverText}>        {!isPublic &&
+      <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">            <User className="h-4 w-4 text-gray-400" />          </div>
+      }        <input
+        type="text"
+        id={`${fieldName}_${name}`}
+        {...register(`${fieldName}_${name}`, {
+          required: field.required ?
+          t("public.validation.required_field", { label: sublabel }) :
+          false
+        })}
+        placeholder={placeholder || sublabel}
+        readOnly={readOnly}
+        className={inputClass}
+        style={inputStyle} />
+      </div>      {}      {!isPublic &&
+    <div
+      contentEditable
+      suppressContentEditableWarning
+      spellCheck={false}
+      className="mt-1 text-xs text-gray-500 font-normal outline-none focus:outline-none focus:ring-0 border border-transparent hover:border-gray-200 rounded px-1 transition-colors empty:before:content-['Type_sublabel...']"
+      onBlur={(e) => handleSubLabelBlur(name, e)}
+      onClick={(e) => e.stopPropagation()}
+      onMouseDown={(e) => e.stopPropagation()}
+      dangerouslySetInnerHTML={{
+        __html: sublabels[name] || defaultSublabel
+      }} />
+    }      {}      {isPublic && sublabel !== defaultSublabel &&
+    <p className="mt-1 text-xs text-gray-400">{sublabel}</p>
+    }      {errors[`${fieldName}_${name}`] &&
+    <p className="mt-1 text-sm text-red-600">          {errors[`${fieldName}_${name}`]?.message as string}        </p>
+    }    </div>;
   return (
     <div
-      className={`mb-4 w-full ${isRowLayout ? "flex items-start gap-4" : ""}`}
-    >
+      className={`mb-4 w-full ${isRowLayout ? "flex items-start gap-4" : ""}`}>
       <div
-        className={`${isRowLayout ? "w-40 flex-shrink-0 pt-2" : "mb-3"} ${labelAlignment === "RIGHT" ? "text-right" : ""}`}
-      >
+        className={`${isRowLayout ? "w-40 flex-shrink-0 pt-2" : "mb-3"} ${labelAlignment === "RIGHT" ? "text-right" : ""}`}>
         <PreviewLabel
           field={field}
           questionNumber={questionNumber}
           isPublic={isPublic}
-          htmlFor={fieldName}
-        />
-      </div>
-
-      <div className="flex-1 min-w-0">
-        <div className={`flex ${isPublic ? "gap-4" : "gap-3"} flex-wrap`}>
-          {showPrefix &&
-            renderInput(
-              "prefix",
-              placeholders.prefix,
-              sublabels.prefix || t("public.fullname.prefix", "Prefix"),
-              t("public.fullname.prefix", "Prefix"),
-            )}
-          {renderInput(
+          htmlFor={fieldName} />
+      </div>      <div className="flex-1 min-w-0">        <div className={`flex ${isPublic ? "gap-4" : "gap-3"} flex-wrap`}>          {showPrefix &&
+          renderInput(
+            "prefix",
+            placeholders.prefix,
+            sublabels.prefix || t("public.fullname.prefix", "Prefix"),
+            t("public.fullname.prefix", "Prefix")
+          )}          {renderInput(
             "first",
             placeholders.first,
             sublabels.first || t("public.fullname.first", "First Name"),
-            t("public.fullname.first", "First Name"),
-          )}
-          {showMiddleName &&
-            renderInput(
-              "middle",
-              placeholders.middle,
-              sublabels.middle || t("public.fullname.middle", "Middle Name"),
-              t("public.fullname.middle", "Middle Name"),
-            )}
-          {renderInput(
+            t("public.fullname.first", "First Name")
+          )}          {showMiddleName &&
+          renderInput(
+            "middle",
+            placeholders.middle,
+            sublabels.middle || t("public.fullname.middle", "Middle Name"),
+            t("public.fullname.middle", "Middle Name")
+          )}          {renderInput(
             "last",
             placeholders.last,
             sublabels.last || t("public.fullname.last", "Last Name"),
-            t("public.fullname.last", "Last Name"),
-          )}
-          {showSuffix &&
-            renderInput(
-              "suffix",
-              placeholders.suffix,
-              sublabels.suffix || t("public.fullname.suffix", "Suffix"),
-              t("public.fullname.suffix", "Suffix"),
-            )}
-        </div>
-      </div>
-    </div>
-  );
+            t("public.fullname.last", "Last Name")
+          )}          {showSuffix &&
+          renderInput(
+            "suffix",
+            placeholders.suffix,
+            sublabels.suffix || t("public.fullname.suffix", "Suffix"),
+            t("public.fullname.suffix", "Suffix")
+          )}        </div>      </div>    </div>);
 };

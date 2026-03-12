@@ -3,7 +3,6 @@ import api from '@/lib/api';
 import type { Folder } from '@/types/folder';
 import { useAuthStore } from '@/store/authStore';
 import { getAxiosErrorMessage } from '@/utils/error';
-
 import { useTranslation } from 'react-i18next';
 export function useFolders() {
   const { t } = useTranslation();
@@ -11,14 +10,12 @@ export function useFolders() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { isAuthenticated } = useAuthStore();
-
   const loadFolders = useCallback(async () => {
     if (!isAuthenticated) {
       setLoading(false);
       setFolders([]);
       return;
     }
-
     try {
       setLoading(true);
       setError(null);
@@ -32,17 +29,15 @@ export function useFolders() {
       setLoading(false);
     }
   }, [isAuthenticated]);
-
   useEffect(() => {
     loadFolders();
   }, [loadFolders]);
-
   const createFolder = async (name: string, color: string) => {
     try {
       setError(null);
       const response = await api.post('/folders', { name, color });
       const newFolder = response.data;
-      setFolders(prev => [...prev, newFolder]);
+      setFolders((prev) => [...prev, newFolder]);
       return newFolder;
     } catch (err: unknown) {
       console.error('Failed to create folder:', err);
@@ -51,13 +46,12 @@ export function useFolders() {
       throw new Error(errorMessage);
     }
   };
-
   const updateFolder = async (id: string, name?: string, color?: string) => {
     try {
       setError(null);
       const response = await api.patch(`/folders/${id}`, { name, color });
       const updatedFolder = response.data;
-      setFolders(prev => prev.map(f => f.id === id ? updatedFolder : f));
+      setFolders((prev) => prev.map((f) => f.id === id ? updatedFolder : f));
       return updatedFolder;
     } catch (err: unknown) {
       console.error('Failed to update folder:', err);
@@ -66,12 +60,11 @@ export function useFolders() {
       throw new Error(errorMessage);
     }
   };
-
   const deleteFolder = async (id: string) => {
     try {
       setError(null);
       await api.delete(`/folders/${id}`);
-      setFolders(prev => prev.filter(f => f.id !== id));
+      setFolders((prev) => prev.filter((f) => f.id !== id));
     } catch (err: unknown) {
       console.error('Failed to delete folder:', err);
       const errorMessage = getAxiosErrorMessage(err, t('dashboard.toast.error_delete_folder'));
@@ -79,7 +72,6 @@ export function useFolders() {
       throw new Error(errorMessage);
     }
   };
-
   const moveFormToFolder = async (formId: string, folderId: string | null) => {
     try {
       setError(null);
@@ -92,7 +84,6 @@ export function useFolders() {
       throw new Error(errorMessage);
     }
   };
-
   return {
     folders,
     loading,
@@ -101,6 +92,6 @@ export function useFolders() {
     updateFolder,
     deleteFolder,
     moveFormToFolder,
-    refreshFolders: loadFolders,
+    refreshFolders: loadFolders
   };
 }

@@ -1,30 +1,24 @@
 import {
   Injectable,
   NotFoundException,
-  ForbiddenException,
-} from '@nestjs/common';
+  ForbiddenException } from
+'@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateBundleDto, CreateBundleFieldDto } from './dto/create-bundle.dto';
 import { RoleType, BundleField, Prisma } from '@prisma/client';
-
 interface BundleOptions {
   deleted?: boolean;
 }
-
-@Injectable()
-export class BundlesService {
-  constructor(private prisma: PrismaService) { }
-
+@Injectable()export class
+BundlesService {
+  constructor(private prisma: PrismaService) {}
   async create(userId: string, createBundleDto: CreateBundleDto) {
     const { fields, ...bundleData } = createBundleDto;
-
     const latestBundle = await this.prisma.bundle.findFirst({
       where: { name: bundleData.name },
-      orderBy: { version: 'desc' },
+      orderBy: { version: 'desc' }
     });
-
     const version = latestBundle ? latestBundle.version + 1 : 1;
-
     const bundle = await this.prisma.bundle.create({
       data: {
         ...bundleData,
@@ -36,160 +30,131 @@ export class BundlesService {
             ...field,
             validation: field.validation as Prisma.InputJsonValue,
             options: field.options as Prisma.InputJsonValue,
-            order: field.order ?? 0,
-          })),
-        },
+            order: field.order ?? 0
+          }))
+        }
       },
       include: {
         fields: {
-          orderBy: { order: 'asc' },
-        },
-      },
+          orderBy: { order: 'asc' }
+        }
+      }
     });
-
     return bundle;
   }
-
   async findAll(isActive?: boolean) {
     const bundles = await this.prisma.bundle.findMany({
       include: {
         fields: {
-          orderBy: { order: 'asc' },
+          orderBy: { order: 'asc' }
         },
         _count: {
           select: {
-            fields: true,
-          },
-        },
+            fields: true
+          }
+        }
       },
       orderBy: [
-        { name: 'asc' },
-        { version: 'desc' },
-      ],
+      { name: 'asc' },
+      { version: 'desc' }]
     });
-
-
-    let allBundles = bundles.filter(b => !(b.options as unknown as BundleOptions)?.deleted);
-
-
+    let allBundles = bundles.filter((b) => !(b.options as unknown as BundleOptions)?.deleted);
     const latestBundlesMap = new Map<string, typeof bundles[0]>();
-
-    allBundles.forEach(bundle => {
+    allBundles.forEach((bundle) => {
       const existing = latestBundlesMap.get(bundle.name);
       if (!existing || bundle.version > existing.version) {
         latestBundlesMap.set(bundle.name, bundle);
       }
     });
-
     const finalBundles = Array.from(latestBundlesMap.values()).sort((a, b) => {
-
       return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
     });
-
     if (isActive !== undefined) {
-      return finalBundles.filter(b => b.isActive === isActive);
+      return finalBundles.filter((b) => b.isActive === isActive);
     }
-
     return finalBundles;
   }
-
   async findOne(id: string) {
     const bundle = await this.prisma.bundle.findUnique({
       where: { id },
       include: {
         fields: {
-          orderBy: { order: 'asc' },
-        },
-      },
+          orderBy: { order: 'asc' }
+        }
+      }
     });
-
     if (!bundle) {
       throw new NotFoundException('Bundle not found');
     }
-
     return bundle;
   }
-
   async applyBundleToForm(
-    bundleId: string,
-    formId: string,
-    userId: string,
-    userRole: RoleType,
-  ) {
+  bundleId: string,
+  formId: string,
+  userId: string,
+  userRole: RoleType)
+  {
     if (userRole === RoleType.VIEWER) {
       throw new ForbiddenException('Viewers cannot apply bundles');
     }
-
     const bundle = await this.findOne(bundleId);
     const form = await this.prisma.form.findUnique({
-      where: { id: formId },
+      where: { id: formId }
     });
-
     if (!form) {
       throw new NotFoundException('Form not found');
     }
-
     if (
-      userRole !== RoleType.SUPER_ADMIN &&
-      userRole !== RoleType.ADMIN &&
-      form.createdById !== userId
-    ) {
+    userRole !== RoleType.SUPER_ADMIN &&
+    userRole !== RoleType.ADMIN &&
+    form.createdById !== userId)
+    {
       throw new ForbiddenException('You can only edit your own forms');
     }
-
     const bundleFields = await Promise.all(
       bundle.fields.map((field) =>
-        this.prisma.bundleField.create({
-          data: {
-            bundleId: bundle.id,
-            formId: form.id,
-            type: field.type,
-            label: field.label,
-            placeholder: field.placeholder,
-            required: field.required,
-            validation: field.validation,
-            order: field.order,
-            options: field.options,
-            isPII: field.isPII ?? false,
-          },
-        }),
-      ),
+      this.prisma.bundleField.create({
+        data: {
+          bundleId: bundle.id,
+          formId: form.id,
+          type: field.type,
+          label: field.label,
+          placeholder: field.placeholder,
+          required: field.required,
+          validation: field.validation,
+          order: field.order,
+          options: field.options,
+          isPII: field.isPII ?? false
+        }
+      })
+      )
     );
-
     return bundleFields;
   }
-
   async update(id: string, userId: string, updateData: Partial<CreateBundleDto>) {
     const bundle = await this.findOne(id);
-
     const { fields, ...bundleData } = updateData;
-
     const latestBundle = await this.prisma.bundle.findFirst({
       where: { name: bundleData.name },
-      orderBy: { version: 'desc' },
+      orderBy: { version: 'desc' }
     });
-
     const version = latestBundle ? latestBundle.version + 1 : bundle.version + 1;
-
     const nameChanged = bundleData.name && bundleData.name !== bundle.name;
-    const currentOptions = (bundle.options as unknown as BundleOptions) || {};
-
+    const currentOptions = bundle.options as unknown as BundleOptions || {};
     await this.prisma.bundle.update({
       where: { id },
       data: {
         isActive: false,
-        options: (nameChanged ? { ...currentOptions, deleted: true } : currentOptions) as Prisma.InputJsonValue,
-      },
+        options: (nameChanged ? { ...currentOptions, deleted: true } : currentOptions) as Prisma.InputJsonValue
+      }
     });
-
     const newBundle = await this.prisma.bundle.create({
       data: {
         name: bundleData.name ?? bundle.name,
         description: bundleData.description ?? bundle.description,
         isPII: bundleData.isPII ?? bundle.isPII,
         isActive: bundleData.isActive ?? bundle.isActive,
-        options: ((bundleData.options as unknown as BundleOptions) ?? bundle.options) as Prisma.InputJsonValue,
-
+        options: (bundleData.options as unknown as BundleOptions ?? bundle.options) as Prisma.InputJsonValue,
         version,
         createdBy: { connect: { id: userId } },
         fields: {
@@ -201,32 +166,28 @@ export class BundlesService {
             validation: field.validation as Prisma.InputJsonValue,
             order: field.order ?? 0,
             options: field.options as Prisma.InputJsonValue,
-            isPII: field.isPII ?? false,
-          })),
-        },
+            isPII: field.isPII ?? false
+          }))
+        }
       },
       include: {
         fields: {
-          orderBy: { order: 'asc' },
-        },
-      },
+          orderBy: { order: 'asc' }
+        }
+      }
     });
-
     return newBundle;
   }
-
   async remove(id: string) {
     const bundle = await this.findOne(id);
-    const currentOptions = (bundle.options as unknown as BundleOptions) || {};
-
+    const currentOptions = bundle.options as unknown as BundleOptions || {};
     await this.prisma.bundle.update({
       where: { id },
       data: {
         isActive: false,
         options: { ...currentOptions, deleted: true } as Prisma.InputJsonValue
-      },
+      }
     });
-
     return { message: 'Bundle deactivated successfully' };
   }
 }

@@ -109,7 +109,6 @@ export default {
   "public.rte.size_large": "ใหญ่",
   "public.rte.size_huge": "ใหญ่มาก",
   "public.rte.enter_url": "ใส่ URL",
-
   "public.preview.desktop": "เดสก์ท็อป",
   "public.preview.tablet": "แท็บเล็ต",
   "public.preview.mobile": "มือถือ",

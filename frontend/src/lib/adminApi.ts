@@ -1,5 +1,4 @@
 import api from './api';
-
 export interface StatsResponse {
   totalUsers: number;
   totalForms: number;
@@ -36,7 +35,6 @@ export interface StatsResponse {
     submissions: number;
   }>;
 }
-
 export interface AdminUser {
   id: string;
   email: string;
@@ -54,7 +52,6 @@ export interface AdminUser {
     permissions?: string[];
   };
 }
-
 export interface UsersResponse {
   data: AdminUser[];
   meta: {
@@ -64,7 +61,6 @@ export interface UsersResponse {
     totalPages: number;
   };
 }
-
 export interface Role {
   id: string;
   name: string;
@@ -74,35 +70,23 @@ export interface Role {
     users: number;
   };
 }
-
 export const adminApi = {
   getStats: () => api.get<StatsResponse>('/admin/stats'),
-
-  getUsers: (params?: { page?: number; limit?: number; search?: string; role?: string }) =>
-    api.get<UsersResponse>('/admin/users', { params }),
-
+  getUsers: (params?: {page?: number;limit?: number;search?: string;role?: string;}) =>
+  api.get<UsersResponse>('/admin/users', { params }),
   toggleBan: (userId: string) =>
-    api.patch<{ id: string; email: string; isActive: boolean }>(`/admin/users/${userId}/ban`),
-
+  api.patch<{id: string;email: string;isActive: boolean;}>(`/admin/users/${userId}/ban`),
   updateUserRole: (userId: string, roleId: string) =>
-    api.patch(`/admin/users/${userId}/role`, { roleId }),
-
+  api.patch(`/admin/users/${userId}/role`, { roleId }),
   getUserPermissions: (userId: string) =>
-    api.get<AdminUser>(`/admin/users/${userId}/permissions`),
-
+  api.get<AdminUser>(`/admin/users/${userId}/permissions`),
   setUserPermissions: (userId: string, permissions: string[] | null) =>
-    api.patch(`/admin/users/${userId}/permissions`, { permissions }),
-
+  api.patch(`/admin/users/${userId}/permissions`, { permissions }),
   getRoles: () => api.get<Role[]>('/admin/roles'),
-
   getRole: (roleId: string) => api.get<Role>(`/admin/roles/${roleId}`),
-
   updateRolePermissions: (roleId: string, permissions: string[]) =>
-    api.patch(`/admin/roles/${roleId}/permissions`, { permissions }),
-
+  api.patch(`/admin/roles/${roleId}/permissions`, { permissions }),
   updateRoleDescription: (roleId: string, description: string) =>
-    api.patch(`/admin/roles/${roleId}/description`, { description }),
+  api.patch(`/admin/roles/${roleId}/description`, { description })
 };
-
 export default adminApi;
-

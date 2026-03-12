@@ -1,20 +1,16 @@
 import { FieldType } from '@/types/enums';
 import { FieldWidth, LabelAlignment } from '@/types/field-schema';
 import type { FieldWidthType, LabelAlignmentType } from '@/types/field-schema';
-
 export const TimeFormat = {
   '12': '12',
-  '24': '24',
+  '24': '24'
 } as const;
-
 export type TimeFormatType = keyof typeof TimeFormat;
-
 export interface TimeOptions {
   width: FieldWidthType;
   labelAlignment: LabelAlignmentType;
   timeFormat: TimeFormatType;
 }
-
 export const timeDefaultValues = {
   type: FieldType.TIME,
   label: 'Time',
@@ -22,9 +18,9 @@ export const timeDefaultValues = {
   options: {
     width: FieldWidth.FULL,
     labelAlignment: LabelAlignment.TOP,
-    timeFormat: TimeFormat['12'],
+    timeFormat: TimeFormat['12']
   } satisfies TimeOptions,
   validation: {
-    readOnly: false,
+    readOnly: false
   }
 } as const;

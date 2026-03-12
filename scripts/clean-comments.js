@@ -1,5 +1,7 @@
 const fs = require('fs');
 const path = require('path');
+const parser = require('@babel/parser');
+const generate = require('@babel/generator').default;
 
 const rootDir = path.resolve(__dirname, '..');
 const targetDirs = [
@@ -7,88 +9,32 @@ const targetDirs = [
     path.join(rootDir, 'frontend', 'src')
 ];
 
-// Helper to remove comments safely
-function removeComments(code) {
-    let output = '';
-    let i = 0;
-    let state = 'code'; // code, string_double, string_single, string_backtick, block_comment, line_comment
+function removeComments(code, filename) {
+    try {
+        const isTypeScript = filename.endsWith('.ts') || filename.endsWith('.tsx');
+        const isJsx = filename.endsWith('.tsx') || filename.endsWith('.jsx');
 
-    while (i < code.length) {
-        const char = code[i];
-        const nextChar = code[i + 1] || '';
-        const prevChar = i > 0 ? code[i - 1] : '';
+        const plugins = [];
+        if (isJsx) plugins.push("jsx");
+        if (isTypeScript) plugins.push("typescript");
+        plugins.push("decorators-legacy");
 
-        if (state === 'code') {
-            if (char === '"') {
-                state = 'string_double';
-                output += char;
-            } else if (char === "'") {
-                state = 'string_single';
-                output += char;
-            } else if (char === '`') {
-                state = 'string_backtick';
-                output += char;
-            } else if (char === '/' && nextChar === '*') {
-                state = 'block_comment';
-                i++; // Skip *
-            } else if (char === '/' && nextChar === '/') {
-                // Check if the current line is empty (whitespace only) so far
-                let isLineEmpty = true;
-                let j = output.length - 1;
-                while (j >= 0) {
-                    const c = output[j];
-                    if (c === '\n') break;
-                    if (c !== ' ' && c !== '\t') {
-                        isLineEmpty = false;
-                        break;
-                    }
-                    j--;
-                }
-
-                if (isLineEmpty) {
-                    // Remove the preceding whitespace
-                    if (j === -1) {
-                         output = '';
-                    } else {
-                         output = output.substring(0, j + 1); // Keep the \n before this line
-                    }
-                    state = 'line_comment_strip_newline';
-                } else {
-                    state = 'line_comment';
-                }
-                i++; // Skip /
-            } else {
-                output += char;
-            }
-        } else if (state === 'string_double') {
-            output += char;
-            // Check for unnecessary escapes is complex, but simple version:
-            if (char === '"' && prevChar !== '\\') state = 'code';
-        } else if (state === 'string_single') {
-            output += char;
-            if (char === "'" && prevChar !== '\\') state = 'code';
-        } else if (state === 'string_backtick') {
-            output += char;
-            if (char === '`' && prevChar !== '\\') state = 'code';
-        } else if (state === 'block_comment') {
-            if (char === '*' && nextChar === '/') {
-                state = 'code';
-                i++; // Skip /
-            }
-        } else if (state === 'line_comment') {
-            if (char === '\n') {
-                state = 'code';
-                output += char; // Keep the newline
-            }
-        } else if (state === 'line_comment_strip_newline') {
-            if (char === '\n') {
-                state = 'code';
-                // Do NOT add char (skip the newline)
-            }
-        }
-        i++;
+        const ast = parser.parse(code, {
+            sourceType: "module",
+            plugins: plugins
+        });
+        
+        // Disable generating comments
+        const output = generate(ast, {
+            comments: false,
+            retainLines: true, // Keep original line numbers roughly intact
+        }, code);
+        
+        return output.code;
+    } catch (e) {
+        console.error(`Error parsing code with Babel in ${filename}:`, e.message);
+        return code; // Return original if parsing fails
     }
-    return output;
 }
 
 function processDirectory(directory) {
@@ -110,16 +56,29 @@ function processDirectory(directory) {
             if (file.endsWith('.d.ts')) continue;
 
             const content = fs.readFileSync(fullPath, 'utf8');
-            const newContent = removeComments(content);
+            const newContent = removeComments(content, fullPath);
 
-            if (content !== newContent) {
-                fs.writeFileSync(fullPath, newContent, 'utf8');
+            // Babel's retainLines can sometimes leave extra empty lines where comments were.
+            // We can optionally clean up multiple consecutive empty lines here, but retainLines is usually enough
+            let finalContent = newContent.replace(/^\s*[\r\n]/gm, ''); // removing empty line 
+
+            if (content !== finalContent) {
+                 // Compare without whitespace differences to see if ONLY blank lines changed. If we only stripped blank lines this isn't worth logging as "Cleaned comment"
+                 // actually, we might want to log it to show progress anyway
+                 
+                 // ensure we don't accidentally write broken code if babel output differs wildly from input
+                 if (finalContent.length < content.length * 0.1 && content.length > 100) {
+                     console.error(`Safety check failed for ${fullPath}. Output is too small. Skipping.`);
+                     continue;
+                 }
+
+                fs.writeFileSync(fullPath, finalContent, 'utf8');
                 console.log(`Cleaned: ${fullPath}`);
             }
         }
     }
 }
 
-console.log('Starting comment cleanup...');
+console.log('Starting comment cleanup (using Babel AST)...');
 targetDirs.forEach(dir => processDirectory(dir));
 console.log('Comment cleanup complete!');

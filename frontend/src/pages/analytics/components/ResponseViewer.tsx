@@ -19,7 +19,6 @@ import type {
 import Loader from "@/components/common/Loader";
 import { useHasPermission } from "@/hooks/usePermissions";
 import { useSmoothScroll } from "@/hooks/useSmoothScroll";
-
 interface ResponseViewerProps {
   isOpen: boolean;
   onClose: () => void;
@@ -33,15 +32,12 @@ interface ResponseViewerProps {
   onPageChange: (page: number, sort: "asc" | "desc") => void;
   onDeleteResponse: (responseId: string) => void;
 }
-
 const stripHtml = (html: string): string => {
   if (!html) return "";
   return html.replace(/<[^>]*>/g, "").trim();
 };
-
 const formatAnswerValue = (value: unknown, field: Field): string | null => {
   if (value === null || value === undefined || value === "") return null;
-
   const parsed =
     typeof value === "string" &&
     (value.startsWith("{") || value.startsWith("["))
@@ -53,14 +49,11 @@ const formatAnswerValue = (value: unknown, field: Field): string | null => {
           }
         })()
       : value;
-
   if (typeof parsed !== "object" || parsed === null) return String(parsed);
-
   if (field.type === "MATRIX") {
     const rows = (field.options as MatrixFieldOptions)?.rows || [];
     const columns = (field.options as MatrixFieldOptions)?.columns || [];
     const colMap = new Map(columns.map((c) => [c.id, c.label]));
-
     return (
       rows
         .map((row) => {
@@ -75,7 +68,6 @@ const formatAnswerValue = (value: unknown, field: Field): string | null => {
         .join("\n") || null
     );
   }
-
   if (field.type === "TABLE" && Array.isArray(parsed)) {
     const columns = (field.options as TableFieldOptions)?.columns || [];
     return (
@@ -89,9 +81,7 @@ const formatAnswerValue = (value: unknown, field: Field): string | null => {
         .join("\n") || null
     );
   }
-
   if (Array.isArray(parsed)) return parsed.join(", ");
-
   if (typeof parsed === "object") {
     return (
       Object.entries(parsed as Record<string, unknown>)
@@ -100,10 +90,8 @@ const formatAnswerValue = (value: unknown, field: Field): string | null => {
         .join("\n") || null
     );
   }
-
   return String(parsed);
 };
-
 export const ResponseViewer: React.FC<ResponseViewerProps> = ({
   isOpen,
   onClose,
@@ -122,26 +110,20 @@ export const ResponseViewer: React.FC<ResponseViewerProps> = ({
   const [selectedResponse, setSelectedResponse] = useState<FormResponse | null>(
     null,
   );
-
+  const [jumpPage, setJumpPage] = useState("");
   useSmoothScroll("response-viewer-scroll-container", { enabled: isOpen });
-
   useEffect(() => {
     if (!isOpen) return;
-
     const originalBodyOverflow = document.body.style.overflow;
     const originalHtmlOverflow = document.documentElement.style.overflow;
-
     document.body.style.overflow = "hidden";
     document.documentElement.style.overflow = "hidden";
-
     return () => {
       document.body.style.overflow = originalBodyOverflow;
       document.documentElement.style.overflow = originalHtmlOverflow;
     };
   }, [isOpen]);
-
   if (!isOpen) return null;
-
   return (
     <AnimatePresence>
       <motion.div
@@ -191,7 +173,6 @@ export const ResponseViewer: React.FC<ResponseViewerProps> = ({
               </button>
             </div>
           </div>
-
           <div
             id="response-viewer-scroll-container"
             className="flex-1 overflow-y-auto p-6 bg-gray-50 scrollbar-visible"
@@ -209,7 +190,6 @@ export const ResponseViewer: React.FC<ResponseViewerProps> = ({
                     f.label.toLowerCase().includes("email") ||
                     f.label.includes("อีเมล"),
                 );
-
                 const nameValue = nameField
                   ? response.answers?.find((a) => a.fieldId === nameField.id)
                       ?.value
@@ -220,7 +200,6 @@ export const ResponseViewer: React.FC<ResponseViewerProps> = ({
                     ? response.answers?.find((a) => a.fieldId === emailField.id)
                         ?.value
                     : null);
-
                 return (
                   <div
                     key={response.id}
@@ -306,7 +285,6 @@ export const ResponseViewer: React.FC<ResponseViewerProps> = ({
                         )}
                       </div>
                     </button>
-
                     <AnimatePresence>
                       {selectedResponse?.id === response.id && (
                         <motion.div
@@ -328,7 +306,6 @@ export const ResponseViewer: React.FC<ResponseViewerProps> = ({
                                   ].includes(field.type)
                                 )
                                   return null;
-
                                 const answer = response.answers?.find(
                                   (a) => a.fieldId === field.id,
                                 );
@@ -336,7 +313,6 @@ export const ResponseViewer: React.FC<ResponseViewerProps> = ({
                                   form.isQuiz && field.correctAnswer
                                     ? answer?.isCorrect
                                     : undefined;
-
                                 return (
                                   <div key={field.id} className="space-y-1">
                                     <p className="text-sm font-medium text-gray-500">
@@ -390,7 +366,6 @@ export const ResponseViewer: React.FC<ResponseViewerProps> = ({
               })}
             </div>
           </div>
-
           {totalPages > 1 && (
             <div className="p-4 border-t border-gray-200 bg-white flex items-center justify-center gap-4">
               <button
@@ -404,8 +379,8 @@ export const ResponseViewer: React.FC<ResponseViewerProps> = ({
                 {t("analytics.page_of", {
                   current: responsePage,
                   total: totalPages,
-                })}
-              </span>
+                })}{" "}
+              </span>{" "}
               <button
                 onClick={() => onPageChange(responsePage + 1, responseSort)}
                 disabled={responsePage >= totalPages || loadingResponses}
@@ -413,11 +388,48 @@ export const ResponseViewer: React.FC<ResponseViewerProps> = ({
               >
                 {t("analytics.next_page")}
               </button>
-              {loadingResponses && <Loader size={20} />}
+              <div className="flex items-center gap-2 ml-2 pl-2 border-l border-gray-200">
+                <input
+                  type="number"
+                  min={1}
+                  max={totalPages}
+                  value={jumpPage}
+                  onChange={(e) => setJumpPage(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      const page = parseInt(jumpPage, 10);
+                      if (page >= 1 && page <= totalPages) {
+                        onPageChange(page, responseSort);
+                        setJumpPage("");
+                      }
+                    }
+                  }}
+                  placeholder={`1-${totalPages}`}
+                  className="w-20 px-2 py-1.5 text-sm border border-gray-300 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                />
+                <button
+                  onClick={() => {
+                    const page = parseInt(jumpPage, 10);
+                    if (page >= 1 && page <= totalPages) {
+                      onPageChange(page, responseSort);
+                      setJumpPage("");
+                    }
+                  }}
+                  disabled={
+                    !jumpPage ||
+                    parseInt(jumpPage, 10) < 1 ||
+                    parseInt(jumpPage, 10) > totalPages
+                  }
+                  className="px-3 py-1.5 text-sm font-medium text-white bg-gray-900 rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  Go
+                </button>
+              </div>
+              {loadingResponses && <Loader size={20} />}{" "}
             </div>
-          )}
-        </motion.div>
-      </motion.div>
+          )}{" "}
+        </motion.div>{" "}
+      </motion.div>{" "}
     </AnimatePresence>
   );
 };

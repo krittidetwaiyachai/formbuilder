@@ -2,7 +2,6 @@ export default {
   "settings.tabs.general": "ทั่วไป",
   "settings.tabs.submission": "การส่งฟอร์ม",
   "settings.tabs.display": "การแสดงผล",
-  
   "settings.general.title": "ชื่อฟอร์ม",
   "settings.general.description": "คำอธิบาย",
   "settings.general.status": "สถานะ",
@@ -10,7 +9,6 @@ export default {
   "settings.general.footer_desc": "ข้อความที่จะแสดงด้านล่างสุดของฟอร์ม",
   "settings.general.quiz_mode": "โหมดแบบทดสอบ",
   "settings.general.quiz_desc": "กำหนดคะแนนและเฉลยคำตอบ",
-  
   "settings.quiz.settings": "ตั้งค่าแบบทดสอบ",
   "settings.quiz.release_score": "ประกาศคะแนน",
   "settings.quiz.release_immediate": "ทันทีหลังจากส่งคำตอบ",
@@ -40,7 +38,6 @@ export default {
   "settings.quiz.start_time_desc": "เวลาที่เริ่มทำแบบทดสอบได้",
   "settings.quiz.end_time": "เวลาสิ้นสุด",
   "settings.quiz.end_time_desc": "เวลาปิดรับคำตอบ",
-
   "settings.submission.submit_text": "ข้อความปุ่มส่ง",
   "settings.submission.btn_placeholder": "ส่งคำตอบ",
   "settings.submission.success_msg": "ข้อความเมื่อสำเร็จ",
@@ -52,7 +49,6 @@ export default {
   "settings.submission.email_desc": "บังคับให้ผู้ตอบระบุอีเมล",
   "settings.submission.response_limit": "จำกัดจำนวนการตอบ",
   "settings.submission.limit_desc": "จำกัดจำนวนคำตอบทั้งหมดที่รับได้",
-  
   "settings.display.layout": "รูปแบบฟอร์ม",
   "settings.display.layout_classic": "แบบคลาสสิก",
   "settings.display.classic_desc": "แสดงทุกคำถามในหน้าเดียว",

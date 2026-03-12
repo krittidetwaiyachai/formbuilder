@@ -7,7 +7,6 @@ import { cn } from "@/lib/utils";
 import { FieldType } from "@/types";
 import type { Field } from "@/types";
 import { useTranslation } from "react-i18next";
-
 import { ShortTextField } from "@/components/form-builder/fields/short-text";
 import { EmailField } from "@/components/form-builder/fields/email";
 import { PhoneField } from "@/components/form-builder/fields/phone/PhoneField";
@@ -29,8 +28,6 @@ import { GroupField } from "@/components/form-builder/fields/group/GroupField";
 import { MatrixField } from "@/components/form-builder/fields/matrix/MatrixField";
 import { TableField } from "@/components/form-builder/fields/table/TableField";
 import { FieldLabel } from "@/components/form-builder/field-item/FieldLabel";
-import { sanitize } from "@/utils/sanitization";
-
 const getFieldStyle = (field: Field) => {
   switch (field.type) {
     case FieldType.TEXT:
@@ -42,7 +39,6 @@ const getFieldStyle = (field: Field) => {
         inputBorder: "border-blue-200",
         overlayBorder: "border-blue-500",
       };
-
     case FieldType.NUMBER:
       return {
         cardBorder: "border-l-4 border-l-amber-500",
@@ -51,7 +47,6 @@ const getFieldStyle = (field: Field) => {
         inputBorder: "border-amber-200",
         overlayBorder: "border-amber-500",
       };
-
     case FieldType.EMAIL:
     case FieldType.PHONE:
       return {
@@ -61,7 +56,6 @@ const getFieldStyle = (field: Field) => {
         inputBorder: "border-purple-200",
         overlayBorder: "border-purple-600",
       };
-
     case FieldType.DROPDOWN:
     case FieldType.CHECKBOX:
     case FieldType.RADIO:
@@ -73,7 +67,6 @@ const getFieldStyle = (field: Field) => {
         inputBorder: "border-pink-200",
         overlayBorder: "border-pink-500",
       };
-
     case FieldType.DATE:
     case FieldType.TIME:
     case FieldType.RATE:
@@ -84,7 +77,6 @@ const getFieldStyle = (field: Field) => {
         inputBorder: "border-teal-200",
         overlayBorder: "border-teal-500",
       };
-
     case FieldType.FULLNAME:
     case FieldType.ADDRESS:
       return {
@@ -94,7 +86,6 @@ const getFieldStyle = (field: Field) => {
         inputBorder: "border-orange-200",
         overlayBorder: "border-orange-500",
       };
-
     case FieldType.HEADER:
     case FieldType.PARAGRAPH:
     case FieldType.DIVIDER:
@@ -107,7 +98,6 @@ const getFieldStyle = (field: Field) => {
         inputBorder: "border-transparent",
         overlayBorder: "border-slate-600",
       };
-
     case FieldType.PAGE_BREAK:
       return {
         cardBorder:
@@ -117,7 +107,6 @@ const getFieldStyle = (field: Field) => {
         inputBorder: "border-transparent",
         overlayBorder: "border-slate-500",
       };
-
     case FieldType.SUBMIT:
       return {
         cardBorder: "border-l-4 border-l-emerald-500",
@@ -126,7 +115,6 @@ const getFieldStyle = (field: Field) => {
         inputBorder: "border-emerald-200",
         overlayBorder: "border-emerald-500",
       };
-
     default:
       return {
         cardBorder: "border-l-4 border-l-gray-400",
@@ -137,7 +125,6 @@ const getFieldStyle = (field: Field) => {
       };
   }
 };
-
 export function BundleFieldCard({
   field,
   isSelected,
@@ -154,17 +141,14 @@ export function BundleFieldCard({
   const { t } = useTranslation();
   const { setSelectedFieldId, deleteField, updateField } =
     useBundleEditorStore();
-
   const [mediaInputMode, setMediaInputMode] = React.useState<
     "image" | "video" | null
   >(null);
-
   const renderField = {
     ...field,
     options: field.options || {},
   } as unknown as Field;
   const fieldStyle = getFieldStyle(renderField);
-
   const content = renderContent
     ? renderContent()
     : (() => {
@@ -268,21 +252,6 @@ export function BundleFieldCard({
             );
         }
       })();
-
-  const modules = React.useMemo(
-    () => ({
-      toolbar: {
-        container: `#toolbar-label-${field.id}`,
-      },
-    }),
-    [field.id],
-  );
-
-  const options = renderField.options as Record<string, unknown> | undefined;
-  const isRowLayout =
-    options?.labelAlignment === "LEFT" || options?.labelAlignment === "RIGHT";
-  const labelAlignment = (options?.labelAlignment as string) || "TOP";
-  const isCenterAligned = labelAlignment === "CENTER";
   const isLayoutField = [
     FieldType.HEADER,
     FieldType.PARAGRAPH,
@@ -290,7 +259,6 @@ export function BundleFieldCard({
     FieldType.PAGE_BREAK,
     FieldType.SECTION_COLLAPSE,
   ].includes(renderField.type);
-
   return (
     <div
       className={cn(
@@ -303,7 +271,6 @@ export function BundleFieldCard({
           <div className="pointer-events-auto">{}</div>
         </div>
       )}
-
       <div
         onClick={(e) => {
           e.stopPropagation();
@@ -326,7 +293,6 @@ export function BundleFieldCard({
             className={`w-12 h-1.5 rounded-full transition-colors ${isSelected ? "bg-gray-400" : "bg-gray-200 hover:bg-gray-300"}`}
           ></div>
         </div>
-
         <div className="px-4 pb-4 pt-6">
           {}
           {isSelected && !isOverlay && !isDragging && (
@@ -367,9 +333,7 @@ export function BundleFieldCard({
                 >
                   <Video className="h-4 w-4" />
                 </button>
-
                 <div className="w-px h-4 bg-gray-200 mx-2"></div>
-
                 {!isLayoutField && (
                   <button
                     onClick={(e) => {
@@ -383,7 +347,6 @@ export function BundleFieldCard({
                   </button>
                 )}
               </div>
-
               {}
               {(mediaInputMode === "image" || mediaInputMode === "video") && (
                 <div className="flex items-center gap-2 animate-in slide-in-from-top-2 fade-in duration-200">
@@ -441,7 +404,6 @@ export function BundleFieldCard({
               )}
             </div>
           )}
-
           {}
           {!isOverlay && !isDragging && (field.imageUrl || field.videoUrl) && (
             <div className="flex flex-col items-center gap-3 my-4">
@@ -469,7 +431,6 @@ export function BundleFieldCard({
                   </button>
                 </div>
               )}
-
               {}
               {field.videoUrl &&
                 (() => {
@@ -478,7 +439,6 @@ export function BundleFieldCard({
                   const match = field.videoUrl?.match(regExp);
                   const videoId =
                     match && match[2].length === 11 ? match[2] : null;
-
                   if (videoId) {
                     return (
                       <div className="relative group/media w-full max-w-md overflow-hidden rounded-xl bg-black/5 aspect-video">
@@ -516,7 +476,7 @@ export function BundleFieldCard({
               }
               isSelected={!!isSelected}
               isMultiSelecting={false}
-              updateField={updateField as any}
+              updateField={updateField}
               onSelect={(id) => {
                 if (!isOverlay) setSelectedFieldId(id);
               }}
@@ -526,7 +486,6 @@ export function BundleFieldCard({
           )}
         </div>
       </div>
-
       {!isLayoutField && !isOverlay && !isSelected && (
         <button
           onClick={(e) => {
@@ -545,12 +504,10 @@ export function BundleFieldCard({
     </div>
   );
 }
-
 export default function BundleEditorCanvas() {
   const { t } = useTranslation();
   const { bundle, setSelectedFieldId, selectedFieldId } =
     useBundleEditorStore();
-
   if (!bundle) {
     return (
       <div className="flex-1 flex items-center justify-center bg-gray-50">
@@ -558,9 +515,7 @@ export default function BundleEditorCanvas() {
       </div>
     );
   }
-
   const sortedFields = [...bundle.fields].sort((a, b) => a.order - b.order);
-
   return (
     <div className="flex-1 bg-white overflow-y-auto px-4 md:px-8">
       <div className="max-w-2xl flex-grow mx-auto flex flex-col min-h-full py-8 w-full">

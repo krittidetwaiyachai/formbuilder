@@ -23,17 +23,21 @@ import { DividerField } from "../fields/divider/DividerField";
 import { GroupField } from "../fields/group/GroupField";
 import { MatrixField } from "../fields/matrix/MatrixField";
 import { TableField } from "../fields/table/TableField";
-
 interface FieldPreviewProps {
   field: Field;
-  fieldStyle: any;
+  fieldStyle: {
+    cardBorder: string;
+    iconColor: string;
+    bgGradient: string;
+    inputBorder: string;
+    overlayBorder: string;
+  };
   isSelected: boolean;
   onSelect: (id: string, autoFocus?: boolean) => void;
   isMultiSelecting: boolean;
   allFields: Field[];
   updateField: (id: string, updates: Partial<Field>) => void;
 }
-
 export const FieldPreview: React.FC<FieldPreviewProps> = ({
   field,
   fieldStyle,
@@ -44,7 +48,6 @@ export const FieldPreview: React.FC<FieldPreviewProps> = ({
   updateField,
 }) => {
   const { t } = useTranslation();
-
   switch (field.type) {
     case FieldType.TEXT:
       return <ShortTextField field={field} fieldStyle={fieldStyle} />;

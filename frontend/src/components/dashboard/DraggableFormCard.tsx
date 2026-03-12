@@ -1,19 +1,16 @@
 import { useDraggable } from "@dnd-kit/core";
 import type { ReactNode } from "react";
-
 interface DraggableFormCardProps {
   formId: string;
   children: ReactNode;
 }
-
 export default function DraggableFormCard({
   formId,
-  children,
+  children
 }: DraggableFormCardProps) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
-    id: formId,
+    id: formId
   });
-
   return (
     <div
       ref={setNodeRef}
@@ -24,10 +21,7 @@ export default function DraggableFormCard({
         touchAction: "none",
         WebkitTouchCallout: "none",
         WebkitUserSelect: "none",
-        userSelect: "none",
-      }}
-    >
-      {children}
-    </div>
-  );
+        userSelect: "none"
+      }}>
+      {children}    </div>);
 }

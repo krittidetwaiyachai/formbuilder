@@ -5,12 +5,10 @@ export default {
   "dashboard.create_form": "Create New Form",
   "dashboard.search_placeholder": "Search forms...",
   "dashboard.loading": "Loading your dashboard...",
-
   "dashboard.filters.all": "All",
   "dashboard.filters.draft": "DRAFT",
   "dashboard.filters.published": "PUBLISHED",
   "dashboard.filters.archived": "ARCHIVED",
-
   "dashboard.folders": "Folders",
   "dashboard.move_to_folder": "Move to Folder",
   "dashboard.folder.all": "All",
@@ -18,13 +16,11 @@ export default {
   "dashboard.new_folder": "New Folder",
   "dashboard.all_forms": "All Forms",
   "dashboard.ungrouped_forms": "Forms",
-
   "dashboard.empty.title": "No forms found",
   "dashboard.empty.no_search": "We couldn't find any forms matching your search.",
   "dashboard.empty.no_forms": "You haven't created any forms yet. Start your journey now!",
   "dashboard.empty.create_first": "Create your first form",
   "dashboard.empty.description": "Click the button above to create your first form.",
-
   "dashboard.form.responses": "response",
   "dashboard.form.responses_plural": "responses",
   "dashboard.form.views": "view",
@@ -34,13 +30,11 @@ export default {
   "dashboard.form.owner": "Owner",
   "dashboard.form.shared": "Shared",
   "dashboard.form.no_description": "No description provided.",
-
   "dashboard.modal.folder_name": "Folder Name",
   "dashboard.modal.folder_color": "Choose Color",
   "dashboard.modal.create": "Create",
   "dashboard.modal.cancel": "Cancel",
   "dashboard.modal.save": "Save",
-
   "dashboard.context.edit": "Edit",
   "dashboard.context.preview": "Preview",
   "dashboard.context.analytics": "Analytics",
@@ -49,7 +43,6 @@ export default {
   "dashboard.context.duplicate": "Duplicate",
   "dashboard.context.collaborators": "Manage Access",
   "dashboard.context.delete": "Delete",
-
   "dashboard.confirm.delete_form.title": "Delete Form?",
   "dashboard.confirm.delete_form.description": "Are you sure you want to delete this form? This action cannot be undone.",
   "dashboard.confirm.delete_folder.title": "Delete Folder?",
@@ -57,7 +50,6 @@ export default {
   "dashboard.confirm.delete": "Delete",
   "dashboard.confirm.delete_folder": "Delete Folder",
   "dashboard.confirm.cancel": "Cancel",
-
   "dashboard.toast.created": "Form created successfully.",
   "dashboard.toast.deleted": "Form deleted successfully.",
   "dashboard.toast.duplicated": "Form duplicated successfully.",
@@ -71,18 +63,15 @@ export default {
   "dashboard.toast.error_delete": "Failed to delete form. Please try again.",
   "dashboard.toast.error_duplicate": "Failed to duplicate form.",
   "dashboard.toast.error_folder_delete": "Failed to delete folder. Please try again.",
-
   "dashboard.drop_ungroup": "Drop here to ungroup",
   "dashboard.forms_count": "forms",
   "dashboard.context.rename": "Rename",
   "dashboard.prompt.new_folder_name": "New folder name:",
   "dashboard.modal.folder_placeholder": "e.g. Client Projects",
-
   "dashboard.context.group.main": "Main Actions",
   "dashboard.context.group.management": "Management",
   "dashboard.context.group.share": "Share & More",
   "dashboard.context.group.danger": "Danger Zone",
-
   "dashboard.collaborators.manage_access": "Manage Access",
   "dashboard.collaborators.add_people": "Add People",
   "dashboard.collaborators.email_placeholder": "Enter email address",
@@ -99,13 +88,11 @@ export default {
   "dashboard.collaborators.remove_confirm": "Are you sure you want to remove this collaborator?",
   "dashboard.collaborators.remove_error": "Failed to remove user",
   "dashboard.collaborators.leave": "Leave",
-
   "dashboard.form.quiz_mode": "Quiz Mode",
   "dashboard.form.statistics": "Statistics",
   "dashboard.form.timeline": "Timeline",
   "dashboard.form.created": "Created",
   "dashboard.form.last_updated": "Last Updated",
-
   "dashboard.filters.title": "Filter & Sort",
   "dashboard.filters.status": "Status",
   "dashboard.filters.apply": "Show Results",
@@ -113,7 +100,6 @@ export default {
   "dashboard.sort.newest": "Newest",
   "dashboard.sort.oldest": "Oldest",
   "dashboard.sort.alphabetical": "A-Z",
-
   "dashboard.folder.expand": "Expand",
   "dashboard.folder.collapse": "Collapse",
   "dashboard.folder.actions": "Actions",
@@ -123,10 +109,8 @@ export default {
   "dashboard.modal.close": "Close",
   "dashboard.modal.creating": "Creating...",
   "dashboard.toast.error_folder_create": "Failed to create folder. Please try again.",
-
   "dashboard.stats.responses": "Responses",
   "dashboard.stats.views": "Views",
-
   "dashboard.theme.popular": "Popular Themes",
   "dashboard.theme.exclusive": "Exclusive Themes",
   "dashboard.theme.festival": "Festival Themes",

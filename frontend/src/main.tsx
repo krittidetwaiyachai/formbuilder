@@ -1,9 +1,7 @@
-
-import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
-import './styles/index.css'
+import ReactDOM from 'react-dom/client';
+import App from './App.tsx';
+import './styles/index.css';
 import './i18n';
-
 if (import.meta.env.DEV) {
   const originalError = console.error;
   console.error = (...args: unknown[]) => {
@@ -13,8 +11,6 @@ if (import.meta.env.DEV) {
     originalError.call(console, ...args);
   };
 }
-
-
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.getRegistrations().then((registrations) => {
     registrations.forEach((registration) => {
@@ -22,14 +18,8 @@ if ('serviceWorker' in navigator) {
     });
   });
 }
-
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { ToasterProvider } from './components/ui/toaster';
-
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-    <ToasterProvider>
-      <App />
-    </ToasterProvider>
-  </GoogleOAuthProvider>,
-)
+  <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>    <ToasterProvider>      <App />    </ToasterProvider>  </GoogleOAuthProvider>
+);

@@ -2,26 +2,23 @@ import {
   WebSocketGateway,
   WebSocketServer,
   OnGatewayConnection,
-  OnGatewayDisconnect,
-} from '@nestjs/websockets';
+  OnGatewayDisconnect } from
+'@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-
 @WebSocketGateway({
   cors: {
-    origin: '*',
-  },
-})
-export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
+    origin: '*'
+  }
+})export class
+EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
-
   constructor(
-    private jwtService: JwtService,
-    private configService: ConfigService,
-  ) {}
-
+  private jwtService: JwtService,
+  private configService: ConfigService)
+  {}
   async handleConnection(client: Socket) {
     try {
       const token = this.extractToken(client);
@@ -29,11 +26,9 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         client.disconnect();
         return;
       }
-
       const payload = this.jwtService.verify(token, {
-        secret: this.configService.get<string>('JWT_SECRET') || 'secret',
+        secret: this.configService.get<string>('JWT_SECRET') || 'secret'
       });
-
       const userId = payload.sub;
       client.join(`user_${userId}`);
       console.log(`Client connected: ${client.id}, User: ${userId}`);
@@ -42,11 +37,9 @@ export class EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
       client.disconnect();
     }
   }
-
   handleDisconnect(client: Socket) {
     console.log(`Client disconnected: ${client.id}`);
   }
-
   private extractToken(client: Socket): string | undefined {
     const authHeader = client.handshake.headers.authorization;
     if (authHeader && authHeader.split(' ')[0] === 'Bearer') {

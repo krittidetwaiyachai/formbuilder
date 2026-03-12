@@ -2,7 +2,6 @@ export default {
   "settings.tabs.general": "General",
   "settings.tabs.submission": "Submission",
   "settings.tabs.display": "Display",
-  
   "settings.general.title": "Title",
   "settings.general.description": "Description",
   "settings.general.status": "Status",
@@ -10,7 +9,6 @@ export default {
   "settings.general.footer_desc": "Custom text displayed at the bottom of the form",
   "settings.general.quiz_mode": "Quiz Mode",
   "settings.general.quiz_desc": "Assign points and set correct answers",
-  
   "settings.quiz.settings": "Quiz Settings",
   "settings.quiz.release_score": "Release Score",
   "settings.quiz.release_immediate": "Immediately after submission",
@@ -40,7 +38,6 @@ export default {
   "settings.quiz.start_time_desc": "When the quiz becomes available",
   "settings.quiz.end_time": "End Time",
   "settings.quiz.end_time_desc": "When the quiz closes",
-
   "settings.submission.submit_text": "Submit Button Text",
   "settings.submission.btn_placeholder": "Submit",
   "settings.submission.success_msg": "Success Message",
@@ -52,7 +49,6 @@ export default {
   "settings.submission.email_desc": "Require respondents to enter their email",
   "settings.submission.response_limit": "Response Limit",
   "settings.submission.limit_desc": "Limit the total number of responses",
-  
   "settings.display.layout": "Form Layout",
   "settings.display.layout_classic": "Classic Form",
   "settings.display.classic_desc": "All questions on one page",

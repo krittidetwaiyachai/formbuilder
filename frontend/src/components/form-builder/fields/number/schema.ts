@@ -1,13 +1,11 @@
 import { FieldType } from '@/types/enums';
 import { FieldWidth, LabelAlignment } from '@/types/field-schema';
 import type { FieldWidthType, LabelAlignmentType } from '@/types/field-schema';
-
 export interface NumberOptions {
   width: FieldWidthType;
   labelAlignment: LabelAlignmentType;
   subLabel: string;
 }
-
 export const numberDefaultValues = {
   type: FieldType.NUMBER,
   label: 'Number',
@@ -16,12 +14,12 @@ export const numberDefaultValues = {
   options: {
     width: FieldWidth.FULL,
     labelAlignment: LabelAlignment.TOP,
-    subLabel: '',
+    subLabel: ''
   } satisfies NumberOptions,
   validation: {
     required: false,
     readOnly: false,
     min: null,
-    max: null,
+    max: null
   }
 } as const;

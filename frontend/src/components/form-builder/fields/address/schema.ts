@@ -1,13 +1,11 @@
 import { FieldType } from '@/types/enums';
 import { FieldWidth, LabelAlignment } from '@/types/field-schema';
 import type { FieldWidthType, LabelAlignmentType } from '@/types/field-schema';
-
 export interface AddressOptions {
   width: FieldWidthType;
   labelAlignment: LabelAlignmentType;
   defaultCountry: string;
 }
-
 export const addressDefaultValues = {
   type: FieldType.ADDRESS,
   label: 'Address',
@@ -15,7 +13,7 @@ export const addressDefaultValues = {
   options: {
     width: FieldWidth.FULL,
     labelAlignment: LabelAlignment.TOP,
-    defaultCountry: 'US',
+    defaultCountry: 'US'
   } satisfies AddressOptions,
   validation: {
     readOnly: false,
@@ -24,6 +22,6 @@ export const addressDefaultValues = {
     showCity: true,
     showState: true,
     showZip: true,
-    showCountry: true,
+    showCountry: true
   }
 } as const;

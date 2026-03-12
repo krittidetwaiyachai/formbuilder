@@ -2,14 +2,8 @@ export * from './enums';
 export * from './field-validation';
 export * from './typed-fields';
 import { FieldType, RoleType, FormStatus } from './enums';
-
 import type { FieldValidation } from './field-validation';
 import type { FieldOptions } from './typed-fields';
-
-
-
-
-
 export interface User {
   id: string;
   email: string;
@@ -23,7 +17,6 @@ export interface User {
     permissions: Record<string, boolean>;
   };
 }
-
 export interface Field {
   id: string;
   formId: string;
@@ -51,7 +44,6 @@ export interface Field {
   imageWidth?: string;
   videoUrl?: string;
 }
-
 export interface FieldCondition {
   id: string;
   formId: string;
@@ -61,20 +53,17 @@ export interface FieldCondition {
   value: string;
   action: string;
 }
-
 export interface LogicCondition {
   id: string;
   fieldId: string;
   operator: string;
   value: string;
 }
-
 export interface LogicAction {
   id: string;
   type: 'show' | 'hide';
   fieldId: string;
 }
-
 export interface LogicRule {
   id: string;
   name: string;
@@ -82,7 +71,6 @@ export interface LogicRule {
   conditions: LogicCondition[];
   actions: LogicAction[];
 }
-
 export interface Form {
   id: string;
   folderId?: string;
@@ -137,7 +125,6 @@ export interface Form {
   pageSettings?: PageSettings[];
   settings?: FormSettings;
 }
-
 export interface FormSettings {
   submitButtonText?: string;
   successMessage?: string;
@@ -164,9 +151,7 @@ export interface FormSettings {
   themeName?: string;
   buttonStyle?: 'filled' | 'outlined' | 'ghost';
 }
-
 export type FormSettingsProperties = FormSettings;
-
 export interface FormTheme {
   primaryColor: string;
   backgroundColor: string;
@@ -178,13 +163,10 @@ export interface FormTheme {
   backgroundImage?: string;
   themeName?: string;
 }
-
 export interface PageSettings {
   id: string;
   title: string;
-
 }
-
 export interface WelcomeScreenSettings {
   title: string;
   description: string;
@@ -196,7 +178,6 @@ export interface WelcomeScreenSettings {
   icon?: 'check' | 'thumbsUp' | 'heart' | 'star' | 'trophy' | 'party' | 'rocket' | 'sparkles';
   iconColor?: 'green' | 'blue' | 'purple' | 'orange' | 'pink' | 'red' | 'yellow' | 'gray' | 'white';
 }
-
 export interface ThankYouScreenSettings {
   title: string;
   message: string;
@@ -217,13 +198,11 @@ export interface ThankYouScreenSettings {
   showSocialShare?: boolean;
   showConfetti?: boolean;
 }
-
 export interface Bundle {
   id: string;
   name: string;
   description?: string;
   isPII: boolean;
-
   version: number;
   isActive: boolean;
   options?: {
@@ -234,7 +213,6 @@ export interface Bundle {
   };
   fields?: BundleField[];
 }
-
 export interface BundleField {
   id: string;
   bundleId: string;
@@ -247,7 +225,6 @@ export interface BundleField {
   order: number;
   options?: FieldOptions;
 }
-
 export interface FormResponse {
   id: string;
   formId: string;
@@ -264,7 +241,6 @@ export interface FormResponse {
     quizSettings?: Form['quizSettings'];
   };
 }
-
 export interface ResponseAnswer {
   id: string;
   responseId: string;
@@ -273,4 +249,3 @@ export interface ResponseAnswer {
   isCorrect?: boolean;
   field?: Field;
 }
-

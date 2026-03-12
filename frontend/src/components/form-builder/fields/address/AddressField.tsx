@@ -3,7 +3,6 @@ import type { Field, AddressFieldOptions } from "@/types";
 import { useFormStore } from "@/store/formStore";
 import { MapPin } from "lucide-react";
 import { useTranslation } from "react-i18next";
-
 interface AddressFieldProps {
   field: Field;
   fieldStyle: {
@@ -14,16 +13,14 @@ interface AddressFieldProps {
   };
   disabledClass?: string;
 }
-
 export const AddressField: React.FC<AddressFieldProps> = ({
   field,
   fieldStyle,
-  disabledClass = "opacity-60 cursor-pointer",
+  disabledClass = "opacity-60 cursor-pointer"
 }) => {
   const { updateField } = useFormStore();
   const { t } = useTranslation();
   const { inputBorder } = fieldStyle;
-
   const options = (field.options || {}) as AddressFieldOptions;
   const showStreet = options.showStreet !== false;
   const showStreet2 = options.showStreet2 !== false;
@@ -31,160 +28,106 @@ export const AddressField: React.FC<AddressFieldProps> = ({
   const showState = options.showState !== false;
   const showZip = options.showZip !== false;
   const showCountry = options.showCountry !== false;
-
   const addressSublabels = options.sublabels || {};
   const addressPlaceholders = options.placeholders || {};
   const stateInputType = options.stateInputType || "text";
-
   const handleSubLabelBlur = (
-    key: string,
-    e: React.FormEvent<HTMLDivElement>,
-  ) => {
+  key: string,
+  e: React.FormEvent<HTMLDivElement>) =>
+  {
     const text = e.currentTarget.innerText;
     updateField(field.id, {
       options: {
         ...options,
         sublabels: {
           ...addressSublabels,
-          [key]: text,
-        },
-      },
+          [key]: text
+        }
+      }
     });
   };
-
-  const renderEditableSublabel = (key: string, defaultText: string) => (
-    <div
-      contentEditable
-      suppressContentEditableWarning
-      spellCheck={false}
-      className="mt-1 text-xs text-gray-500 font-normal outline-none focus:outline-none focus:ring-0 border border-transparent hover:border-gray-200 rounded px-1 transition-colors empty:before:content-[var(--placeholder)]"
-      onBlur={(e) => handleSubLabelBlur(key, e)}
-      onClick={(e) => e.stopPropagation()}
-      onMouseDown={(e) => e.stopPropagation()}
-      dangerouslySetInnerHTML={{ __html: addressSublabels[key] || defaultText }}
-      style={
-        {
-          pointerEvents: "auto",
-          cursor: "text",
-          "--placeholder": `"${t("builder.properties.type_sublabel")}"`,
-        } as React.CSSProperties
-      }
-    />
-  );
-
+  const renderEditableSublabel = (key: string, defaultText: string) =>
+  <div
+    contentEditable
+    suppressContentEditableWarning
+    spellCheck={false}
+    className="mt-1 text-xs text-gray-500 font-normal outline-none focus:outline-none focus:ring-0 border border-transparent hover:border-gray-200 rounded px-1 transition-colors empty:before:content-[var(--placeholder)]"
+    onBlur={(e) => handleSubLabelBlur(key, e)}
+    onClick={(e) => e.stopPropagation()}
+    onMouseDown={(e) => e.stopPropagation()}
+    dangerouslySetInnerHTML={{ __html: addressSublabels[key] || defaultText }}
+    style={
+    {
+      pointerEvents: "auto",
+      cursor: "text",
+      "--placeholder": `"${t("builder.properties.type_sublabel")}"`
+    } as React.CSSProperties
+    } />;
   return (
-    <div className="space-y-3 bg-gray-50/30 p-4 rounded-2xl border border-gray-100">
-      {showStreet && (
-        <div className="group">
-          <div className="relative">
-            <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
-              <MapPin className="h-5 w-5 text-gray-400" />
-            </div>
-            <input
-              type="text"
-              placeholder={
-                addressPlaceholders.street || t("common.address.street")
-              }
-              readOnly
-              tabIndex={-1}
-              className={`w-full pl-12 pr-4 py-3.5 border ${inputBorder} rounded-xl bg-white text-black text-base shadow-sm transition-all duration-300 ${disabledClass}`}
-              style={{ pointerEvents: "none" }}
-            />
-          </div>
-          {renderEditableSublabel("street", t("common.address.street"))}
-        </div>
-      )}
-
-      {showStreet2 && (
-        <div className="relative group">
+    <div className="space-y-3 bg-gray-50/30 p-4 rounded-2xl border border-gray-100">      {showStreet &&
+      <div className="group">          <div className="relative">            <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">              <MapPin className="h-5 w-5 text-gray-400" />            </div>            <input
+            type="text"
+            placeholder={
+            addressPlaceholders.street || t("common.address.street")
+            }
+            readOnly
+            tabIndex={-1}
+            className={`w-full pl-12 pr-4 py-3.5 border ${inputBorder} rounded-xl bg-white text-black text-base shadow-sm transition-all duration-300 ${disabledClass}`}
+            style={{ pointerEvents: "none" }} />
+          </div>          {renderEditableSublabel("street", t("common.address.street"))}        </div>
+      }      {showStreet2 &&
+      <div className="relative group">          <input
+          type="text"
+          placeholder={
+          addressPlaceholders.street2 || t("common.address.street2")
+          }
+          readOnly
+          tabIndex={-1}
+          className={`w-full px-4 py-3.5 border ${inputBorder} rounded-xl bg-white text-black text-base shadow-sm transition-all duration-300 ${disabledClass}`}
+          style={{ pointerEvents: "none" }} />
+          {renderEditableSublabel("street2", t("common.address.street2"))}        </div>
+      }      <div className="grid grid-cols-2 gap-4">        {showCity &&
+        <div className="relative group">            <input
+            type="text"
+            placeholder={addressPlaceholders.city || t("common.address.city")}
+            readOnly
+            tabIndex={-1}
+            className={`w-full px-4 py-3.5 border ${inputBorder} rounded-xl bg-white text-black text-base shadow-sm transition-all duration-300 ${disabledClass}`}
+            style={{ pointerEvents: "none" }} />
+            {renderEditableSublabel("city", t("common.address.city"))}          </div>
+        }        {showState &&
+        <div className="relative group">            {stateInputType === "us_states" ?
+          <select
+            disabled
+            className={`w-full px-4 py-3.5 border ${inputBorder} rounded-xl bg-white text-black text-base shadow-sm transition-all duration-300 ${disabledClass} appearance-none`}
+            style={{ pointerEvents: "none" }}>
+                <option>                  {addressPlaceholders.state ||
+              t("common.address.select_state")}                </option>              </select> :
           <input
             type="text"
             placeholder={
-              addressPlaceholders.street2 || t("common.address.street2")
+            addressPlaceholders.state || t("common.address.state")
             }
             readOnly
             tabIndex={-1}
             className={`w-full px-4 py-3.5 border ${inputBorder} rounded-xl bg-white text-black text-base shadow-sm transition-all duration-300 ${disabledClass}`}
-            style={{ pointerEvents: "none" }}
-          />
-          {renderEditableSublabel("street2", t("common.address.street2"))}
-        </div>
-      )}
-
-      <div className="grid grid-cols-2 gap-4">
-        {showCity && (
-          <div className="relative group">
-            <input
-              type="text"
-              placeholder={addressPlaceholders.city || t("common.address.city")}
-              readOnly
-              tabIndex={-1}
-              className={`w-full px-4 py-3.5 border ${inputBorder} rounded-xl bg-white text-black text-base shadow-sm transition-all duration-300 ${disabledClass}`}
-              style={{ pointerEvents: "none" }}
-            />
-            {renderEditableSublabel("city", t("common.address.city"))}
-          </div>
-        )}
-        {showState && (
-          <div className="relative group">
-            {stateInputType === "us_states" ? (
-              <select
-                disabled
-                className={`w-full px-4 py-3.5 border ${inputBorder} rounded-xl bg-white text-black text-base shadow-sm transition-all duration-300 ${disabledClass} appearance-none`}
-                style={{ pointerEvents: "none" }}
-              >
-                <option>
-                  {addressPlaceholders.state ||
-                    t("common.address.select_state")}
-                </option>
-              </select>
-            ) : (
-              <input
-                type="text"
-                placeholder={
-                  addressPlaceholders.state || t("common.address.state")
-                }
-                readOnly
-                tabIndex={-1}
-                className={`w-full px-4 py-3.5 border ${inputBorder} rounded-xl bg-white text-black text-base shadow-sm transition-all duration-300 ${disabledClass}`}
-                style={{ pointerEvents: "none" }}
-              />
-            )}
-            {renderEditableSublabel("state", t("common.address.state"))}
-          </div>
-        )}
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        {showZip && (
-          <div className="relative group">
-            <input
-              type="text"
-              placeholder={addressPlaceholders.zip || t("common.address.zip")}
-              readOnly
-              tabIndex={-1}
-              className={`w-full px-4 py-3.5 border ${inputBorder} rounded-xl bg-white text-black text-base shadow-sm transition-all duration-300 ${disabledClass}`}
-              style={{ pointerEvents: "none" }}
-            />
-            {renderEditableSublabel("zip", t("common.address.zip"))}
-          </div>
-        )}
-        {showCountry && (
-          <div className="relative group">
-            <select
-              disabled
-              className={`w-full px-4 py-3.5 border ${inputBorder} rounded-xl bg-white text-black text-base shadow-sm transition-all duration-300 ${disabledClass} appearance-none`}
-              style={{ pointerEvents: "none" }}
-            >
-              <option>
-                {addressPlaceholders.country ||
-                  t("common.address.select_country")}
-              </option>
-            </select>
-            {renderEditableSublabel("country", t("common.address.country"))}
-          </div>
-        )}
-      </div>
-    </div>
-  );
+            style={{ pointerEvents: "none" }} />
+          }            {renderEditableSublabel("state", t("common.address.state"))}          </div>
+        }      </div>      <div className="grid grid-cols-2 gap-4">        {showZip &&
+        <div className="relative group">            <input
+            type="text"
+            placeholder={addressPlaceholders.zip || t("common.address.zip")}
+            readOnly
+            tabIndex={-1}
+            className={`w-full px-4 py-3.5 border ${inputBorder} rounded-xl bg-white text-black text-base shadow-sm transition-all duration-300 ${disabledClass}`}
+            style={{ pointerEvents: "none" }} />
+            {renderEditableSublabel("zip", t("common.address.zip"))}          </div>
+        }        {showCountry &&
+        <div className="relative group">            <select
+            disabled
+            className={`w-full px-4 py-3.5 border ${inputBorder} rounded-xl bg-white text-black text-base shadow-sm transition-all duration-300 ${disabledClass} appearance-none`}
+            style={{ pointerEvents: "none" }}>
+              <option>                {addressPlaceholders.country ||
+              t("common.address.select_country")}              </option>            </select>            {renderEditableSublabel("country", t("common.address.country"))}          </div>
+        }      </div>    </div>);
 };

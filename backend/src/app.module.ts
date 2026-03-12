@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { PrismaModule } from './prisma/prisma.module';
@@ -17,15 +18,15 @@ import { CustomThrottlerGuard } from './common/guards/custom-throttler.guard';
 import { AdminModule } from './admin/admin.module';
 import { AppController } from './app.controller';
 import { CollaborationModule } from './collaboration/collaboration.module';
-
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true,
+      isGlobal: true
     }),
+    EventEmitterModule.forRoot(),
     ThrottlerModule.forRoot([{
       ttl: 60000,
-      limit: 1000000000,
+      limit: 200
     }]),
     PrismaModule,
     AuthModule,
@@ -38,22 +39,16 @@ import { CollaborationModule } from './collaboration/collaboration.module';
     EventsModule,
     CommonModule,
     AdminModule,
-    CollaborationModule,
-  ],
+    CollaborationModule],
   providers: [
     {
       provide: APP_GUARD,
-      useClass: JwtAuthGuard,
+      useClass: JwtAuthGuard
     },
     {
       provide: APP_GUARD,
-      useClass: CustomThrottlerGuard,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: CustomThrottlerGuard,
-    },
-  ],
-  controllers: [AppController],
-})
-export class AppModule { }
+      useClass: CustomThrottlerGuard
+    }],
+  controllers: [AppController]
+}) export class
+  AppModule { }

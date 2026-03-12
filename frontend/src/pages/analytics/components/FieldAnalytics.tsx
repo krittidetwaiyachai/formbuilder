@@ -25,7 +25,6 @@ import {
 } from "@/components/ui/custom-select";
 import type { FieldStats } from "../types";
 import type { Form } from "@/types";
-
 interface FieldAnalyticsProps {
   form: Form | null;
   fieldStats: FieldStats[];
@@ -34,7 +33,6 @@ interface FieldAnalyticsProps {
   onCopy: (id: string) => void;
   copySuccess: string | null;
 }
-
 const COLORS = [
   "#3b82f6",
   "#10b981",
@@ -45,12 +43,10 @@ const COLORS = [
   "#06b6d4",
   "#84cc16",
 ];
-
 const stripHtml = (html: string): string => {
   if (!html) return "";
   return html.replace(/<[^>]*>/g, "").trim();
 };
-
 export const FieldDistributionWidget: React.FC<
   FieldAnalyticsProps & {
     selectedField: string;
@@ -61,7 +57,6 @@ export const FieldDistributionWidget: React.FC<
   const selectedFieldStats = fieldStats.find(
     (f) => f.fieldId === selectedField,
   );
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -85,7 +80,6 @@ export const FieldDistributionWidget: React.FC<
           ))}
         </SelectContent>
       </Select>
-
       {selectedFieldStats && (
         <div className="relative">
           <div className="absolute top-0 right-0 z-10">
@@ -137,7 +131,6 @@ export const FieldDistributionWidget: React.FC<
     </motion.div>
   );
 };
-
 export const FieldDetailedAnalysis: React.FC<
   FieldAnalyticsProps & {
     selectedField: string;
@@ -155,7 +148,6 @@ export const FieldDetailedAnalysis: React.FC<
   const selectedFieldStats = fieldStats.find(
     (f) => f.fieldId === selectedField,
   );
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -164,16 +156,20 @@ export const FieldDetailedAnalysis: React.FC<
       className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm"
     >
       <div className="flex items-center justify-between mb-6">
+        {" "}
         <h3 className="text-2xl font-bold text-gray-900">
-          {t("analytics.field_analytics")}
-        </h3>
-      </div>
-
+          {" "}
+          {t("analytics.field_analytics")}{" "}
+        </h3>{" "}
+      </div>{" "}
       <Select value={selectedField} onValueChange={onFieldChange}>
+        {" "}
         <SelectTrigger className="w-full mb-8 h-14 text-base font-medium border-2 hover:border-gray-300 transition-colors">
-          <SelectValue placeholder={t("analytics.select_field_analyze")} />
-        </SelectTrigger>
+          {" "}
+          <SelectValue placeholder={t("analytics.select_field_analyze")} />{" "}
+        </SelectTrigger>{" "}
         <SelectContent className="max-h-80">
+          {" "}
           {fieldStats.map((field) => (
             <SelectItem
               key={field.fieldId}
@@ -181,25 +177,31 @@ export const FieldDetailedAnalysis: React.FC<
               className="text-base"
             >
               <div className="flex items-center justify-between w-full">
+                {" "}
                 <span className="font-medium">
-                  {stripHtml(field.fieldLabel)}
-                </span>
+                  {" "}
+                  {stripHtml(field.fieldLabel)}{" "}
+                </span>{" "}
                 <span className="text-sm text-gray-500 ml-3">
-                  ({totalResponses.toLocaleString()} responses)
-                </span>
-              </div>
+                  {" "}
+                  ({field.totalResponses.toLocaleString()} responses){" "}
+                </span>{" "}
+              </div>{" "}
             </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-
+          ))}{" "}
+        </SelectContent>{" "}
+      </Select>{" "}
       {selectedFieldStats && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {" "}
           <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
+            {" "}
             <div className="flex items-center justify-between mb-5">
+              {" "}
               <h4 className="text-lg font-bold text-gray-900">
-                {t("analytics.response_ranking")}
-              </h4>
+                {" "}
+                {t("analytics.response_ranking")}{" "}
+              </h4>{" "}
               <button
                 onClick={() => onCopy("response-ranking-list")}
                 className="p-2 text-gray-500 hover:text-gray-900 hover:bg-white rounded-lg transition-colors"
@@ -240,7 +242,6 @@ export const FieldDetailedAnalysis: React.FC<
               ))}
             </div>
           </div>
-
           <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
             <div className="flex items-center justify-between mb-5">
               <h4 className="text-lg font-bold text-gray-900">

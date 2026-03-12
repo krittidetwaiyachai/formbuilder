@@ -1,7 +1,6 @@
 import { FieldType } from '@/types/enums';
 import { FieldWidth, LabelAlignment } from '@/types/field-schema';
 import type { FieldWidthType, LabelAlignmentType } from '@/types/field-schema';
-
 export interface RadioValidation {
   readOnly: boolean;
   spreadToColumns: boolean;
@@ -10,7 +9,6 @@ export interface RadioValidation {
   labelAlignment: LabelAlignmentType;
   width: FieldWidthType;
 }
-
 export const radioDefaultValues = {
   type: FieldType.RADIO,
   label: 'Single Choice',
@@ -22,6 +20,6 @@ export const radioDefaultValues = {
     columns: 2,
     otherOption: false,
     labelAlignment: LabelAlignment.TOP,
-    width: FieldWidth.FULL,
-  } satisfies RadioValidation,
+    width: FieldWidth.FULL
+  } satisfies RadioValidation
 } as const;
