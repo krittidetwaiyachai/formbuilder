@@ -8,10 +8,13 @@ export const useAnalyticsStats = () => {
   const [responseTrend, setResponseTrend] = useState<{ date: string; count: number }[]>([]);
   const [statsLoading, setStatsLoading] = useState(false);
 
-  const loadStats = useCallback(async (formId: string) => {
+  const loadStats = useCallback(async (formId: string, month?: string) => {
     setStatsLoading(true);
     try {
-      const response = await api.get(`/responses/form/${formId}/stats`);
+      const url = month
+        ? `/responses/form/${formId}/stats?month=${encodeURIComponent(month)}`
+        : `/responses/form/${formId}/stats`;
+      const response = await api.get(url);
       const { responseTrend: trend, fieldStats: fields, quizStats: quiz } = response.data;
 
       if (trend) setResponseTrend(trend);

@@ -53,7 +53,12 @@ interface FieldOption {
 export class ResponsesStatsService {
     constructor(private prisma: PrismaService) { }
 
-    async getStats(formId: string, userId: string, userRole: RoleType) {
+    async getStats(
+        formId: string,
+        userId: string,
+        userRole: RoleType,
+        opts?: { month?: string },
+    ) {
         const form = await this.prisma.form.findUnique({
             where: { id: formId },
             include: { fields: { orderBy: { order: 'asc' } } },
@@ -65,7 +70,7 @@ export class ResponsesStatsService {
         }
 
         const [responseTrend, fieldStats, quizStats] = await Promise.all([
-            this.getResponseTrend(formId),
+            this.getResponseTrend(formId, opts?.month),
             this.getFieldStats(formId, form),
             form.isQuiz ? this.getQuizStats(formId, form) : null,
         ]);
@@ -73,7 +78,42 @@ export class ResponsesStatsService {
         return { responseTrend, fieldStats, quizStats };
     }
 
-    private async getResponseTrend(formId: string): Promise<TrendItem[]> {
+    private async getResponseTrend(formId: string, month?: string): Promise<TrendItem[]> {
+        const parsed = this.parseMonth(month);
+
+        if (parsed) {
+            const { year, monthIndex } = parsed; // monthIndex: 0-11
+            const startUtc = new Date(Date.UTC(year, monthIndex, 1, 0, 0, 0, 0));
+            const endUtc = new Date(Date.UTC(year, monthIndex + 1, 1, 0, 0, 0, 0));
+
+            const rawTrend = await this.prisma.$queryRaw<{ day: Date; count: bigint }[]>`
+        SELECT DATE("submittedAt") as day, COUNT(*)::bigint as count
+        FROM "form_responses"
+        WHERE "formId" = ${formId}
+          AND "submittedAt" >= ${startUtc}
+          AND "submittedAt" < ${endUtc}
+        GROUP BY DATE("submittedAt")
+        ORDER BY day ASC
+      `;
+
+            const trendMap = new Map<string, number>();
+            rawTrend.forEach((r) => {
+                const key = new Date(r.day).toISOString().split('T')[0];
+                trendMap.set(key, Number(r.count));
+            });
+
+            const daysInMonth = new Date(Date.UTC(year, monthIndex + 1, 0)).getUTCDate();
+            const days: TrendItem[] = [];
+            for (let day = 1; day <= daysInMonth; day++) {
+                const d = new Date(Date.UTC(year, monthIndex, day));
+                const key = d.toISOString().split('T')[0];
+                const label = d.toLocaleDateString('th-TH', { day: '2-digit', month: 'short' });
+                days.push({ date: label, count: trendMap.get(key) || 0 });
+            }
+            return days;
+        }
+
+        // Default: last 14 days (incl. today)
         const startDate = new Date();
         startDate.setDate(startDate.getDate() - 13);
         startDate.setHours(0, 0, 0, 0);
@@ -102,6 +142,18 @@ export class ResponsesStatsService {
         }
 
         return days;
+    }
+
+    private parseMonth(month?: string): { year: number; monthIndex: number } | null {
+        if (!month) return null;
+        const normalized = String(month).trim();
+        const m = /^(\d{4})-(\d{2})$/.exec(normalized);
+        if (!m) return null;
+        const year = Number(m[1]);
+        const monthNum = Number(m[2]); // 1-12
+        if (!Number.isFinite(year) || !Number.isFinite(monthNum)) return null;
+        if (monthNum < 1 || monthNum > 12) return null;
+        return { year, monthIndex: monthNum - 1 };
     }
 
     private async getFieldStats(
@@ -300,15 +352,14 @@ export class ResponsesStatsService {
             pass_count: bigint;
         }[]>`
       SELECT
-        AVG(score)::float as avg_score,
-        AVG(percentage)::float as avg_pct,
-        MAX(score) as max_score,
-        MIN(score) as min_score,
-        COUNT(*)::bigint as total,
-        COUNT(*) FILTER (WHERE percentage >= 50)::bigint as pass_count
-      FROM "quiz_scores" qs
-      INNER JOIN "form_responses" fr ON qs."responseId" = fr."id"
-      WHERE fr."formId" = ${formId}
+        AVG("score")::float as avg_score,
+        AVG("score" * 100.0 / NULLIF("totalScore", 0))::float as avg_pct,
+        MAX("score") as max_score,
+        MIN("score") as min_score,
+        COUNT("score")::bigint as total,
+        COUNT(*) FILTER (WHERE ("score" * 100.0 / NULLIF("totalScore", 0)) >= 50)::bigint as pass_count
+      FROM "form_responses"
+      WHERE "formId" = ${formId} AND "score" IS NOT NULL
     `;
 
         if (!aggregated[0] || Number(aggregated[0].total) === 0) return null;
@@ -318,11 +369,10 @@ export class ResponsesStatsService {
 
         const distRaw = await this.prisma.$queryRaw<{ bucket: number; count: bigint }[]>`
       SELECT
-        FLOOR(percentage / 20)::int as bucket,
+        FLOOR(("score" * 100.0 / NULLIF("totalScore", 0)) / 20)::int as bucket,
         COUNT(*)::bigint as count
-      FROM "quiz_scores" qs
-      INNER JOIN "form_responses" fr ON qs."responseId" = fr."id"
-      WHERE fr."formId" = ${formId}
+      FROM "form_responses"
+      WHERE "formId" = ${formId} AND "score" IS NOT NULL
       GROUP BY bucket
       ORDER BY bucket
     `;

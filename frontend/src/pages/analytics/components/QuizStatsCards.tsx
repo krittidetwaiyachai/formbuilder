@@ -12,6 +12,10 @@ import {
 import { CheckCircle2, Copy, XCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { QuizStats } from "../types";
+
+const stripHtmlTags = (html: string): string =>
+  html.replace(/<[^>]*>/g, "").trim();
+
 interface QuizStatsCardsProps {
   stats: QuizStats | null;
   onCopy: (id: string) => void;
@@ -57,7 +61,7 @@ export const QuizStatsCards: React.FC<QuizStatsCardsProps> = ({
           <div
             key={q.fieldId}
             className="group bg-gradient-to-r from-gray-50 to-white hover:from-gray-100 hover:to-gray-50 rounded-lg p-4 border border-gray-200 hover:border-gray-300 transition-all duration-300 hover:shadow-md">
-              <div className="flex items-center gap-4">                <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gradient-to-br from-gray-900 to-gray-700 flex items-center justify-center shadow-md">                  <span className="text-base font-bold text-white">                    {i + 1}                  </span>                </div>                <div className="flex-1 min-w-0">                  <p className="text-sm font-semibold text-gray-900 mb-2 truncate">                    {q.label}                  </p>                  <div className="flex items-center gap-2">                    <div className="flex-1 h-2.5 bg-gray-200 rounded-full overflow-hidden shadow-inner">                      <div
+              <div className="flex items-center gap-4">                <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gradient-to-br from-gray-900 to-gray-700 flex items-center justify-center shadow-md">                  <span className="text-base font-bold text-white">                    {i + 1}                  </span>                </div>                <div className="flex-1 min-w-0">                  <p className="text-sm font-semibold text-gray-900 mb-2 truncate">                    {stripHtmlTags(q.label)}                  </p>                  <div className="flex items-center gap-2">                    <div className="flex-1 h-2.5 bg-gray-200 rounded-full overflow-hidden shadow-inner">                      <div
                       className={`h-full rounded-full transition-all duration-500 ${
                       q.correctRate > 70 ?
                       "bg-gradient-to-r from-green-400 to-emerald-500" :

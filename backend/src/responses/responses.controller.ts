@@ -67,8 +67,14 @@ interface User {
   @Roles(RoleType.SUPER_ADMIN, RoleType.ADMIN, RoleType.EDITOR, RoleType.VIEWER)
   getStats(
     @Param('formId') formId: string,
+    @Query() query: Record<string, unknown>,
     @CurrentUser() user: User) {
-    return this.statsService.getStats(formId, user.id, user.role);
+    const month =
+      typeof query.month === 'string' ? query.month :
+      typeof query.selectedMonth === 'string' ? query.selectedMonth :
+      undefined;
+
+    return this.statsService.getStats(formId, user.id, user.role, { month });
   }
   @Get('form/:formId')
   @UseGuards(JwtAuthGuard, RolesGuard)

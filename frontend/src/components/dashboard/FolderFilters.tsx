@@ -29,14 +29,23 @@ export default function FolderFilters({
     action();
   };
   return (
-    <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide pt-2 -mx-1 px-1">      {}      {onCreateFolder &&
-      <>          <motion.button
+    <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide pt-2 -mx-1 px-1">
+      {}
+      {onCreateFolder &&
+      <>
+          <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={() => handleFolderAction(onCreateFolder)}
           className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-white border border-dashed border-gray-300 text-xs font-medium text-gray-600 hover:border-gray-400 hover:text-gray-800 hover:bg-gray-50 transition-all flex-shrink-0 whitespace-nowrap">
-            <Plus className="w-3.5 h-3.5" />            {t("dashboard.new_folder")}          </motion.button>          <div className="w-[1px] h-6 bg-gray-200 mx-1 flex-shrink-0" />        </>
-      }      {}      <motion.button
+            <Plus className="w-3.5 h-3.5" />
+            {t("dashboard.new_folder")}
+          </motion.button>
+          <div className="w-[1px] h-6 bg-gray-200 mx-1 flex-shrink-0" />
+        </>
+      }
+      {}
+      <motion.button
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
         onClick={() => handleFolderAction(() => onFolderSelect(null))}
@@ -45,7 +54,11 @@ export default function FolderFilters({
         "bg-black text-white border-black shadow-sm" :
         "bg-white text-gray-600 border-gray-200 hover:bg-gray-50 hover:border-gray-300"}`
         }>
-        <LayoutGrid className="w-3.5 h-3.5" />        {t("dashboard.folder.all")}      </motion.button>      {}      <motion.button
+        <LayoutGrid className="w-3.5 h-3.5" />
+        {t("dashboard.folder.all")}
+      </motion.button>
+      {}
+      <motion.button
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
         onClick={() => handleFolderAction(() => onFolderSelect("ungrouped"))}
@@ -54,7 +67,11 @@ export default function FolderFilters({
         "bg-black text-white border-black shadow-sm" :
         "bg-white text-gray-600 border-gray-200 hover:bg-gray-50 hover:border-gray-300"}`
         }>
-        <FileX className="w-3.5 h-3.5" />        {t("dashboard.folder.ungrouped")}      </motion.button>      {}      {showIndividualFolders &&
+        <FileX className="w-3.5 h-3.5" />
+        {t("dashboard.folder.ungrouped")}
+      </motion.button>
+      {}
+      {showIndividualFolders &&
       folders.map((folder, index) =>
       <motion.button
         key={folder.id}
@@ -78,6 +95,8 @@ export default function FolderFilters({
             activeFolderId === folder.id ? "currentColor" : folder.color,
             fillOpacity: activeFolderId === folder.id ? 1 : 0.2
           }} />
-            <span className="truncate max-w-[120px]">{folder.name}</span>          </motion.button>
-      )}    </div>);
+            <span className="truncate max-w-[120px]">{folder.name}</span>
+          </motion.button>
+      )}
+    </div>);
 }

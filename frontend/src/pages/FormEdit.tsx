@@ -12,7 +12,7 @@ import { usePageManagement } from "@/hooks/form/usePageManagement";
 import { useFormDragAndDrop } from "@/hooks/form/useDragAndDrop";
 import { useCollaboration } from "@/hooks/useCollaboration";
 import ThemeSelectionModal from "@/components/builder/ThemeSelectionModal";
-import { SmoothScrollProvider } from "@/contexts/SmoothScrollContext";
+import { SmoothScrollProvider, useBuilderScroll } from "@/contexts/SmoothScrollContext";
 import { useFormLoad } from "@/hooks/form/useFormLoad";
 import { useFormSocket } from "@/hooks/form/useFormSocket";
 import { useFormSave } from "@/hooks/form/useFormSave";
@@ -26,6 +26,21 @@ import PageNavigation from "@/components/form-builder/PageNavigation";
 import WelcomeScreenEditor from "@/components/form-builder/properties/WelcomeScreenEditor";
 import ThankYouScreenEditor from "@/components/form-builder/ThankYouScreenEditor";
 import { ArrowUp } from "lucide-react";
+
+function ScrollToTopButton({ show }: { show: boolean }) {
+  const { scrollTo } = useBuilderScroll();
+  const { t } = useTranslation();
+  if (!show) return null;
+  return (
+    <button
+      onClick={() => scrollTo(0, { duration: 1.5 })}
+      className="absolute bottom-24 right-8 z-50 p-3 bg-white text-gray-600 rounded-full shadow-lg border border-gray-200 hover:bg-gray-50 transition-all duration-300 animate-in fade-in slide-in-from-bottom-4"
+      title={t("common.scroll_top")}>
+      <ArrowUp className="w-5 h-5" />
+    </button>
+  );
+}
+
 export default function FormBuilderPage() {
   const { t } = useTranslation();
   const { id } = useParams<{id: string;}>();
@@ -112,7 +127,10 @@ export default function FormBuilderPage() {
   }, [fieldsToRender, currentPage]);
   if (loadingError) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 text-gray-900">        <div className="bg-white p-8 rounded-2xl shadow-xl text-center max-w-md w-full border border-gray-100">          <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4">            <svg
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 text-gray-900">
+        <div className="bg-white p-8 rounded-2xl shadow-xl text-center max-w-md w-full border border-gray-100">
+          <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg
               xmlns="http://www.w3.org/2000/svg"
               width="32"
               height="32"
@@ -122,15 +140,30 @@ export default function FormBuilderPage() {
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round">
-              <circle cx="12" cy="12" r="10" />              <line x1="12" y1="8" x2="12" y2="12" />              <line x1="12" y1="16" x2="12.01" y2="16" />            </svg>          </div>          <h2 className="text-2xl font-bold mb-2">            {t("builder.access_denied")}          </h2>          <p className="text-gray-500 mb-6">            {loadingError === "You don't have permission to access this form." ?
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+          </div>
+          <h2 className="text-2xl font-bold mb-2">
+            {t("builder.access_denied")}
+          </h2>
+          <p className="text-gray-500 mb-6">
+            {loadingError === "You don't have permission to access this form." ?
             t("builder.access_denied_msg") :
-            loadingError}          </p>          <button
+            loadingError}
+          </p>
+          <button
             onClick={() => navigate("/dashboard")}
             className="px-6 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors font-medium w-full">
-            {t("builder.back_to_dashboard")}          </button>        </div>      </div>);
+            {t("builder.back_to_dashboard")}
+          </button>
+        </div>
+      </div>);
   }
   return (
-    <div className="h-full flex flex-col">      <DragDropContext
+    <div className="h-full flex flex-col">
+      <DragDropContext
         onDragEnd={onDragEnd}
         onDragStart={onDragStart}
         autoScrollerOptions={{
@@ -138,21 +171,30 @@ export default function FormBuilderPage() {
           startFromPercentage: 0.2,
           maxScrollAtPercentage: 0.05
         }}>
-        <div className="flex flex-1 bg-gray-50 overflow-hidden relative">          <div className="hidden md:flex h-full">            <FieldSidebar />          </div>          <MobileDrawer
+        <div className="flex flex-1 bg-gray-50 overflow-hidden relative">
+          <div className="hidden md:flex h-full">
+            <FieldSidebar />
+          </div>
+          <MobileDrawer
             isOpen={isMobileMenuOpen}
             setIsOpen={setIsMobileMenuOpen}
             drawerContent={mobileDrawerContent}
             openDrawer={openMobileDrawer}
             closeDrawer={() => setMobileDrawerContent(null)}
             currentPage={currentPage} />
-          <div className="flex-1 flex flex-col min-w-0">            <FormBuilderHeader
+          <div className="flex-1 flex flex-col min-w-0">
+            <FormBuilderHeader
               currentForm={currentForm}
               saving={saving}
               lastSaved={lastSaved}
               message={message}
               handleSave={handleSave}
               updateForm={updateForm} />
-            <div className="flex-1 flex overflow-hidden bg-white">              <div className="flex-1 flex flex-col relative min-w-0 bg-white">                <ThemeActionButton setIsThemeModalOpen={setIsThemeModalOpen} />                <SmoothScrollProvider targetId="builder-canvas-scroll-container">                  <div
+            <div className="flex-1 flex overflow-hidden bg-white">
+              <div className="flex-1 flex flex-col relative min-w-0 bg-white">
+                <ThemeActionButton setIsThemeModalOpen={setIsThemeModalOpen} />
+                <SmoothScrollProvider targetId="builder-canvas-scroll-container">
+                  <div
                     id="builder-canvas-scroll-container"
                     ref={scrollContainerRef}
                     className={`canvas-scroll-container flex-1 flex flex-col ${currentPage < 0 ? "overflow-hidden" : "overflow-y-auto"} px-4 md:px-8 pt-0 pb-0 scrollbar-hide relative`}
@@ -166,13 +208,17 @@ export default function FormBuilderPage() {
                     }}>
                     {activeSidebarTab === "logic" ?
                     <LogicCanvas /> :
-                    <>                        {currentForm?.isQuiz &&
+                    <>
+                        {currentForm?.isQuiz &&
                       <QuizModeBanner
                         form={currentForm}
-                        onOpenSettings={() =>
-                        setActiveSidebarTab("settings")
-                        } />
-                      }                        {currentPage === -1 ?
+                        onOpenSettings={() => {
+                          // Desktop: switch right panel tab. Mobile: open the settings drawer.
+                          setActiveSidebarTab("settings");
+                          openMobileDrawer("settings");
+                        }} />
+                      }
+                        {currentPage === -1 ?
                       <WelcomeScreenEditor
                         currentForm={currentForm}
                         updateForm={updateForm} /> :
@@ -180,7 +226,8 @@ export default function FormBuilderPage() {
                       <ThankYouScreenEditor
                         currentForm={currentForm}
                         updateForm={updateForm} /> :
-                      <div className="max-w-[700px] w-full mx-auto pb-32">                            <CanvasArea
+                      <div className="max-w-[700px] w-full mx-auto pb-32">
+                            <CanvasArea
                           currentForm={currentForm}
                           visibleFields={visibleFields}
                           onSelectField={selectField}
@@ -196,19 +243,10 @@ export default function FormBuilderPage() {
                           handleAddWelcome={handleAddWelcome}
                           handleAddThankYou={handleAddThankYou} />
                           </div>
-                      }                      </>
-                    }                    {showScrollTop &&
-                    <button
-                      onClick={() =>
-                      scrollContainerRef.current?.scrollTo({
-                        top: 0,
-                        behavior: "smooth"
-                      })
-                      }
-                      className="fixed bottom-8 right-8 z-50 p-3 bg-white text-gray-600 rounded-full shadow-lg border border-gray-200 hover:bg-gray-50 transition-all duration-300 animate-in fade-in slide-in-from-bottom-4"
-                      title={t("common.scroll_top")}>
-                        <ArrowUp className="w-5 h-5" />                      </button>
-                    }                  </div>                </SmoothScrollProvider>                {currentForm &&
+                      }                      </>
+                    }                  </div>
+                  <ScrollToTopButton show={showScrollTop} />
+                </SmoothScrollProvider>                {currentForm &&
                 <PageNavigation
                   fields={currentForm?.fields || []}
                   currentPage={currentPage}
@@ -221,7 +259,12 @@ export default function FormBuilderPage() {
                   onReorderPages={handleReorderPages}
                   hasWelcome={currentForm?.hasWelcome}
                   hasThankYou={currentForm?.hasThankYou} />
-                }              </div>              <div className="hidden lg:flex w-[320px] bg-white border-l border-gray-200 flex-col h-full z-20">                <PropertiesPanel currentPage={currentPage} />              </div>              <ThemeSelectionModal
+                }
+              </div>
+              <div className="hidden lg:flex w-[320px] bg-white border-l border-gray-200 flex-col h-full z-20">
+                <PropertiesPanel currentPage={currentPage} />
+              </div>
+              <ThemeSelectionModal
                 isOpen={isThemeModalOpen}
                 onClose={() => setIsThemeModalOpen(false)}
                 currentTheme={{
@@ -254,5 +297,9 @@ export default function FormBuilderPage() {
                     }
                   });
                 }} />
-            </div>          </div>        </div>      </DragDropContext>    </div>);
+            </div>
+          </div>
+        </div>
+      </DragDropContext>
+    </div>);
 }

@@ -152,6 +152,7 @@ export default {
       "canvas": "Canvas",
       "location": "Location",
       "settings_updated": "Settings modified:",
+      "settings_modified": "Form settings modified",
       "theme_changed": "Theme changed:"
     },
     "values": {

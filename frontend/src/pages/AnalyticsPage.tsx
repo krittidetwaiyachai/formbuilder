@@ -48,6 +48,11 @@ export default function AnalyticsPage() {
   const { fieldStats, quizStats, responseTrend, loadStats } =
     useAnalyticsStats();
   const { copyChartToClipboard, copySuccess } = useChartExport();
+  const [selectedTrendMonth, setSelectedTrendMonth] = useState(() => {
+    const now = new Date();
+    const mm = String(now.getMonth() + 1).padStart(2, "0");
+    return `${now.getFullYear()}-${mm}`;
+  });
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [responseToDelete, setResponseToDelete] = useState<string | null>(null);
   const [showResponseViewer, setShowResponseViewer] = useState(false);
@@ -102,7 +107,7 @@ export default function AnalyticsPage() {
   useSmoothScroll(undefined, { enabled: !showResponseViewer });
   useEffect(() => {
     if (form && id) {
-      loadStats(id);
+      loadStats(id, selectedTrendMonth);
       if (form.fields && form.fields.length > 0) {
         const firstAnalyzableField = form.fields.find(
           (f) =>
@@ -119,7 +124,7 @@ export default function AnalyticsPage() {
         }
       }
     }
-  }, [form, id, loadStats]);
+  }, [form, id, loadStats, selectedTrendMonth]);
   const confirmDeleteResponse = async () => {
     if (!responseToDelete) return;
     try {
@@ -199,6 +204,8 @@ export default function AnalyticsPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
               <ResponseTrendChart
                 data={responseTrend}
+                selectedMonth={selectedTrendMonth}
+                onMonthChange={setSelectedTrendMonth}
                 onCopy={copyChartToClipboard}
                 copySuccess={copySuccess}
               />

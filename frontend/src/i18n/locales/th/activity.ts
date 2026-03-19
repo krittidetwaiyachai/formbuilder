@@ -170,6 +170,7 @@ export default {
       "canvas": "หน้าฟอร์ม (Canvas)",
       "location": "ตำแหน่ง",
       "settings_updated": "แก้ไขการตั้งค่า:",
+      "settings_modified": "แก้ไขการตั้งค่าฟอร์ม",
       "theme_changed": "เปลี่ยนธีม:"
     },
     "values": {

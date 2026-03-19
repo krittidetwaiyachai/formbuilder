@@ -77,7 +77,8 @@ export default function FolderCard({
   };
   const formCount = folder._count?.forms || forms.length;
   return (
-    <div className="relative">      <motion.div
+    <div className="relative">
+      <motion.div
         ref={setNodeRef}
         initial={false}
         animate={{
@@ -89,7 +90,10 @@ export default function FolderCard({
         "shadow-lg scale-[1.02]" :
         "hover:border-gray-300 hover:shadow-md"}`
         }>
-        {}        <div className="p-4 flex items-center gap-3 group relative">          {}          <button
+        {}
+        <div className="p-4 flex items-center gap-3 group relative">
+          {}
+          <button
             onClick={onToggleExpand}
             className="flex-shrink-0 p-1.5 rounded-lg hover:bg-gray-100 transition-colors group/arrow relative"
             aria-label={
@@ -100,7 +104,11 @@ export default function FolderCard({
             <motion.div
               animate={{ rotate: isExpanded ? 90 : 0 }}
               transition={{ duration: 0.2 }}>
-              <ChevronRight className="w-4 h-4 text-gray-500 group-hover/arrow:text-gray-700" />            </motion.div>          </button>          {}          <div
+              <ChevronRight className="w-4 h-4 text-gray-500 group-hover/arrow:text-gray-700" />
+            </motion.div>
+          </button>
+          {}
+          <div
             className="flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center transition-transform group-hover:scale-105"
             style={{
               backgroundColor: `${folder.color}15`,
@@ -111,8 +119,12 @@ export default function FolderCard({
               style={{ color: folder.color }}
               fill={folder.color}
               fillOpacity={0.2} />
-          </div>          {}          <div className="flex-1 min-w-0">            {isEditing ?
-            <div className="flex items-center gap-2">                <input
+          </div>
+          {}
+          <div className="flex-1 min-w-0">
+            {isEditing ?
+            <div className="flex items-center gap-2">
+                <input
                 type="text"
                 value={editName}
                 onChange={(e) => setEditName(e.target.value)}
@@ -129,12 +141,24 @@ export default function FolderCard({
                 <button
                 onClick={handleEdit}
                 className="p-1 hover:bg-gray-100 rounded">
-                  <X className="w-4 h-4 text-gray-500" />                </button>              </div> :
-            <>                <h3
+                  <X className="w-4 h-4 text-gray-500" />
+                </button>
+              </div> :
+            <>
+                <h3
                 className="font-semibold text-gray-900 truncate text-base"
                 onClick={() => onToggleExpand()}>
-                  {folder.name}                </h3>                <p className="text-sm text-gray-500 mt-0.5">                  {formCount} {t("dashboard.forms_count")}                </p>              </>
-            }          </div>          {}          <div className="relative">            <button
+                  {folder.name}
+                </h3>
+                <p className="text-sm text-gray-500 mt-0.5">
+                  {formCount} {t("dashboard.forms_count")}
+                </p>
+              </>
+            }
+          </div>
+          {}
+          <div className="relative">
+            <button
               onClick={(e) => {
                 e.stopPropagation();
                 setShowMenu(!showMenu);
@@ -145,8 +169,12 @@ export default function FolderCard({
               "opacity-0 group-hover:opacity-100"}`
               }
               aria-label={t("dashboard.folder.actions")}>
-              <MoreVertical className="w-4 h-4 text-gray-500" />            </button>            <AnimatePresence>              {showMenu &&
-              <>                  <div
+              <MoreVertical className="w-4 h-4 text-gray-500" />
+            </button>
+            <AnimatePresence>
+              {showMenu &&
+              <>
+                  <div
                   className="fixed inset-0 z-10"
                   onClick={() => setShowMenu(false)} />
                   <motion.div
@@ -160,19 +188,35 @@ export default function FolderCard({
                       setShowMenu(false);
                     }}
                     className="w-full px-4 py-2.5 text-left text-sm hover:bg-gray-50 flex items-center gap-2.5 transition-colors">
-                      <Edit2 className="w-4 h-4 text-gray-600" />                      <span>{t("dashboard.context.rename")}</span>                    </button>                    <button
+                      <Edit2 className="w-4 h-4 text-gray-600" />
+                      <span>{t("dashboard.context.rename")}</span>
+                    </button>
+                    <button
                     onClick={handleDelete}
                     className="w-full px-4 py-2.5 text-left text-sm hover:bg-red-50 text-red-600 flex items-center gap-2.5 transition-colors">
-                      <Trash2 className="w-4 h-4" />                      <span>{t("dashboard.context.delete")}</span>                    </button>                  </motion.div>                </>
-              }            </AnimatePresence>          </div>        </div>        {}        <AnimatePresence>          {isExpanded && forms.length > 0 &&
+                      <Trash2 className="w-4 h-4" />
+                      <span>{t("dashboard.context.delete")}</span>
+                    </button>
+                  </motion.div>
+                </>
+              }
+            </AnimatePresence>
+          </div>
+        </div>
+        {}
+        <AnimatePresence>
+          {isExpanded && forms.length > 0 &&
           <motion.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.2 }}
             className="overflow-hidden">
-              <div className="border-t border-gray-100 p-4 bg-gray-50/50">                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">                  {forms.map((form) =>
-                <DraggableFormCard key={form.id} formId={form.id}>                      <DashboardFormCard
+              <div className="border-t border-gray-100 p-4 bg-gray-50/50">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {forms.map((form) =>
+                <DraggableFormCard key={form.id} formId={form.id}>
+                      <DashboardFormCard
                     form={form}
                     currentUserId={currentUserId}
                     onCardClick={() => onFormClick(form.id)}
@@ -189,13 +233,25 @@ export default function FolderCard({
                     formatDate={formatDate}
                     compact={true} />
                     </DraggableFormCard>
-                )}                </div>              </div>            </motion.div>
-          }        </AnimatePresence>        {}        {isExpanded && forms.length === 0 &&
+                )}
+                </div>
+              </div>
+            </motion.div>
+          }
+        </AnimatePresence>
+        {}
+        {isExpanded && forms.length === 0 &&
         <motion.div
           initial={{ height: 0, opacity: 0 }}
           animate={{ height: "auto", opacity: 1 }}
           exit={{ height: 0, opacity: 0 }}
           className="border-t border-gray-100 p-8 bg-gray-50/50">
-            <div className="text-center text-gray-400">              <FolderIcon className="w-8 h-8 mx-auto mb-2 opacity-50" />              <p className="text-sm">{t("dashboard.folder.empty")}</p>            </div>          </motion.div>
-        }      </motion.div>    </div>);
+            <div className="text-center text-gray-400">
+              <FolderIcon className="w-8 h-8 mx-auto mb-2 opacity-50" />
+              <p className="text-sm">{t("dashboard.folder.empty")}</p>
+            </div>
+          </motion.div>
+        }
+      </motion.div>
+    </div>);
 }

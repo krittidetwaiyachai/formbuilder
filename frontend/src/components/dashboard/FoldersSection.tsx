@@ -63,9 +63,23 @@ export default function FoldersSection({
     return null;
   }
   return (
-    <div className="mb-10">      <div className="flex items-center justify-between mb-6">        <div>          <h2 className="text-xl font-bold text-gray-900 tracking-tight">            {t("dashboard.folders")}          </h2>          <p className="text-sm text-gray-500 mt-1">            {folders.length}{" "}            {folders.length === 1 ?
+    <div className="mb-10">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 className="text-xl font-bold text-gray-900 tracking-tight">
+            {t("dashboard.folders")}
+          </h2>
+          <p className="text-sm text-gray-500 mt-1">
+            {folders.length}{" "}
+            {folders.length === 1 ?
             t("dashboard.folder.count") :
-            t("dashboard.folder.count_plural")}          </p>        </div>      </div>      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">        <AnimatePresence mode="popLayout">          {sortedFolders.map((folder, index) => {
+            t("dashboard.folder.count_plural")}
+          </p>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <AnimatePresence mode="popLayout">
+          {sortedFolders.map((folder, index) => {
             const folderForms = getFormsInFolder(folder.id);
             const isExpanded = expandedFolderId === folder.id;
             return (
@@ -95,5 +109,8 @@ export default function FoldersSection({
                   onDeleteForm={onDeleteForm}
                   onCollaboratorsClick={onCollaboratorsClick} />
               </motion.div>);
-          })}        </AnimatePresence>      </div>    </div>);
+          })}
+        </AnimatePresence>
+      </div>
+    </div>);
 }

@@ -25,7 +25,7 @@ async function bootstrap() {
         styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
         fontSrc: ["'self'", "https://fonts.gstatic.com"],
         imgSrc: ["'self'", "data:", "https:"],
-        connectSrc: ["'self'", "http://localhost:*", "ws://localhost:*", "https:"],
+        connectSrc: ["'self'", "http://localhost:*", "ws://localhost:*", "http://10.15.211.15:*", "ws://10.15.211.15:*", "https:"],
       },
     }
   }));
