@@ -76,11 +76,11 @@ export default function QuizTimer({
         <Clock
           className={`w-5 h-5 ${statusColor} ${isDanger ? "animate-pulse" : ""}`} />
         {!isCollapsed &&
-        <div className="flex flex-col leading-none">            <span
+        <div className="flex flex-col leading-none">          <span
             className={`font-mono text-lg font-bold tracking-tight ${statusColor}`}>
-              {formatTime(timeRemaining)}            </span>            {isWarning && !isDanger &&
-          <span className="text-[10px] text-gray-400 font-medium -mt-0.5">                {t("public.timer.remaining")}              </span>
-          }          </div>
+              {formatTime(timeRemaining)}          </span>          {isWarning && !isDanger &&
+          <span className="text-[10px] text-gray-400 font-medium -mt-0.5">            {t("public.timer.remaining")}          </span>
+          }        </div>
         }      </div>      {!isCollapsed && <div className="w-px h-6 bg-gray-100 mx-1" />}      <button
         onClick={(e) => {
           e.stopPropagation();

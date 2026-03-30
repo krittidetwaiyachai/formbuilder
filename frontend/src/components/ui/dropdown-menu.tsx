@@ -38,7 +38,7 @@ const DropdownMenuTrigger = React.forwardRef<
           className
         )}
         {...props}>
-      {children}    </button>);
+      {children}      </button>);
   });
 DropdownMenuTrigger.displayName = "DropdownMenuTrigger";
 const DropdownMenuContent = React.forwardRef<
@@ -61,7 +61,7 @@ const DropdownMenuContent = React.forwardRef<
           className
         )}
         {...props}>
-      {children}    </div>);
+      {children}      </div>);
   });
 DropdownMenuContent.displayName = "DropdownMenuContent";
 const DropdownMenuItem = React.forwardRef<

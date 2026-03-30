@@ -54,7 +54,7 @@ export const TableField: React.FC<TableFieldProps> = ({
               key={idx}
               scope="col"
               className="px-4 py-3 border border-gray-200 font-semibold min-w-[150px] relative group/col">
-                <div className="flex items-center justify-between">                  {isSelected && updateField ?
+                <div className="flex items-center justify-between">                {isSelected && updateField ?
                 <input
                   type="text"
                   value={col.label}
@@ -63,13 +63,13 @@ export const TableField: React.FC<TableFieldProps> = ({
                   }
                   className="bg-transparent text-xs font-semibold text-gray-700 focus:outline-none focus:bg-white focus:ring-1 focus:ring-black rounded px-1 w-full" /> :
                 <span>{col.label}</span>
-                }                  {isSelected && updateField && columns.length > 1 &&
+                }                {isSelected && updateField && columns.length > 1 &&
                 <button
                   onClick={() => handleRemoveColumn(idx)}
                   className="ml-2 p-0.5 bg-white rounded-full shadow border border-gray-200 text-gray-400 hover:text-red-500 opacity-0 group-hover/col:opacity-100 transition-opacity"
                   title={t("builder.field.remove_column")}>
-                      <X className="w-3 h-3" />                    </button>
-                }                </div>              </th>
+                      <X className="w-3 h-3" />                </button>
+                }              </div>            </th>
             )}            {}            <th
               scope="col"
               className="px-2 py-3 border border-gray-200 w-10 text-center">
@@ -78,24 +78,24 @@ export const TableField: React.FC<TableFieldProps> = ({
                 onClick={handleAddColumn}
                 className="p-1 hover:bg-gray-200 rounded-full text-indigo-600 transition-colors"
                 title={t("builder.field.add_column")}>
-                  <Plus className="w-4 h-4" />                </button>
+                  <Plus className="w-4 h-4" />              </button>
               }            </th>          </tr>        </thead>        <tbody>          {Array.from({ length: rowCount }).map((_, rIdx) =>
-          <tr key={rIdx} className="bg-white border-b hover:bg-gray-50">              {columns.map((col: Column, cIdx: number) =>
-            <td key={cIdx} className="px-4 py-2 border border-gray-200">                  <input
+          <tr key={rIdx} className="bg-white border-b hover:bg-gray-50">            {columns.map((col: Column, cIdx: number) =>
+            <td key={cIdx} className="px-4 py-2 border border-gray-200">              <input
                 type="text"
                 className="bg-white border border-gray-300 text-gray-900 text-sm rounded focus:ring-black focus:border-black block w-full p-2.5"
                 disabled
                 placeholder={`${col.label} (${t("builder.field.row")} ${rIdx + 1})`} />
                 </td>
-            )}              <td className="px-2 py-2 border border-gray-200 text-center">                <button
+            )}            <td className="px-2 py-2 border border-gray-200 text-center">              <button
                 disabled
                 className="p-1 text-gray-400 hover:text-red-500 transition-colors cursor-not-allowed"
                 title={t("builder.field.delete_row")}>
-                  <Trash2 className="w-4 h-4" />                </button>              </td>            </tr>
+                  <Trash2 className="w-4 h-4" />              </button>            </td>          </tr>
           )}        </tbody>      </table>      {allowAddRow &&
-      <div className="mt-2 text-right">          <button
+      <div className="mt-2 text-right">        <button
           disabled
           className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-indigo-700 bg-indigo-50 rounded-md border border-indigo-200 opacity-60 cursor-not-allowed">
-            <Plus className="w-3 h-3" /> {t("builder.field.add_row")}          </button>        </div>
+            <Plus className="w-3 h-3" /> {t("builder.field.add_row")}        </button>      </div>
       }    </div>);
 };

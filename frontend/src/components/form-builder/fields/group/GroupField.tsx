@@ -120,7 +120,7 @@ export function GroupField({
             color: "#374151"
           }}>
           {t("builder.group.field_group")}        </span>        <span style={{ fontSize: "11px", color: "#9ca3af" }}>          {t("builder.group.fields_count", { count: childFields.length })}        </span>      </div>      {!isCollapsed &&
-      <Droppable droppableId={droppableId}>          {(provided, snapshot) =>
+      <Droppable droppableId={droppableId}>        {(provided, snapshot) =>
         <div
           ref={provided.innerRef}
           {...provided.droppableProps}
@@ -134,7 +134,7 @@ export function GroupField({
             transition: "background-color 0.2s ease"
           }}>
               {sortedChildFields.length > 0 ?
-          <LayoutGroup>                  <div className="flex flex-col gap-3">                    {sortedChildFields.map((childField, index) =>
+          <LayoutGroup>            <div className="flex flex-col gap-3">              {sortedChildFields.map((childField, index) =>
               <motion.div
                 key={childField.id}
                 layout
@@ -146,7 +146,7 @@ export function GroupField({
                 }}
                 className="relative group/child"
                 onClick={() => handleSelectChild(childField.id)}>
-                        <div className="absolute -left-10 top-1/2 -translate-y-1/2 z-20 flex flex-col gap-1 opacity-0 group-hover/child:opacity-100 transition-opacity">                          <button
+                        <div className="absolute -left-10 top-1/2 -translate-y-1/2 z-20 flex flex-col gap-1 opacity-0 group-hover/child:opacity-100 transition-opacity">                  <button
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
@@ -155,7 +155,7 @@ export function GroupField({
                     disabled={index === 0}
                     className={`p-2 rounded-lg bg-white shadow-md border transition-colors ${index === 0 ? "text-gray-200 cursor-not-allowed" : "text-gray-500 hover:text-indigo-600 hover:border-indigo-300"}`}
                     title={t("builder.group.move_up")}>
-                            <ChevronUp size={18} />                          </button>                          <button
+                            <ChevronUp size={18} />                  </button>                  <button
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
@@ -164,7 +164,7 @@ export function GroupField({
                     disabled={index === sortedChildFields.length - 1}
                     className={`p-2 rounded-lg bg-white shadow-md border transition-colors ${index === sortedChildFields.length - 1 ? "text-gray-200 cursor-not-allowed" : "text-gray-500 hover:text-indigo-600 hover:border-indigo-300"}`}
                     title={t("builder.group.move_down")}>
-                            <ChevronDown size={18} />                          </button>                        </div>                        <div className="absolute -right-10 top-1/2 -translate-y-1/2 z-20 flex flex-col gap-1 opacity-0 group-hover/child:opacity-100">                          <button
+                            <ChevronDown size={18} />                  </button>                </div>                <div className="absolute -right-10 top-1/2 -translate-y-1/2 z-20 flex flex-col gap-1 opacity-0 group-hover/child:opacity-100">                  <button
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
@@ -172,7 +172,7 @@ export function GroupField({
                     }}
                     className="p-2 bg-white rounded-full shadow-md border text-gray-400 hover:text-indigo-600 hover:border-indigo-300 transition-colors"
                     title={t("builder.group.remove_from_group")}>
-                            <LogOut size={18} />                          </button>                          <button
+                            <LogOut size={18} />                  </button>                  <button
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
@@ -182,7 +182,7 @@ export function GroupField({
                     }}
                     className="p-2 bg-white rounded-full shadow-md border text-gray-400 hover:text-red-500 hover:border-red-300 transition-colors"
                     title={t("builder.group.delete_field")}>
-                            <Trash2 size={18} />                          </button>                        </div>                        <FieldItem
+                            <Trash2 size={18} />                  </button>                </div>                <FieldItem
                   field={childField}
                   isSelected={storeSelectedFieldId === childField.id}
                   onSelect={handleSelectChild}
@@ -191,7 +191,7 @@ export function GroupField({
                   hideDragHandle={true}
                   hideDeleteAction={true} />
                       </motion.div>
-              )}                  </div>                </LayoutGroup> :
+              )}            </div>          </LayoutGroup> :
           <div
             style={{
               display: "flex",
@@ -208,8 +208,8 @@ export function GroupField({
             }}>
                   {snapshot.isDraggingOver ?
             t("builder.group.drop_here") :
-            t("builder.group.drag_fields")}                </div>
-          }              {provided.placeholder}              <div style={{ position: "relative", marginTop: "12px" }}>                <button
+            t("builder.group.drag_fields")}          </div>
+          }          {provided.placeholder}          <div style={{ position: "relative", marginTop: "12px" }}>            <button
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
@@ -239,7 +239,7 @@ export function GroupField({
                 e.currentTarget.style.borderColor = "#d1d5db";
                 e.currentTarget.style.color = "#6b7280";
               }}>
-                  <Plus size={14} />                  {t("builder.group.add_field")}                </button>                {showAddMenu &&
+                  <Plus size={14} />              {t("builder.group.add_field")}            </button>            {showAddMenu &&
             <div
               style={{
                 position: "absolute",
@@ -282,13 +282,13 @@ export function GroupField({
                 onMouseOut={(e) => {
                   e.currentTarget.style.backgroundColor = "#ffffff";
                 }}>
-                          <span style={{ fontWeight: 500 }}>                            {f.label || f.type}                          </span>                          <span
+                          <span style={{ fontWeight: 500 }}>                  {f.label || f.type}                </span>                <span
                   style={{
                     marginLeft: "8px",
                     color: "#9ca3af",
                     fontSize: "11px"
                   }}>
-                            ({f.type})                          </span>                        </button>
+                            ({f.type})                </span>              </button>
               ) :
               <div
                 style={{
@@ -297,9 +297,9 @@ export function GroupField({
                   fontSize: "13px",
                   textAlign: "center"
                 }}>
-                        {t("builder.group.no_available_fields")}                      </div>
-              }                  </div>
-            }              </div>            </div>
-        }        </Droppable>
+                        {t("builder.group.no_available_fields")}              </div>
+              }            </div>
+            }          </div>        </div>
+        }      </Droppable>
       }    </div>);
 }

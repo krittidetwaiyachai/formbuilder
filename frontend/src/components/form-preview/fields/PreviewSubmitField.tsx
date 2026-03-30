@@ -33,12 +33,12 @@ export const PreviewSubmitField: React.FC<PreviewFieldProps> = ({ field }) => {
       <button
         type="reset"
         className={`px-4 py-3 bg-white text-gray-600 rounded-lg border border-gray-300 shadow-sm hover:bg-gray-50 transition-all flex items-center gap-2 font-medium`}>
-          <RotateCcw className="w-4 h-4" />          {t("public.submit_button.clear", "Clear Form")}        </button>
+          <RotateCcw className="w-4 h-4" />        {t("public.submit_button.clear", "Clear Form")}      </button>
       }      {}      {printButton &&
       <button
         type="button"
         onClick={() => window.print()}
         className={`px-4 py-3 bg-white text-gray-600 rounded-lg border border-gray-300 shadow-sm hover:bg-gray-50 transition-all flex items-center gap-2 font-medium`}>
-          <Printer className="w-4 h-4" />          {t("public.submit_button.print", "Print Form")}        </button>
+          <Printer className="w-4 h-4" />        {t("public.submit_button.print", "Print Form")}      </button>
       }    </div>);
 };

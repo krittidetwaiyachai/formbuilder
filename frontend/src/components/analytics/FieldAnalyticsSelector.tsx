@@ -153,13 +153,13 @@ export default function FieldAnalyticsSelector({
   };
   return (
     <Card>      <CardHeader>        <CardTitle>{t("analytics.field_analytics")}</CardTitle>        <CardDescription>{t("analytics.select_field_analyze")}</CardDescription>      </CardHeader>      <CardContent className="space-y-6">        {}        <div className="space-y-2">          <Label>{t("analytics.select_field")}</Label>          <Select value={selectedField} onValueChange={handleFieldChange}>            <SelectTrigger>              <SelectValue placeholder="Select field" />            </SelectTrigger>            <SelectContent>              {availableFields.map((field) =>
-              <SelectItem key={field} value={field}>                  {field.replace(/([A-Z])/g, " $1").trim()}                </SelectItem>
+              <SelectItem key={field} value={field}>                {field.replace(/([A-Z])/g, " $1").trim()}              </SelectItem>
               )}            </SelectContent>          </Select>        </div>        {}        <div className="space-y-2">          <Label>{t("analytics.analysis_type")}</Label>          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">            {analysisOptions.map((option) =>
             <Button
               key={option.id}
               variant={selectedAnalysis === option.id ? "default" : "outline"}
               className="h-auto flex-col items-start p-4"
               onClick={() => handleAnalysisChange(option.id)}>
-                <div className="flex items-center gap-2 mb-2">                  {option.icon}                  <span className="font-medium text-sm">{option.label}</span>                </div>                <span className="text-xs text-left text-muted-foreground">                  {option.description}                </span>              </Button>
+                <div className="flex items-center gap-2 mb-2">                {option.icon}                <span className="font-medium text-sm">{option.label}</span>              </div>              <span className="text-xs text-left text-muted-foreground">                {option.description}              </span>            </Button>
             )}          </div>        </div>      </CardContent>    </Card>);
 }

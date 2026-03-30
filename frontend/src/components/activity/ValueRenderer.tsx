@@ -22,13 +22,13 @@ export default function ValueRenderer({ value }: ValueRendererProps) {
     <span className="text-gray-300 italic">{t("activity.values.empty")}</span>);
   if (typeof value === "boolean")
   return value ?
-  <span className="text-emerald-600 font-medium">        {t("activity.values.enable")}      </span> :
+  <span className="text-emerald-600 font-medium">    {t("activity.values.enable")}  </span> :
   <span className="text-gray-500">{t("activity.values.disable")}</span>;
   if (typeof value === "object") {
     if (Array.isArray(value)) {
       if (value.length === 0)
       return (
-        <span className="text-gray-300 italic">            {t("activity.values.empty")}          </span>);
+        <span className="text-gray-300 italic">          {t("activity.values.empty")}        </span>);
       const firstItem = value[0];
       if (
       typeof firstItem === "object" &&
@@ -70,7 +70,8 @@ export default function ValueRenderer({ value }: ValueRendererProps) {
                 t("activity.values.invalid") :
                 String(display)}              </span>);
           })}          {objValue.subLabel &&
-          <span className="text-xs text-gray-500 italic">              ({objValue.subLabel})            </span>
+          <span className="text-xs text-gray-500 italic">              (
+            {objValue.subLabel})          </span>
           }        </div>);
     }
     const entries = Object.entries(objValue).filter(
@@ -78,7 +79,7 @@ export default function ValueRenderer({ value }: ValueRendererProps) {
     );
     if (entries.length === 0)
     return (
-      <span className="text-gray-300 italic">          {t("activity.values.empty")}        </span>);
+      <span className="text-gray-300 italic">        {t("activity.values.empty")}      </span>);
     return (
       <div className="space-y-0.5">        {entries.map(([key, val]: [string, unknown], i: number) => {
           const readableKey = key.

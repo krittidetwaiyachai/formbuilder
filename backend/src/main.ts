@@ -6,7 +6,6 @@ import helmet from 'helmet';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 import * as express from 'express';
-
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.set('trust proxy', 1);
@@ -25,8 +24,8 @@ async function bootstrap() {
         styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
         fontSrc: ["'self'", "https://fonts.gstatic.com"],
         imgSrc: ["'self'", "data:", "https:"],
-        connectSrc: ["'self'", "http://localhost:*", "ws://localhost:*", "http://10.15.211.15:*", "ws://10.15.211.15:*", "https:"],
-      },
+        connectSrc: ["'self'", "http://localhost:*", "ws://localhost:*", "http://10.15.211.15:*", "ws://10.15.211.15:*", "https:"]
+      }
     }
   }));
   const configService = app.get(ConfigService);

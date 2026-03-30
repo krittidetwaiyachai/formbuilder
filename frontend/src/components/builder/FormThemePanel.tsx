@@ -90,7 +90,7 @@ export default function FormThemePanel({ theme, onThemeChange }: FormThemePanelP
               size="sm"
               onClick={() => applyPreset(name)}
               className="capitalize">
-                {name}              </Button>
+                {name}            </Button>
             )}          </div>        </div>        <div className="border-t pt-4" />        {}        <div className="space-y-2">          <Label>{t('builder.theme.primary_color', 'Primary Color')}</Label>          <div className="flex gap-2">            <Input
               type="color"
               value={theme.primaryColor}
@@ -106,7 +106,7 @@ export default function FormThemePanel({ theme, onThemeChange }: FormThemePanelP
             value={theme.backgroundType}
             onValueChange={(value) => handleChange({ backgroundType: value as "color" | "image" | "gradient" })}>
             <SelectTrigger>              <SelectValue />            </SelectTrigger>            <SelectContent>              <SelectItem value="color">{t('builder.theme.type_color', 'Solid Color')}</SelectItem>              <SelectItem value="gradient">{t('builder.theme.type_gradient', 'Gradient')}</SelectItem>              <SelectItem value="image">{t('builder.theme.type_image', 'Image')}</SelectItem>            </SelectContent>          </Select>        </div>        {}        {theme.backgroundType === "color" &&
-        <div className="space-y-2">            <Label>{t('builder.theme.bg_color', 'Background Color')}</Label>            <div className="flex gap-2">              <Input
+        <div className="space-y-2">          <Label>{t('builder.theme.bg_color', 'Background Color')}</Label>          <div className="flex gap-2">            <Input
               type="color"
               value={theme.backgroundColor}
               onChange={(e) => handleChange({ backgroundColor: e.target.value })}
@@ -116,16 +116,16 @@ export default function FormThemePanel({ theme, onThemeChange }: FormThemePanelP
               value={theme.backgroundColor}
               onChange={(e) => handleChange({ backgroundColor: e.target.value })}
               placeholder="#FFFFFF" />
-            </div>          </div>
+            </div>        </div>
         }        {theme.backgroundType === "image" &&
-        <div className="space-y-2">            <Label>{t('builder.theme.bg_image', 'Background Image URL')}</Label>            <Input
+        <div className="space-y-2">          <Label>{t('builder.theme.bg_image', 'Background Image URL')}</Label>          <Input
             type="url"
             value={theme.backgroundImage || ""}
             onChange={(e) => handleChange({ backgroundImage: e.target.value })}
             placeholder="https://example.com/image.jpg" />
-            <p className="text-xs text-muted-foreground">              Enter a URL to an image or use a pattern            </p>          </div>
+            <p className="text-xs text-muted-foreground">              Enter a URL to an image or use a pattern          </p>        </div>
         }        {theme.backgroundType === "gradient" &&
-        <div className="space-y-2">            <Label>{t('builder.theme.bg_gradient', 'Gradient Colors')}</Label>            <div className="flex gap-2">              <div className="flex-1">                <Label className="text-xs">From</Label>                <div className="flex gap-2">                  <Input
+        <div className="space-y-2">          <Label>{t('builder.theme.bg_gradient', 'Gradient Colors')}</Label>          <div className="flex gap-2">            <div className="flex-1">              <Label className="text-xs">From</Label>              <div className="flex gap-2">                <Input
                   type="color"
                   value={theme.backgroundColor}
                   onChange={(e) => handleChange({ backgroundColor: e.target.value })}
@@ -135,7 +135,7 @@ export default function FormThemePanel({ theme, onThemeChange }: FormThemePanelP
                   value={theme.backgroundColor}
                   onChange={(e) => handleChange({ backgroundColor: e.target.value })}
                   className="flex-1" />
-                </div>              </div>              <div className="flex-1">                <Label className="text-xs">To</Label>                <div className="flex gap-2">                  <Input
+                </div>            </div>            <div className="flex-1">              <Label className="text-xs">To</Label>              <div className="flex gap-2">                <Input
                   type="color"
                   value={theme.primaryColor}
                   onChange={(e) => handleChange({ primaryColor: e.target.value })}
@@ -145,7 +145,7 @@ export default function FormThemePanel({ theme, onThemeChange }: FormThemePanelP
                   value={theme.primaryColor}
                   onChange={(e) => handleChange({ primaryColor: e.target.value })}
                   className="flex-1" />
-                </div>              </div>            </div>          </div>
+                </div>            </div>          </div>        </div>
         }        {}        <div className="space-y-2">          <Label>{t('builder.theme.text_color', 'Text Color')}</Label>          <div className="flex gap-2">            <Input
               type="color"
               value={theme.textColor}

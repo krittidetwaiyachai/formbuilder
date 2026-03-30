@@ -45,7 +45,7 @@ export const FieldPreview: React.FC<FieldPreviewProps> = ({
   onSelect,
   isMultiSelecting,
   allFields,
-  updateField,
+  updateField
 }) => {
   const { t } = useTranslation();
   switch (field.type) {
@@ -78,9 +78,7 @@ export const FieldPreview: React.FC<FieldPreviewProps> = ({
           fieldStyle={fieldStyle}
           isSelected={isSelected}
           onSelect={onSelect}
-          isMultiSelecting={isMultiSelecting}
-        />
-      );
+          isMultiSelecting={isMultiSelecting} />);
     case FieldType.FULLNAME:
       return <FullNameField field={field} fieldStyle={fieldStyle} />;
     case FieldType.ADDRESS:
@@ -92,9 +90,7 @@ export const FieldPreview: React.FC<FieldPreviewProps> = ({
           fieldStyle={fieldStyle}
           isSelected={isSelected}
           onSelect={onSelect}
-          isMultiSelecting={isMultiSelecting}
-        />
-      );
+          isMultiSelecting={isMultiSelecting} />);
     case FieldType.DIVIDER:
       return <DividerField field={field} fieldStyle={fieldStyle} />;
     case FieldType.SECTION_COLLAPSE:
@@ -102,8 +98,7 @@ export const FieldPreview: React.FC<FieldPreviewProps> = ({
         <div className="flex items-center gap-2 p-3 bg-gray-50 border border-gray-200 rounded-lg text-slate-600 font-medium">
           <ChevronRight className="w-5 h-5" />
           <span>{field.label || t("common.collapsible_section")}</span>
-        </div>
-      );
+        </div>);
     case FieldType.SUBMIT:
       return <SubmitField field={field} fieldStyle={fieldStyle} />;
     case FieldType.GROUP:
@@ -115,26 +110,20 @@ export const FieldPreview: React.FC<FieldPreviewProps> = ({
           childFields={childFields}
           allFields={allFields}
           onSelectField={onSelect}
-          selectedFieldId={isSelected ? field.id : null}
-        />
-      );
+          selectedFieldId={isSelected ? field.id : null} />);
     case FieldType.MATRIX:
       return (
         <MatrixField
           field={field}
           fieldStyle={fieldStyle}
           isSelected={isSelected}
-          updateField={updateField}
-        />
-      );
+          updateField={updateField} />);
     case FieldType.TABLE:
       return (
         <TableField
           field={field}
           isSelected={isSelected}
-          updateField={updateField}
-        />
-      );
+          updateField={updateField} />);
     case FieldType.PAGE_BREAK:
       return (
         <div className="flex flex-col items-center justify-center py-4 w-full">
@@ -150,8 +139,7 @@ export const FieldPreview: React.FC<FieldPreviewProps> = ({
           <p className="mt-2 text-xs text-gray-400">
             {t("common.content_next_page")}
           </p>
-        </div>
-      );
+        </div>);
     default:
       return null;
   }

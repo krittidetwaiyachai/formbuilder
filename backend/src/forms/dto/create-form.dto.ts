@@ -5,9 +5,8 @@ import {
   IsArray,
   ValidateNested,
   IsEnum,
-  IsNumber
-} from
-  'class-validator';
+  IsNumber } from
+'class-validator';
 import { Type } from 'class-transformer';
 import { Prisma, FieldType, FormStatus } from '@prisma/client';
 export class CreateFieldDto {

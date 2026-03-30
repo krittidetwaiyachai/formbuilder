@@ -69,7 +69,7 @@ export default function HeaderProperties({
                 htmlFor="heading-image-upload"
                 className="flex flex-col items-center justify-center cursor-pointer">
                 <ImageIcon className="h-12 w-12 text-gray-400 mb-2" />                <span className="text-sm text-gray-300 font-medium">                  {t("builder.properties.choose_file", "Choose a file")}                </span>              </label>            </div>            {(element as HeaderField).headingImage &&
-            <div className="mt-4 space-y-2">                <img
+            <div className="mt-4 space-y-2">              <img
                 src={(element as HeaderField).headingImage}
                 alt="Heading preview"
                 className="w-full h-32 object-cover rounded-lg border border-gray-600" />
@@ -78,6 +78,6 @@ export default function HeaderProperties({
                 size="sm"
                 onClick={handleRemoveImage}
                 className="w-full bg-gray-700 text-white border-gray-600 hover:bg-gray-600">
-                  {t("builder.properties.remove_image", "Remove Image")}                </Button>              </div>
+                  {t("builder.properties.remove_image", "Remove Image")}              </Button>            </div>
             }          </div>        </TabsContent>      </Tabs>    </div>);
 }

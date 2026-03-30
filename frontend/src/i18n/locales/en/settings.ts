@@ -38,6 +38,8 @@ export default {
   "settings.quiz.start_time_desc": "When the quiz becomes available",
   "settings.quiz.end_time": "End Time",
   "settings.quiz.end_time_desc": "When the quiz closes",
+  "settings.quiz.pass_percentage": "Passing Percentage (%)",
+  "settings.quiz.pass_percentage_desc": "Set the percentage required to pass",
   "settings.submission.submit_text": "Submit Button Text",
   "settings.submission.btn_placeholder": "Submit",
   "settings.submission.success_msg": "Success Message",

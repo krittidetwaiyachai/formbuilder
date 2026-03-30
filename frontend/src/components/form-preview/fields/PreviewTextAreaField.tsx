@@ -79,7 +79,7 @@ export const PreviewTextAreaField: React.FC<PreviewFieldProps> = ({
         {subLabel && subLabel !== "Sublabel" &&
         <p className="mt-1 text-sm text-gray-500 font-normal">{subLabel}</p>
         }      </div>      <div className="flex-1 min-w-0">        <div className="relative group" title={hoverText}>          {!isPublic &&
-          <div className="absolute left-3 top-4 pointer-events-none z-10">              <FileText className="h-4 w-4 text-gray-400" />            </div>
+          <div className="absolute left-3 top-4 pointer-events-none z-10">            <FileText className="h-4 w-4 text-gray-400" />          </div>
           }          {isPublic ?
           isRichText ?
           <div
@@ -109,7 +109,7 @@ export const PreviewTextAreaField: React.FC<PreviewFieldProps> = ({
               value={defaultValue}
               readOnly={true}
               minHeight={rows ? `${rows * 24}px` : "120px"} />
-            }              </div> :
+            }          </div> :
           <textarea
             id={fieldName}
             {...register(fieldName, validationRules)}
@@ -160,8 +160,8 @@ export const PreviewTextAreaField: React.FC<PreviewFieldProps> = ({
             readOnly ? "bg-gray-100 cursor-not-allowed text-gray-500" : ""}`
             } />
           }        </div>        {hasEntryLimits && maxLength && isPublic && !isRichText &&
-        <p className="mt-1 text-xs text-gray-400 text-right">            {t("public.max_characters", { count: maxLength })}          </p>
+        <p className="mt-1 text-xs text-gray-400 text-right">          {t("public.max_characters", { count: maxLength })}        </p>
         }        {fieldError &&
-        <p className="mt-1 text-sm text-red-600">            {fieldError.message as string}          </p>
+        <p className="mt-1 text-sm text-red-600">          {fieldError.message as string}        </p>
         }      </div>    </div>);
 };

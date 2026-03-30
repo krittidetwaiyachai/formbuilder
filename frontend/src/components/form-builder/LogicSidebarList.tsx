@@ -81,10 +81,10 @@ export default function LogicSidebarList() {
                       <button
                       onClick={() => handleSaveEdit(rule.id)}
                       className="p-1 text-green-600 hover:bg-green-50 rounded">
-                        <Check className="w-4 h-4" />                      </button>                      <button
+                        <Check className="w-4 h-4" />                    </button>                    <button
                       onClick={() => setEditingId(null)}
                       className="p-1 text-red-500 hover:bg-red-50 rounded">
-                        <X className="w-4 h-4" />                      </button>                    </div> :
+                        <X className="w-4 h-4" />                    </button>                  </div> :
                   <div
                     className="flex items-center gap-2 flex-1 min-w-0 cursor-text hover:bg-gray-100 rounded px-1 -ml-1 transition-colors"
                     onClick={(e) => {
@@ -92,7 +92,7 @@ export default function LogicSidebarList() {
                       handleStartEdit(rule.id, rule.name);
                     }}
                     title={rule.name}>
-                      <span className="font-medium text-sm text-gray-900 break-words flex-1 leading-tight">                        {rule.name}                      </span>                      <Edit2 className="w-3 h-3 text-gray-400 hover:text-purple-600 cursor-pointer transition-colors flex-shrink-0 mt-0.5" />                    </div>
+                      <span className="font-medium text-sm text-gray-900 break-words flex-1 leading-tight">                      {rule.name}                    </span>                    <Edit2 className="w-3 h-3 text-gray-400 hover:text-purple-600 cursor-pointer transition-colors flex-shrink-0 mt-0.5" />                  </div>
                   }                </div>                <div className="flex items-center gap-2">                  <div className="flex items-center gap-2 text-xs text-gray-400 mr-1">                    <span>                      {conditionCount} {t("builder.logic.if").toUpperCase()}                    </span>                    <span>•</span>                    <span>                      {actionCount} {t("builder.logic.then").toUpperCase()}                    </span>                  </div>                  {}                  <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -103,14 +103,14 @@ export default function LogicSidebarList() {
                     <Trash2 className="w-4 h-4" />                  </button>                  {}                  <div
                     className={`text-gray-400 transition-transform duration-200 ${isSelected ? "rotate-180" : ""}`}>
                     <ChevronDown className="w-4 h-4" />                  </div>                </div>              </div>              {isSelected &&
-              <div className="px-3 pb-3 border-t border-gray-100">                  <div className="pt-2 space-y-3">                    {}                    <div>                      <div className="text-[10px] font-semibold text-gray-400 mb-1 uppercase tracking-wider">                        {t("builder.logic.conditions")} ({rule.logicType})                      </div>                      <div className="space-y-1">                        {rule.conditions.map((cond) =>
+              <div className="px-3 pb-3 border-t border-gray-100">                <div className="pt-2 space-y-3">                  {}                  <div>                    <div className="text-[10px] font-semibold text-gray-400 mb-1 uppercase tracking-wider">                      {t("builder.logic.conditions")} ({rule.logicType})                    </div>                    <div className="space-y-1">                      {rule.conditions.map((cond) =>
                       <div
                         key={cond.id}
                         className="text-xs text-gray-600 bg-gray-50 rounded p-1.5 flex flex-wrap gap-1 items-center">
-                            <span className="font-medium text-purple-600">                              {t("builder.logic.if").toUpperCase()}                            </span>                            <span>{getFieldLabel(cond.fieldId)}</span>                            <span className="text-gray-400">                              {t(
+                            <span className="font-medium text-purple-600">                          {t("builder.logic.if").toUpperCase()}                        </span>                        <span>{getFieldLabel(cond.fieldId)}</span>                        <span className="text-gray-400">                          {t(
                             `builder.logic.op.${cond.operator.toLowerCase()}`
-                          )}                            </span>                            <span className="font-medium">"{cond.value}"</span>                          </div>
-                      )}                      </div>                    </div>                    {}                    <div>                      <div className="text-[10px] font-semibold text-gray-400 mb-1 uppercase tracking-wider">                        {t("builder.logic.actions")}                      </div>                      <div className="space-y-1">                        {rule.actions.map((action) =>
+                          )}                        </span>                        <span className="font-medium">"{cond.value}"</span>                      </div>
+                      )}                    </div>                  </div>                  {}                  <div>                    <div className="text-[10px] font-semibold text-gray-400 mb-1 uppercase tracking-wider">                      {t("builder.logic.actions")}                    </div>                    <div className="space-y-1">                      {rule.actions.map((action) =>
                       <div
                         key={action.id}
                         className="text-xs text-gray-600 bg-gray-50 rounded p-1.5 flex flex-wrap gap-1 items-center">
@@ -118,8 +118,8 @@ export default function LogicSidebarList() {
                           className={`font-medium ${action.type === "show" ? "text-green-600" : "text-red-500"}`}>
                               {t(
                             `builder.logic.action.${action.type.toLowerCase()}`
-                          ).toUpperCase()}                            </span>                            <span>{getFieldLabel(action.fieldId)}</span>                          </div>
-                      )}                      </div>                    </div>                  </div>                </div>
+                          ).toUpperCase()}                        </span>                        <span>{getFieldLabel(action.fieldId)}</span>                      </div>
+                      )}                    </div>                  </div>                </div>              </div>
               }            </div>);
         })}      </div>      <div className="pt-2 border-t border-gray-100">        <p className="text-xs text-gray-400 text-center">          {t("builder.logic.click_expand")}        </p>      </div>      <ConfirmDialog
         open={!!deleteRuleId}

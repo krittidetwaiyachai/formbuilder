@@ -68,7 +68,7 @@ export default function OptionsProperties({
           onClick={handleAddOption}
           className="h-8">
           <Plus className="h-3 w-3 mr-1" />          {t("builder.properties.add", "Add")}        </Button>      </div>      <div className="space-y-2">        {items.map((option) =>
-        <div key={option.id} className="flex gap-2">            <Input
+        <div key={option.id} className="flex gap-2">          <Input
             value={option.label}
             onChange={(e) =>
             handleUpdateOption(option.id, { label: e.target.value })
@@ -79,7 +79,7 @@ export default function OptionsProperties({
             size="icon"
             className="h-10 w-10 text-destructive"
             onClick={() => handleRemoveOption(option.id)}>
-              <Trash2 className="h-4 w-4" />            </Button>          </div>
+              <Trash2 className="h-4 w-4" />          </Button>        </div>
         )}      </div>      <div className="space-y-2 mt-4 pt-4 border-t">        <Label>          {t("builder.properties.answer_explanation", "Answer Explanation")}        </Label>        <textarea
           className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           value={element.explanation || ""}

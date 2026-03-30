@@ -65,7 +65,7 @@ export const AddressField: React.FC<AddressFieldProps> = ({
     } />;
   return (
     <div className="space-y-3 bg-gray-50/30 p-4 rounded-2xl border border-gray-100">      {showStreet &&
-      <div className="group">          <div className="relative">            <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">              <MapPin className="h-5 w-5 text-gray-400" />            </div>            <input
+      <div className="group">        <div className="relative">          <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">            <MapPin className="h-5 w-5 text-gray-400" />          </div>          <input
             type="text"
             placeholder={
             addressPlaceholders.street || t("common.address.street")
@@ -74,9 +74,9 @@ export const AddressField: React.FC<AddressFieldProps> = ({
             tabIndex={-1}
             className={`w-full pl-12 pr-4 py-3.5 border ${inputBorder} rounded-xl bg-white text-black text-base shadow-sm transition-all duration-300 ${disabledClass}`}
             style={{ pointerEvents: "none" }} />
-          </div>          {renderEditableSublabel("street", t("common.address.street"))}        </div>
+          </div>        {renderEditableSublabel("street", t("common.address.street"))}      </div>
       }      {showStreet2 &&
-      <div className="relative group">          <input
+      <div className="relative group">        <input
           type="text"
           placeholder={
           addressPlaceholders.street2 || t("common.address.street2")
@@ -85,24 +85,24 @@ export const AddressField: React.FC<AddressFieldProps> = ({
           tabIndex={-1}
           className={`w-full px-4 py-3.5 border ${inputBorder} rounded-xl bg-white text-black text-base shadow-sm transition-all duration-300 ${disabledClass}`}
           style={{ pointerEvents: "none" }} />
-          {renderEditableSublabel("street2", t("common.address.street2"))}        </div>
+          {renderEditableSublabel("street2", t("common.address.street2"))}      </div>
       }      <div className="grid grid-cols-2 gap-4">        {showCity &&
-        <div className="relative group">            <input
+        <div className="relative group">          <input
             type="text"
             placeholder={addressPlaceholders.city || t("common.address.city")}
             readOnly
             tabIndex={-1}
             className={`w-full px-4 py-3.5 border ${inputBorder} rounded-xl bg-white text-black text-base shadow-sm transition-all duration-300 ${disabledClass}`}
             style={{ pointerEvents: "none" }} />
-            {renderEditableSublabel("city", t("common.address.city"))}          </div>
+            {renderEditableSublabel("city", t("common.address.city"))}        </div>
         }        {showState &&
-        <div className="relative group">            {stateInputType === "us_states" ?
+        <div className="relative group">          {stateInputType === "us_states" ?
           <select
             disabled
             className={`w-full px-4 py-3.5 border ${inputBorder} rounded-xl bg-white text-black text-base shadow-sm transition-all duration-300 ${disabledClass} appearance-none`}
             style={{ pointerEvents: "none" }}>
-                <option>                  {addressPlaceholders.state ||
-              t("common.address.select_state")}                </option>              </select> :
+                <option>              {addressPlaceholders.state ||
+              t("common.address.select_state")}            </option>          </select> :
           <input
             type="text"
             placeholder={
@@ -112,22 +112,22 @@ export const AddressField: React.FC<AddressFieldProps> = ({
             tabIndex={-1}
             className={`w-full px-4 py-3.5 border ${inputBorder} rounded-xl bg-white text-black text-base shadow-sm transition-all duration-300 ${disabledClass}`}
             style={{ pointerEvents: "none" }} />
-          }            {renderEditableSublabel("state", t("common.address.state"))}          </div>
+          }          {renderEditableSublabel("state", t("common.address.state"))}        </div>
         }      </div>      <div className="grid grid-cols-2 gap-4">        {showZip &&
-        <div className="relative group">            <input
+        <div className="relative group">          <input
             type="text"
             placeholder={addressPlaceholders.zip || t("common.address.zip")}
             readOnly
             tabIndex={-1}
             className={`w-full px-4 py-3.5 border ${inputBorder} rounded-xl bg-white text-black text-base shadow-sm transition-all duration-300 ${disabledClass}`}
             style={{ pointerEvents: "none" }} />
-            {renderEditableSublabel("zip", t("common.address.zip"))}          </div>
+            {renderEditableSublabel("zip", t("common.address.zip"))}        </div>
         }        {showCountry &&
-        <div className="relative group">            <select
+        <div className="relative group">          <select
             disabled
             className={`w-full px-4 py-3.5 border ${inputBorder} rounded-xl bg-white text-black text-base shadow-sm transition-all duration-300 ${disabledClass} appearance-none`}
             style={{ pointerEvents: "none" }}>
-              <option>                {addressPlaceholders.country ||
-              t("common.address.select_country")}              </option>            </select>            {renderEditableSublabel("country", t("common.address.country"))}          </div>
+              <option>              {addressPlaceholders.country ||
+              t("common.address.select_country")}            </option>          </select>          {renderEditableSublabel("country", t("common.address.country"))}        </div>
         }      </div>    </div>);
 };

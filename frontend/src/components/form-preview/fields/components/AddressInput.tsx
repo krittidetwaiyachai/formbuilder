@@ -32,7 +32,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
   const { t } = useTranslation();
   return (
     <div className="flex-1">      <div className="relative">        {startIcon &&
-        <div className="absolute left-4 top-1/2 -translate-y-1/2 mt-1 pointer-events-none">            {startIcon}          </div>
+        <div className="absolute left-4 top-1/2 -translate-y-1/2 mt-1 pointer-events-none">          {startIcon}        </div>
         }        <input
           type="text"
           id={id}
@@ -48,7 +48,7 @@ export const AddressInput: React.FC<AddressInputProps> = ({
       <p
         className="mt-1 text-xs"
         style={{ color: "var(--text)", opacity: 0.6 }}>
-          {label}        </p>
+          {label}      </p>
       }      {errorMessage &&
       <p className="mt-1 text-sm text-red-600">{errorMessage}</p>
       }    </div>);

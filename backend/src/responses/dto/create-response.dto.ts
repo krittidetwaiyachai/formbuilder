@@ -17,6 +17,21 @@ export class CreateResponseDto {
   respondentEmail?: string;
   @IsOptional()
   @IsString()
+  normalizedRespondentEmail?: string;
+  @IsOptional()
+  @IsString()
+  sessionKey?: string;
+  @IsOptional()
+  @IsString()
+  captchaToken?: string;
+  @IsOptional()
+  @IsString()
+  bindingId?: string;
+  @IsOptional()
+  @IsString()
+  grantToken?: string;
+  @IsOptional()
+  @IsString()
   @IsOptional()
   @IsString()
   fingerprint?: string;

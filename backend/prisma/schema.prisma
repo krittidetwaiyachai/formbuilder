@@ -87,6 +87,8 @@ model Form {
   logicRules   LogicRule[]
   activityLogs ActivityLog[]
   views        FormView[]
+  emailVerifications FormEmailVerification[]
+  verifiedSubmissionGrants FormVerifiedSubmissionGrant[]
 
   @@map("forms")
 }
@@ -237,6 +239,11 @@ model FormResponse {
   formId      String
   userId      String?
   respondentEmail String?
+  normalizedRespondentEmail String?
+  emailVerifiedAt DateTime?
+  emailVerificationId String?
+  submissionGrantId String?
+  sessionKey String?
   ipAddress       String?
   fingerprint String?
   submittedAt DateTime         @default(now())
@@ -248,12 +255,63 @@ model FormResponse {
   user        User?            @relation(fields: [userId], references: [id])
   quizScore   QuizScore?
   answers     ResponseAnswer[]
+  emailVerification FormEmailVerification? @relation(fields: [emailVerificationId], references: [id], onDelete: SetNull)
+  submissionGrant FormVerifiedSubmissionGrant? @relation(fields: [submissionGrantId], references: [id], onDelete: SetNull)
 
   @@index([formId, userId])
   @@index([formId, fingerprint])
   @@index([formId, respondentEmail])
+  @@index([formId, normalizedRespondentEmail])
+  @@index([formId, ipAddress])
+  @@index([formId, sessionKey])
   @@index([formId, submittedAt])
   @@map("form_responses")
+}
+
+model FormEmailVerification {
+  id              String   @id @default(uuid())
+  formId          String
+  email           String
+  normalizedEmail String
+  tokenHash       String   @unique
+  bindingId       String   @unique
+  expiresAt       DateTime
+  usedAt          DateTime?
+  verifiedAt      DateTime?
+  invalidatedAt   DateTime?
+  createdAt       DateTime @default(now())
+  ipAddress       String?
+  sessionKey      String?
+  form            Form     @relation(fields: [formId], references: [id], onDelete: Cascade)
+  responses       FormResponse[]
+  grants          FormVerifiedSubmissionGrant[]
+
+  @@index([formId, normalizedEmail])
+  @@index([formId, bindingId])
+  @@index([formId, normalizedEmail, verifiedAt])
+  @@index([expiresAt])
+  @@map("form_email_verifications")
+}
+
+model FormVerifiedSubmissionGrant {
+  id              String   @id @default(uuid())
+  formId          String
+  verificationId  String
+  bindingId       String
+  normalizedEmail String
+  grantHash       String   @unique
+  expiresAt       DateTime
+  consumedAt      DateTime?
+  invalidatedAt   DateTime?
+  createdAt       DateTime @default(now())
+  form            Form     @relation(fields: [formId], references: [id], onDelete: Cascade)
+  verification    FormEmailVerification @relation(fields: [verificationId], references: [id], onDelete: Cascade)
+  responses       FormResponse[]
+
+  @@index([formId, bindingId])
+  @@index([formId, normalizedEmail, consumedAt])
+  @@index([expiresAt])
+  @@map("form_verified_submission_grants")
 }
 
 model ResponseAnswer {

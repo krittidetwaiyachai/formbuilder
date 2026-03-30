@@ -42,7 +42,7 @@ export default function AdminLayout() {
             "bg-white/10 text-white" :
             "text-gray-400 hover:text-white hover:bg-white/5"}`
             }>
-              <item.icon className="w-5 h-5" />              {item.label}            </NavLink>
+              <item.icon className="w-5 h-5" />            {item.label}          </NavLink>
           )}        </nav>        <div className="p-4 border-t border-gray-800 space-y-2">          <button
             onClick={handleBackToApp}
             className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5 transition-all">
@@ -51,7 +51,7 @@ export default function AdminLayout() {
               src={user.photoUrl}
               alt=""
               className="w-8 h-8 rounded-full" /> :
-            <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center text-sm">                {user?.firstName?.[0] || user?.email?.[0]?.toUpperCase()}              </div>
+            <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center text-sm">              {user?.firstName?.[0] || user?.email?.[0]?.toUpperCase()}            </div>
             }            <div className="flex-1 min-w-0">              <p className="text-sm font-medium truncate">                {user?.firstName || user?.email}              </p>              <p className="text-xs text-gray-500 truncate">{user?.email}</p>            </div>          </div>          <button
             onClick={handleLogout}
             className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all">

@@ -38,7 +38,7 @@ export function FormNavigation({
           color: "#ffffff",
           borderRadius: "var(--radius)"
         }}>
-          {t("public.next")}          <ChevronRight className="h-4 w-4" />        </motion.button> :
+          {t("public.next")}        <ChevronRight className="h-4 w-4" />      </motion.button> :
       <motion.button
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.96 }}
@@ -55,6 +55,6 @@ export function FormNavigation({
         submitButtonText === "Submit" ?
         t("public.submit") :
         submitButtonText
-        }        </motion.button>
+        }      </motion.button>
       }    </div>);
 }

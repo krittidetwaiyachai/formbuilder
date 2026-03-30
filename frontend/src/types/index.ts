@@ -91,6 +91,7 @@ export interface Form {
     timeLimit?: number;
     startTime?: string;
     endTime?: string;
+    passPercentage?: number;
   };
   createdById: string;
   createdAt: string;
@@ -150,8 +151,55 @@ export interface FormSettings {
   shuffleQuestions?: boolean;
   themeName?: string;
   buttonStyle?: 'filled' | 'outlined' | 'ghost';
+  security?: FormSecuritySettings;
 }
 export type FormSettingsProperties = FormSettings;
+export type VerificationStateStatus =
+  | 'idle'
+  | 'pending'
+  | 'required'
+  | 'verified'
+  | 'expired';
+export type CanonicalEmailSource =
+  | { mode: 'top_level' }
+  | { mode: 'field'; fieldId: string };
+export interface FormSecuritySettings {
+  requireCaptcha?: boolean;
+  requireEmailVerification?: boolean;
+  blockDisposableEmails?: boolean;
+  limitOneResponsePerEmail?: boolean;
+  limitOneResponsePerIP?: boolean;
+  canonicalEmailSource?: CanonicalEmailSource;
+}
+export interface VerificationRequestResponse {
+  status: 'PENDING';
+  code: string;
+  bindingId?: string;
+  message: string;
+}
+export interface VerifyEmailResponse {
+  status: 'VERIFIED';
+  code: string;
+  bindingId: string;
+  grantToken: string;
+  grantExpiresAt: string;
+}
+export interface VerifiedSubmissionStatusResponse {
+  status: 'VALID' | 'INVALID' | 'EXPIRED' | 'CONSUMED';
+  bindingId?: string;
+  expiresAt?: string;
+}
+export interface PublicFormDraftState {
+  sessionKey: string;
+  formValues: Record<string, unknown>;
+  bindingId: string | null;
+  grantToken: string | null;
+  grantExpiresAt: string | null;
+  canonicalEmailSnapshot: string | null;
+  verificationStatus: VerificationStateStatus;
+  verificationMessage: string | null;
+  lastUpdatedAt: string;
+}
 export interface FormTheme {
   primaryColor: string;
   backgroundColor: string;

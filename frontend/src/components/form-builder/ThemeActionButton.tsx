@@ -7,7 +7,9 @@ export default function ThemeActionButton({
 }: ThemeActionButtonProps) {
   const { t } = useTranslation();
   return (
-    <div className="absolute top-6 right-8 z-30 hidden md:block">      <div className="relative w-16 h-16">        <div
+    <div className="absolute top-6 right-8 z-30 hidden md:block">
+      <div className="relative w-16 h-16">
+        <div
           className="absolute inset-0 opacity-80"
           style={{
             background:
@@ -29,7 +31,7 @@ export default function ThemeActionButton({
               fill="#f8f8f8"
               stroke="#e0e0e0"
               strokeWidth="1.5" />
-            <circle cx="7.5" cy="10" r="2" fill="#ffc9de" />            <circle cx="11" cy="6.5" r="2" fill="#e4c1f9" />            <circle cx="16" cy="9" r="2" fill="#c1d5f9" />            <circle cx="9" cy="14" r="1.5" fill="#c1f9e4" />          </svg>        </button>      </div>      <style>{`
+            <circle cx="7.5" cy="10" r="2" fill="#ffc9de" />            <circle cx="11" cy="6.5" r="2" fill="#e4c1f9" />            <circle cx="16" cy="9" r="2" fill="#c1d5f9" />            <circle cx="9" cy="14" r="1.5" fill="#c1f9e4" />          </svg>        </button>      </div>      <style>{`
             @keyframes morph {
                 0%, 100% { border-radius: 60% 40% 50% 50% / 50% 60% 40% 50%; }
                 25% { border-radius: 50% 60% 40% 50% / 40% 50% 60% 50%; }

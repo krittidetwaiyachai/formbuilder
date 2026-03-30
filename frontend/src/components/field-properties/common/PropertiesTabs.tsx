@@ -20,6 +20,6 @@ export const PropertiesTabs = <T extends string,>({
         "bg-white text-black shadow-sm" :
         "text-gray-600 hover:text-black"}`
         }>
-          {t(`builder.tabs.${tab}`)}        </button>
+          {t(`builder.tabs.${tab}`)}      </button>
       )}    </div>);
 };

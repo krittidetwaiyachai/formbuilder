@@ -57,7 +57,7 @@ export function Tooltip({
           sideClasses[side],
           isVisible ? "opacity-100" : "opacity-0"
         )}>
-          {content}          <div
+          {content}        <div
           className={cn("absolute w-0 h-0 border-4", arrowClasses[side])} />
         </div>
       }    </div>);

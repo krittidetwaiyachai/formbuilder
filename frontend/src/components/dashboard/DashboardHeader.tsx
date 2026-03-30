@@ -41,11 +41,11 @@ export default function DashboardHeader({
                 <UserAvatar
                 user={user}
                 className="h-10 w-10 ring-2 ring-gray-100" />
-                <div>                  <p className="text-xs text-gray-500 font-medium">                    {t("dashboard.welcome_back")}                  </p>                  <p className="text-sm font-bold text-gray-900">                    {username || t("common.user")}                  </p>                </div>              </div> :
+                <div>                <p className="text-xs text-gray-500 font-medium">                  {t("dashboard.welcome_back")}                </p>                <p className="text-sm font-bold text-gray-900">                  {username || t("common.user")}                </p>              </div>            </div> :
             <button
               onClick={onLogin}
               className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-full text-sm font-semibold active:opacity-80 transition-opacity">
-                <LogIn className="w-4 h-4" />                {t("auth.sign_in")}              </button>
+                <LogIn className="w-4 h-4" />              {t("auth.sign_in")}            </button>
             }            <LanguageSwitcher />          </div>          <motion.h1
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -167,8 +167,8 @@ const StarSvg = () =>
     clipRule: "evenodd"
   }}
   viewBox="0 0 784.11 815.53">
-    <defs></defs>    <g id="Layer_x0020_1">      <path
+    <defs></defs>  <g id="Layer_x0020_1">    <path
       className="fil0"
       d="M392.05 0c-20.9,210.08 -184.06,378.41 -392.05,407.78 207.96,29.37 371.12,197.68 392.05,407.74 20.93,-210.06 184.09,-378.37 392.05,-407.74 -207.98,-29.38 -371.16,-197.69 -392.06,-407.78z"
       fill="#ffffff">
-    </path>    </g>  </svg>;
+    </path>  </g></svg>;

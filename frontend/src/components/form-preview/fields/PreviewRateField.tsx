@@ -148,6 +148,6 @@ export const PreviewRateField: React.FC<PreviewFieldProps> = ({
           })}
           value={rating || ""} />
         {fieldError &&
-        <p className="mt-1 text-sm text-red-600">            {fieldError.message as string}          </p>
+        <p className="mt-1 text-sm text-red-600">          {fieldError.message as string}        </p>
         }      </div>    </div>);
 };

@@ -2,9 +2,9 @@ import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Permission } from './permissions.constants';
 export const PERMISSIONS_KEY = 'permissions';
-@Injectable() export class
-  PermissionsGuard implements CanActivate {
-  constructor(private reflector: Reflector) { }
+@Injectable()export class
+PermissionsGuard implements CanActivate {
+  constructor(private reflector: Reflector) {}
   canActivate(context: ExecutionContext): boolean {
     const requiredPermissions = this.reflector.getAllAndOverride<Permission[]>(
       PERMISSIONS_KEY,
@@ -19,10 +19,10 @@ export const PERMISSIONS_KEY = 'permissions';
     }
     const userPermissions = this.getUserPermissions(user);
     return requiredPermissions.some((permission) =>
-      userPermissions.includes(permission)
+    userPermissions.includes(permission)
     );
   }
-  private getUserPermissions(user: { permissionOverrides?: string[] | null; rolePermissions?: string[] | null }): string[] {
+  private getUserPermissions(user: {permissionOverrides?: string[] | null;rolePermissions?: string[] | null;}): string[] {
     if (user.permissionOverrides && Array.isArray(user.permissionOverrides)) {
       return user.permissionOverrides;
     }

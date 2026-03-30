@@ -75,7 +75,7 @@ export const MaterialTimePicker: React.FC<MaterialTimePickerProps> = ({
   };
   return (
     <AnimatePresence>      {isOpen &&
-      <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">          {}          <motion.div
+      <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">        {}        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -86,26 +86,26 @@ export const MaterialTimePicker: React.FC<MaterialTimePickerProps> = ({
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 10 }}
           className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100 overflow-hidden w-full max-w-[320px] flex flex-col relative z-10">
-            {}            <div
+            {}          <div
             className="p-6 text-white transition-colors flex flex-col justify-center items-start"
             style={{ backgroundColor: themeColor }}>
-              <p className="text-sm font-medium opacity-70 mb-1 pointer-events-none uppercase tracking-wider">                {t("common.select_time", "SELECT TIME")}              </p>              <div className="flex items-baseline gap-1">                <h2 className="text-5xl font-bold tracking-tight">                  {hours}:{minutes.toString().padStart(2, "0")}                </h2>                <span className="text-xl font-medium opacity-80 ml-1">                  {period}                </span>              </div>            </div>            {}            <div className="p-6 flex flex-col items-center">              <div className="flex items-center gap-4 mb-6">                {}                <div className="flex flex-col items-center gap-1">                  <button
+              <p className="text-sm font-medium opacity-70 mb-1 pointer-events-none uppercase tracking-wider">              {t("common.select_time", "SELECT TIME")}            </p>            <div className="flex items-baseline gap-1">              <h2 className="text-5xl font-bold tracking-tight">                {hours}:{minutes.toString().padStart(2, "0")}              </h2>              <span className="text-xl font-medium opacity-80 ml-1">                {period}              </span>            </div>          </div>          {}          <div className="p-6 flex flex-col items-center">            <div className="flex items-center gap-4 mb-6">              {}              <div className="flex flex-col items-center gap-1">                <button
                   type="button"
                   onClick={incrementHours}
                   className="p-1 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors">
-                    <ChevronUp className="w-6 h-6" />                  </button>                  <div className="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center text-3xl font-bold text-gray-800 border border-gray-100">                    {hours}                  </div>                  <span className="text-xs text-gray-400 font-medium uppercase tracking-wide">                    {t("common.hour", "Hour")}                  </span>                  <button
+                    <ChevronUp className="w-6 h-6" />                </button>                <div className="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center text-3xl font-bold text-gray-800 border border-gray-100">                  {hours}                </div>                <span className="text-xs text-gray-400 font-medium uppercase tracking-wide">                  {t("common.hour", "Hour")}                </span>                <button
                   type="button"
                   onClick={decrementHours}
                   className="p-1 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors">
-                    <ChevronDown className="w-6 h-6" />                  </button>                </div>                <div className="text-2xl font-bold text-gray-300 pb-6">:</div>                {}                <div className="flex flex-col items-center gap-1">                  <button
+                    <ChevronDown className="w-6 h-6" />                </button>              </div>              <div className="text-2xl font-bold text-gray-300 pb-6">:</div>              {}              <div className="flex flex-col items-center gap-1">                <button
                   type="button"
                   onClick={incrementMinutes}
                   className="p-1 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors">
-                    <ChevronUp className="w-6 h-6" />                  </button>                  <div className="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center text-3xl font-bold text-gray-800 border border-gray-100">                    {minutes.toString().padStart(2, "0")}                  </div>                  <span className="text-xs text-gray-400 font-medium uppercase tracking-wide">                    {t("common.minute", "Minute")}                  </span>                  <button
+                    <ChevronUp className="w-6 h-6" />                </button>                <div className="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center text-3xl font-bold text-gray-800 border border-gray-100">                  {minutes.toString().padStart(2, "0")}                </div>                <span className="text-xs text-gray-400 font-medium uppercase tracking-wide">                  {t("common.minute", "Minute")}                </span>                <button
                   type="button"
                   onClick={decrementMinutes}
                   className="p-1 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors">
-                    <ChevronDown className="w-6 h-6" />                  </button>                </div>                {}                <div className="flex flex-col gap-2 ml-2 pb-6">                  <button
+                    <ChevronDown className="w-6 h-6" />                </button>              </div>              {}              <div className="flex flex-col gap-2 ml-2 pb-6">                <button
                   type="button"
                   onClick={() => setPeriod("AM")}
                   className={`px-3 py-2 rounded-lg text-sm font-bold transition-all border ${
@@ -122,7 +122,7 @@ export const MaterialTimePicker: React.FC<MaterialTimePickerProps> = ({
                   } :
                   {}
                   }>
-                    AM                  </button>                  <button
+                    AM                </button>                <button
                   type="button"
                   onClick={() => setPeriod("PM")}
                   className={`px-3 py-2 rounded-lg text-sm font-bold transition-all border ${
@@ -139,16 +139,16 @@ export const MaterialTimePicker: React.FC<MaterialTimePickerProps> = ({
                   } :
                   {}
                   }>
-                    PM                  </button>                </div>              </div>            </div>            {}            <div className="flex items-center justify-between p-4 px-6 border-t border-gray-100 bg-gray-50/50">              <button
+                    PM                </button>              </div>            </div>          </div>          {}          <div className="flex items-center justify-between p-4 px-6 border-t border-gray-100 bg-gray-50/50">            <button
               type="button"
               onClick={handleNow}
               className="text-sm font-semibold hover:bg-gray-100 px-3 py-2 rounded-lg transition-colors"
               style={{ color: themeColor }}>
-                {t("common.now", "Now")}              </button>              <div className="flex gap-2">                <button
+                {t("common.now", "Now")}            </button>            <div className="flex gap-2">              <button
                 type="button"
                 onClick={onClose}
                 className="text-sm font-semibold text-gray-500 hover:bg-gray-100 px-4 py-2 rounded-lg transition-colors">
-                  {t("common.cancel", "Cancel")}                </button>                <button
+                  {t("common.cancel", "Cancel")}              </button>              <button
                 type="button"
                 onClick={handleApply}
                 className="text-sm font-semibold hover:opacity-90 px-6 py-2 rounded-lg transition-colors text-white shadow-lg shadow-primary/30 active:scale-95 active:shadow-sm"
@@ -156,6 +156,6 @@ export const MaterialTimePicker: React.FC<MaterialTimePickerProps> = ({
                   backgroundColor: themeColor,
                   boxShadow: `0 10px 15px -3px ${themeColor}40`
                 }}>
-                  {t("common.ok", "OK")}                </button>              </div>            </div>          </motion.div>        </div>
+                  {t("common.ok", "OK")}              </button>            </div>          </div>        </motion.div>      </div>
       }    </AnimatePresence>);
 };

@@ -59,7 +59,7 @@ export const PreviewHeaderField: React.FC<PreviewFieldProps> = ({ field }) => {
       <>        <div
           className={`mb-6 ${hasBackgroundImage ? "relative rounded-xl overflow-hidden min-h-80 group cursor-pointer" : ""}`}>
           {hasBackgroundImage &&
-          <>              <img
+          <>            <img
               src={headingImage}
               alt=""
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
@@ -75,7 +75,7 @@ export const PreviewHeaderField: React.FC<PreviewFieldProps> = ({ field }) => {
               <div
               className="absolute top-4 right-4 z-20 bg-white/20 backdrop-blur-sm rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer hover:bg-white/30"
               onClick={() => openImageModal(headingImage)}>
-                <ZoomIn className="w-5 h-5 text-white" />              </div>            </>
+                <ZoomIn className="w-5 h-5 text-white" />            </div>          </>
           }          <div
             className={
             hasBackgroundImage ?
@@ -91,7 +91,7 @@ export const PreviewHeaderField: React.FC<PreviewFieldProps> = ({ field }) => {
               className={`${getHeaderSizeClass()} font-bold ${hasBackgroundImage ? "text-white" : ""} ${getHeaderAlignmentClass()} leading-tight tracking-tight pb-1`}
               style={!hasBackgroundImage ? { color: "var(--text-color)" } : {}}>
               <div
-                className="ql-editor !p-0 !min-h-0 [&>p]:!m-0"
+                className="rich-text-content ql-editor !p-0 !min-h-0 [&>p]:!m-0"
                 dangerouslySetInnerHTML={{
                   __html:
                   field.label ||
@@ -107,7 +107,7 @@ export const PreviewHeaderField: React.FC<PreviewFieldProps> = ({ field }) => {
                 opacity: hasBackgroundImage ? 1 : 0.8
               }}>
                 <div
-                className="ql-editor !p-0 !min-h-0 [&>p]:!m-0"
+                className="rich-text-content ql-editor !p-0 !min-h-0 [&>p]:!m-0"
                 dangerouslySetInnerHTML={{ __html: headerSubheading }} />
               </div>
             }            {headingImage &&
@@ -137,7 +137,7 @@ export const PreviewHeaderField: React.FC<PreviewFieldProps> = ({ field }) => {
             <button
             className="absolute top-4 right-4 bg-white/20 hover:bg-white/30 rounded-full p-2 transition-colors"
             onClick={closeImageModal}>
-              <X className="w-6 h-6 text-white" />            </button>            <img
+              <X className="w-6 h-6 text-white" />          </button>          <img
             src={modalImageSrc}
             alt="Enlarged"
             className="max-w-[90vw] max-h-[90vh] object-contain rounded-lg shadow-2xl"
@@ -188,7 +188,7 @@ export const PreviewHeaderField: React.FC<PreviewFieldProps> = ({ field }) => {
                 {t(
                 "public.placeholder.section_content",
                 "Section content goes here..."
-              )}              </p>            </div>
+              )}            </p>          </div>
           }        </div>      </div>);
   }
   if (field.type === FieldType.PAGE_BREAK) {

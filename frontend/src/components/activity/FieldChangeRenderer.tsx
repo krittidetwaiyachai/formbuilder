@@ -73,52 +73,52 @@ export default function FieldChangeRenderer({
   };
   return (
     <div className="space-y-3">      {}      {addedFields.length > 0 && isVisible("added") &&
-      <div className="space-y-4">          <div className="text-xs font-semibold text-green-600 bg-green-50 px-2 py-1 rounded-md border border-green-100 inline-flex items-center gap-1">            <Plus className="w-3 h-3" />{" "}            {t("activity.changes.added_fields", { count: addedFields.length })}          </div>          <div className="flex flex-wrap gap-2">            {addedFields.map((f: FieldChange, i: number) => {
+      <div className="space-y-4">        <div className="text-xs font-semibold text-green-600 bg-green-50 px-2 py-1 rounded-md border border-green-100 inline-flex items-center gap-1">          <Plus className="w-3 h-3" />{" "}          {t("activity.changes.added_fields", { count: addedFields.length })}        </div>        <div className="flex flex-wrap gap-2">          {addedFields.map((f: FieldChange, i: number) => {
             const groupName = f.groupId ? fieldLabels[f.groupId] : null;
             return (
               <div
                 key={i}
                 className="flex items-center gap-1.5 bg-white px-2 py-1 rounded border border-gray-200 shadow-sm">
-                  <span className="text-xs font-medium text-gray-700">                    {typeof f.label === "string" ?
+                  <span className="text-xs font-medium text-gray-700">                  {typeof f.label === "string" ?
                   stripHtml(f.label) :
-                  "Untitled"}                  </span>                  {groupName &&
-                <span className="text-[10px] text-gray-500 bg-gray-50 px-1 rounded">                      {t("activity.changes.in_group", { group: groupName })}                    </span>
-                }                  <span className="text-[10px] text-gray-400 bg-gray-50 px-1 rounded uppercase tracking-wider">                    {typeof f.type === "string" ?
+                  "Untitled"}                </span>                {groupName &&
+                <span className="text-[10px] text-gray-500 bg-gray-50 px-1 rounded">                  {t("activity.changes.in_group", { group: groupName })}                </span>
+                }                <span className="text-[10px] text-gray-400 bg-gray-50 px-1 rounded uppercase tracking-wider">                  {typeof f.type === "string" ?
                   getFieldTypeName(f.type, t, i18n) :
-                  "FIELD"}                  </span>                </div>);
-          })}          </div>        </div>
+                  "FIELD"}                </span>              </div>);
+          })}        </div>      </div>
       }      {}      {deletedFields.length > 0 && isVisible("deleted") &&
-      <div className="space-y-4">          <div className="text-xs font-semibold text-red-600 bg-red-50 px-2 py-1 rounded-md border border-red-100 inline-flex items-center gap-1">            <Trash2 className="w-3 h-3" />{" "}            {t("activity.changes.deleted_fields", {
+      <div className="space-y-4">        <div className="text-xs font-semibold text-red-600 bg-red-50 px-2 py-1 rounded-md border border-red-100 inline-flex items-center gap-1">          <Trash2 className="w-3 h-3" />{" "}          {t("activity.changes.deleted_fields", {
             count: deletedFields.length
-          })}          </div>          <div className="flex flex-wrap gap-2">            {deletedFields.map((f: FieldChange, i: number) => {
+          })}        </div>        <div className="flex flex-wrap gap-2">          {deletedFields.map((f: FieldChange, i: number) => {
             const groupName = f.groupId ? fieldLabels[f.groupId] : null;
             return (
               <div
                 key={i}
                 className="flex items-center gap-1.5 bg-white px-2 py-1 rounded border border-red-100 shadow-sm opacity-75">
-                  <span className="text-xs font-medium text-gray-700 line-through decoration-red-300">                    {typeof f.label === "string" ?
+                  <span className="text-xs font-medium text-gray-700 line-through decoration-red-300">                  {typeof f.label === "string" ?
                   stripHtml(f.label) :
-                  "Untitled"}                  </span>                  {groupName &&
-                <span className="text-[10px] text-gray-500 bg-gray-50 px-1 rounded">                      {t("activity.changes.from_group", { group: groupName })}                    </span>
-                }                  <span className="text-[10px] text-gray-400 bg-gray-50 px-1 rounded uppercase tracking-wider">                    {typeof f.type === "string" ?
+                  "Untitled"}                </span>                {groupName &&
+                <span className="text-[10px] text-gray-500 bg-gray-50 px-1 rounded">                  {t("activity.changes.from_group", { group: groupName })}                </span>
+                }                <span className="text-[10px] text-gray-400 bg-gray-50 px-1 rounded uppercase tracking-wider">                  {typeof f.type === "string" ?
                   getFieldTypeName(f.type, t, i18n) :
-                  "FIELD"}                  </span>                </div>);
-          })}          </div>        </div>
+                  "FIELD"}                </span>              </div>);
+          })}        </div>      </div>
       }      {}      {updatedFields.length > 0 && isVisible("updated") &&
-      <div className="space-y-4">          <div className="text-xs font-semibold text-indigo-600 bg-indigo-50 px-2 py-1 rounded-md border border-indigo-100 inline-flex items-center gap-1">            <Edit3 className="w-3 h-3" /> {t("activity.changes.updated_fields")}          </div>          <div className="space-y-4">            {updatedFields.map((f: FieldChange, i: number) => {
+      <div className="space-y-4">        <div className="text-xs font-semibold text-indigo-600 bg-indigo-50 px-2 py-1 rounded-md border border-indigo-100 inline-flex items-center gap-1">          <Edit3 className="w-3 h-3" /> {t("activity.changes.updated_fields")}        </div>        <div className="space-y-4">          {updatedFields.map((f: FieldChange, i: number) => {
             const groupName = f.groupId ? fieldLabels[f.groupId] : null;
             return (
               <div
                 key={i}
                 className="bg-white rounded-lg border border-gray-100 p-3 shadow-sm hover:border-indigo-100 transition-colors">
-                  <div className="flex items-center gap-2 mb-2 pb-2 border-b border-gray-50">                    <span className="font-semibold text-sm text-gray-900">                      {typeof f.label === "string" ||
+                  <div className="flex items-center gap-2 mb-2 pb-2 border-b border-gray-50">                  <span className="font-semibold text-sm text-gray-900">                    {typeof f.label === "string" ||
                     typeof f.label === "number" ?
                     stripHtml(String(f.label)) :
-                    "Untitled"}                    </span>                    {groupName &&
-                  <span className="text-[10px] text-gray-500 bg-gray-50 px-1 rounded">                        {t("activity.changes.in_group", { group: groupName })}                      </span>
-                  }                    {f.type &&
-                  <span className="text-[10px] px-1.5 py-0.5 bg-gray-100 text-gray-500 rounded border border-gray-200 tracking-wide">                        {getFieldTypeName(f.type, t, i18n)}                      </span>
-                  }                  </div>                  <div className="space-y-1">                    {(f.changes || []).map((c: ChangeItem, idx: number) => {
+                    "Untitled"}                  </span>                  {groupName &&
+                  <span className="text-[10px] text-gray-500 bg-gray-50 px-1 rounded">                    {t("activity.changes.in_group", { group: groupName })}                  </span>
+                  }                  {f.type &&
+                  <span className="text-[10px] px-1.5 py-0.5 bg-gray-100 text-gray-500 rounded border border-gray-200 tracking-wide">                    {getFieldTypeName(f.type, t, i18n)}                  </span>
+                  }                </div>                <div className="space-y-1">                  {(f.changes || []).map((c: ChangeItem, idx: number) => {
                     const propName = getPropertyLabel(
                       c.property || "",
                       t,
@@ -190,63 +190,63 @@ export default function FieldChangeRenderer({
                         <div
                           key={idx}
                           className="flex items-center gap-1.5 text-xs">
-                            <span className="text-gray-500 font-medium whitespace-nowrap">                              {t("activity.changes.location")}                            </span>                            <div className="px-2 py-1 bg-gray-100 text-gray-600 rounded border border-gray-200 whitespace-nowrap">                              {beforeValue ?
-                            <span>                                  {t("activity.changes.from_group", {
+                            <span className="text-gray-500 font-medium whitespace-nowrap">                            {t("activity.changes.location")}                          </span>                          <div className="px-2 py-1 bg-gray-100 text-gray-600 rounded border border-gray-200 whitespace-nowrap">                            {beforeValue ?
+                            <span>                              {t("activity.changes.from_group", {
                                 group: groupNameBefore
-                              })}                                </span> :
+                              })}                            </span> :
                             "Canvas"
-                            }                            </div>                            <ArrowRight className="w-3 h-3 text-gray-300" />                            <div className="px-2 py-1 bg-indigo-50 text-indigo-700 rounded border border-indigo-200 whitespace-nowrap font-medium">                              {c.after ?
-                            <span>                                  {t("activity.changes.in_group", {
+                            }                          </div>                          <ArrowRight className="w-3 h-3 text-gray-300" />                          <div className="px-2 py-1 bg-indigo-50 text-indigo-700 rounded border border-indigo-200 whitespace-nowrap font-medium">                            {c.after ?
+                            <span>                              {t("activity.changes.in_group", {
                                 group: groupNameAfter
-                              })}                                </span> :
+                              })}                            </span> :
                             "Canvas"
-                            }                            </div>                          </div>);
+                            }                          </div>                        </div>);
                     }
                     return (
                       <div
                         key={idx}
                         className="flex items-center gap-1.5 text-xs">
-                          <span className="text-gray-500 font-medium whitespace-nowrap">                            {propName}                          </span>                          {isBooleanToggle(beforeValue, c.after) ?
-                        <>                              <div
+                          <span className="text-gray-500 font-medium whitespace-nowrap">                          {propName}                        </span>                        {isBooleanToggle(beforeValue, c.after) ?
+                        <>                          <div
                             className={`px-2 py-1 rounded border whitespace-nowrap ${beforeValue ? "bg-emerald-50 text-emerald-700 border-emerald-100" : "bg-gray-100 text-gray-500"}`}>
                                 {beforeValue ?
                             t("activity.values.enable") :
-                            t("activity.values.disable")}                              </div>                              <ArrowRight className="w-3 h-3 text-gray-300" />                              <div
+                            t("activity.values.disable")}                          </div>                          <ArrowRight className="w-3 h-3 text-gray-300" />                          <div
                             className={`px-2 py-1 rounded border whitespace-nowrap font-medium ${c.after ? "bg-emerald-50 text-emerald-700 border-emerald-100" : "bg-gray-100 text-gray-500"}`}>
                                 {c.after ?
                             t("activity.values.enable") :
-                            t("activity.values.disable")}                              </div>                            </> :
+                            t("activity.values.disable")}                          </div>                        </> :
                         isStringToggle(
                           c.property || "",
                           beforeValue,
                           c.after
                         ) ?
-                        <>                              <div className="px-2 py-1 bg-gray-100 text-gray-600 rounded border border-gray-200 whitespace-nowrap">                                {typeof beforeValue === "string" ||
+                        <>                          <div className="px-2 py-1 bg-gray-100 text-gray-600 rounded border border-gray-200 whitespace-nowrap">                            {typeof beforeValue === "string" ||
                             typeof beforeValue === "number" ?
                             beforeValue :
                             (c.property || "").
                             toLowerCase().
                             includes("editormode") ?
                             t("activity.values.plain_text") :
-                            t("activity.values.auto")}                              </div>                              <ArrowRight className="w-3 h-3 text-gray-300 flex-shrink-0" />                              <div className="px-2 py-1 bg-indigo-50 text-indigo-700 rounded border border-indigo-200 font-medium">                                {typeof c.after === "string" ||
+                            t("activity.values.auto")}                          </div>                          <ArrowRight className="w-3 h-3 text-gray-300 flex-shrink-0" />                          <div className="px-2 py-1 bg-indigo-50 text-indigo-700 rounded border border-indigo-200 font-medium">                            {typeof c.after === "string" ||
                             typeof c.after === "number" ?
                             c.after :
                             (c.property || "").
                             toLowerCase().
                             includes("editormode") ?
                             t("activity.values.plain_text") :
-                            t("activity.values.auto")}                              </div>                            </> :
-                        <>                              <div
+                            t("activity.values.auto")}                          </div>                        </> :
+                        <>                          <div
                             className="bg-red-50 text-red-700 px-2 py-1 rounded border border-red-100 line-through opacity-75 break-words min-w-0"
                             title={String(beforeValue)}>
                                 <ValueRenderer
                               value={beforeValue as ValueType} />
-                              </div>                              <ArrowRight className="w-3 h-3 text-gray-300 flex-shrink-0" />                              <div
+                              </div>                          <ArrowRight className="w-3 h-3 text-gray-300 flex-shrink-0" />                          <div
                             className="bg-emerald-50 text-emerald-700 px-2 py-1 rounded border border-emerald-100 font-medium break-words min-w-0"
                             title={String(c.after)}>
-                                <ValueRenderer value={c.after as ValueType} />                              </div>                            </>
-                        }                        </div>);
-                  })}                  </div>                </div>);
-          })}          </div>        </div>
+                                <ValueRenderer value={c.after as ValueType} />                          </div>                        </>
+                        }                      </div>);
+                  })}                </div>              </div>);
+          })}        </div>      </div>
       }    </div>);
 }

@@ -46,9 +46,9 @@ export const FullNameField: React.FC<FullNameFieldProps> = ({
   placeholder: string,
   defaultSublabel: string,
   minWidth: string) =>
-  <div className={`flex-1 min-w-[${minWidth}] relative group`}>      {key === "first" &&
-    <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-50">          {}        </div>
-    }      <input
+  <div className={`flex-1 min-w-[${minWidth}] relative group`}>    {key === "first" &&
+    <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-50">      {}    </div>
+    }    <input
       type="text"
       placeholder={placeholder || defaultSublabel}
       readOnly

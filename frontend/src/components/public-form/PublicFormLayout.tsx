@@ -104,7 +104,7 @@ export function PublicFormLayout({
                 delay: i * 2,
                 ease: "linear"
               }}>
-                {emoji}              </motion.div>
+                {emoji}            </motion.div>
             )}          </div>);
       })()}      {form.settings?.backgroundType === "image" &&
       form.settings?.backgroundImage &&
@@ -115,13 +115,13 @@ export function PublicFormLayout({
       quizStartTime &&
       !submitted &&
       (form.quizSettings?.timeLimit || 0) > 0 &&
-      <div className="fixed bottom-6 right-6 z-50">            <QuizTimer
+      <div className="fixed bottom-6 right-6 z-50">        <QuizTimer
           startTime={quizStartTime}
           timeLimitMinutes={form.quizSettings?.timeLimit || 0}
           onTimeUp={onTimeUp} />
           </div>
       }      {!submitted && form.settings?.showProgressBar &&
-      <div className="fixed top-0 left-0 right-0 z-30">          <FormProgressBar
+      <div className="fixed top-0 left-0 right-0 z-30">        <FormProgressBar
           visibleFields={visibleFields}
           watchedValues={watchedValues}
           isCardLayout={!!isCardLayout}
@@ -159,6 +159,6 @@ export function PublicFormLayout({
           onSubmit={onSubmit}
           className={isCardLayout ? "h-full" : ""}>
           {children}        </form>        <div className={`${isMobileView ? "mt-4" : "mt-8"} text-center`}>          {form.settings?.footerText &&
-          <p className="text-sm text-gray-400 mb-2">              {form.settings.footerText}            </p>
+          <p className="text-sm text-gray-400 mb-2">            {form.settings.footerText}          </p>
           }        </div>      </motion.div>    </div>);
 }

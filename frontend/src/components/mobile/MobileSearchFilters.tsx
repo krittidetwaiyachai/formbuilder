@@ -44,12 +44,12 @@ export default function MobileSearchFilters({
           "bg-gray-50 border border-gray-100 text-gray-500 active:bg-gray-100"}`
           }>
           <SlidersHorizontal className="w-5 h-5" />          {activeFiltersCount > 0 &&
-          <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-[10px] font-bold flex items-center justify-center rounded-full ring-2 ring-white">              {activeFiltersCount}            </span>
+          <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-[10px] font-bold flex items-center justify-center rounded-full ring-2 ring-white">            {activeFiltersCount}          </span>
           }        </button>      </div>      {}      <div className="flex items-center gap-2 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-hide">        {onCreateFolder &&
         <button
           onClick={onCreateFolder}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-dashed border-gray-300 text-xs font-medium text-gray-500 active:bg-gray-50 active:border-gray-400 flex-shrink-0 transition-colors">
-            <Plus className="w-3.5 h-3.5" />            {t("dashboard.new_folder")}          </button>
+            <Plus className="w-3.5 h-3.5" />          {t("dashboard.new_folder")}        </button>
         }        <div className="w-[1px] h-4 bg-gray-200 mx-1 flex-shrink-0" />        <button
           onClick={() => onFolderSelect?.(null)}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors border ${
@@ -88,6 +88,6 @@ export default function MobileSearchFilters({
               fillOpacity: 0.2
             }} /> :
           <FolderIcon className="w-3.5 h-3.5" />
-          }            {folder.name}          </button>
+          }          {folder.name}        </button>
         )}      </div>    </div>);
 }

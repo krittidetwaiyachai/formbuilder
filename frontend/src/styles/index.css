@@ -538,6 +538,10 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+.rich-text-content {
+  font-synthesis: style weight;
+}
+
 .ql-editor strong {
   font-weight: 700 !important;
   font-family: inherit;
@@ -547,6 +551,68 @@ body {
   font-style: italic !important;
   font-family: inherit;
   font-synthesis: style !important;
+}
+
+.rich-text-content em,
+.rich-text-content i {
+  font-style: italic !important;
+  font-family: inherit;
+  font-synthesis: style !important;
+}
+
+.rich-text-content ul,
+.rich-text-content ol,
+.ql-editor ul,
+.ql-editor ol {
+  margin: 0.5em 0 !important;
+  padding-left: 0 !important;
+  list-style: none !important;
+}
+
+.rich-text-content li,
+.ql-editor li {
+  position: relative;
+  margin: 0.25em 0 !important;
+  padding-left: 1.5rem !important;
+}
+
+.rich-text-content ul li::before,
+.ql-editor ul li::before {
+  content: "" !important;
+  position: absolute;
+  left: 0.25rem;
+  top: 0.62em;
+  width: 0.35em;
+  height: 0.35em;
+  border-radius: 9999px;
+  background: currentColor;
+}
+
+.rich-text-content ol,
+.ql-editor ol {
+  counter-reset: rich-text-counter;
+}
+
+.rich-text-content ol li,
+.ql-editor ol li {
+  counter-increment: rich-text-counter;
+}
+
+.rich-text-content ol li::before,
+.ql-editor ol li::before {
+  content: counter(rich-text-counter) "." !important;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1.25rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.rich-text-content li > p,
+.ql-editor li > p {
+  margin: 0 !important;
+  display: inline !important;
 }
 
 @media (max-width: 768px) {
@@ -589,42 +655,50 @@ body {
   }
 }
 
+.rich-text-content a,
 .ql-editor a,
 .rich-text-editor-wrapper a {
   color: #2563eb !important;
   text-decoration: underline !important;
+  text-underline-offset: 2px;
   cursor: pointer;
   pointer-events: auto !important;
 }
 
+.rich-text-content a:hover,
 .ql-editor a:hover,
 .rich-text-editor-wrapper a:hover {
   color: #1d4ed8 !important;
 }
 
 /* Form Builder - Custom Drag Placeholder Styling */
-[data-rbd-droppable-id="CANVAS"] > div[data-rbd-placeholder-context-id] {
+[data-rfd-droppable-id="CANVAS"] > div[data-rfd-placeholder-context-id] {
   position: relative !important;
   background: transparent !important;
 }
 
-[data-rbd-droppable-id="CANVAS"] > div[data-rbd-placeholder-context-id]::after {
-  content: "วางช่องกรอกข้อมูลที่นี่";
-  position: absolute !important;
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
-  width: calc(100% - 2rem) !important;
-  max-width: 400px !important;
-  height: 60px !important;
-  background: rgba(99, 102, 241, 0.05) !important;
-  border: 2px dashed rgba(99, 102, 241, 0.4) !important;
-  border-radius: 0.75rem !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  color: rgba(99, 102, 241, 0.8) !important;
-  font-size: 0.875rem !important;
-  font-weight: 500 !important;
-  pointer-events: none !important;
+/* Ensure drag clone preview appears above mobile drawer (z-index: 9999) */
+[data-rfd-drag-handle-draggable-id] {
+  touch-action: none !important;
 }
+
+body > [data-rfd-draggable-id] {
+  z-index: 99999 !important;
+}
+
+/* Keep the mobile drawer transparent during a sidebar drag, but continue owning touch input. */
+body.is-dragging-sidebar .mobile-drawer-wrapper {
+  touch-action: none !important;
+}
+
+body.is-dragging-sidebar .mobile-drawer-panel,
+body.is-dragging-sidebar .mobile-drawer-scrim {
+  opacity: 0 !important;
+}
+
+body.is-dragging-sidebar > [data-rfd-draggable-id] {
+  pointer-events: none !important;
+  z-index: 100000 !important;
+}
+
+/* Disabled hiding panel to test dragging stability */

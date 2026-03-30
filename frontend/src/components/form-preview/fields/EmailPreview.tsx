@@ -105,7 +105,7 @@ export const EmailPreview: React.FC<PreviewFieldProps> = ({
         {subLabel && subLabel !== "Sublabel" &&
         <p className="mt-1 text-sm text-gray-500 font-normal">{subLabel}</p>
         }      </div>      <div className={`flex-1 min-w-0`}>        <div className="relative group" title={hoverText}>          {!isPublic &&
-          <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">              <Mail className="h-4 w-4 text-gray-400" />            </div>
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">            <Mail className="h-4 w-4 text-gray-400" />          </div>
           }          {isPublic ?
           <input
             type="email"
@@ -161,11 +161,11 @@ export const EmailPreview: React.FC<PreviewFieldProps> = ({
             readOnly ? "bg-gray-100 cursor-not-allowed text-gray-500" : ""}`
             } />
           }        </div>        {confirmation && isPublic &&
-        <div className="mt-4">            <label
+        <div className="mt-4">          <label
             htmlFor={`${fieldName}_confirm`}
             className="block text-sm font-medium mb-2"
             style={{ color: "var(--text)" }}>
-              {t("public.validation.confirm_email_label", "Confirm Email")}            </label>            <input
+              {t("public.validation.confirm_email_label", "Confirm Email")}          </label>          <input
             type="email"
             id={`${fieldName}_confirm`}
             {...register(`${fieldName}_confirm`, {
@@ -221,9 +221,9 @@ export const EmailPreview: React.FC<PreviewFieldProps> = ({
             errors[`${fieldName}_confirm`] ? "border-red-300" : ""}`
             } />
             {errors[`${fieldName}_confirm`] &&
-          <p className="mt-1 text-sm text-red-600">                {errors[`${fieldName}_confirm`]?.message as string}              </p>
-          }          </div>
+          <p className="mt-1 text-sm text-red-600">            {errors[`${fieldName}_confirm`]?.message as string}          </p>
+          }        </div>
         }        {fieldError &&
-        <p className="mt-1 text-sm text-red-600">            {fieldError.message as string}          </p>
+        <p className="mt-1 text-sm text-red-600">          {fieldError.message as string}        </p>
         }      </div>    </div>);
 };

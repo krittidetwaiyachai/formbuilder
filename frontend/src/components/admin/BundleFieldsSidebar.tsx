@@ -204,7 +204,7 @@ function SidebarCategory({
                   { ...provided.draggableProps.style, opacity: 0 } :
                   provided.draggableProps.style
                   }>
-                    <div className="w-full h-full">                      <FieldTypeButton config={field} isCollapsed={true} />                    </div>                  </div>
+                    <div className="w-full h-full">                    <FieldTypeButton config={field} isCollapsed={true} />                  </div>                </div>
                 }              </Draggable>            </div>);
         })}      </div>);
   }
@@ -216,8 +216,8 @@ function SidebarCategory({
         <ChevronDown className="h-4 w-4 text-gray-400" /> :
         <ChevronRight className="h-4 w-4 text-gray-400" />
         }      </button>      {isOpen &&
-      <div className="p-2 space-y-2 bg-gray-50/50 border-t border-gray-100">          {category.fields.map((field, index) =>
-        <div key={field.type} className="relative z-0 select-none">              {}              <div className="relative z-0">                <FieldTypeButton config={field} isCollapsed={false} />              </div>              {}              <Draggable
+      <div className="p-2 space-y-2 bg-gray-50/50 border-t border-gray-100">        {category.fields.map((field, index) =>
+        <div key={field.type} className="relative z-0 select-none">          {}          <div className="relative z-0">            <FieldTypeButton config={field} isCollapsed={false} />          </div>          {}          <Draggable
             draggableId={`sidebar-${field.type}`}
             index={startIndex + index}>
                 {(provided, snapshot) =>
@@ -236,9 +236,9 @@ function SidebarCategory({
               { ...provided.draggableProps.style, opacity: 0 } :
               provided.draggableProps.style
               }>
-                    <div className="w-full h-full">                      <FieldTypeButton config={field} isCollapsed={false} />                    </div>                  </div>
-            }              </Draggable>            </div>
-        )}        </div>
+                    <div className="w-full h-full">                <FieldTypeButton config={field} isCollapsed={false} />              </div>            </div>
+            }          </Draggable>        </div>
+        )}      </div>
       }    </div>);
 }
 export default function BundleFieldsSidebar() {
@@ -258,7 +258,7 @@ export default function BundleFieldsSidebar() {
         }      </button>      <div
         className={`p-4 border-b border-gray-200 flex items-center justify-center bg-white`}>
         {!isCollapsed &&
-        <h2 className="font-semibold text-gray-800 whitespace-nowrap overflow-hidden">            {t("builder.fields")}          </h2>
+        <h2 className="font-semibold text-gray-800 whitespace-nowrap overflow-hidden">          {t("builder.fields")}        </h2>
         }      </div>      <Droppable
         droppableId="BUNDLE-SIDEBAR"
         isDropDisabled={true}
@@ -294,6 +294,6 @@ export default function BundleFieldsSidebar() {
                 category={category}
                 isCollapsed={isCollapsed}
                 startIndex={categoryStartIndex} />);
-          })}            {}            <div className="hidden">{provided.placeholder}</div>          </div>
+          })}          {}          <div className="hidden">{provided.placeholder}</div>        </div>
         }      </Droppable>    </div>);
 }

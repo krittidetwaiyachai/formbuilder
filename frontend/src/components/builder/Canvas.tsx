@@ -139,8 +139,8 @@ export default function Canvas({ activeId }: CanvasProps) {
             key={element.id}
             element={element}
             index={index} />
-          )}          </SortableContext> :
+          )}        </SortableContext> :
         isOver &&
-        <div className="border-2 border-dashed border-primary rounded-lg p-8 text-center text-gray-500">              {t("builder.canvas.drop_here", "Drop here to add element")}            </div>
+        <div className="border-2 border-dashed border-primary rounded-lg p-8 text-center text-gray-500">          {t("builder.canvas.drop_here", "Drop here to add element")}        </div>
         }      </div>    </div>);
 }

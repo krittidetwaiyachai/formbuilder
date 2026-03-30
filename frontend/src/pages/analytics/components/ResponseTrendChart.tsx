@@ -28,7 +28,6 @@ export const ResponseTrendChart: React.FC<ResponseTrendChartProps> = ({
 }) => {
   const { t } = useTranslation();
   const [isMonthPickerOpen, setIsMonthPickerOpen] = React.useState(false);
-
   const selectedMonthDate = React.useMemo(() => {
     const m = /^(\d{4})-(\d{2})$/.exec(selectedMonth);
     if (!m) return null;
@@ -37,7 +36,6 @@ export const ResponseTrendChart: React.FC<ResponseTrendChartProps> = ({
     if (!Number.isFinite(year) || !Number.isFinite(monthNum)) return null;
     return new Date(year, monthNum - 1, 1);
   }, [selectedMonth]);
-
   const getPrimaryColor = () => {
     if (typeof window !== "undefined") {
       const rootStyle = getComputedStyle(document.body);
@@ -46,11 +44,9 @@ export const ResponseTrendChart: React.FC<ResponseTrendChartProps> = ({
     }
     return "#6366f1";
   };
-
-  const monthLabel = selectedMonthDate
-    ? selectedMonthDate.toLocaleDateString(undefined, { month: "long", year: "numeric" })
-    : selectedMonth;
-
+  const monthLabel = selectedMonthDate ?
+  selectedMonthDate.toLocaleDateString(undefined, { month: "long", year: "numeric" }) :
+  selectedMonth;
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -70,8 +66,7 @@ export const ResponseTrendChart: React.FC<ResponseTrendChartProps> = ({
               id="response-trend-month"
               type="button"
               onClick={() => setIsMonthPickerOpen(true)}
-              className="h-9 rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-black/20"
-            >
+              className="h-9 rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-black/20">
               {monthLabel}
             </button>
           </div>
@@ -81,8 +76,8 @@ export const ResponseTrendChart: React.FC<ResponseTrendChartProps> = ({
           className="p-2 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors flex-shrink-0"
           title={t("analytics.copy_chart")}>
           {copySuccess === "response-trend-chart" ?
-            <CheckCircle2 className="w-4 h-4 text-green-600" /> :
-            <Copy className="w-4 h-4" />
+          <CheckCircle2 className="w-4 h-4 text-green-600" /> :
+          <Copy className="w-4 h-4" />
           }
         </button>
       </div>
@@ -95,8 +90,7 @@ export const ResponseTrendChart: React.FC<ResponseTrendChartProps> = ({
         onSelect={(date) => {
           const mm = String(date.getMonth() + 1).padStart(2, "0");
           onMonthChange(`${date.getFullYear()}-${mm}`);
-        }}
-      />
+        }} />
       <div id="response-trend-chart" className="p-2 bg-white rounded-lg">
         <ResponsiveContainer width="100%" height={300}>
           <AreaChart

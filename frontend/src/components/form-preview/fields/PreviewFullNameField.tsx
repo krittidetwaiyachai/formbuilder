@@ -68,9 +68,9 @@ export const PreviewFullNameField: React.FC<PreviewFieldProps> = ({
   placeholder: string,
   sublabel: string,
   defaultSublabel: string) =>
-  <div className="flex-1">      <div className="relative" title={hoverText}>        {!isPublic &&
-      <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">            <User className="h-4 w-4 text-gray-400" />          </div>
-      }        <input
+  <div className="flex-1">    <div className="relative" title={hoverText}>      {!isPublic &&
+      <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">        <User className="h-4 w-4 text-gray-400" />      </div>
+      }      <input
         type="text"
         id={`${fieldName}_${name}`}
         {...register(`${fieldName}_${name}`, {
@@ -82,7 +82,7 @@ export const PreviewFullNameField: React.FC<PreviewFieldProps> = ({
         readOnly={readOnly}
         className={inputClass}
         style={inputStyle} />
-      </div>      {}      {!isPublic &&
+      </div>    {}    {!isPublic &&
     <div
       contentEditable
       suppressContentEditableWarning
@@ -94,11 +94,11 @@ export const PreviewFullNameField: React.FC<PreviewFieldProps> = ({
       dangerouslySetInnerHTML={{
         __html: sublabels[name] || defaultSublabel
       }} />
-    }      {}      {isPublic && sublabel !== defaultSublabel &&
+    }    {}    {isPublic && sublabel !== defaultSublabel &&
     <p className="mt-1 text-xs text-gray-400">{sublabel}</p>
-    }      {errors[`${fieldName}_${name}`] &&
-    <p className="mt-1 text-sm text-red-600">          {errors[`${fieldName}_${name}`]?.message as string}        </p>
-    }    </div>;
+    }    {errors[`${fieldName}_${name}`] &&
+    <p className="mt-1 text-sm text-red-600">      {errors[`${fieldName}_${name}`]?.message as string}    </p>
+    }  </div>;
   return (
     <div
       className={`mb-4 w-full ${isRowLayout ? "flex items-start gap-4" : ""}`}>

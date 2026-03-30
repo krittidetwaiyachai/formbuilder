@@ -166,7 +166,7 @@ export function DashboardContextMenu({
             "text-red-500" :
             "text-gray-400 group-hover:text-black"
             }>
-                {item.icon}              </span>              {item.label}            </button>
-        )}        </div>
+                {item.icon}          </span>          {item.label}        </button>
+        )}      </div>
       )}    </div>);
 }

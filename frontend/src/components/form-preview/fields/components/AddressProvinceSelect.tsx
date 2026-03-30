@@ -79,10 +79,10 @@ export const AddressProvinceSelect: React.FC<AddressProvinceSelectProps> = ({
           className={`w-full text-left px-4 py-2 text-sm transition-colors hover:bg-black/5 ${
           selected === province ? "bg-black/5 font-medium" : ""}`
           }>
-                {province}              </button>
+                {province}        </button>
         ) :
-        <div className="px-4 py-2 text-sm opacity-50">              {t("public.filter.no_results", "No results found")}            </div>
-        }        </div>
+        <div className="px-4 py-2 text-sm opacity-50">          {t("public.filter.no_results", "No results found")}        </div>
+        }      </div>
       }      {isPublic && currentLabel !== defaultLabel &&
       <p className="mt-1 text-xs text-gray-400">{currentLabel}</p>
       }    </div>);

@@ -27,7 +27,7 @@ export const PhoneField: React.FC<PhoneFieldProps> = ({
   t("builder.phone.default_placeholder");
   return (
     <div className="space-y-2 max-w-full group">      <div className="flex gap-4">        {showCountryCode &&
-        <div className="w-[80px]">            <input
+        <div className="w-[80px]">          <input
             type="text"
             placeholder={t("builder.phone.country_code_placeholder")}
             readOnly

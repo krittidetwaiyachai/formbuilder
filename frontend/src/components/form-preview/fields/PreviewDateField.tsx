@@ -44,12 +44,12 @@ export const PreviewDateField: React.FC<PreviewFieldProps> = ({
   if (hidden) return null;
   const isRowLayout = labelAlignment === "LEFT" || labelAlignment === "RIGHT";
   const renderLabel = () =>
-  <div className={`${isRowLayout ? "min-w-[150px]" : "mb-2"}`}>      <PreviewLabel
+  <div className={`${isRowLayout ? "min-w-[150px]" : "mb-2"}`}>    <PreviewLabel
       field={field}
       questionNumber={questionNumber}
       isPublic={isPublic}
       htmlFor={fieldName} />
-      {subLabel && <p className="text-xs text-gray-500 mb-2">{subLabel}</p>}    </div>;
+      {subLabel && <p className="text-xs text-gray-500 mb-2">{subLabel}</p>}  </div>;
   const getPrimaryColor = () => {
     if (typeof window !== "undefined") {
       const rootStyle = getComputedStyle(document.body);
@@ -64,7 +64,7 @@ export const PreviewDateField: React.FC<PreviewFieldProps> = ({
         className={`mb-4 w-full ${isRowLayout ? "flex items-start gap-4" : ""}`}
         title={hoverText}>
         {renderLabel()}        <div className="relative w-full">          {!isPublic &&
-          <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none z-10">              <Calendar
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none z-10">            <Calendar
               className="h-4 w-4"
               style={{ color: "var(--text)", opacity: 0.6 }} />
             </div>
@@ -80,7 +80,7 @@ export const PreviewDateField: React.FC<PreviewFieldProps> = ({
               false
             }}
             render={({ field: { value, onChange } }) =>
-            <>                  <div
+            <>              <div
                 onClick={() => !readOnly && setIsDatePickerOpen(true)}
                 className={`w-full ${isPublic ? "px-4" : "pl-10 pr-4"} py-3 border rounded-xl text-sm shadow-sm transition-all hover:border-gray-300 cursor-pointer flex items-center ${readOnly ? "bg-gray-100 cursor-not-allowed" : "bg-[var(--input-bg)]"}`}
                 style={{
@@ -88,16 +88,16 @@ export const PreviewDateField: React.FC<PreviewFieldProps> = ({
                   color: "var(--text)"
                 }}>
                     {value ?
-                <span>                        {new Date(value).toLocaleDateString(
+                <span>                  {new Date(value).toLocaleDateString(
                     i18n.language === "th" ? "th-TH" : "en-US",
                     {
                       year: "numeric",
                       month: "long",
                       day: "numeric"
                     }
-                  )}                      </span> :
-                <span className="text-gray-400 opacity-70">                        {t("common.select_date", "Select date")}                      </span>
-                }                  </div>                  <MaterialDatePicker
+                  )}                </span> :
+                <span className="text-gray-400 opacity-70">                  {t("common.select_date", "Select date")}                </span>
+                }              </div>              <MaterialDatePicker
                 isOpen={isDatePickerOpen}
                 onClose={() => setIsDatePickerOpen(false)}
                 selectedDate={value ? new Date(value) : null}
@@ -128,7 +128,7 @@ export const PreviewDateField: React.FC<PreviewFieldProps> = ({
             }}
             className={`w-full ${isPublic ? "px-4" : "pl-10 pr-4"} py-3 border rounded-xl text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all hover:border-gray-300 ${readOnly ? "bg-gray-100 cursor-not-allowed" : ""}`} />
           }          {fieldError &&
-          <p className="mt-1 text-sm text-red-600">              {fieldError?.message as string}            </p>
+          <p className="mt-1 text-sm text-red-600">            {fieldError?.message as string}          </p>
           }        </div>      </div>);
   }
   if (field.type === FieldType.TIME) {
@@ -137,7 +137,7 @@ export const PreviewDateField: React.FC<PreviewFieldProps> = ({
         className={`mb-4 w-full ${isRowLayout ? "flex items-start gap-4" : ""}`}
         title={hoverText}>
         {renderLabel()}        <div className="relative w-full">          {!isPublic &&
-          <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none z-10">              <Clock
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none z-10">            <Clock
               className="h-4 w-4"
               style={{ color: "var(--text)", opacity: 0.6 }} />
             </div>
@@ -153,7 +153,7 @@ export const PreviewDateField: React.FC<PreviewFieldProps> = ({
               false
             }}
             render={({ field: { value, onChange } }) =>
-            <>                  <div
+            <>              <div
                 onClick={() => !readOnly && setIsTimePickerOpen(true)}
                 className={`w-full ${isPublic ? "px-4" : "pl-10 pr-4"} py-3 border rounded-xl text-sm shadow-sm transition-all hover:border-gray-300 cursor-pointer flex items-center ${readOnly ? "bg-gray-100 cursor-not-allowed" : "bg-[var(--input-bg)]"}`}
                 style={{
@@ -162,8 +162,8 @@ export const PreviewDateField: React.FC<PreviewFieldProps> = ({
                 }}>
                     {value ?
                 <span>{value}</span> :
-                <span className="text-gray-400 opacity-70">                        {t("common.select_time", "Select time")}                      </span>
-                }                  </div>                  <MaterialTimePicker
+                <span className="text-gray-400 opacity-70">                  {t("common.select_time", "Select time")}                </span>
+                }              </div>              <MaterialTimePicker
                 isOpen={isTimePickerOpen}
                 onClose={() => setIsTimePickerOpen(false)}
                 selectedTime={value}
@@ -191,7 +191,7 @@ export const PreviewDateField: React.FC<PreviewFieldProps> = ({
             }}
             className={`w-full ${isPublic ? "px-4" : "pl-10 pr-4"} py-3 border rounded-xl text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all hover:border-gray-300 ${readOnly ? "bg-gray-100 cursor-not-allowed" : ""}`} />
           }          {fieldError &&
-          <p className="mt-1 text-sm text-red-600">              {fieldError?.message as string}            </p>
+          <p className="mt-1 text-sm text-red-600">            {fieldError?.message as string}          </p>
           }        </div>      </div>);
   }
   return null;

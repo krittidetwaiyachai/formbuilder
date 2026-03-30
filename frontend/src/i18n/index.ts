@@ -17,6 +17,11 @@ use(initReactI18next).
 init({
   resources,
   fallbackLng: 'en',
+  load: 'languageOnly',
+  detection: {
+    order: ['localStorage', 'cookie', 'navigator'],
+    caches: ['localStorage', 'cookie']
+  },
   interpolation: {
     escapeValue: false
   }

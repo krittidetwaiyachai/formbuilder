@@ -77,12 +77,12 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({
   };
   return (
     <div className="space-y-4">      {}      <PropertiesTabs activeTab={activeTab} setActiveTab={setActiveTab} />      {activeTab === "general" &&
-      <div className="space-y-4">          {}          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.field_label")}            </label>            <input
+      <div className="space-y-4">        {}        <div>          <label className="block text-sm font-medium text-black mb-1">            {t("builder.properties.field_label")}          </label>          <input
             type="text"
             value={stripHtml(field.label)}
             onChange={(e) => handleUpdate({ label: e.target.value })}
             className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text" />
-          </div>          {}          <div>            <label className="block text-sm font-medium text-black mb-2">              {t("builder.properties.label_alignment")}            </label>            <div className="flex gap-2">              {(["LEFT", "CENTER", "TOP"] as const).map((align) =>
+          </div>        {}        <div>          <label className="block text-sm font-medium text-black mb-2">            {t("builder.properties.label_alignment")}          </label>          <div className="flex gap-2">            {(["LEFT", "CENTER", "TOP"] as const).map((align) =>
             <button
               key={align}
               onClick={() => handleOptionUpdate("labelAlignment", align)}
@@ -96,18 +96,18 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({
               t("builder.properties.left") :
               align === "CENTER" ?
               t("builder.properties.center") :
-              t("builder.properties.top")}                </button>
-            )}            </div>          </div>          {}          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.required")}            </label>            <label className="relative inline-flex items-center cursor-pointer">              <input
+              t("builder.properties.top")}            </button>
+            )}          </div>        </div>        {}        <div>          <label className="block text-sm font-medium text-black mb-1">            {t("builder.properties.required")}          </label>          <label className="relative inline-flex items-center cursor-pointer">            <input
               type="checkbox"
               checked={field.required}
               onChange={(e) => handleUpdate({ required: e.target.checked })}
               className="sr-only peer" />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>            </label>            <p className="mt-1 text-xs text-gray-500">              {t("builder.properties.required_desc")}            </p>          </div>          {}          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.sublabel")}            </label>            <input
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>          </label>          <p className="mt-1 text-xs text-gray-500">            {t("builder.properties.required_desc")}          </p>        </div>        {}        <div>          <label className="block text-sm font-medium text-black mb-1">            {t("builder.properties.sublabel")}          </label>          <input
             type="text"
             value={options.subLabel || ""}
             onChange={(e) => handleOptionUpdate("subLabel", e.target.value)}
             className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text" />
-            <p className="mt-1 text-xs text-gray-500">              {t("builder.properties.sublabel_desc")}            </p>          </div>          {}          <button
+            <p className="mt-1 text-xs text-gray-500">            {t("builder.properties.sublabel_desc")}          </p>        </div>        {}        <button
           type="button"
           onClick={() =>
           duplicatesField({
@@ -122,9 +122,9 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({
           })
           }
           className="w-full mt-4 px-3 py-2 text-sm font-medium text-black bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors flex items-center justify-center gap-2">
-            <Copy className="h-4 w-4" />            {t("builder.properties.duplicate")}          </button>        </div>
+            <Copy className="h-4 w-4" />          {t("builder.properties.duplicate")}        </button>      </div>
       }      {activeTab === "options" &&
-      <div className="space-y-6">          {}          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.width")}            </label>            <label className="relative inline-flex items-center cursor-pointer">              <input
+      <div className="space-y-6">        {}        <div>          <label className="block text-sm font-medium text-black mb-1">            {t("builder.properties.width")}          </label>          <label className="relative inline-flex items-center cursor-pointer">            <input
               type="checkbox"
               checked={options.width === "FIXED"}
               onChange={(e) =>
@@ -134,8 +134,8 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({
               )
               }
               className="sr-only peer" />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>            </label>            {options.width === "FIXED" &&
-          <div className="mt-2">                <input
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>          </label>          {options.width === "FIXED" &&
+          <div className="mt-2">            <input
               type="number"
               value={options.customWidth || 300}
               onChange={(e) =>
@@ -144,7 +144,7 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({
               className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
               placeholder={t("builder.properties.width") + " (px)"} />
               </div>
-          }            <p className="mt-1 text-xs text-gray-500">              {t("builder.properties.width_desc")}            </p>          </div>          {}          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.options")}            </label>            <div className="border border-gray-400 rounded-md overflow-hidden bg-white">              <textarea
+          }          <p className="mt-1 text-xs text-gray-500">            {t("builder.properties.width_desc")}          </p>        </div>        {}        <div>          <label className="block text-sm font-medium text-black mb-1">            {t("builder.properties.options")}          </label>          <div className="border border-gray-400 rounded-md overflow-hidden bg-white">            <textarea
               value={optionsList.
               map((opt: CheckboxOption) =>
               opt.label === opt.value ?
@@ -156,7 +156,7 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({
               rows={8}
               className="w-full px-3 py-2 focus:outline-none resize-y text-sm"
               placeholder="Option 1&#10;Option 2&#10;Option 3: value3" />
-            </div>            <p className="mt-1 text-xs text-gray-500">              {t("builder.properties.options_desc")}            </p>          </div>          {}          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.predefined_options")}            </label>            <Select
+            </div>          <p className="mt-1 text-xs text-gray-500">            {t("builder.properties.options_desc")}          </p>        </div>        {}        <div>          <label className="block text-sm font-medium text-black mb-1">            {t("builder.properties.predefined_options")}          </label>          <Select
             onValueChange={(value) => {
               if (value === "none") return;
               const predefinedLists: Record<string, string[]> = {
@@ -350,49 +350,49 @@ export const DropdownProperties: React.FC<DropdownPropertiesProps> = ({
                 });
               }
             }}>
-              <SelectTrigger className="w-full bg-white border-gray-400">                <SelectValue
+              <SelectTrigger className="w-full bg-white border-gray-400">              <SelectValue
                 placeholder={t("builder.properties.select_predefined")} />
-              </SelectTrigger>              <SelectContent>                <SelectGroup>                  <SelectLabel>Thailand</SelectLabel>                  <SelectItem value="thai_provinces">                    Thai Provinces (77)                  </SelectItem>                  <SelectItem value="days_thai">Days of Week (Thai)</SelectItem>                  <SelectItem value="months_thai">Months (Thai)</SelectItem>                  <SelectItem value="yes_no_thai">Yes/No (Thai)</SelectItem>                  <SelectItem value="gender_thai">Gender (Thai)</SelectItem>                  <SelectItem value="education_thai">                    Education Level (Thai)                  </SelectItem>                  <SelectItem value="satisfaction_thai">                    Satisfaction (Thai)                  </SelectItem>                </SelectGroup>                <SelectGroup>                  <SelectLabel>English</SelectLabel>                  <SelectItem value="days_of_week">Days of Week</SelectItem>                  <SelectItem value="months">Months</SelectItem>                  <SelectItem value="yes_no">Yes/No</SelectItem>                  <SelectItem value="gender">Gender</SelectItem>                  <SelectItem value="education">Education Level</SelectItem>                  <SelectItem value="satisfaction">Satisfaction</SelectItem>                </SelectGroup>                <SelectGroup>                  <SelectLabel>Numbers</SelectLabel>                  <SelectItem value="age_ranges">Age Ranges</SelectItem>                  <SelectItem value="rating_1_5">Rating 1-5</SelectItem>                  <SelectItem value="rating_1_10">Rating 1-10</SelectItem>                </SelectGroup>              </SelectContent>            </Select>            <p className="mt-1 text-xs text-gray-500">              {t("builder.properties.predefined_desc")}            </p>          </div>          {}          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.default_value")}            </label>            <Select
+              </SelectTrigger>            <SelectContent>              <SelectGroup>                <SelectLabel>Thailand</SelectLabel>                <SelectItem value="thai_provinces">                    Thai Provinces (77)                </SelectItem>                <SelectItem value="days_thai">Days of Week (Thai)</SelectItem>                <SelectItem value="months_thai">Months (Thai)</SelectItem>                <SelectItem value="yes_no_thai">Yes/No (Thai)</SelectItem>                <SelectItem value="gender_thai">Gender (Thai)</SelectItem>                <SelectItem value="education_thai">                    Education Level (Thai)                </SelectItem>                <SelectItem value="satisfaction_thai">                    Satisfaction (Thai)                </SelectItem>              </SelectGroup>              <SelectGroup>                <SelectLabel>English</SelectLabel>                <SelectItem value="days_of_week">Days of Week</SelectItem>                <SelectItem value="months">Months</SelectItem>                <SelectItem value="yes_no">Yes/No</SelectItem>                <SelectItem value="gender">Gender</SelectItem>                <SelectItem value="education">Education Level</SelectItem>                <SelectItem value="satisfaction">Satisfaction</SelectItem>              </SelectGroup>              <SelectGroup>                <SelectLabel>Numbers</SelectLabel>                <SelectItem value="age_ranges">Age Ranges</SelectItem>                <SelectItem value="rating_1_5">Rating 1-5</SelectItem>                <SelectItem value="rating_1_10">Rating 1-10</SelectItem>              </SelectGroup>            </SelectContent>          </Select>          <p className="mt-1 text-xs text-gray-500">            {t("builder.properties.predefined_desc")}          </p>        </div>        {}        <div>          <label className="block text-sm font-medium text-black mb-1">            {t("builder.properties.default_value")}          </label>          <Select
             value={options.defaultValue || ""}
             onValueChange={(val) => handleOptionUpdate("defaultValue", val)}>
-              <SelectTrigger className="w-full bg-white border-gray-400">                <SelectValue
+              <SelectTrigger className="w-full bg-white border-gray-400">              <SelectValue
                 placeholder={t("builder.properties.select_default")} />
-              </SelectTrigger>              <SelectContent>                <SelectItem value="_no_default_">                  {t("builder.properties.no_default")}                </SelectItem>                {optionsList.map((opt: CheckboxOption, idx: number) =>
-              <SelectItem key={idx} value={opt.value}>                    {opt.label || opt.value}                  </SelectItem>
-              )}              </SelectContent>            </Select>            <p className="mt-1 text-xs text-gray-500">              {t("builder.properties.default_value_select_desc")}            </p>          </div>        </div>
+              </SelectTrigger>            <SelectContent>              <SelectItem value="_no_default_">                {t("builder.properties.no_default")}              </SelectItem>              {optionsList.map((opt: CheckboxOption, idx: number) =>
+              <SelectItem key={idx} value={opt.value}>                {opt.label || opt.value}              </SelectItem>
+              )}            </SelectContent>          </Select>          <p className="mt-1 text-xs text-gray-500">            {t("builder.properties.default_value_select_desc")}          </p>        </div>      </div>
       }      {activeTab === "advanced" &&
-      <div className="space-y-6">          {}          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.multiple_selections")}            </label>            <label className="relative inline-flex items-center cursor-pointer">              <input
+      <div className="space-y-6">        {}        <div>          <label className="block text-sm font-medium text-black mb-1">            {t("builder.properties.multiple_selections")}          </label>          <label className="relative inline-flex items-center cursor-pointer">            <input
               type="checkbox"
               checked={options.multiple || false}
               onChange={(e) =>
               handleOptionUpdate("multiple", e.target.checked)
               }
               className="sr-only peer" />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>            </label>            <p className="mt-1 text-xs text-gray-500">              {t("builder.properties.multiple_selections_desc")}            </p>          </div>          {}          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.shuffle_options")}            </label>            <label className="relative inline-flex items-center cursor-pointer">              <input
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>          </label>          <p className="mt-1 text-xs text-gray-500">            {t("builder.properties.multiple_selections_desc")}          </p>        </div>        {}        <div>          <label className="block text-sm font-medium text-black mb-1">            {t("builder.properties.shuffle_options")}          </label>          <label className="relative inline-flex items-center cursor-pointer">            <input
               type="checkbox"
               checked={options.shuffle || false}
               onChange={(e) =>
               handleOptionUpdate("shuffle", e.target.checked)
               }
               className="sr-only peer" />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>            </label>            <p className="mt-1 text-xs text-gray-500">              {t("builder.properties.shuffle_options_desc")}            </p>          </div>          {}          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.read_only")}            </label>            <label className="relative inline-flex items-center cursor-pointer">              <input
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>          </label>          <p className="mt-1 text-xs text-gray-500">            {t("builder.properties.shuffle_options_desc")}          </p>        </div>        {}        <div>          <label className="block text-sm font-medium text-black mb-1">            {t("builder.properties.read_only")}          </label>          <label className="relative inline-flex items-center cursor-pointer">            <input
               type="checkbox"
               checked={options.readOnly || false}
               onChange={(e) =>
               handleOptionUpdate("readOnly", e.target.checked)
               }
               className="sr-only peer" />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>            </label>            <p className="mt-1 text-xs text-gray-500">              {t("builder.properties.read_only_desc")}            </p>          </div>          {}          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.shrink")}            </label>            <label className="relative inline-flex items-center cursor-pointer">              <input
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>          </label>          <p className="mt-1 text-xs text-gray-500">            {t("builder.properties.read_only_desc")}          </p>        </div>        {}        <div>          <label className="block text-sm font-medium text-black mb-1">            {t("builder.properties.shrink")}          </label>          <label className="relative inline-flex items-center cursor-pointer">            <input
               type="checkbox"
               checked={field.shrink || false}
               onChange={(e) => handleUpdate({ shrink: e.target.checked })}
               className="sr-only peer" />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>            </label>            <p className="mt-1 text-xs text-gray-500">              {t("builder.properties.shrink_desc")}            </p>          </div>          {}          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.hide_field")}            </label>            <label className="relative inline-flex items-center cursor-pointer">              <input
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>          </label>          <p className="mt-1 text-xs text-gray-500">            {t("builder.properties.shrink_desc")}          </p>        </div>        {}        <div>          <label className="block text-sm font-medium text-black mb-1">            {t("builder.properties.hide_field")}          </label>          <label className="relative inline-flex items-center cursor-pointer">            <input
               type="checkbox"
               checked={options.hidden || false}
               onChange={(e) => handleOptionUpdate("hidden", e.target.checked)}
               className="sr-only peer" />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>            </label>            <p className="mt-1 text-xs text-gray-500">              {t("builder.properties.hide_field_desc") ||
-            "Hide this field from the form"}            </p>          </div>        </div>
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>          </label>          <p className="mt-1 text-xs text-gray-500">            {t("builder.properties.hide_field_desc") ||
+            "Hide this field from the form"}          </p>        </div>      </div>
       }    </div>);
 };

@@ -115,7 +115,7 @@ export const PreviewSelectField: React.FC<PreviewFieldProps> = ({
               isPublic={isPublic}
               htmlFor={fieldName} />
             {subLabel && subLabel !== "Sublabel" &&
-            <p className="mt-1 text-sm text-gray-500 font-normal">                {subLabel}              </p>
+            <p className="mt-1 text-sm text-gray-500 font-normal">              {subLabel}            </p>
             }          </div>          <div className="flex-1 min-w-0">            <div
               className="relative"
               style={
@@ -145,9 +145,9 @@ export const PreviewSelectField: React.FC<PreviewFieldProps> = ({
                     t("public.select.placeholder", "Select an option...")
                     } />
                 </SelectTrigger>                <SelectContent>                  {displayOptions.map((opt, index: number) =>
-                  <SelectItem key={index} value={opt.value}>                      {opt.label || opt.value}                    </SelectItem>
+                  <SelectItem key={index} value={opt.value}>                    {opt.label || opt.value}                  </SelectItem>
                   )}                </SelectContent>              </Select>            </div>            {fieldError &&
-            <p className="mt-1 text-sm text-red-600">                {fieldError.message as string}              </p>
+            <p className="mt-1 text-sm text-red-600">              {fieldError.message as string}            </p>
             }          </div>        </div>);
     }
     const selectClass = isPublic ?
@@ -181,7 +181,7 @@ export const PreviewSelectField: React.FC<PreviewFieldProps> = ({
             {}
             }>
             {!showAsList &&
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">                <ChevronDown
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">              <ChevronDown
                 className={`h-5 w-5 ${isPublic ? "" : "text-gray-500"}`}
                 style={isPublic ? { color: "var(--text)", opacity: 0.5 } : {}} />
               </div>
@@ -203,11 +203,11 @@ export const PreviewSelectField: React.FC<PreviewFieldProps> = ({
                 ...publicSelectStyle
               }}>
               {!multiple && !defaultValue &&
-              <option value="">                  {t("public.select.default_option", "Select an option")}                </option>
+              <option value="">                {t("public.select.default_option", "Select an option")}              </option>
               }              {displayOptions.map((opt, index: number) =>
-              <option key={index} value={opt.value}>                  {opt.label || opt.value}                </option>
+              <option key={index} value={opt.value}>                {opt.label || opt.value}              </option>
               )}            </select>          </div>          {fieldError &&
-          <p className="mt-1 text-sm text-red-600">              {fieldError.message as string}            </p>
+          <p className="mt-1 text-sm text-red-600">            {fieldError.message as string}          </p>
           }        </div>      </div>);
   }
   if (field.type === FieldType.RADIO) {
@@ -234,7 +234,7 @@ export const PreviewSelectField: React.FC<PreviewFieldProps> = ({
             <label
               key={index}
               className={`flex items-center gap-3 cursor-pointer group ${readOnly ? "opacity-60 pointer-events-none" : ""}`}>
-                <div className="relative shrink-0">                  <input
+                <div className="relative shrink-0">                <input
                   type="radio"
                   id={`${fieldName}_${index}`}
                   value={opt.value}
@@ -266,16 +266,16 @@ export const PreviewSelectField: React.FC<PreviewFieldProps> = ({
                     "none"
                   }}
                   className={`w-5 h-5 border-2 appearance-none rounded-full cursor-pointer transition-all duration-200`} />
-                </div>                <span
+                </div>              <span
                 className={`font-medium cursor-pointer ${isPublic && shrink ? "text-sm" : "text-sm"}`}
                 style={
                 isPublic ? { color: "var(--text)" } : { color: "#374151" }
                 }>
-                  {opt.label || opt.value}                </span>              </label>
+                  {opt.label || opt.value}              </span>            </label>
             )}            {otherOption &&
             <label
               className={`flex items-center gap-3 cursor-pointer group ${readOnly ? "opacity-60 pointer-events-none" : ""} ${spreadToColumns ? "col-span-full" : ""}`}>
-                <div className="relative shrink-0">                  <input
+                <div className="relative shrink-0">                <input
                   type="radio"
                   value="other"
                   {...register(fieldName, { required: field.required })}
@@ -299,12 +299,12 @@ export const PreviewSelectField: React.FC<PreviewFieldProps> = ({
                     "none"
                   }}
                   className={`w-5 h-5 border-2 appearance-none rounded-full cursor-pointer transition-all duration-200`} />
-                </div>                <span
+                </div>              <span
                 className="text-sm font-medium cursor-pointer whitespace-nowrap"
                 style={
                 isPublic ? { color: "var(--text)" } : { color: "#374151" }
                 }>
-                  {t("public.select.other", "Other:")}                </span>                <input
+                  {t("public.select.other", "Other:")}              </span>              <input
                 type="text"
                 className="flex-1 border-b border-gray-300 focus:border-black outline-none text-sm py-1 bg-transparent"
                 placeholder={t(
@@ -315,7 +315,7 @@ export const PreviewSelectField: React.FC<PreviewFieldProps> = ({
                 onClick={(e) => e.stopPropagation()} />
               </label>
             }          </div>          {fieldError &&
-          <p className="mt-1 text-sm text-red-600">              {fieldError.message as string}            </p>
+          <p className="mt-1 text-sm text-red-600">            {fieldError.message as string}          </p>
           }        </div>      </div>);
   }
   if (field.type === FieldType.CHECKBOX) {
@@ -349,7 +349,7 @@ export const PreviewSelectField: React.FC<PreviewFieldProps> = ({
             <label
               key={index}
               className={`flex items-center gap-3 cursor-pointer group ${readOnly ? "opacity-60 pointer-events-none" : ""}`}>
-                <div className="relative shrink-0">                  <input
+                <div className="relative shrink-0">                <input
                   type="checkbox"
                   id={`${fieldName}_${index}`}
                   value={opt.value}
@@ -405,16 +405,16 @@ export const PreviewSelectField: React.FC<PreviewFieldProps> = ({
                     strokeLinejoin="round"
                     d="M5 13l4 4L19 7" />
                     </svg>
-                }                </div>                <span
+                }              </div>              <span
                 className={`font-medium cursor-pointer ${isPublic && shrink ? "text-sm" : "text-sm"}`}
                 style={
                 isPublic ? { color: "var(--text)" } : { color: "#374151" }
                 }>
-                  {opt.label || opt.value}                </span>              </label>
+                  {opt.label || opt.value}              </span>            </label>
             )}            {otherOption &&
             <label
               className={`flex items-center gap-3 cursor-pointer group ${readOnly ? "opacity-60 pointer-events-none" : ""} ${spreadToColumns ? "col-span-full" : ""}`}>
-                <div className="relative shrink-0">                  <input
+                <div className="relative shrink-0">                <input
                   type="checkbox"
                   value="other"
                   {...register(fieldName, {
@@ -447,12 +447,12 @@ export const PreviewSelectField: React.FC<PreviewFieldProps> = ({
                     strokeLinejoin="round"
                     d="M5 13l4 4L19 7" />
                     </svg>
-                }                </div>                <span
+                }              </div>              <span
                 className="text-sm font-medium cursor-pointer whitespace-nowrap"
                 style={
                 isPublic ? { color: "var(--text)" } : { color: "#374151" }
                 }>
-                  {t("public.select.other", "Other:")}                </span>                <input
+                  {t("public.select.other", "Other:")}              </span>              <input
                 type="text"
                 className="flex-1 border-b border-gray-300 focus:border-black outline-none text-sm py-1 bg-transparent"
                 placeholder={t(
@@ -463,7 +463,7 @@ export const PreviewSelectField: React.FC<PreviewFieldProps> = ({
                 onClick={(e) => e.stopPropagation()} />
               </label>
             }          </div>          {fieldError &&
-          <p className="mt-1 text-sm text-red-600">              {fieldError.message as string}            </p>
+          <p className="mt-1 text-sm text-red-600">            {fieldError.message as string}          </p>
           }        </div>      </div>);
   }
   return null;

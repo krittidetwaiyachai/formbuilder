@@ -14,8 +14,8 @@ import {
   GraduationCap,
   Star,
   Lock,
-  User,
-} from "lucide-react";
+  User } from
+"lucide-react";
 import { FieldType } from "@/types";
 import type { Field } from "@/types";
 import Loader from "@/components/common/Loader";
@@ -28,7 +28,7 @@ const IconMap: Record<string, React.ElementType> = {
   Share2,
   GraduationCap,
   Star,
-  Lock,
+  Lock
 };
 interface BundleField {
   label?: string;
@@ -46,7 +46,7 @@ interface Bundle {
     bg?: string;
   };
 }
-export const TemplatePopup = ({ onClose }: { onClose: () => void }) => {
+export const TemplatePopup = ({ onClose }: {onClose: () => void;}) => {
   if (typeof document === "undefined") return null;
   const { t } = useTranslation();
   const { addBundle } = useFormStore();
@@ -56,7 +56,7 @@ export const TemplatePopup = ({ onClose }: { onClose: () => void }) => {
     const fetchBundles = async () => {
       try {
         const response = await api.get("/bundles", {
-          params: { isActive: true },
+          params: { isActive: true }
         });
         setBundles(response.data);
       } catch (error) {
@@ -71,8 +71,7 @@ export const TemplatePopup = ({ onClose }: { onClose: () => void }) => {
     const mappedBundle = {
       title: bundle.name,
       fields: bundle.fields as Array<
-        Pick<Field, "type" | "label"> & Partial<Field>
-      >,
+        Pick<Field, "type" | "label"> & Partial<Field>>
     };
     addBundle(mappedBundle);
     onClose();
@@ -91,31 +90,28 @@ export const TemplatePopup = ({ onClose }: { onClose: () => void }) => {
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-400 hover:text-gray-600"
-          >
+            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-400 hover:text-gray-600">
             <span className="text-xl leading-none">&times;</span>
           </button>
         </div>
         <div className="p-6 overflow-y-auto flex-1">
-          {loading ? (
-            <div className="flex justify-center items-center h-48">
+          {loading ?
+          <div className="flex justify-center items-center h-48">
               <Loader size={32} />
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            </div> :
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {bundles.map((bundle) => {
-                const IconComponent =
-                  bundle.options?.icon && IconMap[bundle.options.icon]
-                    ? IconMap[bundle.options.icon]
-                    : Layers;
-                const bundleColor = bundle.options?.color || "text-gray-600";
-                const bundleBg = bundle.options?.bg || "bg-gray-50";
-                return (
-                  <button
-                    key={bundle.id}
-                    onClick={() => handleAddBundle(bundle)}
-                    className="group relative p-5 text-left bg-white border border-gray-200 rounded-xl hover:border-indigo-400 hover:shadow-lg transition-all duration-200"
-                  >
+              const IconComponent =
+              bundle.options?.icon && IconMap[bundle.options.icon] ?
+              IconMap[bundle.options.icon] :
+              Layers;
+              const bundleColor = bundle.options?.color || "text-gray-600";
+              const bundleBg = bundle.options?.bg || "bg-gray-50";
+              return (
+                <button
+                  key={bundle.id}
+                  onClick={() => handleAddBundle(bundle)}
+                  className="group relative p-5 text-left bg-white border border-gray-200 rounded-xl hover:border-indigo-400 hover:shadow-lg transition-all duration-200">
                     <h4 className="text-base font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors">
                       {bundle.name}
                     </h4>
@@ -124,48 +120,44 @@ export const TemplatePopup = ({ onClose }: { onClose: () => void }) => {
                     </p>
                     <div className="hidden group-hover:block mt-2">
                       <div className="flex flex-wrap gap-1">
-                        {bundle.fields?.slice(0, 4).map((f, i) => (
-                          <span
-                            key={i}
-                            className="px-1.5 py-0.5 bg-indigo-50 text-indigo-600 rounded text-[9px] font-medium"
-                          >
+                        {bundle.fields?.slice(0, 4).map((f, i) =>
+                      <span
+                        key={i}
+                        className="px-1.5 py-0.5 bg-indigo-50 text-indigo-600 rounded text-[9px] font-medium">
                             {f.label ? f.label.replace(/<[^>]*>/g, "") : ""}
                           </span>
-                        ))}
-                        {bundle.fields?.length > 4 && (
-                          <span className="px-1.5 py-0.5 text-[9px] text-gray-400">
+                      )}
+                        {bundle.fields?.length > 4 &&
+                      <span className="px-1.5 py-0.5 text-[9px] text-gray-400">
                             {t("builder.bundles.more_count", {
-                              count: bundle.fields.length - 4,
-                            })}
+                          count: bundle.fields.length - 4
+                        })}
                           </span>
-                        )}
+                      }
                       </div>
                     </div>
                     <div className="mt-3 flex items-center gap-2 group-hover:hidden">
                       <span className="px-2 py-0.5 bg-gray-100 rounded text-[10px] font-medium text-gray-500">
                         {t("builder.group.fields_count", {
-                          count: bundle.fields?.length || 0,
-                        })}
+                        count: bundle.fields?.length || 0
+                      })}
                       </span>
                     </div>
                     <div className="absolute top-5 right-5 opacity-0 group-hover:opacity-100 transition-opacity">
                       <div className="w-6 h-6 rounded-full bg-indigo-500 flex items-center justify-center">
                         <Plus
-                          className="w-3.5 h-3.5 text-white"
-                          strokeWidth={3}
-                        />
+                        className="w-3.5 h-3.5 text-white"
+                        strokeWidth={3} />
                       </div>
                     </div>
                     <div
-                      className={`absolute top-5 right-5 w-8 h-8 rounded-lg ${bundleBg} flex items-center justify-center group-hover:opacity-0 transition-opacity`}
-                    >
+                    className={`absolute top-5 right-5 w-8 h-8 rounded-lg ${bundleBg} flex items-center justify-center group-hover:opacity-0 transition-opacity`}>
                       <IconComponent className={`w-4 h-4 ${bundleColor}`} />
                     </div>
-                  </button>
-                );
-              })}
+                  </button>);
+            })}
             </div>
-          )}
+          }
         </div>
         <div className="px-8 py-4 border-t border-gray-100 bg-gray-50/50">
           <p className="text-xs text-gray-400 text-center">
@@ -174,6 +166,6 @@ export const TemplatePopup = ({ onClose }: { onClose: () => void }) => {
         </div>
       </div>
     </div>,
-    document.body,
+    document.body
   );
 };

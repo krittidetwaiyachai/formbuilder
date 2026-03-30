@@ -21,6 +21,6 @@ export default function EmptyState({
       <button
         onClick={onCreateForm}
         className="mt-6 text-black font-semibold hover:underline">
-          {t("dashboard.empty.create_first")} &rarr;        </button>
+          {t("dashboard.empty.create_first")} &rarr;      </button>
       }    </motion.div>);
 }

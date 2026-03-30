@@ -3,19 +3,18 @@ import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { Public } from './decorators/public.decorator';
 import { Throttle } from '@nestjs/throttler';
-
 @Throttle({ default: { limit: 10, ttl: 60000 } })
-@Controller('auth')
-export class AuthController {
-  constructor(private readonly authService: AuthService) { }
+@Controller('auth')export class
+AuthController {
+  constructor(private readonly authService: AuthService) {}
   @Public()
   @Post('login')
-  async login(@Body() loginDto: LoginDto) {
+  async login(@Body()loginDto: LoginDto) {
     return this.authService.login(loginDto);
   }
   @Public()
   @Post('google/login')
-  async googleLogin(@Body('token') token: string) {
+  async googleLogin(@Body('token')token: string) {
     return this.authService.loginWithGoogle(token);
   }
 }

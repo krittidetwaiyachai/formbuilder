@@ -156,11 +156,11 @@ export default function LogicCanvas() {
                 stroke="currentColor"
                 strokeWidth="2">
                 <path d="M6 3v12M18 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM18 9v3a3 3 0 0 1-3 3H9" />              </svg>            </div>            <div>              <h2 className="text-xl font-bold text-gray-900">                {t("builder.logic.title")}              </h2>              <p className="text-sm text-gray-500">                {t("builder.logic.subtitle")}              </p>            </div>          </div>          <Button onClick={() => addLogicRule()} className="gap-2">            <Plus className="w-4 h-4" />            {t("builder.logic.add_rule")}          </Button>        </div>        {logicRules.length === 0 &&
-        <>            <div className="text-center py-16 bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl mb-6">              <Plus className="w-12 h-12 text-gray-300 mx-auto mb-4" />              <p className="text-gray-500 mb-4">                {t("builder.logic.no_rules_title")}              </p>              <Button
+        <>          <div className="text-center py-16 bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl mb-6">            <Plus className="w-12 h-12 text-gray-300 mx-auto mb-4" />            <p className="text-gray-500 mb-4">              {t("builder.logic.no_rules_title")}            </p>            <Button
               onClick={() => addLogicRule()}
               variant="outline"
               className="gap-2">
-                <Plus className="w-4 h-4" />                {t("builder.logic.create_first")}              </Button>            </div>            <div className="bg-blue-50 border border-blue-100 p-5 rounded-xl text-sm text-blue-700 space-y-2">              <p className="font-semibold">{t("builder.logic.how_it_works")}</p>              <ul className="list-disc pl-5 space-y-1">                <li>                  <strong>{t("builder.logic.how_show").split(":")[0]}:</strong>                  {t("builder.logic.how_show").split(":")[1]}                </li>                <li>                  <strong>{t("builder.logic.how_hide").split(":")[0]}:</strong>                  {t("builder.logic.how_hide").split(":")[1]}                </li>                <li>                  <strong>{t("builder.logic.how_and").split(":")[0]}:</strong>                  {t("builder.logic.how_and").split(":")[1]}                </li>                <li>                  <strong>{t("builder.logic.how_or").split(":")[0]}:</strong>                  {t("builder.logic.how_or").split(":")[1]}                </li>              </ul>            </div>          </>
+                <Plus className="w-4 h-4" />              {t("builder.logic.create_first")}            </Button>          </div>          <div className="bg-blue-50 border border-blue-100 p-5 rounded-xl text-sm text-blue-700 space-y-2">            <p className="font-semibold">{t("builder.logic.how_it_works")}</p>            <ul className="list-disc pl-5 space-y-1">              <li>                <strong>{t("builder.logic.how_show").split(":")[0]}:</strong>                {t("builder.logic.how_show").split(":")[1]}              </li>              <li>                <strong>{t("builder.logic.how_hide").split(":")[0]}:</strong>                {t("builder.logic.how_hide").split(":")[1]}              </li>              <li>                <strong>{t("builder.logic.how_and").split(":")[0]}:</strong>                {t("builder.logic.how_and").split(":")[1]}              </li>              <li>                <strong>{t("builder.logic.how_or").split(":")[0]}:</strong>                {t("builder.logic.how_or").split(":")[1]}              </li>            </ul>          </div>        </>
         }        {logicRules.map((rule) => {
           const isEditing = editingRuleId === rule.id;
           return (
@@ -173,7 +173,7 @@ export default function LogicCanvas() {
               "border-gray-200"}`
               }>
               {}              <div className="flex items-center justify-between mb-6">                <div className="flex items-center gap-3">                  {isEditing ?
-                  <div className="flex items-center gap-2">                      <Input
+                  <div className="flex items-center gap-2">                    <Input
                       value={editRuleName}
                       onChange={(e) => setEditRuleName(e.target.value)}
                       className="h-8 w-48 text-lg font-semibold"
@@ -193,20 +193,20 @@ export default function LogicCanvas() {
                         setEditingRuleId(null);
                       }}
                       className="p-1 text-green-600 hover:bg-green-50 rounded">
-                        <Check className="w-4 h-4" />                      </button>                      <button
+                        <Check className="w-4 h-4" />                    </button>                    <button
                       onMouseDown={(e) => {
                         e.preventDefault();
                         setEditingRuleId(null);
                       }}
                       className="p-1 text-red-500 hover:bg-red-50 rounded">
-                        <X className="w-4 h-4" />                      </button>                    </div> :
+                        <X className="w-4 h-4" />                    </button>                  </div> :
                   <div
                     className="flex items-center gap-2 cursor-text"
                     onClick={() => {
                       setEditRuleName(rule.name);
                       setEditingRuleId(rule.id);
                     }}>
-                      <span className="text-lg font-semibold text-gray-900 hover:text-purple-600 transition-colors">                        {rule.name}                      </span>                      <Edit2 className="w-4 h-4 text-gray-400 hover:text-purple-600 cursor-pointer transition-colors" />                    </div>
+                      <span className="text-lg font-semibold text-gray-900 hover:text-purple-600 transition-colors">                      {rule.name}                    </span>                    <Edit2 className="w-4 h-4 text-gray-400 hover:text-purple-600 cursor-pointer transition-colors" />                  </div>
                   }                </div>                <div className="flex items-center gap-2">                  {}                  <div className="flex bg-gray-100 rounded-lg p-1">                    <button
                       onClick={() =>
                       updateLogicRule(rule.id, { logicType: "and" })
@@ -230,16 +230,16 @@ export default function LogicCanvas() {
                     className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                     title={t("builder.logic.delete_condition")}>
                     <Trash2 className="w-5 h-5" />                  </button>                </div>              </div>              {}              <div className="space-y-4">                {rule.conditions.map((condition) =>
-                <div key={condition.id} className="relative">                    {}                    <div className="flex items-start gap-4 mb-4">                      <div className="flex flex-col items-center relative -mt-1.5">                        <span className="text-purple-600 text-sm font-medium mb-1">                          {t("builder.logic.if")}                        </span>                        <div className="absolute top-[28px] left-1/2 ml-[-2px] w-6 h-10 border-l-[4px] border-b-[4px] border-purple-400 rounded-bl-2xl" />                        <div className="w-2.5 h-2.5 rounded-full bg-purple-500 ring-4 ring-purple-100" />                      </div>                      <div className="flex-1 space-y-3">                        <div className="flex items-center gap-2">                          <Select
+                <div key={condition.id} className="relative">                  {}                  <div className="flex items-start gap-4 mb-4">                    <div className="flex flex-col items-center relative -mt-1.5">                      <span className="text-purple-600 text-sm font-medium mb-1">                        {t("builder.logic.if")}                      </span>                      <div className="absolute top-[28px] left-1/2 ml-[-2px] w-6 h-10 border-l-[4px] border-b-[4px] border-purple-400 rounded-bl-2xl" />                      <div className="w-2.5 h-2.5 rounded-full bg-purple-500 ring-4 ring-purple-100" />                    </div>                    <div className="flex-1 space-y-3">                      <div className="flex items-center gap-2">                        <Select
                           value={condition.fieldId}
                           onValueChange={(value) =>
                           updateRuleCondition(rule.id, condition.id, {
                             fieldId: value
                           })
                           }>
-                            <SelectTrigger className="flex-1 bg-white border-gray-200">                              <SelectValue
+                            <SelectTrigger className="flex-1 bg-white border-gray-200">                            <SelectValue
                               placeholder={t("builder.logic.select_field")} />
-                            </SelectTrigger>                            <SelectContent>                              {availableFields.
+                            </SelectTrigger>                          <SelectContent>                            {availableFields.
                             filter((f) => {
                               const actionTargetIds = rule.actions.map(
                                 (a) => a.fieldId
@@ -247,22 +247,22 @@ export default function LogicCanvas() {
                               return !actionTargetIds.includes(f.id);
                             }).
                             map((f) =>
-                            <SelectItem key={f.id} value={f.id}>                                    {stripHtml(f.label || f.type)}                                  </SelectItem>
-                            )}                            </SelectContent>                          </Select>                          {rule.conditions.length > 1 &&
+                            <SelectItem key={f.id} value={f.id}>                              {stripHtml(f.label || f.type)}                            </SelectItem>
+                            )}                          </SelectContent>                        </Select>                        {rule.conditions.length > 1 &&
                         <button
                           onClick={() =>
                           removeConditionFromRule(rule.id, condition.id)
                           }
                           className="p-2 text-gray-400 hover:text-red-500 transition-colors">
-                              <Trash2 className="w-4 h-4" />                            </button>
-                        }                        </div>                        <div className="flex gap-2 pl-1">                          <Select
+                              <Trash2 className="w-4 h-4" />                        </button>
+                        }                      </div>                      <div className="flex gap-2 pl-1">                        <Select
                           value={condition.operator}
                           onValueChange={(value) =>
                           updateRuleCondition(rule.id, condition.id, {
                             operator: value
                           })
                           }>
-                            <SelectTrigger className="w-40 bg-white border-gray-200">                              <SelectValue />                            </SelectTrigger>                            <SelectContent>                              <SelectItem value="EQUALS">                                {t("builder.logic.op.equals")}                              </SelectItem>                              <SelectItem value="NOT_EQUALS">                                {t("builder.logic.op.not_equals")}                              </SelectItem>                              <SelectItem value="CONTAINS">                                {t("builder.logic.op.contains")}                              </SelectItem>                              <SelectItem value="IS_EMPTY">                                {t("builder.logic.op.is_empty")}                              </SelectItem>                              <SelectItem value="IS_NOT_EMPTY">                                {t("builder.logic.op.is_not_empty")}                              </SelectItem>                            </SelectContent>                          </Select>                          <Input
+                            <SelectTrigger className="w-40 bg-white border-gray-200">                            <SelectValue />                          </SelectTrigger>                          <SelectContent>                            <SelectItem value="EQUALS">                              {t("builder.logic.op.equals")}                            </SelectItem>                            <SelectItem value="NOT_EQUALS">                              {t("builder.logic.op.not_equals")}                            </SelectItem>                            <SelectItem value="CONTAINS">                              {t("builder.logic.op.contains")}                            </SelectItem>                            <SelectItem value="IS_EMPTY">                              {t("builder.logic.op.is_empty")}                            </SelectItem>                            <SelectItem value="IS_NOT_EMPTY">                              {t("builder.logic.op.is_not_empty")}                            </SelectItem>                          </SelectContent>                        </Select>                        <Input
                           value={condition.value}
                           onChange={(e) =>
                           updateRuleCondition(rule.id, condition.id, {
@@ -274,29 +274,29 @@ export default function LogicCanvas() {
                           disabled={["IS_EMPTY", "IS_NOT_EMPTY"].includes(
                             condition.operator
                           )} />
-                        </div>                      </div>                    </div>                  </div>
+                        </div>                    </div>                  </div>                </div>
                 )}              </div>              {}              <div className="flex justify-end mt-2">                <button
                   onClick={() => addConditionToRule(rule.id)}
                   className="w-8 h-8 bg-purple-500 hover:bg-purple-600 rounded-full flex items-center justify-center transition-colors text-white shadow-md"
                   title={t("builder.logic.add_condition")}>
                   <Plus className="w-4 h-4" />                </button>              </div>              {}              <div className="flex flex-col items-center py-0.5 gap-1">                <div className="w-[3px] h-6 bg-purple-400 rounded-full" />                <div className="w-2.5 h-2.5 rounded-full bg-purple-500" />              </div>              {}              <div className="pt-4">                <div className="text-gray-500 text-sm italic mb-4">                  {t("builder.logic.then")}                </div>                <div className="text-sm font-semibold text-gray-900 mb-3">                  {t("builder.logic.show_hide")}                </div>                <div className="space-y-3">                  {rule.actions.map((action) =>
-                  <div key={action.id} className="flex items-center gap-2">                      <Select
+                  <div key={action.id} className="flex items-center gap-2">                    <Select
                       value={action.type}
                       onValueChange={(value: "show" | "hide") =>
                       updateRuleAction(rule.id, action.id, { type: value })
                       }>
                         <SelectTrigger
                         className={`w-28 ${action.type === "show" ? "bg-green-50 border-green-200 text-green-700" : "bg-red-50 border-red-200 text-red-700"}`}>
-                          <SelectValue />                        </SelectTrigger>                        <SelectContent>                          <SelectItem value="show">                            {t("builder.logic.action.show")}                          </SelectItem>                          <SelectItem value="hide">                            {t("builder.logic.action.hide")}                          </SelectItem>                        </SelectContent>                      </Select>                      <Select
+                          <SelectValue />                      </SelectTrigger>                      <SelectContent>                        <SelectItem value="show">                          {t("builder.logic.action.show")}                        </SelectItem>                        <SelectItem value="hide">                          {t("builder.logic.action.hide")}                        </SelectItem>                      </SelectContent>                    </Select>                    <Select
                       value={action.fieldId}
                       onValueChange={(value) =>
                       updateRuleAction(rule.id, action.id, {
                         fieldId: value
                       })
                       }>
-                        <SelectTrigger className="flex-1 bg-white border-gray-200">                          <SelectValue
+                        <SelectTrigger className="flex-1 bg-white border-gray-200">                        <SelectValue
                           placeholder={t("builder.logic.select_field")} />
-                        </SelectTrigger>                        <SelectContent>                          {availableFields.
+                        </SelectTrigger>                      <SelectContent>                        {availableFields.
                         filter((f) => {
                           if (
                           rule.conditions.some((c) => c.fieldId === f.id))
@@ -309,21 +309,21 @@ export default function LogicCanvas() {
                           return true;
                         }).
                         map((f) =>
-                        <SelectItem key={f.id} value={f.id}>                                {stripHtml(f.label || f.type)}                              </SelectItem>
-                        )}                        </SelectContent>                      </Select>                      {rule.actions.length > 1 &&
+                        <SelectItem key={f.id} value={f.id}>                          {stripHtml(f.label || f.type)}                        </SelectItem>
+                        )}                      </SelectContent>                    </Select>                    {rule.actions.length > 1 &&
                     <button
                       onClick={() =>
                       removeActionFromRule(rule.id, action.id)
                       }
                       className="p-2 text-gray-400 hover:text-red-500 transition-colors">
-                          <Trash2 className="w-4 h-4" />                        </button>
-                    }                    </div>
+                          <Trash2 className="w-4 h-4" />                    </button>
+                    }                  </div>
                   )}                </div>                <button
                   onClick={() => addActionToRule(rule.id)}
                   className="mt-3 text-purple-600 hover:text-purple-700 text-sm flex items-center gap-1 font-medium">
                   <Plus className="w-4 h-4" />                  {t("builder.logic.add_action")}                </button>              </div>            </div>);
         })}        {}        {logicRules.length > 0 &&
-        <div className="bg-blue-50 border border-blue-100 p-5 rounded-xl text-sm text-blue-700 space-y-2">            <p className="font-semibold">{t("builder.logic.how_it_works")}</p>            <ul className="list-disc pl-5 space-y-1">              <li>                <strong>{t("builder.logic.how_show").split(":")[0]}:</strong>                {t("builder.logic.how_show").split(":")[1]}              </li>              <li>                <strong>{t("builder.logic.how_hide").split(":")[0]}:</strong>                {t("builder.logic.how_hide").split(":")[1]}              </li>              <li>                <strong>{t("builder.logic.how_and").split(":")[0]}:</strong>                {t("builder.logic.how_and").split(":")[1]}              </li>              <li>                <strong>{t("builder.logic.how_or").split(":")[0]}:</strong>                {t("builder.logic.how_or").split(":")[1]}              </li>            </ul>          </div>
+        <div className="bg-blue-50 border border-blue-100 p-5 rounded-xl text-sm text-blue-700 space-y-2">          <p className="font-semibold">{t("builder.logic.how_it_works")}</p>          <ul className="list-disc pl-5 space-y-1">            <li>              <strong>{t("builder.logic.how_show").split(":")[0]}:</strong>              {t("builder.logic.how_show").split(":")[1]}            </li>            <li>              <strong>{t("builder.logic.how_hide").split(":")[0]}:</strong>              {t("builder.logic.how_hide").split(":")[1]}            </li>            <li>              <strong>{t("builder.logic.how_and").split(":")[0]}:</strong>              {t("builder.logic.how_and").split(":")[1]}            </li>            <li>              <strong>{t("builder.logic.how_or").split(":")[0]}:</strong>              {t("builder.logic.how_or").split(":")[1]}            </li>          </ul>        </div>
         }        <ConfirmDialog
           open={!!deleteRuleId}
           onOpenChange={(open) => !open && setDeleteRuleId(null)}

@@ -102,9 +102,9 @@ export const PreviewPhoneField: React.FC<PreviewFieldProps> = ({
             className={`${shrink ? "py-2 text-base" : "py-3 text-base"} px-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/5 focus:border-black transition-all appearance-none cursor-pointer`}
             style={{ backgroundColor: "transparent", color: "var(--text)" }}
             defaultValue="+66">
-              <option value="+66">🇹🇭 +66</option>              <option value="+1">🇺🇸 +1</option>              <option value="+44">🇬🇧 +44</option>              <option value="+81">🇯🇵 +81</option>              <option value="+86">🇨🇳 +86</option>              <option value="+82">🇰🇷 +82</option>            </select>
+              <option value="+66">🇹🇭 +66</option>            <option value="+1">🇺🇸 +1</option>            <option value="+44">🇬🇧 +44</option>            <option value="+81">🇯🇵 +81</option>            <option value="+86">🇨🇳 +86</option>            <option value="+82">🇰🇷 +82</option>          </select>
           }          {!isPublic &&
-          <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">              <Phone className="h-4 w-4 text-gray-400" />            </div>
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">            <Phone className="h-4 w-4 text-gray-400" />          </div>
           }          {isPublic ?
           <input
             type="tel"
@@ -164,6 +164,6 @@ export const PreviewPhoneField: React.FC<PreviewFieldProps> = ({
             readOnly ? "bg-gray-100 cursor-not-allowed text-gray-500" : ""}`
             } />
           }        </div>        {fieldError &&
-        <p className="mt-1 text-sm text-red-600">            {fieldError.message as string}          </p>
+        <p className="mt-1 text-sm text-red-600">          {fieldError.message as string}        </p>
         }      </div>    </div>);
 };

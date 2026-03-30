@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
+import { motion } from "framer-motion";
 import {
   Plus,
   LayoutTemplate,
@@ -632,10 +633,16 @@ export default function PageNavigation({
       {isMobilePagePickerOpen &&
       createPortal(
         <>
-          <div
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             className="fixed inset-0 z-[9998] bg-black/40 backdrop-blur-[2px]"
             onClick={() => setIsMobilePagePickerOpen(false)} />
-          <div className="fixed inset-x-0 bottom-0 z-[9999]">
+          <motion.div
+            initial={{ y: "100%" }}
+            animate={{ y: 0 }}
+            transition={{ type: "spring", damping: 34, stiffness: 380, bounce: 0 }}
+            className="fixed inset-x-0 bottom-0 z-[9999]">
             <div className="mx-auto max-w-md">
               <div className="bg-white rounded-t-3xl shadow-2xl border border-gray-200 overflow-hidden">
                 <div className="px-4 pt-3 pb-2">
@@ -665,15 +672,15 @@ export default function PageNavigation({
                   {orderedPages.map((pageIdx) => {
                     const isActive = currentPage === pageIdx;
                     const title =
-                      pageIdx === -1 ?
-                      t("builder.pagination.welcome_page") :
-                      pageIdx === -2 ?
-                      t("builder.pagination.end_page") :
-                      getPageTitle(pageIdx);
+                    pageIdx === -1 ?
+                    t("builder.pagination.welcome_page") :
+                    pageIdx === -2 ?
+                    t("builder.pagination.end_page") :
+                    getPageTitle(pageIdx);
                     const Icon =
-                      pageIdx === -1 ? LayoutTemplate :
-                      pageIdx === -2 ? CheckCircle2 :
-                      FileText;
+                    pageIdx === -1 ? LayoutTemplate :
+                    pageIdx === -2 ? CheckCircle2 :
+                    FileText;
                     return (
                       <button
                         key={pageIdx}
@@ -683,16 +690,14 @@ export default function PageNavigation({
                           setIsMobilePagePickerOpen(false);
                         }}
                         className={`w-full flex items-center gap-3 px-3 py-3 rounded-2xl text-left transition-colors ${
-                          isActive ?
-                          "bg-black text-white" :
-                          "bg-white text-gray-800 hover:bg-gray-50"
-                        }`}
-                      >
+                        isActive ?
+                        "bg-black text-white" :
+                        "bg-white text-gray-800 hover:bg-gray-50"}`
+                        }>
                         <div
                           className={`w-9 h-9 rounded-2xl flex items-center justify-center flex-shrink-0 ${
-                            isActive ? "bg-white/10" : "bg-gray-100"
-                          }`}
-                        >
+                          isActive ? "bg-white/10" : "bg-gray-100"}`
+                          }>
                           <Icon className={`w-4 h-4 ${isActive ? "text-white" : "text-gray-600"}`} />
                         </div>
                         <div className="min-w-0 flex-1">
@@ -705,8 +710,7 @@ export default function PageNavigation({
                           <CheckCircle2 className="w-5 h-5 text-white/90" />
                           }
                         </div>
-                      </button>
-                    );
+                      </button>);
                   })}
                 </div>
                 <div className="px-4 pt-1 pb-4">
@@ -716,8 +720,7 @@ export default function PageNavigation({
                       onAddPage();
                       setIsMobilePagePickerOpen(false);
                     }}
-                    className="w-full mt-1 flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-gray-900 text-white font-medium shadow-lg active:scale-[0.99] transition-transform"
-                  >
+                    className="w-full mt-1 flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-gray-900 text-white font-medium shadow-lg active:scale-[0.99] transition-transform">
                     <Plus className="w-4 h-4" />
                     {t("builder.pagination.add_page")}
                   </button>
@@ -725,7 +728,7 @@ export default function PageNavigation({
               </div>
               <div className="h-[max(env(safe-area-inset-bottom),12px)] bg-white" />
             </div>
-          </div>
+          </motion.div>
         </>,
         document.body
       )}

@@ -38,6 +38,8 @@ export default {
   "settings.quiz.start_time_desc": "เวลาที่เริ่มทำแบบทดสอบได้",
   "settings.quiz.end_time": "เวลาสิ้นสุด",
   "settings.quiz.end_time_desc": "เวลาปิดรับคำตอบ",
+  "settings.quiz.pass_percentage": "เกณฑ์คะแนนผ่าน (%)",
+  "settings.quiz.pass_percentage_desc": "กำหนดเปอร์เซ็นต์คะแนนที่ถือว่าสอบผ่าน",
   "settings.submission.submit_text": "ข้อความปุ่มส่ง",
   "settings.submission.btn_placeholder": "ส่งคำตอบ",
   "settings.submission.success_msg": "ข้อความเมื่อสำเร็จ",

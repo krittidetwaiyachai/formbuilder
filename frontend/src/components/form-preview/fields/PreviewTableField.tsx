@@ -53,7 +53,7 @@ export const PreviewTableField: React.FC<PreviewFieldProps> = ({
           isPublic={isPublic}
           htmlFor={fieldName} />
         {typedField.options?.subLabel &&
-        <p className="mt-1 text-sm text-gray-500 font-normal">            {stripHtml(typedField.options.subLabel)}          </p>
+        <p className="mt-1 text-sm text-gray-500 font-normal">          {stripHtml(typedField.options.subLabel)}        </p>
         }      </div>      <div className="w-full relative group">        {}        <div className="md:hidden absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-black/5 to-transparent pointer-events-none z-10 rounded-r-lg" />        <div className="overflow-x-auto pb-1">          <table
             className="w-full text-sm text-left border-collapse border rounded-lg shadow-sm"
             style={{ borderColor: "var(--card-border)", color: "var(--text)" }}>
@@ -73,7 +73,7 @@ export const PreviewTableField: React.FC<PreviewFieldProps> = ({
                   scope="col"
                   className="px-4 py-3 border font-semibold min-w-[150px]"
                   style={{ borderColor: "var(--card-border)", opacity: 0.7 }}>
-                    {col.label}                  </th>
+                    {col.label}                </th>
                 )}                {allowAddRow && !typedField.options?.readOnly &&
                 <th
                   scope="col"
@@ -95,7 +95,7 @@ export const PreviewTableField: React.FC<PreviewFieldProps> = ({
                     color: "var(--text)",
                     opacity: 0.5
                   }}>
-                    {index + 1}                  </td>                  {columns.map((col: Column, cIdx: number) =>
+                    {index + 1}                </td>                {columns.map((col: Column, cIdx: number) =>
                 <td
                   key={cIdx}
                   className="px-4 py-2 border"
@@ -118,7 +118,7 @@ export const PreviewTableField: React.FC<PreviewFieldProps> = ({
                     }}
                     className="border text-sm rounded-lg focus:ring-2 focus:ring-black/5 block w-full p-2.5 outline-none transition-all placeholder:text-gray-400" />
                     </td>
-                )}                  {allowAddRow && !typedField.options?.readOnly &&
+                )}                {allowAddRow && !typedField.options?.readOnly &&
                 <td
                   className="px-2 py-2 border text-center"
                   style={{ borderColor: "var(--card-border)" }}>
@@ -127,20 +127,21 @@ export const PreviewTableField: React.FC<PreviewFieldProps> = ({
                     type="button"
                     onClick={() => remove(index)}
                     className="p-1.5 text-red-500 hover:bg-red-50 rounded-md transition-colors">
-                          <Trash2 className="w-4 h-4" />                        </button>
-                  }                    </td>
-                }                </tr>
-              )}            </tbody>          </table>        </div>      </div>      <div className="md:hidden mt-2 text-center">        <span className="text-xs text-gray-400 bg-gray-100 px-3 py-1 rounded-full inline-flex items-center gap-1">          ⟷ {t("public.scroll_hint", "เลื่อนเพื่อดูเพิ่มเติม")}        </span>      </div>      {allowAddRow && !typedField.options?.readOnly &&
-      <div className="mt-3 flex justify-end">          <button
+                          <Trash2 className="w-4 h-4" />                  </button>
+                  }                </td>
+                }              </tr>
+              )}            </tbody>          </table>        </div>      </div>      <div className="md:hidden mt-2 text-center">        <span className="text-xs text-gray-400 bg-gray-100 px-3 py-1 rounded-full inline-flex items-center gap-1">          ⟷ 
+          {t("public.scroll_hint", "เลื่อนเพื่อดูเพิ่มเติม")}        </span>      </div>      {allowAddRow && !typedField.options?.readOnly &&
+      <div className="mt-3 flex justify-end">        <button
           type="button"
           onClick={handleAddRow}
           style={{ backgroundColor: "var(--primary)" }}
           className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white rounded-md hover:opacity-90 transition-opacity shadow-sm">
-            <Plus className="w-4 h-4" /> {t("public.table.add_row", "Add Row")}          </button>        </div>
+            <Plus className="w-4 h-4" /> {t("public.table.add_row", "Add Row")}        </button>      </div>
       }      {errors[fieldName] &&
-      <p className="mt-1 text-sm text-red-600">          {(errors[fieldName] as FieldError)?.message ||
+      <p className="mt-1 text-sm text-red-600">        {(errors[fieldName] as FieldError)?.message ||
         t("public.validation.required_field", {
           label: stripHtml(field.label)
-        })}        </p>
+        })}      </p>
       }    </div>);
 };

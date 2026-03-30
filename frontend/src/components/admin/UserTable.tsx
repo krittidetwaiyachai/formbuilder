@@ -90,15 +90,15 @@ export default function UserTable({ onRefresh }: UserTableProps) {
       cell: (info) => {
         const user = info.row.original;
         return (
-          <div className="flex items-center gap-3">              {user.photoUrl ?
+          <div className="flex items-center gap-3">            {user.photoUrl ?
             <img
               src={user.photoUrl}
               alt=""
               className="w-10 h-10 rounded-full object-cover" /> :
-            <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-sm font-medium text-gray-600">                  {user.firstName?.[0] || user.email[0].toUpperCase()}                </div>
-            }              <div>                <p className="font-medium text-gray-900">                  {user.firstName && user.lastName ?
+            <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-sm font-medium text-gray-600">              {user.firstName?.[0] || user.email[0].toUpperCase()}            </div>
+            }            <div>              <p className="font-medium text-gray-900">                {user.firstName && user.lastName ?
                 `${user.firstName} ${user.lastName}` :
-                user.email}                </p>                <p className="text-sm text-gray-500">{user.email}</p>              </div>            </div>);
+                user.email}              </p>              <p className="text-sm text-gray-500">{user.email}</p>            </div>          </div>);
       }
     }),
     columnHelper.accessor("role.name", {
@@ -115,20 +115,20 @@ export default function UserTable({ onRefresh }: UserTableProps) {
               onBlur={() => setEditingRole(null)}
               autoFocus>
                 {roles.map((role) =>
-              <option key={role.id} value={role.id}>                    {role.name}                  </option>
-              )}              </select>);
+              <option key={role.id} value={role.id}>                {role.name}              </option>
+              )}            </select>);
         }
         return (
           <button
             onClick={() => setEditingRole(user.id)}
             className={`px-3 py-1 rounded-full text-xs font-medium border ${getRoleBadgeColor(user.role.name)} hover:opacity-80 transition-opacity`}>
-              {user.role.name}            </button>);
+              {user.role.name}          </button>);
       }
     }),
     columnHelper.accessor("provider", {
       header: t("admin.users.table.provider"),
       cell: (info) =>
-      <span className="text-sm text-gray-600 capitalize">            {info.getValue()}          </span>
+      <span className="text-sm text-gray-600 capitalize">        {info.getValue()}      </span>
     }),
     columnHelper.accessor("isActive", {
       header: t("admin.users.table.status"),
@@ -141,7 +141,7 @@ export default function UserTable({ onRefresh }: UserTableProps) {
         }>
             {info.getValue() ?
         t("admin.users.status.active") :
-        t("admin.users.status.banned")}          </span>
+        t("admin.users.status.banned")}      </span>
     }),
     columnHelper.accessor("lastActiveAt", {
       header: t("admin.users.table.last_active"),
@@ -149,12 +149,12 @@ export default function UserTable({ onRefresh }: UserTableProps) {
         const value = info.getValue();
         if (!value)
         return (
-          <span className="text-gray-400">                {t("admin.users.status.unknown")}              </span>);
+          <span className="text-gray-400">            {t("admin.users.status.unknown")}          </span>);
         return (
-          <span className="text-sm text-gray-600">              {formatDistanceToNow(new Date(value), {
+          <span className="text-sm text-gray-600">            {formatDistanceToNow(new Date(value), {
               addSuffix: true,
               locale: th
-            })}            </span>);
+            })}          </span>);
       }
     }),
     columnHelper.display({
@@ -164,7 +164,7 @@ export default function UserTable({ onRefresh }: UserTableProps) {
         const user = info.row.original;
         if (!hasManageUsers) return null;
         return (
-          <div className="flex items-center gap-2">              <button
+          <div className="flex items-center gap-2">            <button
               onClick={() => handleToggleBan(user.id)}
               className={`p-2 rounded-lg transition-colors ${
               user.isActive ?
@@ -179,11 +179,11 @@ export default function UserTable({ onRefresh }: UserTableProps) {
                 {user.isActive ?
               <Ban className="w-4 h-4" /> :
               <CheckCircle className="w-4 h-4" />
-              }              </button>              <button
+              }            </button>            <button
               onClick={() => setEditingRole(user.id)}
               className="p-2 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors"
               title={t("admin.users.action.change_role")}>
-                <UserCog className="w-4 h-4" />              </button>            </div>);
+                <UserCog className="w-4 h-4" />            </button>          </div>);
       }
     })],
     [editingRole, roles]
@@ -208,36 +208,36 @@ export default function UserTable({ onRefresh }: UserTableProps) {
               }}
               className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" />
           </div>        </div>        <div className="overflow-x-auto">          <table className="w-full">            <thead className="bg-gray-50 border-b border-gray-100">              {table.getHeaderGroups().map((headerGroup) =>
-              <tr key={headerGroup.id}>                  {headerGroup.headers.map((header) =>
+              <tr key={headerGroup.id}>                {headerGroup.headers.map((header) =>
                 <th
                   key={header.id}
                   className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                       {flexRender(
                     header.column.columnDef.header,
                     header.getContext()
-                  )}                    </th>
-                )}                </tr>
+                  )}                </th>
+                )}              </tr>
               )}            </thead>            <tbody className="divide-y divide-gray-50">              {loading ?
               Array.from({ length: 5 }).map((_, i) =>
-              <tr key={i}>                    {columns.map((_, j) =>
-                <td key={j} className="px-6 py-4">                        <div className="h-4 bg-gray-200 rounded animate-pulse" />                      </td>
-                )}                  </tr>
+              <tr key={i}>                {columns.map((_, j) =>
+                <td key={j} className="px-6 py-4">                  <div className="h-4 bg-gray-200 rounded animate-pulse" />                </td>
+                )}              </tr>
               ) :
               users.length === 0 ?
-              <tr>                  <td
+              <tr>                <td
                   colSpan={columns.length}
                   className="px-6 py-12 text-center text-gray-400">
-                    {t("admin.users.no_users")}                  </td>                </tr> :
+                    {t("admin.users.no_users")}                </td>              </tr> :
               table.getRowModel().rows.map((row) =>
               <tr
                 key={row.id}
                 className="hover:bg-gray-50/50 transition-colors">
                     {row.getVisibleCells().map((cell) =>
-                <td key={cell.id} className="px-6 py-4">                        {flexRender(
+                <td key={cell.id} className="px-6 py-4">                  {flexRender(
                     cell.column.columnDef.cell,
                     cell.getContext()
-                  )}                      </td>
-                )}                  </tr>
+                  )}                </td>
+                )}              </tr>
               )
               }            </tbody>          </table>        </div>        <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">          <p className="text-sm text-gray-500">            {t("admin.users.page_info", { page, total: totalPages })}          </p>          <div className="flex items-center gap-2">            <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}

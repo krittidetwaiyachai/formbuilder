@@ -31,9 +31,9 @@ export const EmailField: React.FC<EmailFieldProps> = ({
           tabIndex={-1}
           className={`w-full pl-12 pr-4 py-3.5 border ${fieldStyle.inputBorder} rounded-xl bg-blue-50/30 text-black text-base shadow-sm transition-all duration-300 ${disabledClass} group-hover/field:bg-white group-hover/field:shadow-md ${isReadOnly ? "opacity-50" : ""}`} />
       </div>      {showConfirmation &&
-      <div className="relative max-w-full group">          <div className="absolute left-3.5 top-1/2 -translate-y-1/2 transition-colors duration-300">            <Mail
+      <div className="relative max-w-full group">        <div className="absolute left-3.5 top-1/2 -translate-y-1/2 transition-colors duration-300">          <Mail
             className={`h-5 w-5 ${fieldStyle.iconColor} opacity-70 group-hover/field:opacity-100`} />
-          </div>          <input
+          </div>        <input
           type="email"
           placeholder={t("builder.email.confirm_placeholder")}
           readOnly

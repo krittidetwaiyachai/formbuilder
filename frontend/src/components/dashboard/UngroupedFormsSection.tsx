@@ -55,7 +55,7 @@ export default function UngroupedFormsSection({
       isOver ? "bg-indigo-50/50 ring-2 ring-indigo-200 ring-dashed" : ""}`
       }>
       {(title || foldersCount > 0) &&
-      <h2 className="text-xl font-bold text-gray-900 mb-4 px-2 pt-2">          {title || t("dashboard.all_forms")}        </h2>
+      <h2 className="text-xl font-bold text-gray-900 mb-4 px-2 pt-2">        {title || t("dashboard.all_forms")}      </h2>
       }      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-2">        <AnimatePresence mode="popLayout">          {forms.map((form) =>
           <motion.div
             layout
@@ -64,7 +64,7 @@ export default function UngroupedFormsSection({
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
             transition={{ duration: 0.2 }}>
-              <DraggableFormCard formId={form.id}>                <DashboardFormCard
+              <DraggableFormCard formId={form.id}>              <DashboardFormCard
                 form={form}
                 currentUserId={user?.id}
                 onCardClick={() => navigate(`/forms/${form.id}/builder`)}
@@ -84,8 +84,8 @@ export default function UngroupedFormsSection({
                   });
                 }}
                 formatDate={formatDate} />
-              </DraggableFormCard>            </motion.div>
+              </DraggableFormCard>          </motion.div>
           )}        </AnimatePresence>      </div>      {forms.length === 0 && isOver &&
-      <div className="h-40 flex items-center justify-center text-indigo-400 font-medium">          {t("dashboard.drop_ungroup")}        </div>
+      <div className="h-40 flex items-center justify-center text-indigo-400 font-medium">        {t("dashboard.drop_ungroup")}      </div>
       }    </div>);
 }

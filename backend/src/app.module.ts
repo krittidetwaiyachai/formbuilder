@@ -18,37 +18,41 @@ import { CustomThrottlerGuard } from './common/guards/custom-throttler.guard';
 import { AdminModule } from './admin/admin.module';
 import { AppController } from './app.controller';
 import { CollaborationModule } from './collaboration/collaboration.module';
+import { RedisModule } from './common/redis/redis.module';
+import { FormSecurityModule } from './form-security/form-security.module';
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true
-    }),
-    EventEmitterModule.forRoot(),
-    ThrottlerModule.forRoot([{
-      ttl: 60000,
-      limit: 200
-    }]),
-    PrismaModule,
-    AuthModule,
-    UsersModule,
-    FormsModule,
-    BundlesModule,
-    ResponsesModule,
-    ActivityLogModule,
-    FoldersModule,
-    EventsModule,
-    CommonModule,
-    AdminModule,
-    CollaborationModule],
+  ConfigModule.forRoot({
+    isGlobal: true
+  }),
+  EventEmitterModule.forRoot(),
+  ThrottlerModule.forRoot([{
+    ttl: 60000,
+    limit: 200
+  }]),
+  PrismaModule,
+  AuthModule,
+  UsersModule,
+  FormsModule,
+  BundlesModule,
+  ResponsesModule,
+  ActivityLogModule,
+  FoldersModule,
+  EventsModule,
+  CommonModule,
+  RedisModule,
+  FormSecurityModule,
+  AdminModule,
+  CollaborationModule],
   providers: [
-    {
-      provide: APP_GUARD,
-      useClass: JwtAuthGuard
-    },
-    {
-      provide: APP_GUARD,
-      useClass: CustomThrottlerGuard
-    }],
+  {
+    provide: APP_GUARD,
+    useClass: JwtAuthGuard
+  },
+  {
+    provide: APP_GUARD,
+    useClass: CustomThrottlerGuard
+  }],
   controllers: [AppController]
-}) export class
-  AppModule { }
+})export class
+AppModule {}

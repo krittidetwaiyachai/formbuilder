@@ -27,21 +27,21 @@ export default function ConfirmDialog({
   if (!open) return null;
   return (
     <AnimatePresence>      {open &&
-      <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">          {}          <motion.div
+      <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">        {}        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={() => onOpenChange(false)}
           className="absolute inset-0 bg-black/60 backdrop-blur-sm cursor-pointer" />
-          {}          <motion.div
+          {}        <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 10 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 10 }}
           transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
           className="relative bg-white w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden z-20">
-            {}            <div
+            {}          <div
             className={`h-2 w-full ${variant === "destructive" ? "bg-red-500" : "bg-black"}`} />
-            <div className="p-6 pt-6">              <div className="flex flex-col items-center text-center">                <motion.div
+            <div className="p-6 pt-6">            <div className="flex flex-col items-center text-center">              <motion.div
                 initial={{ scale: 0, rotate: -45 }}
                 animate={{
                   scale: 1,
@@ -70,10 +70,10 @@ export default function ConfirmDialog({
                   {variant === "destructive" ?
                 <AlertTriangle className="w-6 h-6 border-0" /> :
                 <AlertCircle className="w-6 h-6" />
-                }                </motion.div>                <h2 className="text-xl font-bold text-gray-900 mb-2">                  {title}                </h2>                <p className="text-gray-500 text-sm leading-relaxed mb-6">                  {description}                </p>                <div className="flex gap-3 w-full">                  <button
+                }              </motion.div>              <h2 className="text-xl font-bold text-gray-900 mb-2">                {title}              </h2>              <p className="text-gray-500 text-sm leading-relaxed mb-6">                {description}              </p>              <div className="flex gap-3 w-full">                <button
                   onClick={() => onOpenChange(false)}
                   className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 text-gray-700 font-medium hover:bg-gray-50 hover:border-gray-300 transition-colors text-sm">
-                    {finalCancelText}                  </button>                  <button
+                    {finalCancelText}                </button>                <button
                   onClick={() => {
                     onConfirm();
                     onOpenChange(false);
@@ -83,6 +83,6 @@ export default function ConfirmDialog({
                   "bg-red-600 hover:bg-red-700 shadow-red-200" :
                   "bg-black hover:bg-gray-800 shadow-gray-200"}`
                   }>
-                    {finalConfirmText}                  </button>                </div>              </div>            </div>          </motion.div>        </div>
+                    {finalConfirmText}                </button>              </div>            </div>          </div>        </motion.div>      </div>
       }    </AnimatePresence>);
 }

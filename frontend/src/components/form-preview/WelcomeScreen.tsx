@@ -56,24 +56,24 @@ export default function WelcomeScreen({
   const renderContent = (isCover = false) =>
   <div
     className={`flex flex-col items-center justify-center ${isMobile ? "px-4 py-10" : "p-12 md:p-16"} w-full max-w-2xl mx-auto text-center space-y-8`}>
-      {}      {layout === "simple" &&
+      {}    {layout === "simple" &&
     <motion.div
       initial={{ scale: 0.8, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
       className={`w-28 h-28 rounded-3xl flex items-center justify-center border-4 border-white shadow-xl ${iconStyles[iconColor] || iconStyles.blue}`}>
-          <IconComponent className="w-12 h-12" strokeWidth={1.5} />        </motion.div>
-    }      {}      {title &&
+          <IconComponent className="w-12 h-12" strokeWidth={1.5} />    </motion.div>
+    }    {}    {title &&
     <h1
       className={`${isMobile ? "text-3xl" : "text-4xl md:text-6xl"} font-bold tracking-tight leading-tight ${isCover ? "text-white drop-shadow-md" : ""}`}
       style={!isCover ? { color: "var(--text)" } : {}}>
-          {title}        </h1>
-    }      {}      {description &&
+          {title}    </h1>
+    }    {}    {description &&
     <p
       className={`${isMobile ? "text-base" : "text-xl"} font-normal leading-relaxed max-w-xl mx-auto ${isCover ? "text-white/90 drop-shadow" : ""}`}
       style={!isCover ? { color: "var(--text)", opacity: 0.7 } : {}}>
-          {description}        </p>
-    }      {}      {showButton &&
+          {description}    </p>
+    }    {}    {showButton &&
     <motion.button
       whileHover={{ scale: 1.02, y: -2 }}
       whileTap={{ scale: 0.98 }}
@@ -91,16 +91,16 @@ export default function WelcomeScreen({
       } :
       {}
       }>
-          <span>{buttonText}</span>        </motion.button>
-    }    </div>;
+          <span>{buttonText}</span>    </motion.button>
+    }  </div>;
   const renderImage = () =>
-  <div className="w-full h-full bg-gray-50 flex items-center justify-center overflow-hidden">      {bgImage ?
+  <div className="w-full h-full bg-gray-50 flex items-center justify-center overflow-hidden">    {bgImage ?
     <img
       src={bgImage}
       alt="Welcome"
       className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-1000" /> :
-    <div className="flex flex-col items-center justify-center text-gray-300 space-y-4">          <div className="w-20 h-20 bg-white rounded-3xl shadow-sm flex items-center justify-center">            <IconComponent className="w-8 h-8 opacity-20" />          </div>          <span className="text-sm font-medium tracking-widest text-gray-400 uppercase">            {t("public.image_placeholder", "Image Placeholder")}          </span>        </div>
-    }    </div>;
+    <div className="flex flex-col items-center justify-center text-gray-300 space-y-4">      <div className="w-20 h-20 bg-white rounded-3xl shadow-sm flex items-center justify-center">        <IconComponent className="w-8 h-8 opacity-20" />      </div>      <span className="text-sm font-medium tracking-widest text-gray-400 uppercase">        {t("public.image_placeholder", "Image Placeholder")}      </span>    </div>
+    }  </div>;
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -125,25 +125,25 @@ export default function WelcomeScreen({
       <div
         className="flex flex-col items-center justify-center w-full min-h-[inherit] relative"
         style={{ backgroundColor: "transparent" }}>
-          {}          <div
+          {}        <div
           className="absolute top-0 left-0 w-64 h-64 rounded-full mix-blend-multiply filter blur-3xl opacity-20 -translate-x-1/2 -translate-y-1/2"
           style={{ backgroundColor: "var(--primary)" }} />
           <div
           className="absolute bottom-0 right-0 w-64 h-64 rounded-full mix-blend-multiply filter blur-3xl opacity-20 translate-x-1/2 translate-y-1/2"
           style={{ backgroundColor: "var(--primary)" }} />
-          <div className="w-full flex-1 flex items-center justify-center relative z-10">            {renderContent()}          </div>        </div>
+          <div className="w-full flex-1 flex items-center justify-center relative z-10">          {renderContent()}        </div>      </div>
       }      {}      {(layout === "split-left" || layout === "split-right") &&
-      <>          <div className="w-full md:w-1/2 relative min-h-[350px] md:min-h-full">            {renderImage()}          </div>          <div
+      <>        <div className="w-full md:w-1/2 relative min-h-[350px] md:min-h-full">          {renderImage()}        </div>        <div
           className="w-full md:w-1/2 flex flex-col items-center justify-center"
           style={{ backgroundColor: "var(--card-bg, rgba(255,255,255,0.9))" }}>
-            {renderContent()}          </div>        </>
+            {renderContent()}        </div>      </>
       }      {}      {layout === "cover" &&
-      <div className="absolute inset-0 w-full h-full">          {bgImage ?
+      <div className="absolute inset-0 w-full h-full">        {bgImage ?
         <img
           src={bgImage}
           alt="Cover"
           className="absolute inset-0 w-full h-full object-cover" /> :
         <div className="absolute inset-0 bg-gray-900" />
-        }          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex flex-col items-center justify-center px-4">            {renderContent(true)}          </div>        </div>
+        }        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex flex-col items-center justify-center px-4">          {renderContent(true)}        </div>      </div>
       }    </motion.div>);
 }

@@ -113,7 +113,8 @@ export default function AnalysisRenderer({
             <div
               key={index}
               className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                <div className="flex items-center gap-4">                  <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 text-primary font-bold">                    #{index + 1}                  </div>                  <div>                    <div className="font-medium">                      {formatValue(response.value)}                    </div>                    <div className="text-sm text-muted-foreground">                      {response.count} {t("analytics.times")} (                      {(response.count / totalResponses * 100).toFixed(1)}%)                    </div>                  </div>                </div>                <Badge variant="secondary">{response.count}</Badge>              </div>
+                <div className="flex items-center gap-4">                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 text-primary font-bold">                    #
+                  {index + 1}                </div>                <div>                  <div className="font-medium">                    {formatValue(response.value)}                  </div>                  <div className="text-sm text-muted-foreground">                    {response.count} {t("analytics.times")} (                    {(response.count / totalResponses * 100).toFixed(1)}%)                  </div>                </div>              </div>              <Badge variant="secondary">{response.count}</Badge>            </div>
             )}          </div>);
       case "statistics":
         return (
@@ -169,22 +170,22 @@ export default function AnalysisRenderer({
             <div
               key={index}
               className="flex items-center justify-between p-3 border rounded-lg">
-                <div className="flex items-center gap-3">                  <Badge variant="outline">#{index + 1}</Badge>                  <span className="font-medium">                    {formatValue(response.value)}                  </span>                </div>                <div className="flex items-center gap-2">                  <span className="text-sm text-muted-foreground">                    {(response.count / totalResponses * 100).toFixed(1)}%                  </span>                  <Badge>{response.count}</Badge>                </div>              </div>
+                <div className="flex items-center gap-3">                <Badge variant="outline">#{index + 1}</Badge>                <span className="font-medium">                  {formatValue(response.value)}                </span>              </div>              <div className="flex items-center gap-2">                <span className="text-sm text-muted-foreground">                  {(response.count / totalResponses * 100).toFixed(1)}%                </span>                <Badge>{response.count}</Badge>              </div>            </div>
             )}          </div>);
       case "percentage":
         return (
           <div className="space-y-3">            {fieldResponses.map((response, index) =>
-            <div key={index} className="space-y-2">                <div className="flex items-center justify-between text-sm">                  <span className="font-medium">                    {formatValue(response.value)}                  </span>                  <span className="text-muted-foreground">                    {response.count} (                    {(response.count / totalResponses * 100).toFixed(1)}%)                  </span>                </div>                <div className="w-full bg-gray-200 rounded-full h-2">                  <div
+            <div key={index} className="space-y-2">              <div className="flex items-center justify-between text-sm">                <span className="font-medium">                  {formatValue(response.value)}                </span>                <span className="text-muted-foreground">                  {response.count} (                  {(response.count / totalResponses * 100).toFixed(1)}%)                </span>              </div>              <div className="w-full bg-gray-200 rounded-full h-2">                <div
                   className="bg-primary h-2 rounded-full"
                   style={{
                     width: `${response.count / totalResponses * 100}%`
                   }} />
-                </div>              </div>
+                </div>            </div>
             )}          </div>);
       case "count":
         return (
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">            {fieldResponses.map((response, index) =>
-            <Card key={index}>                <CardContent className="p-4">                  <div className="text-sm text-muted-foreground mb-1">                    {t("analytics.value")}                  </div>                  <div className="font-medium mb-2">                    {formatValue(response.value)}                  </div>                  <div className="text-2xl font-bold">{response.count}</div>                  <div className="text-xs text-muted-foreground">                    {(response.count / totalResponses * 100).toFixed(1)}%{" "}                    {t("analytics.of_total")}                  </div>                </CardContent>              </Card>
+            <Card key={index}>              <CardContent className="p-4">                <div className="text-sm text-muted-foreground mb-1">                  {t("analytics.value")}                </div>                <div className="font-medium mb-2">                  {formatValue(response.value)}                </div>                <div className="text-2xl font-bold">{response.count}</div>                <div className="text-xs text-muted-foreground">                  {(response.count / totalResponses * 100).toFixed(1)}%{" "}                  {t("analytics.of_total")}                </div>              </CardContent>            </Card>
             )}          </div>);
       case "allResponses":
         return (
@@ -213,6 +214,6 @@ export default function AnalysisRenderer({
   };
   return (
     <Card>      <CardHeader>        <div className="flex items-center justify-between">          <div>            <CardTitle className="capitalize">              {fieldName.replace(/([A-Z])/g, " $1").trim()}            </CardTitle>            <CardDescription>              {t(`analytics.analysis.${analysisType}`) || analysisType}{" "}              {t("analytics.field_analytics")}            </CardDescription>          </div>          {analysisType !== "export" &&
-          <Button variant="outline" size="sm" onClick={handleExport}>              <Download className="h-4 w-4 mr-2" />              {t("analytics.analysis.export")}            </Button>
+          <Button variant="outline" size="sm" onClick={handleExport}>            <Download className="h-4 w-4 mr-2" />            {t("analytics.analysis.export")}          </Button>
           }        </div>      </CardHeader>      <CardContent>{renderAnalysis()}</CardContent>    </Card>);
 }

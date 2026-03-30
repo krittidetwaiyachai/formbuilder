@@ -2,9 +2,8 @@ import {
   Injectable,
   NotFoundException,
   ForbiddenException,
-  Logger
-} from
-  '@nestjs/common';
+  Logger } from
+'@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 import { ActivityLogService } from '../activity-log/activity-log.service';
@@ -14,13 +13,13 @@ import { UpdateFormDto } from './dto/update-form.dto';
 import { FormStatus, RoleType } from '@prisma/client';
 import { FormDiffHelper } from './helpers/form-diff.helper';
 import { FieldUpdateHelper } from './helpers/field-update.helper';
-@Injectable() export class
-  FormsService {
+@Injectable()export class
+FormsService {
   private readonly logger = new Logger(FormsService.name);
   constructor(
-    private prisma: PrismaService,
-    private activityLog: ActivityLogService,
-    private encryptionService: EncryptionService) { }
+  private prisma: PrismaService,
+  private activityLog: ActivityLogService,
+  private encryptionService: EncryptionService) {}
   async create(userId: string, createFormDto: CreateFormDto) {
     const { fields, conditions, logicRules, folderId, ...formData } = createFormDto;
     const form = await this.prisma.form.create({
@@ -31,32 +30,32 @@ import { FieldUpdateHelper } from './helpers/field-update.helper';
           connect: { id: userId }
         },
         fields: fields ?
-          {
-            create: fields.map((field) => ({
-              ...field,
-              order: field.order ?? 0
-            }))
-          } :
-          undefined,
+        {
+          create: fields.map((field) => ({
+            ...field,
+            order: field.order ?? 0
+          }))
+        } :
+        undefined,
         conditions: conditions ?
-          {
-            create: conditions
-          } :
-          undefined,
+        {
+          create: conditions
+        } :
+        undefined,
         logicRules: logicRules ?
-          {
-            create: logicRules.map((rule) => ({
-              name: rule.name,
-              logicType: rule.logicType,
-              conditions: {
-                create: rule.conditions
-              },
-              actions: {
-                create: rule.actions
-              }
-            }))
-          } :
-          undefined
+        {
+          create: logicRules.map((rule) => ({
+            name: rule.name,
+            logicType: rule.logicType,
+            conditions: {
+              create: rule.conditions
+            },
+            actions: {
+              create: rule.actions
+            }
+          }))
+        } :
+        undefined
       },
       include: {
         fields: {
@@ -79,8 +78,8 @@ import { FieldUpdateHelper } from './helpers/field-update.helper';
   async findAll(userId: string, userRole: RoleType) {
     const where: Prisma.FormWhereInput = {};
     where.OR = [
-      { createdById: userId },
-      { collaborators: { some: { id: userId } } }];
+    { createdById: userId },
+    { collaborators: { some: { id: userId } } }];
     const forms = await this.prisma.form.findMany({
       where,
       orderBy: { createdAt: 'desc' },
@@ -160,16 +159,16 @@ import { FieldUpdateHelper } from './helpers/field-update.helper';
       throw new NotFoundException('Form not found');
     }
     if (
-      userRole === RoleType.VIEWER &&
-      form.status !== FormStatus.PUBLISHED) {
+    userRole === RoleType.VIEWER &&
+    form.status !== FormStatus.PUBLISHED) {
       throw new ForbiddenException('You can only view published forms');
     }
     const isCreator = form.createdById === userId;
     const isCollaborator = form.collaborators?.some((c) => c.id === userId);
     if (
-      userRole !== RoleType.VIEWER &&
-      !isCreator &&
-      !isCollaborator) {
+    userRole !== RoleType.VIEWER &&
+    !isCreator &&
+    !isCollaborator) {
       throw new ForbiddenException('You can only access your own forms or forms shared with you');
     }
     return form;
@@ -221,22 +220,22 @@ import { FieldUpdateHelper } from './helpers/field-update.helper';
         });
         if (!existingView) {
           await this.prisma.$transaction([
-            this.prisma.formView.create({
-              data: {
-                formId: id,
-                fingerprint: fingerprint,
-                ipAddress: ipAddress ? this.encryptionService.hashIpAddress(ipAddress) : null,
-                userAgent: userAgent || null
+          this.prisma.formView.create({
+            data: {
+              formId: id,
+              fingerprint: fingerprint,
+              ipAddress: ipAddress ? this.encryptionService.hashIpAddress(ipAddress) : null,
+              userAgent: userAgent || null
+            }
+          }),
+          this.prisma.form.update({
+            where: { id },
+            data: {
+              viewCount: {
+                increment: 1
               }
-            }),
-            this.prisma.form.update({
-              where: { id },
-              data: {
-                viewCount: {
-                  increment: 1
-                }
-              }
-            })]
+            }
+          })]
           );
         }
       } catch {
@@ -245,16 +244,52 @@ import { FieldUpdateHelper } from './helpers/field-update.helper';
     return form;
   }
   async update(
-    id: string,
-    userId: string,
-    userRole: RoleType,
-    updateFormDto: UpdateFormDto) {
+  id: string,
+  userId: string,
+  userRole: RoleType,
+  updateFormDto: UpdateFormDto) {
     const originalForm = await this.findOne(id, userId, userRole);
     const isCollaborator = originalForm.collaborators?.some((c) => c.id === userId);
     if (originalForm.createdById !== userId && !isCollaborator) {
       throw new ForbiddenException('You can only edit your own forms or forms shared with you');
     }
     const { fields, conditions, logicRules, folderId, ...formData } = updateFormDto;
+    const existingSettings =
+    originalForm.settings &&
+    typeof originalForm.settings === 'object' &&
+    !Array.isArray(originalForm.settings) ?
+    originalForm.settings as Record<string, unknown> :
+    {};
+    const incomingSettings =
+    formData.settings &&
+    typeof formData.settings === 'object' &&
+    !Array.isArray(formData.settings) ?
+    formData.settings as Record<string, unknown> :
+    undefined;
+    if (incomingSettings) {
+      const existingSecurity =
+      existingSettings.security &&
+      typeof existingSettings.security === 'object' &&
+      !Array.isArray(existingSettings.security) ?
+      existingSettings.security as Record<string, unknown> :
+      {};
+      const incomingSecurity =
+      incomingSettings.security &&
+      typeof incomingSettings.security === 'object' &&
+      !Array.isArray(incomingSettings.security) ?
+      incomingSettings.security as Record<string, unknown> :
+      undefined;
+      formData.settings = {
+        ...existingSettings,
+        ...incomingSettings,
+        security: incomingSecurity ?
+        {
+          ...existingSecurity,
+          ...incomingSecurity
+        } :
+        existingSettings.security
+      } as Prisma.InputJsonValue;
+    }
     const activityDetails = FormDiffHelper.calculateDiff(originalForm as unknown as Record<string, unknown>, { fields: fields as any, logicRules: logicRules as any, ...formData } as any);
     try {
       await this.prisma.$transaction(async (prisma) => {
@@ -275,10 +310,10 @@ import { FieldUpdateHelper } from './helpers/field-update.helper';
           }
           if (toUpdate.length > 0) {
             await Promise.all(toUpdate.map((field) =>
-              prisma.field.update({
-                where: { id: field.id },
-                data: FieldUpdateHelper.prepareFieldForUpdate(field) as Prisma.FieldUpdateInput
-              })
+            prisma.field.update({
+              where: { id: field.id },
+              data: FieldUpdateHelper.prepareFieldForUpdate(field) as Prisma.FieldUpdateInput
+            })
             ));
           }
           if (toCreate.length > 0) {
@@ -289,7 +324,7 @@ import { FieldUpdateHelper } from './helpers/field-update.helper';
           const fieldsWithGroups = fields.filter((f) => f.groupId);
           if (fieldsWithGroups.length > 0) {
             await Promise.all(fieldsWithGroups.map((field) =>
-              prisma.field.update({ where: { id: field.id }, data: { groupId: field.groupId } })
+            prisma.field.update({ where: { id: field.id }, data: { groupId: field.groupId } })
             ));
           }
         }
@@ -466,10 +501,10 @@ import { FieldUpdateHelper } from './helpers/field-update.helper';
       throw new NotFoundException('Form not found');
     }
     if (
-      userRole !== RoleType.SUPER_ADMIN &&
-      userRole !== RoleType.ADMIN &&
-      form.createdById !== requestingUserId &&
-      userIdToRemove !== requestingUserId) {
+    userRole !== RoleType.SUPER_ADMIN &&
+    userRole !== RoleType.ADMIN &&
+    form.createdById !== requestingUserId &&
+    userIdToRemove !== requestingUserId) {
       throw new ForbiddenException('You do not have permission to remove collaborators');
     }
     await this.prisma.form.update({

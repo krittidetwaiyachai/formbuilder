@@ -80,7 +80,7 @@ export default function DashboardFormCard({
               form.status === "ARCHIVED" ?
               t("dashboard.filters.archived") :
               t("dashboard.filters.draft")}            </span>            {currentUserId !== form.createdById &&
-            <span className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wide uppercase bg-indigo-50 text-indigo-600 border border-indigo-100">                <Users className="w-3 h-3" />                {t("dashboard.form.shared")}              </span>
+            <span className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wide uppercase bg-indigo-50 text-indigo-600 border border-indigo-100">              <Users className="w-3 h-3" />              {t("dashboard.form.shared")}            </span>
             }          </div>        </div>        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-20 flex gap-1">          <button
             onClick={onViewDetails}
             className="p-1.5 bg-white rounded-lg shadow-sm border border-gray-100 text-gray-400 hover:text-indigo-600 hover:border-indigo-100 transition-all transform hover:scale-105"
@@ -107,11 +107,12 @@ export default function DashboardFormCard({
               <div
                 key={index}
                 className="relative ring-2 ring-white rounded-full">
-                  <UserAvatar user={editor} className="h-6 w-6" />                </div>
+                  <UserAvatar user={editor} className="h-6 w-6" />              </div>
               )}              {allEditors.length > 3 &&
-              <div className="relative flex items-center justify-center h-6 w-6 rounded-full bg-gray-50 border border-gray-100 text-[10px] font-medium text-gray-500 ring-2 ring-white">                  +{allEditors.length - 3}                </div>
+              <div className="relative flex items-center justify-center h-6 w-6 rounded-full bg-gray-50 border border-gray-100 text-[10px] font-medium text-gray-500 ring-2 ring-white">                  +
+                {allEditors.length - 3}              </div>
               }            </div>          </div>          <div className="flex items-center gap-1.5 text-xs text-gray-400 bg-gray-50 px-2 py-1 rounded-md">            <Clock className="w-3 h-3" />            {formatDate(form.updatedAt)}          </div>        </div>        {}        {!compact &&
-        <div className="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-gray-100">            <div className="flex items-center gap-2 text-xs text-gray-500 font-medium">              <Inbox className="w-3.5 h-3.5 text-gray-400" />              <span>                {form.responseCount || form._count?.responses || 0}{" "}                {t("dashboard.stats.responses", "Responses")}              </span>            </div>            <div className="flex items-center gap-2 text-xs text-gray-500 font-medium">              <Eye className="w-3.5 h-3.5 text-gray-400" />              <span>                {form.viewCount || 0} {t("dashboard.stats.views", "Views")}              </span>            </div>          </div>
+        <div className="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-gray-100">          <div className="flex items-center gap-2 text-xs text-gray-500 font-medium">            <Inbox className="w-3.5 h-3.5 text-gray-400" />            <span>              {form.responseCount || form._count?.responses || 0}{" "}              {t("dashboard.stats.responses", "Responses")}            </span>          </div>          <div className="flex items-center gap-2 text-xs text-gray-500 font-medium">            <Eye className="w-3.5 h-3.5 text-gray-400" />            <span>              {form.viewCount || 0} {t("dashboard.stats.views", "Views")}            </span>          </div>        </div>
         }      </div>      {}      <div
         className="p-3 bg-gray-50/30 border-t border-gray-100 grid grid-cols-2 gap-2"
         onClick={(e) => e.stopPropagation()}>

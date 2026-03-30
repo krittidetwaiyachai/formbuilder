@@ -217,15 +217,15 @@ export const MaterialDatePicker: React.FC<MaterialDatePickerProps> = ({
     { year: "numeric" }
   );
   const dateText =
-    mode === "month"
-      ? currentDate.toLocaleDateString(
-          i18n.language === "th" ? "th-TH" : "en-US",
-          { month: "short", year: "numeric" }
-        )
-      : currentDate.toLocaleDateString(
-          i18n.language === "th" ? "th-TH" : "en-US",
-          { weekday: "short", month: "short", day: "numeric" }
-        );
+  mode === "month" ?
+  currentDate.toLocaleDateString(
+    i18n.language === "th" ? "th-TH" : "en-US",
+    { month: "short", year: "numeric" }
+  ) :
+  currentDate.toLocaleDateString(
+    i18n.language === "th" ? "th-TH" : "en-US",
+    { weekday: "short", month: "short", day: "numeric" }
+  );
   const weekDays =
   i18n.language === "th" ?
   ["อา", "จ", "อ", "พ", "พฤ", "ศ", "ส"] :
@@ -296,10 +296,10 @@ export const MaterialDatePicker: React.FC<MaterialDatePickerProps> = ({
               {view === "month" &&
             <div className="flex items-center justify-center mb-4">
                   <button
-                    type="button"
-                    onClick={() => setView("year")}
-                    className="font-bold text-gray-800 text-lg hover:text-gray-900 transition-colors"
-                    title={t("common.date.year")}>
+                type="button"
+                onClick={() => setView("year")}
+                className="font-bold text-gray-800 text-lg hover:text-gray-900 transition-colors"
+                title={t("common.date.year")}>
                     {viewDate.getFullYear()}
                   </button>
                 </div>

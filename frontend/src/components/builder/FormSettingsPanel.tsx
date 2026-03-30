@@ -80,14 +80,14 @@ export default function FormSettingsPanel({ settings, onSettingsChange }: FormSe
               checked={localSettings.emailNotifications}
               onChange={(e) => handleChange({ emailNotifications: e.target.checked })} />
             <Label htmlFor="emailNotifications" className="cursor-pointer flex items-center gap-2">              <Mail className="h-3.5 w-3.5" />              {t('builder.settings.notifications', 'Email notifications')}            </Label>          </div>          {localSettings.emailNotifications &&
-          <div className="space-y-2 ml-6">              <Label className="text-xs">{t('builder.settings.notify_emails', 'Notification Emails')}</Label>              <div className="space-y-2">                {localSettings.notificationEmails?.map((email: string) =>
-              <div key={email} className="flex items-center gap-2">                    <Input value={email} readOnly className="flex-1" />                    <Button
+          <div className="space-y-2 ml-6">            <Label className="text-xs">{t('builder.settings.notify_emails', 'Notification Emails')}</Label>            <div className="space-y-2">              {localSettings.notificationEmails?.map((email: string) =>
+              <div key={email} className="flex items-center gap-2">                <Input value={email} readOnly className="flex-1" />                <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => handleEmailRemove(email)}
                   className="text-destructive">
-                      {t('builder.settings.remove_email', 'Remove')}                    </Button>                  </div>
-              )}                <Input
+                      {t('builder.settings.remove_email', 'Remove')}                </Button>              </div>
+              )}              <Input
                 type="email"
                 placeholder="email@example.com"
                 onKeyDown={(e) => {
@@ -97,6 +97,6 @@ export default function FormSettingsPanel({ settings, onSettingsChange }: FormSe
                     e.currentTarget.value = "";
                   }
                 }} />
-                <p className="text-xs text-muted-foreground">                  {t('builder.settings.add_email_placeholder', 'Press Enter to add email')}                </p>              </div>            </div>
+                <p className="text-xs text-muted-foreground">                {t('builder.settings.add_email_placeholder', 'Press Enter to add email')}              </p>            </div>          </div>
           }        </div>      </CardContent>    </Card>);
 }

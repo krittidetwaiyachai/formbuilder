@@ -205,7 +205,7 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = ({
             draggable
             onDragStart={(e) => handleDragStart(e, idx)}
             onDragEnd={handleDragEnd}>
-              <div className="cursor-grab active:cursor-grabbing p-1 rounded hover:bg-gray-100 transition-colors">                <GripVertical className="h-4 w-4 text-gray-400 hover:text-gray-600" />              </div>              <div className="w-5 h-5 border-2 border-pink-300 rounded shrink-0" />              <div className="flex-1 flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2 border border-gray-200 hover:border-gray-300 transition-all">                <input
+              <div className="cursor-grab active:cursor-grabbing p-1 rounded hover:bg-gray-100 transition-colors">              <GripVertical className="h-4 w-4 text-gray-400 hover:text-gray-600" />            </div>            <div className="w-5 h-5 border-2 border-pink-300 rounded shrink-0" />            <div className="flex-1 flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2 border border-gray-200 hover:border-gray-300 transition-all">              <input
                 type="text"
                 value={opt.label}
                 onChange={(e) => handleUpdateOption(idx, e.target.value)}
@@ -215,7 +215,7 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = ({
                 type="button"
                 onClick={() => handleRemoveOption(idx)}
                 className="p-1 text-gray-400 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100">
-                  <X className="h-3.5 w-3.5" />                </button>              </div>            </div>
+                  <X className="h-3.5 w-3.5" />              </button>            </div>          </div>
           )}        </div>        <div className="flex items-center gap-2">          <div className="w-6" />          <div className="w-5 h-5 border-2 border-dashed border-gray-300 rounded shrink-0" />          <div className="flex-1 flex items-center gap-2 bg-white rounded-lg px-3 py-2 border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors">            <button
               type="button"
               onClick={handleAddOption}
@@ -229,7 +229,7 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = ({
               className="flex-1 bg-transparent text-sm text-gray-700 focus:outline-none placeholder:text-gray-400"
               placeholder={t("common.options.add_option")} />
           </div>        </div>        {options.length === 0 &&
-        <p className="text-xs text-gray-400 text-center py-2">            {t("common.options.no_options")}          </p>
+        <p className="text-xs text-gray-400 text-center py-2">          {t("common.options.no_options")}        </p>
         }      </div>);
   }
   return (
@@ -245,7 +245,7 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = ({
       <div
         key={idx}
         className="flex items-center gap-4 p-3 rounded-xl border border-transparent hover:bg-pink-50/50 transition-colors duration-200 group">
-            <div className="relative flex items-center justify-center shrink-0">              <div className="w-6 h-6 border-2 border-pink-200 rounded-lg group-hover/field:border-pink-500 transition-colors"></div>              {idx === 0 &&
+            <div className="relative flex items-center justify-center shrink-0">          <div className="w-6 h-6 border-2 border-pink-200 rounded-lg group-hover/field:border-pink-500 transition-colors"></div>          {idx === 0 &&
           <svg
             className="absolute w-4 h-4 text-pink-500"
             fill="none"
@@ -257,10 +257,10 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = ({
               strokeLinejoin="round"
               d="M5 13l4 4L19 7" />
                 </svg>
-          }            </div>            <span className="text-base font-medium text-gray-700">              {opt.label || opt.value}            </span>          </div>
+          }        </div>        <span className="text-base font-medium text-gray-700">          {opt.label || opt.value}        </span>      </div>
       ) :
-      <div className="flex items-center gap-4 p-3 text-gray-400 italic">          <div className="w-6 h-6 border-2 border-gray-200 rounded-lg"></div>          <span>{t("common.options.click_to_add")}</span>        </div>
+      <div className="flex items-center gap-4 p-3 text-gray-400 italic">        <div className="w-6 h-6 border-2 border-gray-200 rounded-lg"></div>        <span>{t("common.options.click_to_add")}</span>      </div>
       }      {otherOption &&
-      <div className="flex items-center gap-4 p-3 rounded-xl border border-transparent hover:bg-pink-50/50 transition-colors duration-200 group">          <div className="relative flex items-center justify-center shrink-0">            <div className="w-6 h-6 border-2 border-pink-200 rounded-lg group-hover/field:border-pink-500 transition-colors"></div>          </div>          <span className="text-base font-medium text-gray-700">            {t("common.options.other")}          </span>          <div className="ml-2 px-2 py-1 border-b border-gray-300 w-full text-xs text-gray-400 italic">            {t("common.options.type_here")}          </div>        </div>
+      <div className="flex items-center gap-4 p-3 rounded-xl border border-transparent hover:bg-pink-50/50 transition-colors duration-200 group">        <div className="relative flex items-center justify-center shrink-0">          <div className="w-6 h-6 border-2 border-pink-200 rounded-lg group-hover/field:border-pink-500 transition-colors"></div>        </div>        <span className="text-base font-medium text-gray-700">          {t("common.options.other")}        </span>        <div className="ml-2 px-2 py-1 border-b border-gray-300 w-full text-xs text-gray-400 italic">          {t("common.options.type_here")}        </div>      </div>
       }    </div>);
 };

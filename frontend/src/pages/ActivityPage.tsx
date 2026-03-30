@@ -138,14 +138,14 @@ export default function ActivityPage() {
                   }}
                   className={`p-2.5 rounded-xl active:bg-gray-200 transition-colors ${userFilter ? "bg-indigo-50 text-indigo-600" : "bg-gray-100 text-gray-700"}`}>
                   <User className="w-5 h-5" />                </button>                {isUserFilterOpen &&
-                <div className="absolute right-0 top-full mt-2 w-64 bg-white border border-gray-200 rounded-xl shadow-xl z-50 py-1 max-h-[60vh] overflow-y-auto">                    <button
+                <div className="absolute right-0 top-full mt-2 w-64 bg-white border border-gray-200 rounded-xl shadow-xl z-50 py-1 max-h-[60vh] overflow-y-auto">                  <button
                     onClick={() => {
                       setUserFilter(null);
                       setIsUserFilterOpen(false);
                       setPage(1);
                     }}
                     className={`w-full text-left px-4 py-3 text-sm transition-colors flex items-center gap-2 ${!userFilter ? "bg-indigo-50 text-indigo-700 font-medium" : "text-gray-600 hover:bg-gray-50"}`}>
-                      <div className="p-1 bg-gray-200 rounded-full">                        <User className="w-4 h-4 text-gray-500" />                      </div>                      <span>{t("activity.filter.all_users")}</span>                    </button>                    {editors.map((editor) =>
+                      <div className="p-1 bg-gray-200 rounded-full">                      <User className="w-4 h-4 text-gray-500" />                    </div>                    <span>{t("activity.filter.all_users")}</span>                  </button>                  {editors.map((editor) =>
                   <button
                     key={editor.id}
                     onClick={() => {
@@ -159,9 +159,9 @@ export default function ActivityPage() {
                       src={editor.photoUrl}
                       alt=""
                       className="w-6 h-6 rounded-full" /> :
-                    <div className="w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center text-xs font-bold text-indigo-600">                            {editor.firstName?.charAt(0)}                          </div>
-                    }                        <span className="truncate">                          {editor.firstName} {editor.lastName}                        </span>                      </button>
-                  )}                  </div>
+                    <div className="w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center text-xs font-bold text-indigo-600">                      {editor.firstName?.charAt(0)}                    </div>
+                    }                    <span className="truncate">                      {editor.firstName} {editor.lastName}                    </span>                  </button>
+                  )}                </div>
                 }              </div>              <button
                 onClick={() => setSort(sort === "desc" ? "asc" : "desc")}
                 className="p-2.5 bg-gray-100 rounded-xl active:bg-gray-200 transition-colors flex items-center gap-1.5">
@@ -174,7 +174,7 @@ export default function ActivityPage() {
                   }}
                   className={`p-2.5 rounded-xl active:bg-gray-200 transition-colors ${actionFilter !== "ALL" ? "bg-indigo-50 text-indigo-600" : "bg-gray-100 text-gray-700"}`}>
                   <Filter className="w-5 h-5" />                </button>                {isFilterOpen &&
-                <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-xl ring-1 ring-black/5 border border-gray-100 overflow-hidden z-50">                    <div className="py-1">                      {[
+                <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-xl ring-1 ring-black/5 border border-gray-100 overflow-hidden z-50">                  <div className="py-1">                    {[
                     {
                       value: "ALL",
                       label: t("activity.filter.all"),
@@ -206,10 +206,10 @@ export default function ActivityPage() {
                       className={`w-full text-left px-4 py-3 text-sm flex items-center gap-3 transition-colors ${actionFilter === f.value ? "bg-indigo-50 text-indigo-700 font-medium" : "text-gray-600 hover:bg-gray-50"}`}>
                           <f.icon
                         className={`w-4 h-4 ${actionFilter === f.value ? "text-indigo-600" : "text-gray-400"}`} />
-                          {f.label}                          {actionFilter === f.value &&
+                          {f.label}                      {actionFilter === f.value &&
                       <div className="ml-auto w-1.5 h-1.5 rounded-full bg-indigo-600" />
-                      }                        </button>
-                    )}                    </div>                  </div>
+                      }                    </button>
+                    )}                  </div>                </div>
                 }              </div>            </div>          </div>          <h1 className="text-[28px] font-bold text-black tracking-tight">            {t("activity.title")}          </h1>          <p className="text-sm text-gray-500 truncate">{formTitle}</p>        </div>      </header>      <header className="hidden md:block sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm transition-all duration-200">        <div className="max-w-4xl mx-auto px-6 py-3 min-h-[64px] flex flex-col md:flex-row md:items-center justify-between gap-4">          <div className="flex items-center gap-4">            <button
               onClick={() => navigate("/")}
               className="p-2 hover:bg-gray-100 rounded-full text-gray-500 transition-all hover:-translate-x-1">
@@ -226,14 +226,14 @@ export default function ActivityPage() {
                   t("activity.filter.all_users")}                </span>                <ChevronDown
                   className={`w-4 h-4 text-gray-500 transition-transform ${isUserFilterOpen ? "rotate-180" : ""}`} />
               </button>              {isUserFilterOpen &&
-              <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-lg z-50 py-1 max-h-80 overflow-y-auto">                  <button
+              <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-lg z-50 py-1 max-h-80 overflow-y-auto">                <button
                   onClick={() => {
                     setUserFilter(null);
                     setIsUserFilterOpen(false);
                     setPage(1);
                   }}
                   className={`w-full text-left px-4 py-2 text-sm transition-colors flex items-center gap-2 ${!userFilter ? "bg-indigo-50 text-indigo-700 font-medium" : "text-gray-600 hover:bg-gray-50"}`}>
-                    <User className="w-4 h-4 opacity-70" />                    <span>{t("activity.filter.all_users")}</span>                  </button>                  {editors.map((editor) =>
+                    <User className="w-4 h-4 opacity-70" />                  <span>{t("activity.filter.all_users")}</span>                </button>                {editors.map((editor) =>
                 <button
                   key={editor.id}
                   onClick={() => {
@@ -247,8 +247,8 @@ export default function ActivityPage() {
                     src={editor.photoUrl}
                     alt=""
                     className="w-6 h-6 rounded-full" />
-                  }                      <span>                        {editor.firstName} {editor.lastName}                      </span>                    </button>
-                )}                </div>
+                  }                  <span>                    {editor.firstName} {editor.lastName}                  </span>                </button>
+                )}              </div>
               }            </div>            <div className="relative">              <button
                 onClick={() => setIsFilterOpen(!isFilterOpen)}
                 onBlur={() => setTimeout(() => setIsFilterOpen(false), 200)}
@@ -256,7 +256,7 @@ export default function ActivityPage() {
                 <span>                  {actionFilter === "ALL" && t("activity.filter.all")}                  {actionFilter === "CREATED" && t("activity.filter.created")}                  {actionFilter === "UPDATED" && t("activity.filter.updated")}                  {actionFilter === "DELETED" && t("activity.filter.deleted")}                </span>                <ChevronDown
                   className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${isFilterOpen ? "rotate-180 text-indigo-500" : ""}`} />
               </button>              {isFilterOpen &&
-              <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl ring-1 ring-black/5 border border-gray-100 overflow-hidden z-50 origin-top-right animate-in fade-in zoom-in-95 duration-100">                  <div className="py-1">                    {[
+              <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl ring-1 ring-black/5 border border-gray-100 overflow-hidden z-50 origin-top-right animate-in fade-in zoom-in-95 duration-100">                <div className="py-1">                  {[
                   {
                     value: "ALL",
                     label: t("activity.filter.all"),
@@ -288,10 +288,11 @@ export default function ActivityPage() {
                     className={`w-full text-left px-4 py-2.5 text-sm flex items-center gap-2.5 transition-colors ${actionFilter === f.value ? "bg-indigo-50 text-indigo-700 font-medium" : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"}`}>
                         <f.icon
                       className={`w-4 h-4 ${actionFilter === f.value ? "text-indigo-600" : "text-gray-400"}`} />
-                        {f.label}                        {actionFilter === f.value &&
+                        {f.label}                    {actionFilter === f.value &&
                     <div className="ml-auto w-1.5 h-1.5 rounded-full bg-indigo-600" />
-                    }                      </button>
-                  )}                  </div>                  <div className="px-4 py-2 bg-gray-50 border-t border-gray-100">                    <p className="text-[10px] text-gray-500 leading-tight">                      *{t("activity.filter.updated")} includes settings.                    </p>                  </div>                </div>
+                    }                  </button>
+                  )}                </div>                <div className="px-4 py-2 bg-gray-50 border-t border-gray-100">                  <p className="text-[10px] text-gray-500 leading-tight">                      *
+                    {t("activity.filter.updated")} includes settings.                  </p>                </div>              </div>
               }            </div>            <button
               onClick={() => {
                 setSort((s) => s === "desc" ? "asc" : "desc");
@@ -299,18 +300,18 @@ export default function ActivityPage() {
               }}
               className="flex-shrink-0 flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-700 text-sm rounded-xl hover:bg-gray-50 hover:border-gray-300 shadow-sm transition-all font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/20 whitespace-nowrap">
               {sort === "desc" ?
-              <>                  <ArrowUp className="w-4 h-4 text-indigo-500 rotate-180" />                  <span>{t("activity.filter.newest")}</span>                </> :
-              <>                  <ArrowUp className="w-4 h-4 text-indigo-500" />                  <span>{t("activity.filter.oldest")}</span>                </>
+              <>                <ArrowUp className="w-4 h-4 text-indigo-500 rotate-180" />                <span>{t("activity.filter.newest")}</span>              </> :
+              <>                <ArrowUp className="w-4 h-4 text-indigo-500" />                <span>{t("activity.filter.oldest")}</span>              </>
               }            </button>          </div>        </div>      </header>      <main className="flex-1 overflow-y-auto custom-scrollbar">        <div className="max-w-4xl mx-auto px-6 py-10">          <div className="relative">            <div className="absolute left-[28px] top-6 bottom-6 w-0.5 bg-gradient-to-b from-gray-200 via-gray-200/50 to-transparent" />            <div className="space-y-8">              {logs.length === 0 ?
-              <div className="text-center py-20 bg-white rounded-xl border border-gray-100 shadow-sm">                  <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">                    <Activity className="w-8 h-8 text-gray-300" />                  </div>                  <h3 className="text-lg font-medium text-gray-900 mb-1">                    {t("activity.no_activity_title")}                  </h3>                  <p className="text-gray-500 max-w-sm mx-auto">                    {t("activity.no_activity_desc")}                  </p>                  {(actionFilter !== "ALL" || userFilter) &&
+              <div className="text-center py-20 bg-white rounded-xl border border-gray-100 shadow-sm">                <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">                  <Activity className="w-8 h-8 text-gray-300" />                </div>                <h3 className="text-lg font-medium text-gray-900 mb-1">                  {t("activity.no_activity_title")}                </h3>                <p className="text-gray-500 max-w-sm mx-auto">                  {t("activity.no_activity_desc")}                </p>                {(actionFilter !== "ALL" || userFilter) &&
                 <button
                   onClick={() => {
                     setActionFilter("ALL");
                     setUserFilter(null);
                   }}
                   className="mt-4 text-indigo-600 font-medium hover:text-indigo-700 hover:underline">
-                      {t("activity.clear_filters")}                    </button>
-                }                </div> :
+                      {t("activity.clear_filters")}                </button>
+                }              </div> :
               logs.map((log, index) => {
                 if (!shouldRenderLog(log, actionFilter)) return null;
                 return (
@@ -322,17 +323,18 @@ export default function ActivityPage() {
                     actionFilter={actionFilter} />);
               })
               }              {totalPages > 1 &&
-              <div className="flex items-center justify-between pt-8 border-t border-gray-100">                  <p className="text-xs text-gray-500">                    Showing page{" "}                    <span className="font-medium text-gray-900">{page}</span> of{" "}                    <span className="font-medium text-gray-900">                      {totalPages}                    </span>                  </p>                  <div className="flex items-center gap-2">                    <button
+              <div className="flex items-center justify-between pt-8 border-t border-gray-100">                <p className="text-xs text-gray-500">                    Showing page
+                  {" "}                  <span className="font-medium text-gray-900">{page}</span> of{" "}                  <span className="font-medium text-gray-900">                    {totalPages}                  </span>                </p>                <div className="flex items-center gap-2">                  <button
                     onClick={() => setPage((p) => Math.max(1, p - 1))}
                     disabled={page === 1}
                     className="p-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
-                      <ChevronLeft className="w-4 h-4" />                    </button>                    <button
+                      <ChevronLeft className="w-4 h-4" />                  </button>                  <button
                     onClick={() =>
                     setPage((p) => Math.min(totalPages, p + 1))
                     }
                     disabled={page === totalPages}
                     className="p-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
-                      <ChevronRight className="w-4 h-4" />                    </button>                  </div>                </div>
+                      <ChevronRight className="w-4 h-4" />                  </button>                </div>              </div>
               }            </div>          </div>        </div>      </main>      <button
         onClick={scrollToTop}
         className={`fixed bottom-8 right-8 z-50 p-3 bg-black text-white rounded-full shadow-lg transition-all duration-300 transform hover:scale-110 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black ${

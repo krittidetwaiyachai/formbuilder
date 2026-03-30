@@ -125,17 +125,17 @@ export default function CollaboratorListModal({
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
                   className="flex items-center gap-2 mt-3 text-xs text-red-600 bg-red-50 p-2 rounded-md">
-                    <AlertCircle className="w-3.5 h-3.5" />                    {error}                  </motion.div>
+                    <AlertCircle className="w-3.5 h-3.5" />                  {error}                </motion.div>
                 }                {success &&
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
                   className="flex items-center gap-2 mt-3 text-xs text-green-600 bg-green-50 p-2 rounded-md">
-                    <CheckCircle className="w-3.5 h-3.5" />                    {success}                  </motion.div>
+                    <CheckCircle className="w-3.5 h-3.5" />                  {success}                </motion.div>
                 }              </AnimatePresence>            </div>            {}            <div className="p-2">              <label className="px-3 text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1 block mt-2">                {t("dashboard.collaborators.current_access")} (                {collaborators.length})              </label>              {collaborators.length === 0 ?
-              <div className="p-8 text-center text-gray-500">                  <User className="w-10 h-10 mx-auto mb-2 text-gray-300" />                  <p>{t("dashboard.collaborators.no_collaborators")}</p>                </div> :
-              <div className="space-y-1">                  {collaborators.map((user, index) => {
+              <div className="p-8 text-center text-gray-500">                <User className="w-10 h-10 mx-auto mb-2 text-gray-300" />                <p>{t("dashboard.collaborators.no_collaborators")}</p>              </div> :
+              <div className="space-y-1">                {collaborators.map((user, index) => {
                   const isOwner = index === 0;
                   const isMe = user.id === currentUser?.id;
                   return (
@@ -144,15 +144,15 @@ export default function CollaboratorListModal({
                       animate={{ opacity: 1, x: 0 }}
                       key={user.id || user.email || index}
                       className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-xl transition-colors group">
-                        {}                        <div className="flex-shrink-0">                          <UserAvatar
+                        {}                      <div className="flex-shrink-0">                        <UserAvatar
                           user={user}
                           className="w-10 h-10 rounded-full border border-gray-200 object-cover shadow-sm" />
-                        </div>                        {}                        <div className="min-w-0 flex-1">                          <p className="text-sm font-bold text-gray-900 truncate flex items-center gap-2">                            {user.firstName} {user.lastName}                            {isOwner &&
-                          <span className="text-[9px] bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded-full border border-gray-200">                                {t("dashboard.collaborators.owner")}                              </span>
-                          }                            {isMe &&
-                          <span className="text-[9px] bg-indigo-50 text-indigo-600 px-1.5 py-0.5 rounded-full border border-indigo-100">                                {t("dashboard.collaborators.you")}                              </span>
-                          }                          </p>                          <div className="flex items-center gap-1 text-xs text-gray-500 truncate">                            <Mail className="w-3 h-3 flex-shrink-0" />                            <span className="truncate">                              {user.email ||
-                            t("dashboard.collaborators.no_email")}                            </span>                          </div>                        </div>                        {}                        {!isOwner && (
+                        </div>                      {}                      <div className="min-w-0 flex-1">                        <p className="text-sm font-bold text-gray-900 truncate flex items-center gap-2">                          {user.firstName} {user.lastName}                          {isOwner &&
+                          <span className="text-[9px] bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded-full border border-gray-200">                            {t("dashboard.collaborators.owner")}                          </span>
+                          }                          {isMe &&
+                          <span className="text-[9px] bg-indigo-50 text-indigo-600 px-1.5 py-0.5 rounded-full border border-indigo-100">                            {t("dashboard.collaborators.you")}                          </span>
+                          }                        </p>                        <div className="flex items-center gap-1 text-xs text-gray-500 truncate">                          <Mail className="w-3 h-3 flex-shrink-0" />                          <span className="truncate">                            {user.email ||
+                            t("dashboard.collaborators.no_email")}                          </span>                        </div>                      </div>                      {}                      {!isOwner && (
                       currentUser?.id === collaborators[0]?.id ||
                       isMe) &&
                       <button
@@ -166,9 +166,9 @@ export default function CollaboratorListModal({
                               {isMe ?
                         <LogOut className="w-4 h-4" /> :
                         <Trash2 className="w-4 h-4" />
-                        }                            </button>
-                      }                      </motion.div>);
-                })}                </div>
+                        }                      </button>
+                      }                    </motion.div>);
+                })}              </div>
               }            </div>          </div>        </motion.div>      </div>      <ConfirmDialog
         open={deleteConfirmOpen}
         onOpenChange={setDeleteConfirmOpen}

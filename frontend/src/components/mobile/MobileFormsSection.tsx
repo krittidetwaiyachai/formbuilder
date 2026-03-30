@@ -94,13 +94,13 @@ export default function MobileFormsSection({
         disabled={isCreating}
         className="w-full flex items-center justify-center gap-2.5 py-4 rounded-2xl bg-black text-white font-semibold text-base active:scale-[0.98] active:bg-gray-900 transition-all disabled:opacity-50 shadow-lg shadow-black/10">
         <Plus className="w-5 h-5" />        {t("dashboard.create_form")}      </button>      {loading ?
-      <div className="space-y-3">          {[1, 2, 3].map((i) =>
+      <div className="space-y-3">        {[1, 2, 3].map((i) =>
         <div
           key={i}
           className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 space-y-3 animate-pulse">
-              <div className="flex items-center gap-3">                <div className="w-11 h-11 bg-gray-100 rounded-xl flex-shrink-0"></div>                <div className="flex-1 space-y-2">                  <div className="h-4 bg-gray-100 rounded w-3/4"></div>                  <div className="h-3 bg-gray-50 rounded w-1/2"></div>                </div>              </div>            </div>
-        )}        </div> :
-      <AnimatePresence mode="popLayout">          {forms.map((form, index) =>
+              <div className="flex items-center gap-3">            <div className="w-11 h-11 bg-gray-100 rounded-xl flex-shrink-0"></div>            <div className="flex-1 space-y-2">              <div className="h-4 bg-gray-100 rounded w-3/4"></div>              <div className="h-3 bg-gray-50 rounded w-1/2"></div>            </div>          </div>        </div>
+        )}      </div> :
+      <AnimatePresence mode="popLayout">        {forms.map((form, index) =>
         <motion.div
           key={form.id}
           layout
@@ -114,9 +114,9 @@ export default function MobileFormsSection({
             setSelectedForm({ id: form.id, title: form.title })
             } />
             </motion.div>
-        )}        </AnimatePresence>
+        )}      </AnimatePresence>
       }      {!loading && forms.length === 0 &&
-      <div className="flex flex-col items-center justify-center py-16 text-center">          <div className="w-20 h-20 bg-gray-50 border border-gray-100 rounded-2xl flex items-center justify-center mb-5">            <FileX className="w-9 h-9 text-gray-300" />          </div>          <p className="font-semibold text-gray-800 text-base mb-1.5">            {t("dashboard.empty.no_forms")}          </p>          <p className="text-sm text-gray-400 px-8 leading-relaxed">            {t("dashboard.empty.description")}          </p>        </div>
+      <div className="flex flex-col items-center justify-center py-16 text-center">        <div className="w-20 h-20 bg-gray-50 border border-gray-100 rounded-2xl flex items-center justify-center mb-5">          <FileX className="w-9 h-9 text-gray-300" />        </div>        <p className="font-semibold text-gray-800 text-base mb-1.5">          {t("dashboard.empty.no_forms")}        </p>        <p className="text-sm text-gray-400 px-8 leading-relaxed">          {t("dashboard.empty.description")}        </p>      </div>
       }      <MobileActionSheet
         isOpen={!!selectedForm}
         onClose={() => setSelectedForm(null)}

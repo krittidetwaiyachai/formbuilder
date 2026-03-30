@@ -3,8 +3,8 @@ export interface FormDiffDetails {
   addedFields: Record<string, unknown>[];
   deletedFields: Record<string, unknown>[];
   updatedFields: Record<string, unknown>[];
-  settingsChanges?: { property: string; before: unknown; after: unknown }[];
-  logicChanges?: { added: Record<string, unknown>[]; deleted: Record<string, unknown>[]; updated: Record<string, unknown>[] };
+  settingsChanges?: {property: string;before: unknown;after: unknown;}[];
+  logicChanges?: {added: Record<string, unknown>[];deleted: Record<string, unknown>[];updated: Record<string, unknown>[];};
 }
 export class FormDiffHelper {
   static calculateDiff(originalForm: Record<string, unknown>, newFormData: Record<string, unknown>) {
@@ -20,15 +20,15 @@ export class FormDiffHelper {
       activityDetails.changes = [...activityDetails.changes, ...settingsChanges.map((c) => c.property)];
     }
     if (newFormData.fields) {
-      this.calculateFieldChanges((originalForm.fields as Record<string, any>[]) || [], (newFormData.fields as Record<string, any>[]) || [], activityDetails);
+      this.calculateFieldChanges(originalForm.fields as Record<string, any>[] || [], newFormData.fields as Record<string, any>[] || [], activityDetails);
     }
     if (newFormData.logicRules) {
-      this.calculateLogicChanges((originalForm.logicRules as Record<string, any>[]) || [], (newFormData.logicRules as Record<string, any>[]) || [], activityDetails);
+      this.calculateLogicChanges(originalForm.logicRules as Record<string, any>[] || [], newFormData.logicRules as Record<string, any>[] || [], activityDetails);
     }
     return activityDetails;
   }
   private static getSettingsChanges(originalForm: Record<string, unknown>, formData: Record<string, unknown>) {
-    const settingsChanges: { property: string; before: unknown; after: unknown }[] = [];
+    const settingsChanges: {property: string;before: unknown;after: unknown;}[] = [];
     const ignoreKeys = ['fields', 'conditions', 'logicRules'];
     Object.keys(formData).forEach((key) => {
       if (ignoreKeys.includes(key)) return;
@@ -76,8 +76,8 @@ export class FormDiffHelper {
       }
     });
     if (activityDetails.addedFields.length > 0 ||
-      activityDetails.deletedFields.length > 0 ||
-      activityDetails.updatedFields.length > 0) {
+    activityDetails.deletedFields.length > 0 ||
+    activityDetails.updatedFields.length > 0) {
       activityDetails.changes.push('fields');
     }
   }
@@ -153,7 +153,7 @@ export class FormDiffHelper {
     });
   }
   private static calculateLogicChanges(originalLogicRules: Record<string, any>[], newLogicRules: Record<string, any>[], activityDetails: FormDiffDetails) {
-    const logicChanges: { added: Record<string, unknown>[]; deleted: Record<string, unknown>[]; updated: Record<string, unknown>[] } = { added: [], deleted: [], updated: [] };
+    const logicChanges: {added: Record<string, unknown>[];deleted: Record<string, unknown>[];updated: Record<string, unknown>[];} = { added: [], deleted: [], updated: [] };
     const originalRuleIds = new Set(originalLogicRules.map((r) => r.id));
     const newRuleIds = new Set(newLogicRules.map((r) => r.id));
     newLogicRules.forEach((r: Record<string, any>) => {

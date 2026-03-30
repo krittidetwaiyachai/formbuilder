@@ -29,6 +29,18 @@ export const ParagraphField: React.FC<ParagraphFieldProps> = ({
 }) => {
   const { t } = useTranslation();
   const updateField = useFormStore((state) => state.updateField);
+  const handleRichTextLinkInteraction = (
+    event:
+      | React.MouseEvent<HTMLElement>
+      | React.PointerEvent<HTMLElement>
+  ) => {
+    const target = event.target as HTMLElement | null;
+    if (!target?.closest("a")) {
+      return;
+    }
+
+    event.stopPropagation();
+  };
   const htmlContent = {
     __html: sanitize(field.label || t("builder.header.paragraph_edit"))
   };
@@ -60,9 +72,12 @@ export const ParagraphField: React.FC<ParagraphFieldProps> = ({
             placeholder={t("builder.header.paragraph_edit")}
             className="text-sm text-black leading-relaxed"
             minHeight="80px" />
-          </React.Suspense>        </div> :
+          </React.Suspense>      </div> :
       <div
-        className="text-sm text-black leading-relaxed outline-none min-h-[1.5em] prose prose-sm max-w-none"
+        className="rich-text-content text-sm text-black leading-relaxed outline-none min-h-[1.5em] prose prose-sm max-w-none"
+        onMouseDownCapture={handleRichTextLinkInteraction}
+        onClickCapture={handleRichTextLinkInteraction}
+        onPointerDownCapture={handleRichTextLinkInteraction}
         dangerouslySetInnerHTML={htmlContent} />
       }    </div>);
 };

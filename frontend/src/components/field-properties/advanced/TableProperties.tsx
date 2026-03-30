@@ -105,30 +105,30 @@ export function TableProperties({
         setActiveTab={setActiveTab}
         tabs={["general", "columns", "advanced"]} />
       {}      {activeTab === "general" &&
-      <div className="space-y-4">          {}          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.field_label")}            </label>            <input
+      <div className="space-y-4">        {}        <div>          <label className="block text-sm font-medium text-black mb-1">            {t("builder.properties.field_label")}          </label>          <input
             type="text"
             value={stripHtml(field.label)}
             onChange={(e) => handleUpdate({ label: e.target.value })}
             className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text" />
-          </div>          {}          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.required")}            </label>            <label className="relative inline-flex items-center cursor-pointer">              <input
+          </div>        {}        <div>          <label className="block text-sm font-medium text-black mb-1">            {t("builder.properties.required")}          </label>          <label className="relative inline-flex items-center cursor-pointer">            <input
               type="checkbox"
               checked={field.required}
               onChange={(e) => handleUpdate({ required: e.target.checked })}
               className="sr-only peer" />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>            </label>            <p className="mt-1 text-xs text-gray-500">              {t("builder.properties.min_one_row")}            </p>          </div>          {}          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.sublabel")}            </label>            <input
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>          </label>          <p className="mt-1 text-xs text-gray-500">            {t("builder.properties.min_one_row")}          </p>        </div>        {}        <div>          <label className="block text-sm font-medium text-black mb-1">            {t("builder.properties.sublabel")}          </label>          <input
             type="text"
             value={options.subLabel || ""}
             onChange={(e) => handleOptionUpdate("subLabel", e.target.value)}
             className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
             placeholder={t("builder.properties.sublabel")} />
-          </div>          {}          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.allow_add_row")}            </label>            <label className="relative inline-flex items-center cursor-pointer">              <input
+          </div>        {}        <div>          <label className="block text-sm font-medium text-black mb-1">            {t("builder.properties.allow_add_row")}          </label>          <label className="relative inline-flex items-center cursor-pointer">            <input
               type="checkbox"
               checked={allowAddRow}
               onChange={(e) =>
               handleOptionUpdate("allowAddRow", e.target.checked)
               }
               className="sr-only peer" />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>            </label>            <p className="mt-1 text-xs text-gray-500">              {t("builder.properties.allow_add_row_desc")}            </p>          </div>          {}          <button
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>          </label>          <p className="mt-1 text-xs text-gray-500">            {t("builder.properties.allow_add_row_desc")}          </p>        </div>        {}        <button
           type="button"
           onClick={() =>
           duplicatesField({
@@ -137,21 +137,21 @@ export function TableProperties({
           } as unknown as Field)
           }
           className="w-full mt-4 px-3 py-2 text-sm font-medium text-black bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors flex items-center justify-center gap-2">
-            <Copy className="h-4 w-4" />            {t("builder.properties.duplicate")}          </button>        </div>
+            <Copy className="h-4 w-4" />          {t("builder.properties.duplicate")}        </button>      </div>
       }      {}      {activeTab === "columns" &&
-      <div className="space-y-6">          {}          <div className="grid grid-cols-3 gap-2 mb-4">            <button
+      <div className="space-y-6">        {}        <div className="grid grid-cols-3 gap-2 mb-4">          <button
             onClick={() => applyTemplate("person")}
             className="text-xs bg-gray-50 hover:bg-gray-100 border border-gray-200 p-2 rounded text-center">
-              {t("builder.templates.person")}            </button>            <button
+              {t("builder.templates.person")}          </button>          <button
             onClick={() => applyTemplate("address")}
             className="text-xs bg-gray-50 hover:bg-gray-100 border border-gray-200 p-2 rounded text-center">
-              {t("builder.templates.address")}            </button>            <button
+              {t("builder.templates.address")}          </button>          <button
             onClick={() => applyTemplate("inventory")}
             className="text-xs bg-gray-50 hover:bg-gray-100 border border-gray-200 p-2 rounded text-center">
-              {t("builder.templates.inventory")}            </button>          </div>          {}          <div>            <div className="flex items-center justify-between mb-2">              <label className="text-sm font-medium text-black">                {t("builder.properties.columns_defined")}              </label>              <button
+              {t("builder.templates.inventory")}          </button>        </div>        {}        <div>          <div className="flex items-center justify-between mb-2">            <label className="text-sm font-medium text-black">              {t("builder.properties.columns_defined")}            </label>            <button
               onClick={addColumn}
               className="p-1 hover:bg-gray-100 rounded-full text-indigo-600 transition-colors">
-                <Plus className="w-4 h-4" />              </button>            </div>            <DragDropContext onDragEnd={handleDragEndColumns}>              <Droppable droppableId="table-cols">                {(provided) =>
+                <Plus className="w-4 h-4" />            </button>          </div>          <DragDropContext onDragEnd={handleDragEndColumns}>            <Droppable droppableId="table-cols">              {(provided) =>
               <div
                 {...provided.droppableProps}
                 ref={provided.innerRef}
@@ -170,7 +170,7 @@ export function TableProperties({
                       {...provided.dragHandleProps}
                       className="text-gray-300 cursor-move hover:text-gray-500"
                       style={{ touchAction: "none" }}>
-                              <GripVertical className="w-4 h-4" />                            </div>                            <input
+                              <GripVertical className="w-4 h-4" />                    </div>                    <input
                       type="text"
                       value={col.label}
                       onChange={(e) =>
@@ -182,13 +182,13 @@ export function TableProperties({
                     <button
                       onClick={() => removeColumn(index)}
                       className="p-1 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors opacity-0 group-hover:opacity-100">
-                                <X className="w-4 h-4" />                              </button>
-                    }                          </div>
-                  }                      </Draggable>
-                )}                    {provided.placeholder}                  </div>
-              }              </Droppable>            </DragDropContext>          </div>        </div>
+                                <X className="w-4 h-4" />                    </button>
+                    }                  </div>
+                  }                </Draggable>
+                )}                {provided.placeholder}              </div>
+              }            </Droppable>          </DragDropContext>        </div>      </div>
       }      {}      {activeTab === "advanced" &&
-      <div className="space-y-4">          {}          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.read_only")}            </label>            <label className="relative inline-flex items-center cursor-pointer">              <input
+      <div className="space-y-4">        {}        <div>          <label className="block text-sm font-medium text-black mb-1">            {t("builder.properties.read_only")}          </label>          <label className="relative inline-flex items-center cursor-pointer">            <input
               type="checkbox"
               checked={
               (field.options as TableFieldOptions)?.readOnly || false
@@ -197,21 +197,21 @@ export function TableProperties({
               handleOptionUpdate("readOnly", e.target.checked)
               }
               className="sr-only peer" />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>            </label>            <p className="mt-1 text-xs text-gray-500">              {t("builder.properties.read_only_desc")}            </p>          </div>          {}          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.hover_text")}            </label>            <textarea
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>          </label>          <p className="mt-1 text-xs text-gray-500">            {t("builder.properties.read_only_desc")}          </p>        </div>        {}        <div>          <label className="block text-sm font-medium text-black mb-1">            {t("builder.properties.hover_text")}          </label>          <textarea
             value={options.hoverText || ""}
             onChange={(e) => handleOptionUpdate("hoverText", e.target.value)}
             rows={2}
             className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text" />
-            <p className="mt-1 text-xs text-gray-500">              {t("builder.properties.hover_text_desc")}            </p>          </div>          {}          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.shrink")}            </label>            <label className="relative inline-flex items-center cursor-pointer">              <input
+            <p className="mt-1 text-xs text-gray-500">            {t("builder.properties.hover_text_desc")}          </p>        </div>        {}        <div>          <label className="block text-sm font-medium text-black mb-1">            {t("builder.properties.shrink")}          </label>          <label className="relative inline-flex items-center cursor-pointer">            <input
               type="checkbox"
               checked={field.shrink || false}
               onChange={(e) => handleUpdate({ shrink: e.target.checked })}
               className="sr-only peer" />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>            </label>            <p className="mt-1 text-xs text-gray-500">              {t("builder.properties.shrink_desc")}            </p>          </div>          {}          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.hide_field")}            </label>            <label className="relative inline-flex items-center cursor-pointer">              <input
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>          </label>          <p className="mt-1 text-xs text-gray-500">            {t("builder.properties.shrink_desc")}          </p>        </div>        {}        <div>          <label className="block text-sm font-medium text-black mb-1">            {t("builder.properties.hide_field")}          </label>          <label className="relative inline-flex items-center cursor-pointer">            <input
               type="checkbox"
               checked={options.hidden || false}
               onChange={(e) => handleOptionUpdate("hidden", e.target.checked)}
               className="sr-only peer" />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>            </label>            <p className="mt-1 text-xs text-gray-500">              {t("builder.properties.hide_field_desc")}            </p>          </div>        </div>
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>          </label>          <p className="mt-1 text-xs text-gray-500">            {t("builder.properties.hide_field_desc")}          </p>        </div>      </div>
       }    </div>);
 }

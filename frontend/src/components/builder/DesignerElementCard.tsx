@@ -63,8 +63,8 @@ export default function DesignerElementCard({
             size="icon"
             className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
             onClick={onDelete}>
-              <Trash2 className="h-4 w-4" />            </Button>
+              <Trash2 className="h-4 w-4" />          </Button>
           }        </div>      </div>      {!isSelected &&
-      <div className="absolute inset-0 flex items-center justify-center bg-black/5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">          <span className="text-xs font-medium text-gray-600">            Click to select          </span>        </div>
+      <div className="absolute inset-0 flex items-center justify-center bg-black/5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">        <span className="text-xs font-medium text-gray-600">            Click to select        </span>      </div>
       }    </div>);
 }

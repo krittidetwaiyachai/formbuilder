@@ -14,6 +14,6 @@ export default function ActiveEditors({ editors }: ActiveEditorsProps) {
             <div
             className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-semibold"
             style={{ backgroundColor: editor.userColor }}>
-              {editor.userName.charAt(0).toUpperCase()}            </div>            <span className="text-xs text-gray-700">{editor.userName}</span>            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />          </div>
+              {editor.userName.charAt(0).toUpperCase()}          </div>          <span className="text-xs text-gray-700">{editor.userName}</span>          <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />        </div>
         )}      </div>    </div>);
 }

@@ -5,8 +5,8 @@ import type {
   CheckboxOption,
   DropdownField,
   CheckboxField,
-  RadioField,
-} from "@/types";
+  RadioField } from
+"@/types";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -21,7 +21,7 @@ interface FormElementRendererProps {
 }
 export default function FormElementRenderer({
   element,
-  isDesigner = false,
+  isDesigner = false
 }: FormElementRendererProps) {
   const { selectedFieldId, updateField, selectField } = useFormStore();
   const isSelected = selectedFieldId === element.id;
@@ -68,11 +68,11 @@ export default function FormElementRenderer({
     }, [labelContent]);
     useLayoutEffect(() => {
       if (
-        labelRef.current &&
-        isDesigner &&
-        isSelected &&
-        !isEditingRef.current
-      ) {
+      labelRef.current &&
+      isDesigner &&
+      isSelected &&
+      !isEditingRef.current)
+      {
         labelRef.current.focus();
       }
     }, [isDesigner, isSelected]);
@@ -94,7 +94,7 @@ export default function FormElementRenderer({
           tabIndex={0}
           className={cn(
             "text-sm font-medium text-gray-700 border-none outline-none bg-transparent cursor-text min-h-[1.2em] p-1 -m-1 rounded inline-block",
-            !isSelected && "cursor-pointer",
+            !isSelected && "cursor-pointer"
           )}
           onBlur={handleLabelBlur}
           onFocus={handleLabelFocus}
@@ -106,16 +106,13 @@ export default function FormElementRenderer({
           onPointerDown={(e) => e.stopPropagation()}
           style={{ pointerEvents: "auto", userSelect: "text" }}
           suppressHydrationWarning
-          dangerouslySetInnerHTML={labelMarkup}
-        />
-      );
+          dangerouslySetInnerHTML={labelMarkup} />);
     } else {
       return (
         <Label>
           {labelContent}
           {required && <span className="text-destructive ml-1">*</span>}
-        </Label>
-      );
+        </Label>);
     }
   };
   const renderElement = () => {
@@ -130,15 +127,13 @@ export default function FormElementRenderer({
               type={element.type}
               placeholder={element.placeholder}
               disabled={isDesigner}
-              readOnly={isDesigner}
-            />
-            {element.helperText && (
-              <p className="text-xs text-muted-foreground">
+              readOnly={isDesigner} />
+            {element.helperText &&
+            <p className="text-xs text-muted-foreground">
                 {element.helperText}
               </p>
-            )}
-          </div>
-        );
+            }
+          </div>);
       case FieldType.TEXTAREA:
         return (
           <div className="space-y-2">
@@ -147,138 +142,122 @@ export default function FormElementRenderer({
               placeholder={element.placeholder}
               rows={element.rows || 4}
               disabled={isDesigner}
-              readOnly={isDesigner}
-            />
-            {element.helperText && (
-              <p className="text-xs text-muted-foreground">
+              readOnly={isDesigner} />
+            {element.helperText &&
+            <p className="text-xs text-muted-foreground">
                 {element.helperText}
               </p>
-            )}
-          </div>
-        );
+            }
+          </div>);
       case FieldType.DROPDOWN:
         return (
           <div className="space-y-2">
             {renderEditableLabel(element.label, element.required)}
             <select
               className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              disabled={isDesigner}
-            >
+              disabled={isDesigner}>
               <option value="">Select an option</option>
               {(element as DropdownField).options?.items?.map(
-                (opt: CheckboxOption) => (
-                  <option key={opt.id || opt.value} value={opt.value}>
+                (opt: CheckboxOption) =>
+                <option key={opt.id || opt.value} value={opt.value}>
                     {opt.label}
                   </option>
-                ),
               )}
             </select>
-            {element.helperText && (
-              <p className="text-xs text-muted-foreground">
+            {element.helperText &&
+            <p className="text-xs text-muted-foreground">
                 {element.helperText}
               </p>
-            )}
-          </div>
-        );
+            }
+          </div>);
       case FieldType.CHECKBOX:
         return (
           <div className="space-y-3">
             {renderEditableLabel(element.label, element.required)}
             <div className="space-y-2">
               {(element as CheckboxField).options?.items?.map(
-                (opt: CheckboxOption) => (
-                  <div
-                    key={opt.id || opt.value}
-                    className="flex items-center space-x-2"
-                  >
+                (opt: CheckboxOption) =>
+                <div
+                  key={opt.id || opt.value}
+                  className="flex items-center space-x-2">
                     <input
-                      type="checkbox"
-                      id={opt.id || opt.value}
-                      disabled={isDesigner}
-                      className="h-4 w-4 rounded border-gray-300"
-                    />
+                    type="checkbox"
+                    id={opt.id || opt.value}
+                    disabled={isDesigner}
+                    className="h-4 w-4 rounded border-gray-300" />
                     <label htmlFor={opt.id || opt.value} className="text-sm">
                       {opt.label}
                     </label>
                   </div>
-                ),
               )}
             </div>
-            {element.helperText && (
-              <p className="text-xs text-muted-foreground">
+            {element.helperText &&
+            <p className="text-xs text-muted-foreground">
                 {element.helperText}
               </p>
-            )}
-          </div>
-        );
+            }
+          </div>);
       case FieldType.RADIO:
         return (
           <div className="space-y-3">
             {renderEditableLabel(element.label, element.required)}
             <div className="space-y-2">
               {(element as RadioField).options?.items?.map(
-                (opt: CheckboxOption) => (
-                  <div
-                    key={opt.id || opt.value}
-                    className="flex items-center space-x-2"
-                  >
+                (opt: CheckboxOption) =>
+                <div
+                  key={opt.id || opt.value}
+                  className="flex items-center space-x-2">
                     <input
-                      type="radio"
-                      id={opt.id || opt.value}
-                      name={element.id}
-                      disabled={isDesigner}
-                      className="h-4 w-4"
-                    />
+                    type="radio"
+                    id={opt.id || opt.value}
+                    name={element.id}
+                    disabled={isDesigner}
+                    className="h-4 w-4" />
                     <label htmlFor={opt.id || opt.value} className="text-sm">
                       {opt.label}
                     </label>
                   </div>
-                ),
               )}
             </div>
-            {element.helperText && (
-              <p className="text-xs text-muted-foreground">
+            {element.helperText &&
+            <p className="text-xs text-muted-foreground">
                 {element.helperText}
               </p>
-            )}
-          </div>
-        );
+            }
+          </div>);
       case FieldType.DATE:
         return (
           <div className="space-y-2">
             {renderEditableLabel(element.label, element.required)}
             <Input type="date" disabled={isDesigner} readOnly={isDesigner} />
-            {element.helperText && (
-              <p className="text-xs text-muted-foreground">
+            {element.helperText &&
+            <p className="text-xs text-muted-foreground">
                 {element.helperText}
               </p>
-            )}
-          </div>
-        );
+            }
+          </div>);
       case FieldType.RATE:
         return (
           <div className="space-y-2">
             {renderEditableLabel(element.label, element.required)}
             <div className="flex gap-1">
-              {Array.from({ length: element.max || 5 }).map((_, i) => (
-                <Button
-                  key={i}
-                  variant="ghost"
-                  size="icon"
-                  disabled={isDesigner}
-                  className="h-8 w-8"
-                >
+              {Array.from({ length: element.max || 5 }).map((_, i) =>
+              <Button
+                key={i}
+                variant="ghost"
+                size="icon"
+                disabled={isDesigner}
+                className="h-8 w-8">
                   <Star className="h-5 w-5 text-yellow-400" />
                 </Button>
-              ))}
+              )}
             </div>
-            {element.helperText && (
-              <p className="text-xs text-muted-foreground">
+            {element.helperText &&
+            <p className="text-xs text-muted-foreground">
                 {element.helperText}
               </p>
-            )}
-          </div>
-        );
+            }
+          </div>);
       case FieldType.HEADER:
         const handleHeadingBlur = (e: React.FocusEvent<HTMLHeadingElement>) => {
           isEditingRef.current = false;
@@ -289,16 +268,16 @@ export default function FormElementRenderer({
           }
         };
         const handleHeadingFocus = (
-          _e: React.FocusEvent<HTMLHeadingElement>,
-        ) => {
+        _e: React.FocusEvent<HTMLHeadingElement>) =>
+        {
           if (isDesigner) {
             selectField(element.id);
           }
           isEditingRef.current = true;
         };
         const handleHeadingKeyDown = (
-          e: React.KeyboardEvent<HTMLHeadingElement>,
-        ) => {
+        e: React.KeyboardEvent<HTMLHeadingElement>) =>
+        {
           if (e.key === "Enter") {
             e.preventDefault();
             e.currentTarget.blur();
@@ -306,8 +285,8 @@ export default function FormElementRenderer({
           e.stopPropagation();
         };
         const handleHeadingMouseDown = (
-          e: React.MouseEvent<HTMLHeadingElement>,
-        ) => {
+        e: React.MouseEvent<HTMLHeadingElement>) =>
+        {
           e.stopPropagation();
         };
         const handleHeadingInput = (e: React.FormEvent<HTMLHeadingElement>) => {
@@ -315,8 +294,8 @@ export default function FormElementRenderer({
           isEditingRef.current = true;
         };
         const handleHeadingBeforeInput = (
-          _e: React.FormEvent<HTMLHeadingElement>,
-        ) => {
+        _e: React.FormEvent<HTMLHeadingElement>) =>
+        {
           isEditingRef.current = true;
         };
         const headingContentRef = useRef<string>(element.label || "Heading");
@@ -328,11 +307,11 @@ export default function FormElementRenderer({
         }, [isSelected]);
         useEffect(() => {
           if (
-            headingRef.current &&
-            isDesigner &&
-            isSelected &&
-            !isEditingRef.current
-          ) {
+          headingRef.current &&
+          isDesigner &&
+          isSelected &&
+          !isEditingRef.current)
+          {
             const element = headingRef.current;
             element.focus();
             const setCursorToEnd = () => {
@@ -358,19 +337,19 @@ export default function FormElementRenderer({
         const [headingMarkup] = useState(() => {
           const content = element.label || "Heading";
           return {
-            __html: content
-              .replace(/&/g, "&amp;")
-              .replace(/</g, "&lt;")
-              .replace(/>/g, "&gt;")
-              .replace(/"/g, "&quot;")
-              .replace(/'/g, "&#039;"),
+            __html: content.
+            replace(/&/g, "&amp;").
+            replace(/</g, "&lt;").
+            replace(/>/g, "&gt;").
+            replace(/"/g, "&quot;").
+            replace(/'/g, "&#039;")
           };
         });
         useEffect(() => {
           if (
-            headingRef.current &&
-            document.activeElement !== headingRef.current
-          ) {
+          headingRef.current &&
+          document.activeElement !== headingRef.current)
+          {
             const currentContent = element.label || "Heading";
             if (headingRef.current.textContent !== currentContent) {
               headingRef.current.textContent = currentContent;
@@ -393,14 +372,13 @@ export default function FormElementRenderer({
         }, [isDesigner, isSelected]);
         return (
           <div className="space-y-2">
-            {element.headingImage && (
-              <img
-                src={element.headingImage}
-                alt="Heading"
-                className="w-full h-auto rounded-lg object-cover"
-                style={{ maxHeight: "200px" }}
-              />
-            )}
+            {element.headingImage &&
+            <img
+              src={element.headingImage}
+              alt="Heading"
+              className="w-full h-auto rounded-lg object-cover"
+              style={{ maxHeight: "200px" }} />
+            }
             <h2
               ref={headingRef}
               contentEditable={isDesigner}
@@ -408,7 +386,7 @@ export default function FormElementRenderer({
               className={cn(
                 "text-2xl font-bold",
                 isDesigner && "outline-none cursor-text min-h-[1.5em]",
-                !isSelected && "cursor-pointer",
+                !isSelected && "cursor-pointer"
               )}
               onBlur={isDesigner ? handleHeadingBlur : undefined}
               onFocus={isDesigner ? handleHeadingFocus : undefined}
@@ -416,23 +394,21 @@ export default function FormElementRenderer({
               onClick={isDesigner ? (e) => e.stopPropagation() : undefined}
               onMouseDown={isDesigner ? handleHeadingMouseDown : undefined}
               onPointerDown={
-                isDesigner ? (e) => e.stopPropagation() : undefined
+              isDesigner ? (e) => e.stopPropagation() : undefined
               }
               onInput={isDesigner ? handleHeadingInput : undefined}
               onBeforeInput={isDesigner ? handleHeadingBeforeInput : undefined}
               style={
-                isDesigner
-                  ? { pointerEvents: "auto", userSelect: "text" as const }
-                  : undefined
+              isDesigner ?
+              { pointerEvents: "auto", userSelect: "text" as const } :
+              undefined
               }
-              dangerouslySetInnerHTML={headingMarkup}
-            />
-          </div>
-        );
+              dangerouslySetInnerHTML={headingMarkup} />
+          </div>);
       case FieldType.PARAGRAPH:
         const handleParagraphBlur = (
-          e: React.FocusEvent<HTMLParagraphElement>,
-        ) => {
+        e: React.FocusEvent<HTMLParagraphElement>) =>
+        {
           isEditingRef.current = false;
           const newContent = e.currentTarget.textContent || "";
           paragraphContentRef.current = newContent;
@@ -441,36 +417,36 @@ export default function FormElementRenderer({
           }
         };
         const handleParagraphFocus = (
-          _e: React.FocusEvent<HTMLParagraphElement>,
-        ) => {
+        _e: React.FocusEvent<HTMLParagraphElement>) =>
+        {
           if (isDesigner) {
             selectField(element.id);
           }
           isEditingRef.current = true;
         };
         const handleParagraphKeyDown = (
-          e: React.KeyboardEvent<HTMLParagraphElement>,
-        ) => {
+        e: React.KeyboardEvent<HTMLParagraphElement>) =>
+        {
           e.stopPropagation();
         };
         const handleParagraphMouseDown = (
-          e: React.MouseEvent<HTMLParagraphElement>,
-        ) => {
+        e: React.MouseEvent<HTMLParagraphElement>) =>
+        {
           e.stopPropagation();
         };
         const handleParagraphInput = (
-          e: React.FormEvent<HTMLParagraphElement>,
-        ) => {
+        e: React.FormEvent<HTMLParagraphElement>) =>
+        {
           e.stopPropagation();
           isEditingRef.current = true;
         };
         const handleParagraphBeforeInput = (
-          _e: React.FormEvent<HTMLParagraphElement>,
-        ) => {
+        _e: React.FormEvent<HTMLParagraphElement>) =>
+        {
           isEditingRef.current = true;
         };
         const paragraphContentRef = useRef<string>(
-          element.label || "Paragraph",
+          element.label || "Paragraph"
         );
         const paragraphInitializedRef = useRef(false);
         useEffect(() => {
@@ -480,11 +456,11 @@ export default function FormElementRenderer({
         }, [isSelected]);
         useEffect(() => {
           if (
-            paragraphRef.current &&
-            isDesigner &&
-            isSelected &&
-            !isEditingRef.current
-          ) {
+          paragraphRef.current &&
+          isDesigner &&
+          isSelected &&
+          !isEditingRef.current)
+          {
             const element = paragraphRef.current;
             element.focus();
             const setCursorToEnd = () => {
@@ -510,19 +486,19 @@ export default function FormElementRenderer({
         const [paragraphMarkup] = useState(() => {
           const content = element.label || "Paragraph";
           return {
-            __html: content
-              .replace(/&/g, "&amp;")
-              .replace(/</g, "&lt;")
-              .replace(/>/g, "&gt;")
-              .replace(/"/g, "&quot;")
-              .replace(/'/g, "&#039;"),
+            __html: content.
+            replace(/&/g, "&amp;").
+            replace(/</g, "&lt;").
+            replace(/>/g, "&gt;").
+            replace(/"/g, "&quot;").
+            replace(/'/g, "&#039;")
           };
         });
         useEffect(() => {
           if (
-            paragraphRef.current &&
-            document.activeElement !== paragraphRef.current
-          ) {
+          paragraphRef.current &&
+          document.activeElement !== paragraphRef.current)
+          {
             const currentContent = element.label || "Paragraph";
             if (paragraphRef.current.textContent !== currentContent) {
               paragraphRef.current.textContent = currentContent;
@@ -551,7 +527,7 @@ export default function FormElementRenderer({
             className={cn(
               "text-muted-foreground",
               isDesigner && "outline-none cursor-text min-h-[1.5em]",
-              !isSelected && "cursor-pointer",
+              !isSelected && "cursor-pointer"
             )}
             onBlur={isDesigner ? handleParagraphBlur : undefined}
             onFocus={isDesigner ? handleParagraphFocus : undefined}
@@ -562,13 +538,11 @@ export default function FormElementRenderer({
             onInput={isDesigner ? handleParagraphInput : undefined}
             onBeforeInput={isDesigner ? handleParagraphBeforeInput : undefined}
             style={
-              isDesigner
-                ? { pointerEvents: "auto", userSelect: "text" as const }
-                : undefined
+            isDesigner ?
+            { pointerEvents: "auto", userSelect: "text" as const } :
+            undefined
             }
-            dangerouslySetInnerHTML={paragraphMarkup}
-          />
-        );
+            dangerouslySetInnerHTML={paragraphMarkup} />);
       default:
         return <div>Unknown element type</div>;
     }

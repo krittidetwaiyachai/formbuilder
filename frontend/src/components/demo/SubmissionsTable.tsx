@@ -47,15 +47,15 @@ export default function SubmissionsTable() {
             <TableHead key={key}>{formatKey(key)}</TableHead>
             )}            <TableHead className="text-right">Actions</TableHead>          </TableRow>        </TableHeader>        <TableBody>          {MOCK_SUBMISSIONS.length > 0 ?
           (MOCK_SUBMISSIONS as unknown as MockSubmission[]).map((submission: MockSubmission) =>
-          <TableRow key={submission.id}>                <TableCell className="font-medium">                  {formatDate(submission.submittedAt)}                </TableCell>                <TableCell>                  <Badge variant="secondary" className="capitalize">                    {submission.device || "Unknown"}                  </Badge>                </TableCell>                {dataKeys.map((key) =>
-            <TableCell key={key}>                    {submission.data[key] !== undefined ?
+          <TableRow key={submission.id}>            <TableCell className="font-medium">              {formatDate(submission.submittedAt)}            </TableCell>            <TableCell>              <Badge variant="secondary" className="capitalize">                {submission.device || "Unknown"}              </Badge>            </TableCell>            {dataKeys.map((key) =>
+            <TableCell key={key}>              {submission.data[key] !== undefined ?
               String(submission.data[key]) :
-              "-"}                  </TableCell>
-            )}                <TableCell className="text-right">                  <Button variant="ghost" size="sm">                    <Eye className="h-4 w-4 mr-2" />                    View                  </Button>                </TableCell>              </TableRow>
+              "-"}            </TableCell>
+            )}            <TableCell className="text-right">              <Button variant="ghost" size="sm">                <Eye className="h-4 w-4 mr-2" />                    View              </Button>            </TableCell>          </TableRow>
           ) :
-          <TableRow>              <TableCell
+          <TableRow>            <TableCell
               colSpan={dataKeys.length + 3}
               className="text-center py-8 text-muted-foreground">
-                No submissions found              </TableCell>            </TableRow>
+                No submissions found            </TableCell>          </TableRow>
           }        </TableBody>      </Table>    </div>);
 }

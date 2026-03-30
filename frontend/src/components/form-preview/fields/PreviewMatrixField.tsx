@@ -106,7 +106,7 @@ export const PreviewMatrixField: React.FC<PreviewMatrixFieldProps> = ({
                     scope="col"
                     className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider min-w-[80px]"
                     style={{ color: "var(--text)", opacity: 0.7 }}>
-                      {col.label}                    </th>
+                      {col.label}                  </th>
                   )}                </tr>              </thead>              <tbody
                 className="divide-y divide-[color:var(--divider)]"
                 style={{ backgroundColor: "var(--card-bg)" }}>
@@ -129,11 +129,11 @@ export const PreviewMatrixField: React.FC<PreviewMatrixFieldProps> = ({
                       "var(--card-bg)" :
                       "var(--input-bg)"
                     }}>
-                      {row.label}                    </td>                    {columns.map((col: Column) =>
+                      {row.label}                  </td>                  {columns.map((col: Column) =>
                   <td
                     key={col.id}
                     className="px-4 py-3.5 whitespace-nowrap text-center">
-                        <div className="relative inline-flex items-center justify-center cursor-pointer p-1">                          <input
+                        <div className="relative inline-flex items-center justify-center cursor-pointer p-1">                      <input
                         type={inputType}
                         name={`${field.id}_${row.id}`}
                         checked={isChecked(row.id, col.label)}
@@ -166,12 +166,13 @@ export const PreviewMatrixField: React.FC<PreviewMatrixFieldProps> = ({
                           strokeLinejoin="round"
                           d="M5 13l4 4L19 7" />
                               </svg>
-                      }                          {inputType === "radio" &&
+                      }                      {inputType === "radio" &&
                       isChecked(row.id, col.label) &&
                       <div className="absolute w-2 h-2 bg-white rounded-full pointer-events-none" />
-                      }                        </div>                      </td>
-                  )}                  </tr>
-                )}              </tbody>            </table>          </div>        </div>        <div className="md:hidden mt-2 text-center">          <span className="text-xs text-gray-400 bg-gray-100 px-3 py-1 rounded-full inline-flex items-center gap-1">            ⟷ {t("public.scroll_hint", "เลื่อนเพื่อดูเพิ่มเติม")}          </span>        </div>        {}        <input
+                      }                    </div>                  </td>
+                  )}                </tr>
+                )}              </tbody>            </table>          </div>        </div>        <div className="md:hidden mt-2 text-center">          <span className="text-xs text-gray-400 bg-gray-100 px-3 py-1 rounded-full inline-flex items-center gap-1">            ⟷ 
+            {t("public.scroll_hint", "เลื่อนเพื่อดูเพิ่มเติม")}          </span>        </div>        {}        <input
           type="hidden"
           {...register(`field_${field.id}`, {
             required: field.required,
@@ -211,7 +212,7 @@ export const PreviewMatrixField: React.FC<PreviewMatrixFieldProps> = ({
             }
           })} />
         {errors[fieldName] &&
-        <p className="mt-2 text-sm text-red-600 flex items-center gap-1">            <svg
+        <p className="mt-2 text-sm text-red-600 flex items-center gap-1">          <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
             fill="currentColor"
@@ -220,6 +221,6 @@ export const PreviewMatrixField: React.FC<PreviewMatrixFieldProps> = ({
               fillRule="evenodd"
               d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
               clipRule="evenodd" />
-            </svg>            {errors[fieldName].message as string}          </p>
+            </svg>          {errors[fieldName].message as string}        </p>
         }      </div>    </div>);
 };

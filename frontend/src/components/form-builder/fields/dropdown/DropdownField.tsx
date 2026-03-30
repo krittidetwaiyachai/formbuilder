@@ -205,7 +205,7 @@ export const DropdownField: React.FC<DropdownFieldProps> = ({
               <div
               className="cursor-grab active:cursor-grabbing p-1 rounded hover:bg-gray-100 transition-colors"
               style={{ touchAction: "none" }}>
-                <GripVertical className="h-4 w-4 text-gray-400 hover:text-gray-600" />              </div>              <div className="flex-1 flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2 border border-gray-200 hover:border-gray-300 transition-all">                <input
+                <GripVertical className="h-4 w-4 text-gray-400 hover:text-gray-600" />            </div>            <div className="flex-1 flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2 border border-gray-200 hover:border-gray-300 transition-all">              <input
                 type="text"
                 value={opt.label}
                 onChange={(e) => handleUpdateOption(idx, e.target.value)}
@@ -217,7 +217,7 @@ export const DropdownField: React.FC<DropdownFieldProps> = ({
                 type="button"
                 onClick={() => handleRemoveOption(idx)}
                 className="p-1 text-gray-400 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100">
-                  <X className="h-3.5 w-3.5" />                </button>              </div>            </div>
+                  <X className="h-3.5 w-3.5" />              </button>            </div>          </div>
           )}        </div>        <div className="flex items-center gap-2">          <div className="w-6" />          <div className="flex-1 flex items-center gap-2 bg-white rounded-lg px-3 py-2 border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors">            <button
               type="button"
               onClick={handleAddOption}
@@ -231,7 +231,7 @@ export const DropdownField: React.FC<DropdownFieldProps> = ({
               className="flex-1 bg-transparent text-sm text-gray-700 focus:outline-none placeholder:text-gray-400"
               placeholder={t("builder.dropdown.add_option_placeholder")} />
           </div>        </div>        {options.length === 0 &&
-        <p className="text-xs text-gray-400 text-center py-2">            {t("builder.dropdown.no_options")}          </p>
+        <p className="text-xs text-gray-400 text-center py-2">          {t("builder.dropdown.no_options")}        </p>
         }      </div>);
   }
   if (showAsList) {
@@ -239,23 +239,23 @@ export const DropdownField: React.FC<DropdownFieldProps> = ({
       <div
         className={`w-full border ${fieldStyle.inputBorder} rounded-xl bg-pink-50/30 overflow-hidden shadow-sm transition-all duration-300 ${disabledClass} pointer-events-none group-hover/field:bg-white group-hover/field:shadow-md`}>
         <div className="p-2 space-y-1">          {options.length > 0 ?
-          <>              {options.slice(0, rows || 4).map((opt, idx) =>
+          <>            {options.slice(0, rows || 4).map((opt, idx) =>
             <div
               key={idx}
               className="px-3 py-2 hover:bg-pink-100/50 rounded-lg text-sm text-gray-700 truncate">
-                  {opt.label || opt.value}                </div>
-            )}              {options.length > (rows || 4) &&
-            <div className="px-3 py-1 text-xs text-gray-400 italic">                  {t("builder.dropdown.more_options", {
+                  {opt.label || opt.value}            </div>
+            )}            {options.length > (rows || 4) &&
+            <div className="px-3 py-1 text-xs text-gray-400 italic">              {t("builder.dropdown.more_options", {
                 count: options.length - (rows || 4)
-              })}                </div>
-            }            </> :
-          <div className="px-3 py-2 text-sm text-gray-400 italic">              {t("builder.dropdown.click_to_add")}            </div>
+              })}            </div>
+            }          </> :
+          <div className="px-3 py-2 text-sm text-gray-400 italic">            {t("builder.dropdown.click_to_add")}          </div>
           }        </div>      </div>);
   }
   return (
     <div className="relative max-w-full group">      <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none transition-colors duration-300">        <ChevronDown className={`h-5 w-5 ${fieldStyle.iconColor} opacity-80`} />      </div>      <div
         className={`w-full px-4 py-3.5 border ${fieldStyle.inputBorder} rounded-xl bg-pink-50/30 text-black text-base shadow-sm transition-all duration-300 ${disabledClass} pointer-events-none group-hover/field:bg-white group-hover/field:shadow-md flex items-center justify-between`}>
         <span className="text-gray-500">          {field.placeholder || t("builder.sidebar.select_option")}        </span>        {options.length > 0 &&
-        <span className="text-xs text-gray-400 mr-6">            {t("builder.dropdown.options_count", { count: options.length })}          </span>
+        <span className="text-xs text-gray-400 mr-6">          {t("builder.dropdown.options_count", { count: options.length })}        </span>
         }      </div>    </div>);
 };

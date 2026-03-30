@@ -80,8 +80,8 @@ export default function SettingsChangeRenderer({
     if (quizToggles.includes(key)) {
       const boolVal = !!val;
       return boolVal ?
-      <span className="text-emerald-700 font-medium">          {t("activity.values.enable")}        </span> :
-      <span className="text-gray-500 font-medium">          {t("activity.values.disable")}        </span>;
+      <span className="text-emerald-700 font-medium">        {t("activity.values.enable")}      </span> :
+      <span className="text-gray-500 font-medium">        {t("activity.values.disable")}      </span>;
     }
     return <ValueRenderer value={val as ValueType} />;
   };
@@ -237,49 +237,49 @@ export default function SettingsChangeRenderer({
                     typeof afterVal === "boolean";
                     return (
                       <div key={key} className="flex items-center gap-1.5">                        <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider min-w-[80px]">                          {getPropertyLabel(key, t, i18n)}                        </span>                        {isBool ?
-                        <>                            <div
+                        <>                          <div
                             className={`px-1.5 py-0.5 rounded border whitespace-nowrap text-[11px] ${beforeVal ? "bg-emerald-50 text-emerald-700 border-emerald-100" : "bg-gray-100 text-gray-500"}`}>
                               {beforeVal ?
                             t("activity.values.enable") :
-                            t("activity.values.disable")}                            </div>                            <ArrowRight className="w-3 h-3 text-gray-300" />                            <div
+                            t("activity.values.disable")}                          </div>                          <ArrowRight className="w-3 h-3 text-gray-300" />                          <div
                             className={`px-1.5 py-0.5 rounded border whitespace-nowrap font-medium text-[11px] ${afterVal ? "bg-emerald-50 text-emerald-700 border-emerald-100" : "bg-gray-100 text-gray-500"}`}>
                               {afterVal ?
                             t("activity.values.enable") :
-                            t("activity.values.disable")}                            </div>                          </> :
-                        <>                            <div className="bg-red-50 text-red-700 px-1.5 py-0.5 rounded border border-red-100 line-through opacity-75 text-[11px]">                              {formatDiffValue(key, beforeVal)}                            </div>                            <ArrowRight className="w-3 h-3 text-gray-300" />                            <div className="bg-emerald-50 text-emerald-700 px-1.5 py-0.5 rounded border border-emerald-100 font-medium text-[11px]">                              {formatDiffValue(key, afterVal)}                            </div>                          </>
+                            t("activity.values.disable")}                          </div>                        </> :
+                        <>                          <div className="bg-red-50 text-red-700 px-1.5 py-0.5 rounded border border-red-100 line-through opacity-75 text-[11px]">                            {formatDiffValue(key, beforeVal)}                          </div>                          <ArrowRight className="w-3 h-3 text-gray-300" />                          <div className="bg-emerald-50 text-emerald-700 px-1.5 py-0.5 rounded border border-emerald-100 font-medium text-[11px]">                            {formatDiffValue(key, afterVal)}                          </div>                        </>
                         }                      </div>);
                   })}                </div>              </div>);
           }
           return (
             <div key={i} className="flex items-center gap-1.5 text-xs">              <span className="text-gray-500 font-medium whitespace-nowrap">                {getPropertyLabel(change.property, t, i18n)}              </span>              {isBooleanToggle(change.before, change.after) ?
-              <>                  <div
+              <>                <div
                   className={`px-2 py-1 rounded border whitespace-nowrap ${change.before ? "bg-emerald-50 text-emerald-700 border-emerald-100" : "bg-gray-100 text-gray-500"}`}>
                     {change.before ?
                   t("activity.values.enable") :
-                  t("activity.values.disable")}                  </div>                  <ArrowRight className="w-3 h-3 text-gray-300" />                  <div
+                  t("activity.values.disable")}                </div>                <ArrowRight className="w-3 h-3 text-gray-300" />                <div
                   className={`px-2 py-1 rounded border whitespace-nowrap font-medium ${change.after ? "bg-emerald-50 text-emerald-700 border-emerald-100" : "bg-gray-100 text-gray-500"}`}>
                     {change.after ?
                   t("activity.values.enable") :
-                  t("activity.values.disable")}                  </div>                </> :
+                  t("activity.values.disable")}                </div>              </> :
               isStringToggle(
                 change.property,
                 change.before,
                 change.after
               ) ?
-              <>                  <div className="px-2 py-1 bg-gray-100 text-gray-600 rounded border border-gray-200 break-words min-w-0">                    {typeof change.before === "string" ||
+              <>                <div className="px-2 py-1 bg-gray-100 text-gray-600 rounded border border-gray-200 break-words min-w-0">                  {typeof change.before === "string" ||
                   typeof change.before === "number" ?
                   change.before :
-                  t("activity.values.auto")}                  </div>                  <ArrowRight className="w-3 h-3 text-gray-300 flex-shrink-0" />                  <div className="px-2 py-1 bg-indigo-50 text-indigo-700 rounded border border-indigo-200 font-medium break-words min-w-0">                    {typeof change.after === "string" ||
+                  t("activity.values.auto")}                </div>                <ArrowRight className="w-3 h-3 text-gray-300 flex-shrink-0" />                <div className="px-2 py-1 bg-indigo-50 text-indigo-700 rounded border border-indigo-200 font-medium break-words min-w-0">                  {typeof change.after === "string" ||
                   typeof change.after === "number" ?
                   change.after :
-                  t("activity.values.auto")}                  </div>                </> :
-              <>                  <div
+                  t("activity.values.auto")}                </div>              </> :
+              <>                <div
                   className="bg-red-50 text-red-700 px-2 py-1 rounded border border-red-100 line-through opacity-75 break-words min-w-0"
                   title={String(change.before)}>
-                    {formatDiffValue(change.property, change.before)}                  </div>                  <ArrowRight className="w-3 h-3 text-gray-300 flex-shrink-0" />                  <div
+                    {formatDiffValue(change.property, change.before)}                </div>                <ArrowRight className="w-3 h-3 text-gray-300 flex-shrink-0" />                <div
                   className="bg-emerald-50 text-emerald-700 px-2 py-1 rounded border border-emerald-100 font-medium break-words min-w-0"
                   title={String(change.after)}>
-                    {formatDiffValue(change.property, change.after)}                  </div>                </>
+                    {formatDiffValue(change.property, change.after)}                </div>              </>
               }            </div>);
         })}      </div>    </div>);
 }

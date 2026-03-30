@@ -2,6 +2,7 @@
   outline: none;
   min-height: 80px;
   padding: 0.5rem;
+  font-synthesis: style weight;
 }
 
 
@@ -80,6 +81,12 @@
   color: #2563eb;
   text-decoration: underline;
   cursor: pointer;
+}
+
+.ProseMirror em,
+.ProseMirror i {
+  font-style: italic;
+  font-synthesis: style;
 }
 
 .ProseMirror blockquote {

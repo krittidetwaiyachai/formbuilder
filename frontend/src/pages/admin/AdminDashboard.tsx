@@ -39,7 +39,7 @@ export default function AdminDashboard() {
                 <div
                   key={form.id}
                   className="flex items-center justify-between p-4 bg-gray-50/50 rounded-xl border border-gray-100/50">
-                    <div className="flex items-center gap-4">                      <div
+                    <div className="flex items-center gap-4">                    <div
                       className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm
                         ${
                       index === 0 ?
@@ -50,8 +50,9 @@ export default function AdminDashboard() {
                       "bg-orange-100 text-orange-800" :
                       "bg-gray-100 text-gray-600"}`
                       }>
-                        {index + 1}                      </div>                      <div>                        <p className="font-medium text-gray-900 line-clamp-1">                          {form.title}                        </p>                        <p className="text-xs text-gray-500">                          ID: {form.id.slice(0, 8)}...                        </p>                      </div>                    </div>                    <div className="flex items-center gap-2 px-3 py-1 bg-white rounded-lg shadow-sm border border-gray-100">                      <FileText className="w-3 h-3 text-gray-400" />                      <span className="text-sm font-semibold text-gray-700">                        {form.submissions}                      </span>                    </div>                  </div>
+                        {index + 1}                    </div>                    <div>                      <p className="font-medium text-gray-900 line-clamp-1">                        {form.title}                      </p>                      <p className="text-xs text-gray-500">                          ID: 
+                        {form.id.slice(0, 8)}...                      </p>                    </div>                  </div>                  <div className="flex items-center gap-2 px-3 py-1 bg-white rounded-lg shadow-sm border border-gray-100">                    <FileText className="w-3 h-3 text-gray-400" />                    <span className="text-sm font-semibold text-gray-700">                      {form.submissions}                    </span>                  </div>                </div>
                 )}                {(!stats?.popularForms || stats.popularForms.length === 0) &&
-                <div className="text-center py-8 text-gray-500">                    {t("admin.dashboard.no_data")}                  </div>
+                <div className="text-center py-8 text-gray-500">                  {t("admin.dashboard.no_data")}                </div>
                 }              </div>            </div>          </div>        </PermissionGate>        <PermissionGate permission="VIEW_SYSTEM_LOGS">          <RecentActivityTable />        </PermissionGate>      </div>    </div>);
 }

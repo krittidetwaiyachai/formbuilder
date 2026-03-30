@@ -234,9 +234,9 @@ export default function BundleSidebarDragPreview({
       style={{ width: "300px" }}
       className={`bg-white rounded-xl shadow-2xl p-4 border-2 ${theme.border} ring-4 ring-black/5 cursor-grabbing z-[9999] isolate`}>
       <div className="flex justify-center mb-3">        <div className="w-8 h-1 bg-gray-200 rounded-full" />      </div>      <div className={`flex items-center gap-2 mb-3 ${theme.text}`}>        <div className={`p-1.5 rounded-lg ${theme.bg}`}>          <Icon className="h-4 w-4" />        </div>        <div className="font-bold text-base truncate text-gray-900">          {fieldConfig.label}        </div>      </div>      <div>        {renderPreview()}        {"subLabel" in (fieldConfig.options || {}) &&
-        <div className="text-[10px] text-gray-400 mt-1">            {
+        <div className="text-[10px] text-gray-400 mt-1">          {
           (fieldConfig.options as Record<string, unknown>).
           subLabel as string
-          }          </div>
+          }        </div>
         }      </div>    </div>);
 }

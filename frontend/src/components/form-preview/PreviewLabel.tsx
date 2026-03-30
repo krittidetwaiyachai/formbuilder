@@ -38,8 +38,8 @@ export const PreviewLabel: React.FC<PreviewLabelProps> = ({
       className={`block font-semibold mb-1 ${isPublic ? "text-base" : "text-sm text-gray-800"} ${isRightAligned ? "text-right" : ""} ${isCenterAligned ? "text-center" : ""}`}
       style={isPublic ? { color: "var(--text)" } : {}}>
       {}      {(field.imageUrl || field.videoUrl) &&
-      <div className="mb-3 mt-1 space-y-3 flex flex-col items-center">          {}          {field.imageUrl &&
-        <div className="relative max-w-full">              <img
+      <div className="mb-3 mt-1 space-y-3 flex flex-col items-center">        {}        {field.imageUrl &&
+        <div className="relative max-w-full">          <img
             src={field.imageUrl}
             alt="Content"
             className="rounded-lg object-contain bg-gray-50/50"
@@ -51,7 +51,7 @@ export const PreviewLabel: React.FC<PreviewLabelProps> = ({
               (e.target as HTMLImageElement).style.display = "none";
             }} />
             </div>
-        }          {}          {field.videoUrl &&
+        }        {}        {field.videoUrl &&
         (() => {
           const regExp =
           /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
@@ -59,7 +59,7 @@ export const PreviewLabel: React.FC<PreviewLabelProps> = ({
           const videoId = match && match[2].length === 11 ? match[2] : null;
           if (videoId) {
             return (
-              <div className="relative w-full max-w-2xl overflow-hidden rounded-xl bg-black/5 aspect-video isolate">                    <iframe
+              <div className="relative w-full max-w-2xl overflow-hidden rounded-xl bg-black/5 aspect-video isolate">                <iframe
                   src={`https://www.youtube.com/embed/${videoId}`}
                   title="YouTube video player"
                   frameBorder="0"
@@ -69,21 +69,21 @@ export const PreviewLabel: React.FC<PreviewLabelProps> = ({
                   </div>);
           }
           return null;
-        })()}        </div>
+        })()}      </div>
       }      <div
         className={`flex items-start ${isCenterAligned ? "justify-center" : ""}`}>
         {questionNumber &&
         <span
           className="mr-2 flex-shrink-0 mt-[2px]"
           style={isPublic ? { color: "var(--text)", opacity: 0.6 } : {}}>
-            <span className={isPublic ? "" : "text-gray-500"}>              {questionNumber}            </span>            <span
+            <span className={isPublic ? "" : "text-gray-500"}>            {questionNumber}          </span>          <span
             className={isPublic ? "mx-1" : "text-gray-300 mx-1"}
             style={isPublic ? { color: "var(--divider)" } : {}}>
-              |            </span>          </span>
+              |          </span>        </span>
         }        <div className="flex-1 min-w-0">          <div
-            className={`ql-editor !p-0 !min-h-0 [&>p]:!m-0 ${isPublic ? "!pointer-events-auto [&_a]:!text-blue-600 [&_a]:!underline hover:[&_a]:!text-blue-800" : "pointer-events-none text-gray-800"} ${isRightAligned ? "text-right" : ""} ${isCenterAligned ? "text-center" : ""}`}
+            className={`rich-text-content ql-editor !p-0 !min-h-0 !pointer-events-auto [&>p]:!m-0 [&_a]:!pointer-events-auto [&_a]:!text-blue-600 [&_a]:!underline hover:[&_a]:!text-blue-800 ${isPublic ? "" : "text-gray-800"} ${isRightAligned ? "text-right" : ""} ${isCenterAligned ? "text-center" : ""}`}
             dangerouslySetInnerHTML={{ __html: labelContent }} />
         </div>        {field.required &&
-        <span className="text-red-500 select-none text-lg leading-none ml-1 -mt-1 flex-shrink-0">            *          </span>
+        <span className="text-red-500 select-none text-lg leading-none ml-1 -mt-1 flex-shrink-0">            *        </span>
         }      </div>    </Tag>);
 };

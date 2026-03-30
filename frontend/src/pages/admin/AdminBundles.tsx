@@ -80,25 +80,25 @@ export default function AdminBundles() {
               onClick={handleCreate}
               className="flex items-center gap-2 px-4 py-2.5 bg-black text-white rounded-xl font-medium hover:bg-gray-800 transition-colors whitespace-nowrap">
               <Plus className="w-5 h-5" />              {t("admin.bundles.create")}            </button>          </PermissionGate>        </div>      </div>      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">        {loading ?
-        <div className="flex items-center justify-center p-12">            <Loader />          </div> :
+        <div className="flex items-center justify-center p-12">          <Loader />        </div> :
         filteredBundles.length === 0 ?
-        <div className="p-12 text-center">            {searchQuery ?
-          <>                <Search className="w-12 h-12 text-gray-300 mx-auto mb-4" />                <p className="text-gray-500">                  {t("admin.bundles.empty_search")}                </p>              </> :
-          <>                <Package className="w-12 h-12 text-gray-300 mx-auto mb-4" />                <p className="text-gray-500">{t("admin.bundles.empty_all")}</p>              </>
-          }          </div> :
-        <table className="w-full">            <thead className="bg-gray-50 border-b border-gray-100">              <tr>                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">                  {t("admin.bundles.table.name")}                </th>                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">                  {t("admin.bundles.table.fields")}                </th>                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">                  {t("admin.bundles.table.updated")}                </th>                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">                  {t("admin.bundles.table.status")}                </th>                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase"></th>              </tr>            </thead>            <tbody className="divide-y divide-gray-50">              {filteredBundles.map((bundle) =>
+        <div className="p-12 text-center">          {searchQuery ?
+          <>            <Search className="w-12 h-12 text-gray-300 mx-auto mb-4" />            <p className="text-gray-500">              {t("admin.bundles.empty_search")}            </p>          </> :
+          <>            <Package className="w-12 h-12 text-gray-300 mx-auto mb-4" />            <p className="text-gray-500">{t("admin.bundles.empty_all")}</p>          </>
+          }        </div> :
+        <table className="w-full">          <thead className="bg-gray-50 border-b border-gray-100">            <tr>              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">                {t("admin.bundles.table.name")}              </th>              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">                {t("admin.bundles.table.fields")}              </th>              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">                {t("admin.bundles.table.updated")}              </th>              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">                {t("admin.bundles.table.status")}              </th>              <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase"></th>            </tr>          </thead>          <tbody className="divide-y divide-gray-50">            {filteredBundles.map((bundle) =>
             <tr
               key={bundle.id}
               className="hover:bg-gray-50/50 transition-colors">
-                  <td className="px-6 py-4">                    <div>                      <p className="font-medium text-gray-900">{bundle.name}</p>                      {bundle.description &&
-                  <p className="text-sm text-gray-500 truncate max-w-xs">                          {bundle.description}                        </p>
-                  }                    </div>                  </td>                  <td className="px-6 py-4 text-gray-600">                    {bundle._count?.fields || 0} fields                  </td>                  <td className="px-6 py-4 text-gray-600 text-sm">                    {new Date(bundle.updatedAt).toLocaleDateString("th-TH", {
+                  <td className="px-6 py-4">                <div>                  <p className="font-medium text-gray-900">{bundle.name}</p>                  {bundle.description &&
+                  <p className="text-sm text-gray-500 truncate max-w-xs">                    {bundle.description}                  </p>
+                  }                </div>              </td>              <td className="px-6 py-4 text-gray-600">                {bundle._count?.fields || 0} fields              </td>              <td className="px-6 py-4 text-gray-600 text-sm">                {new Date(bundle.updatedAt).toLocaleDateString("th-TH", {
                   year: "numeric",
                   month: "short",
                   day: "numeric",
                   hour: "2-digit",
                   minute: "2-digit"
-                })}                  </td>                  <td className="px-6 py-4">                    <span
+                })}              </td>              <td className="px-6 py-4">                <span
                   className={`px-3 py-1 rounded-full text-xs font-medium ${
                   bundle.isActive ?
                   "bg-emerald-100 text-emerald-700" :
@@ -106,16 +106,16 @@ export default function AdminBundles() {
                   }>
                       {bundle.isActive ?
                   t("admin.bundles.status.published") :
-                  t("admin.bundles.status.draft")}                    </span>                  </td>                  <td className="px-6 py-4">                    <div className="flex items-center gap-2">                      <PermissionGate permission="MANAGE_BUNDLES">                        <button
+                  t("admin.bundles.status.draft")}                </span>              </td>              <td className="px-6 py-4">                <div className="flex items-center gap-2">                  <PermissionGate permission="MANAGE_BUNDLES">                    <button
                       onClick={() =>
                       navigate(`/admin/bundles/${bundle.id}`)
                       }
                       className="p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors">
-                          <Edit2 className="w-4 h-4" />                        </button>                        <button
+                          <Edit2 className="w-4 h-4" />                    </button>                    <button
                       onClick={() => handleDeleteClick(bundle.id)}
                       className="p-2 rounded-lg text-red-600 hover:bg-red-50 transition-colors">
-                          <Trash2 className="w-4 h-4" />                        </button>                      </PermissionGate>                    </div>                  </td>                </tr>
-            )}            </tbody>          </table>
+                          <Trash2 className="w-4 h-4" />                    </button>                  </PermissionGate>                </div>              </td>            </tr>
+            )}          </tbody>        </table>
         }      </div>      <ConfirmDialog
         open={deleteConfirmOpen}
         onOpenChange={setDeleteConfirmOpen}

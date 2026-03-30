@@ -1,13 +1,19 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useBeforeUnload } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import axios from 'axios';
 import { useFormStore } from '@/store/formStore';
 import { useFormShortcuts } from '@/hooks/form/useFormShortcuts';
+const AUTOSAVE_DELAY_MS = 1000;
+const UNDO_REDO_SAVE_DELAY_MS = 3000;
+const SAVE_INDICATOR_SHOW_DELAY_MS = 180;
+const SAVE_INDICATOR_MIN_VISIBLE_MS = 700;
 export const useFormSave = (id: string | undefined) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { currentForm, saveForm } = useFormStore();
+  const { currentForm, saveForm, isUndoRedoAction, clearUndoRedoFlag } = useFormStore();
   const [saving, setSaving] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [message, setMessage] = useState<{type: 'success' | 'error';text: string;} | null>(null);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [isNavigating, setIsNavigating] = useState(false);
@@ -16,6 +22,60 @@ export const useFormSave = (id: string | undefined) => {
   const pendingTimerRef = useRef<NodeJS.Timeout | null>(null);
   const lastSaveTimestampRef = useRef<number>(0);
   const pendingNavigationRef = useRef<string | null>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
+  const savingIndicatorShowTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const savingIndicatorHideTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const savingIndicatorVisibleSinceRef = useRef<number | null>(null);
+  const cancelInflightSave = useCallback(() => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
+  }, []);
+  const clearSavingIndicatorTimers = useCallback(() => {
+    if (savingIndicatorShowTimerRef.current) {
+      clearTimeout(savingIndicatorShowTimerRef.current);
+      savingIndicatorShowTimerRef.current = null;
+    }
+    if (savingIndicatorHideTimerRef.current) {
+      clearTimeout(savingIndicatorHideTimerRef.current);
+      savingIndicatorHideTimerRef.current = null;
+    }
+  }, []);
+  const showSavingIndicator = useCallback(() => {
+    if (savingIndicatorHideTimerRef.current) {
+      clearTimeout(savingIndicatorHideTimerRef.current);
+      savingIndicatorHideTimerRef.current = null;
+    }
+    if (saving || savingIndicatorShowTimerRef.current) {
+      return;
+    }
+    savingIndicatorShowTimerRef.current = setTimeout(() => {
+      savingIndicatorShowTimerRef.current = null;
+      savingIndicatorVisibleSinceRef.current = Date.now();
+      setSaving(true);
+    }, SAVE_INDICATOR_SHOW_DELAY_MS);
+  }, [saving]);
+  const hideSavingIndicator = useCallback(() => {
+    if (savingIndicatorShowTimerRef.current) {
+      clearTimeout(savingIndicatorShowTimerRef.current);
+      savingIndicatorShowTimerRef.current = null;
+    }
+    if (!saving) {
+      return;
+    }
+    const visibleSince = savingIndicatorVisibleSinceRef.current;
+    const elapsed = visibleSince ? Date.now() - visibleSince : SAVE_INDICATOR_MIN_VISIBLE_MS;
+    const remaining = Math.max(0, SAVE_INDICATOR_MIN_VISIBLE_MS - elapsed);
+    if (savingIndicatorHideTimerRef.current) {
+      clearTimeout(savingIndicatorHideTimerRef.current);
+    }
+    savingIndicatorHideTimerRef.current = setTimeout(() => {
+      savingIndicatorHideTimerRef.current = null;
+      savingIndicatorVisibleSinceRef.current = null;
+      setSaving(false);
+    }, remaining);
+  }, [saving]);
   const handleSave = useCallback(async (isAutoSave = false, silent = false, checkDebounce = false) => {
     if (!currentForm) return;
     const { updatedAt, createdAt, ...contentToTrack } = currentForm;
@@ -28,26 +88,34 @@ export const useFormSave = (id: string | undefined) => {
       if (timeSinceLastSave < 1000) return;
       lastSaveTimestampRef.current = now;
     }
-    setSaving(true);
+    cancelInflightSave();
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+    showSavingIndicator();
     try {
-      const savedForm = await saveForm();
+      const savedForm = await saveForm(controller.signal);
       if (savedForm && savedForm.id !== id) {
         navigate(`/forms/${savedForm.id}/builder`, { replace: true });
       }
-      await new Promise((r) => setTimeout(r, 500));
       setLastSaved(new Date());
+      setHasUnsavedChanges(false);
       previousFormStrRef.current = currentFormStr;
+      clearUndoRedoFlag();
       if (!isAutoSave && !silent) {
         setMessage({ type: 'success', text: t('builder.toast.save_success') });
         setTimeout(() => setMessage(null), 3000);
       }
     } catch (error) {
+      if (axios.isCancel(error)) return;
       console.error('Error saving form:', error);
       setMessage({ type: 'error', text: t('builder.toast.save_error') });
     } finally {
-      setSaving(false);
+      if (abortControllerRef.current === controller) {
+        abortControllerRef.current = null;
+      }
+      hideSavingIndicator();
     }
-  }, [currentForm, id, navigate, saveForm, t]);
+  }, [currentForm, id, navigate, saveForm, cancelInflightSave, clearUndoRedoFlag, hideSavingIndicator, showSavingIndicator, t]);
   useFormShortcuts(handleSave);
   useEffect(() => {
     if (currentForm?.updatedAt && lastSaved === null) {
@@ -61,19 +129,24 @@ export const useFormSave = (id: string | undefined) => {
     if (firstRenderRef.current) {
       firstRenderRef.current = false;
       previousFormStrRef.current = currentFormStr;
+      setHasUnsavedChanges(false);
       return;
     }
     if (currentFormStr !== previousFormStrRef.current) {
+      setHasUnsavedChanges(true);
       if (pendingTimerRef.current) clearTimeout(pendingTimerRef.current);
+      const delay = isUndoRedoAction ? UNDO_REDO_SAVE_DELAY_MS : AUTOSAVE_DELAY_MS;
       pendingTimerRef.current = setTimeout(async () => {
         await handleSave(true);
         pendingTimerRef.current = null;
-      }, 1000);
-      return () => {
-        if (pendingTimerRef.current) clearTimeout(pendingTimerRef.current);
-      };
+      }, delay);
+    } else {
+      setHasUnsavedChanges(false);
     }
-  }, [currentForm, handleSave]);
+    return () => {
+      if (pendingTimerRef.current) clearTimeout(pendingTimerRef.current);
+    };
+  }, [currentForm, handleSave, isUndoRedoAction]);
   useBeforeUnload(
     useCallback(() => {
       if (!currentForm) return false;
@@ -102,23 +175,24 @@ export const useFormSave = (id: string | undefined) => {
           pendingTimerRef.current = null;
         }
         setIsNavigating(true);
-        setSaving(true);
+        showSavingIndicator();
         pendingNavigationRef.current = href;
         try {
           await saveForm();
           previousFormStrRef.current = currentFormStr;
+          setHasUnsavedChanges(false);
           setLastSaved(new Date());
           setMessage({ type: 'success', text: t('builder.toast.save_before_nav') });
           setTimeout(() => {
             navigate(href);
             setIsNavigating(false);
-            setSaving(false);
+            hideSavingIndicator();
           }, 300);
         } catch (error) {
           console.error('Failed to save before navigation:', error);
           setMessage({ type: 'error', text: 'Failed to save' });
           setIsNavigating(false);
-          setSaving(false);
+          hideSavingIndicator();
           pendingNavigationRef.current = null;
         }
       }
@@ -135,22 +209,23 @@ export const useFormSave = (id: string | undefined) => {
           pendingTimerRef.current = null;
         }
         setIsNavigating(true);
-        setSaving(true);
+        showSavingIndicator();
         try {
           await saveForm();
           previousFormStrRef.current = currentFormStr;
+          setHasUnsavedChanges(false);
           setLastSaved(new Date());
           setMessage({ type: 'success', text: 'Saved before navigation' });
           setTimeout(() => {
             setIsNavigating(false);
-            setSaving(false);
+            hideSavingIndicator();
             window.history.back();
           }, 300);
         } catch (error) {
           console.error('Failed to save before back navigation:', error);
           setMessage({ type: 'error', text: 'Failed to save' });
           setIsNavigating(false);
-          setSaving(false);
+          hideSavingIndicator();
         }
       }
     };
@@ -161,7 +236,12 @@ export const useFormSave = (id: string | undefined) => {
       document.removeEventListener('click', handleLinkClick, true);
       window.removeEventListener('popstate', handlePopState);
     };
-  }, [currentForm, isNavigating, navigate, saveForm, t]);
+  }, [currentForm, hideSavingIndicator, isNavigating, navigate, saveForm, showSavingIndicator, t]);
+  useEffect(() => {
+    return () => {
+      clearSavingIndicatorTimers();
+    };
+  }, [clearSavingIndicatorTimers]);
   useEffect(() => {
     const handleBeforeUnload = async (e: BeforeUnloadEvent) => {
       if (!currentForm) return;
@@ -180,5 +260,5 @@ export const useFormSave = (id: string | undefined) => {
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [currentForm, saveForm]);
-  return { saving, message, lastSaved, handleSave };
+  return { saving, hasUnsavedChanges, message, lastSaved, handleSave };
 };

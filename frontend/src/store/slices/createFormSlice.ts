@@ -14,7 +14,7 @@ export interface FormSlice {
   updateForm: (updates: Partial<Form>, emit?: boolean) => void;
   setShouldFocusField: (shouldFocus: boolean) => void;
   loadForm: (formId: string) => Promise<void>;
-  saveForm: () => Promise<Form | undefined>;
+  saveForm: (signal?: AbortSignal) => Promise<Form | undefined>;
   setActiveSidebarTab: (tab: 'properties' | 'theme' | 'settings' | 'logic' | 'builder') => void;
   setShouldScrollToQuizSettings: (shouldScroll: boolean) => void;
   setFocusedLogicRuleId: (id: string | null) => void;
@@ -48,7 +48,7 @@ export const createFormSlice: StateCreator<FormBuilderState, [], [], FormSlice> 
     const formData = 'form' in response.data ? response.data.form : response.data;
     set({ currentForm: formData });
   },
-  saveForm: async () => {
+  saveForm: async (signal?: AbortSignal) => {
     const { currentForm } = get();
     if (!currentForm) return;
     const {
@@ -56,7 +56,7 @@ export const createFormSlice: StateCreator<FormBuilderState, [], [], FormSlice> 
       responseCount, viewCount, collaborators, _count,
       ...payload
     } = currentForm as Form & Record<string, unknown>;
-    const response = await api.patch<Form>(`/forms/${currentForm.id}`, payload);
+    const response = await api.patch<Form>(`/forms/${currentForm.id}`, payload, { signal });
     return response.data;
   }
 });
@@ -67,13 +67,17 @@ export interface HistoryStateItem {
 export interface HistorySlice {
   history: HistoryStateItem[];
   historyIndex: number;
+  isUndoRedoAction: boolean;
   undo: () => void;
   redo: () => void;
   saveToHistory: () => void;
+  clearUndoRedoFlag: () => void;
 }
 export const createHistorySlice: StateCreator<FormBuilderState, [], [], HistorySlice> = (set, get) => ({
   history: [],
   historyIndex: -1,
+  isUndoRedoAction: false,
+  clearUndoRedoFlag: () => set({ isUndoRedoAction: false }),
   saveToHistory: () => {
     const { currentForm, history, historyIndex } = get();
     if (!currentForm) return;
@@ -97,7 +101,8 @@ export const createHistorySlice: StateCreator<FormBuilderState, [], [], HistoryS
       const previousState = history[newIndex];
       set({
         currentForm: previousState.form,
-        historyIndex: newIndex
+        historyIndex: newIndex,
+        isUndoRedoAction: true
       });
       get().emitChange(previousState.form);
     }
@@ -109,7 +114,8 @@ export const createHistorySlice: StateCreator<FormBuilderState, [], [], HistoryS
       const nextState = history[newIndex];
       set({
         currentForm: nextState.form,
-        historyIndex: newIndex
+        historyIndex: newIndex,
+        isUndoRedoAction: true
       });
       get().emitChange(nextState.form);
     }

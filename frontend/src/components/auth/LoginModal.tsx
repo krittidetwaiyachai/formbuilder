@@ -112,7 +112,7 @@ export default function LoginModal({
                   </svg>                </div>                <div>                  <h1 className="text-6xl font-black text-white leading-none mb-3">                    {t("auth.welcome_back").
                     split(" ").
                     map((word, i) =>
-                    <React.Fragment key={i}>                          {word}                          {i === 0 && <br />}                        </React.Fragment>
+                    <React.Fragment key={i}>                      {word}                      {i === 0 && <br />}                    </React.Fragment>
                     )}                  </h1>                  <div className="w-20 h-1 bg-white"></div>                </div>                <p className="text-gray-400 text-lg font-medium">                  {t("auth.sign_in_subtitle")}                </p>              </div>            </div>          </div>          <div className="relative w-1/2 bg-white p-16 flex items-center">            <div className="w-full max-w-sm mx-auto">              <h2 className="text-3xl font-bold text-black mb-8">                {t("auth.sign_in")}              </h2>              <div className="mb-8 p-4">                <GoogleLogin
                   onSuccess={handleGoogleSuccess}
                   onError={() => {

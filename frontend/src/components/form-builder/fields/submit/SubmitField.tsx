@@ -44,11 +44,11 @@ export const SubmitField: React.FC<SubmitFieldProps> = ({
       <button
         type="button"
         className={`px-4 py-2 bg-gray-100 text-gray-700 rounded-md border border-gray-300 shadow-sm text-sm font-medium hover:bg-gray-200 transition-all flex items-center gap-2 ${disabledClass}`}>
-          <RotateCcw className="w-3 h-3" />          {t("builder.submit.clear_form")}        </button>
+          <RotateCcw className="w-3 h-3" />        {t("builder.submit.clear_form")}      </button>
       }      {}      {printButton &&
       <button
         type="button"
         className={`px-4 py-2 bg-gray-100 text-gray-700 rounded-md border border-gray-300 shadow-sm text-sm font-medium hover:bg-gray-200 transition-all flex items-center gap-2 ${disabledClass}`}>
-          <Printer className="w-3 h-3" />          {t("builder.submit.print")}        </button>
+          <Printer className="w-3 h-3" />        {t("builder.submit.print")}      </button>
       }    </div>);
 };

@@ -1,10 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
-@Injectable() export class
-  ActivityLogService {
+@Injectable()export class
+ActivityLogService {
   private readonly logger = new Logger(ActivityLogService.name);
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
   async log(formId: string, userId: string, action: string, details?: Prisma.InputJsonValue) {
     await this.prisma.activityLog.create({
       data: {
@@ -16,39 +16,39 @@ import { Prisma } from '@prisma/client';
     });
   }
   async getFormActivity(
-    formId: string,
-    page: number = 1,
-    limit: number = 20,
-    sort: 'asc' | 'desc' = 'desc',
-    action?: string,
-    userId?: string) {
+  formId: string,
+  page: number = 1,
+  limit: number = 20,
+  sort: 'asc' | 'desc' = 'desc',
+  action?: string,
+  userId?: string) {
     const skip = (page - 1) * limit;
     const where: Prisma.ActivityLogWhereInput = { formId };
     if (action && action !== 'ALL') {
       if (action === 'CREATED') {
         where.OR = [
-          { action: 'CREATED' },
-          {
-            AND: [
-              { action: 'UPDATED' },
-              { details: { path: ['addedFields'], not: [] } },
-              { details: { path: ['addedFields'], not: null } }]
-          }];
+        { action: 'CREATED' },
+        {
+          AND: [
+          { action: 'UPDATED' },
+          { details: { path: ['addedFields'], not: [] } },
+          { details: { path: ['addedFields'], not: null } }]
+        }];
       } else if (action === 'UPDATED') {
         where.action = 'UPDATED';
         where.OR = [
-          { AND: [{ details: { path: ['updatedFields'], not: [] } }, { details: { path: ['updatedFields'], not: null } }] },
-          { AND: [{ details: { path: ['settingsChanges'], not: [] } }, { details: { path: ['settingsChanges'], not: null } }] },
-          { AND: [{ details: { path: ['changes'], not: [] } }, { details: { path: ['changes'], not: null } }] }];
+        { AND: [{ details: { path: ['updatedFields'], not: [] } }, { details: { path: ['updatedFields'], not: null } }] },
+        { AND: [{ details: { path: ['settingsChanges'], not: [] } }, { details: { path: ['settingsChanges'], not: null } }] },
+        { AND: [{ details: { path: ['changes'], not: [] } }, { details: { path: ['changes'], not: null } }] }];
       } else if (action === 'DELETED') {
         where.OR = [
-          { action: 'DELETED' },
-          {
-            AND: [
-              { action: 'UPDATED' },
-              { details: { path: ['deletedFields'], not: [] } },
-              { details: { path: ['deletedFields'], not: null } }]
-          }];
+        { action: 'DELETED' },
+        {
+          AND: [
+          { action: 'UPDATED' },
+          { details: { path: ['deletedFields'], not: [] } },
+          { details: { path: ['deletedFields'], not: null } }]
+        }];
       } else {
         where.action = action;
       }
@@ -57,26 +57,26 @@ import { Prisma } from '@prisma/client';
       where.userId = userId;
     }
     const [data, total] = await Promise.all([
-      this.prisma.activityLog.findMany({
-        where,
-        include: {
-          user: {
-            select: {
-              id: true,
-              firstName: true,
-              lastName: true,
-              email: true,
-              photoUrl: true
-            }
+    this.prisma.activityLog.findMany({
+      where,
+      include: {
+        user: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            photoUrl: true
           }
-        },
-        orderBy: {
-          createdAt: sort
-        },
-        take: limit,
-        skip: skip
-      }),
-      this.prisma.activityLog.count({ where })]
+        }
+      },
+      orderBy: {
+        createdAt: sort
+      },
+      take: limit,
+      skip: skip
+    }),
+    this.prisma.activityLog.count({ where })]
     );
     return {
       data,

@@ -184,7 +184,7 @@ export function SpecialPageProperties({
   <button
     onClick={() => toggleSection(section)}
     className="w-full flex items-center justify-between py-2 group">
-      <div className="flex items-center gap-2">        <Icon className="w-4 h-4 text-gray-500" />        <h3 className="text-xs font-bold text-gray-600 uppercase tracking-wider">          {title}        </h3>      </div>      <ChevronDown
+      <div className="flex items-center gap-2">      <Icon className="w-4 h-4 text-gray-500" />      <h3 className="text-xs font-bold text-gray-600 uppercase tracking-wider">        {title}      </h3>    </div>    <ChevronDown
       className={`w-4 h-4 text-gray-400 transition-transform ${expandedSections[section] ? "rotate-180" : ""}`} />
     </button>;
   return (
@@ -193,7 +193,7 @@ export function SpecialPageProperties({
           section="style"
           icon={Palette} />
         {expandedSections.style &&
-        <div className="mt-3 space-y-4 animate-in fade-in slide-in-from-top-1 duration-200">            <div>              <label className="block text-xs font-medium text-gray-500 mb-2">                {t("builder.special_page.icon")}              </label>              <div className="max-h-40 overflow-y-auto rounded-lg border border-gray-100 p-2">                <div className="grid grid-cols-6 gap-1.5">                  {availableIcons.map((item) =>
+        <div className="mt-3 space-y-4 animate-in fade-in slide-in-from-top-1 duration-200">          <div>            <label className="block text-xs font-medium text-gray-500 mb-2">              {t("builder.special_page.icon")}            </label>            <div className="max-h-40 overflow-y-auto rounded-lg border border-gray-100 p-2">              <div className="grid grid-cols-6 gap-1.5">                {availableIcons.map((item) =>
                 <button
                   key={item.id}
                   onClick={() => updateSetting("icon", item.id)}
@@ -207,8 +207,8 @@ export function SpecialPageProperties({
                       `
                   }
                   title={item.id}>
-                      <item.icon className="w-4 h-4" />                    </button>
-                )}                </div>              </div>            </div>            {}            <div>              <label className="block text-xs font-medium text-gray-500 mb-2">                {t("builder.special_page.icon_color")}              </label>              <div className="flex gap-2">                {iconColors.map((color) =>
+                      <item.icon className="w-4 h-4" />                </button>
+                )}              </div>            </div>          </div>          {}          <div>            <label className="block text-xs font-medium text-gray-500 mb-2">              {t("builder.special_page.icon_color")}            </label>            <div className="flex gap-2">              {iconColors.map((color) =>
               <button
                 key={color.id}
                 onClick={() => updateSetting("iconColor", color.id)}
@@ -227,15 +227,15 @@ export function SpecialPageProperties({
                 !activeSettings?.iconColor &&
                 color.id === (isWelcome ? "blue" : "green")) &&
                 <Check className="w-4 h-4 text-white" />
-                }                  </button>
-              )}              </div>            </div>          </div>
+                }              </button>
+              )}            </div>          </div>        </div>
         }      </div>      {}      {!isWelcome &&
-      <div className="border-b border-gray-100 pb-4">          <SectionHeader
+      <div className="border-b border-gray-100 pb-4">        <SectionHeader
           title={t("builder.special_page.actions")}
           section="actions"
           icon={ExternalLink} />
           {expandedSections.actions &&
-        <div className="mt-3 space-y-4 animate-in fade-in slide-in-from-top-1 duration-200">              {}              <div className="space-y-3">                <label className="flex items-center justify-between cursor-pointer">                  <span className="text-sm font-medium text-gray-600">                    {t("builder.special_page.auto_redirect")}                  </span>                  <div className="relative">                    <input
+        <div className="mt-3 space-y-4 animate-in fade-in slide-in-from-top-1 duration-200">          {}          <div className="space-y-3">            <label className="flex items-center justify-between cursor-pointer">              <span className="text-sm font-medium text-gray-600">                {t("builder.special_page.auto_redirect")}              </span>              <div className="relative">                <input
                   type="checkbox"
                   className="sr-only peer"
                   checked={
@@ -244,8 +244,8 @@ export function SpecialPageProperties({
                   onChange={(e) =>
                   updateSetting("autoRedirect", e.target.checked)
                   } />
-                    <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>                  </div>                </label>                {currentForm.thankYouSettings?.autoRedirect &&
-            <div className="animate-in fade-in slide-in-from-top-1 duration-200 space-y-3">                    <div>                      <label className="block text-xs font-medium text-gray-500 mb-1">                        {t("builder.special_page.redirect_url")}                      </label>                      <input
+                    <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>              </div>            </label>            {currentForm.thankYouSettings?.autoRedirect &&
+            <div className="animate-in fade-in slide-in-from-top-1 duration-200 space-y-3">              <div>                <label className="block text-xs font-medium text-gray-500 mb-1">                  {t("builder.special_page.redirect_url")}                </label>                <input
                   type="url"
                   className="w-full px-3 py-2 border border-gray-200 rounded-md text-sm focus:border-black focus:ring-1 focus:ring-black outline-none transition-all"
                   placeholder={t(
@@ -256,7 +256,7 @@ export function SpecialPageProperties({
                   updateSetting("redirectUrl", e.target.value)
                   }
                   onKeyDown={(e) => e.stopPropagation()} />
-                    </div>                    <div>                      <label className="block text-xs font-medium text-gray-500 mb-1">                        {t("builder.special_page.delay_seconds")}                      </label>                      <input
+                    </div>              <div>                <label className="block text-xs font-medium text-gray-500 mb-1">                  {t("builder.special_page.delay_seconds")}                </label>                <input
                   type="number"
                   min={0}
                   max={30}
@@ -272,8 +272,8 @@ export function SpecialPageProperties({
                   )
                   }
                   onKeyDown={(e) => e.stopPropagation()} />
-                    </div>                  </div>
-            }              </div>              {}              <div className="space-y-3 pt-2 border-t border-gray-100">                <label className="flex items-center justify-between cursor-pointer">                  <span className="text-sm font-medium text-gray-600">                    {t("builder.special_page.confetti_effect")}                  </span>                  <div className="relative">                    <input
+                    </div>            </div>
+            }          </div>          {}          <div className="space-y-3 pt-2 border-t border-gray-100">            <label className="flex items-center justify-between cursor-pointer">              <span className="text-sm font-medium text-gray-600">                {t("builder.special_page.confetti_effect")}              </span>              <div className="relative">                <input
                   type="checkbox"
                   className="sr-only peer"
                   checked={
@@ -282,7 +282,7 @@ export function SpecialPageProperties({
                   onChange={(e) =>
                   updateSetting("showConfetti", e.target.checked)
                   } />
-                    <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>                  </div>                </label>              </div>              {}              <div className="space-y-3 pt-2 border-t border-gray-100">                <label className="flex items-center justify-between cursor-pointer">                  <span className="text-sm font-medium text-gray-600">                    {t("builder.special_page.show_button")}                  </span>                  <div className="relative">                    <input
+                    <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>              </div>            </label>          </div>          {}          <div className="space-y-3 pt-2 border-t border-gray-100">            <label className="flex items-center justify-between cursor-pointer">              <span className="text-sm font-medium text-gray-600">                {t("builder.special_page.show_button")}              </span>              <div className="relative">                <input
                   type="checkbox"
                   className="sr-only peer"
                   checked={
@@ -291,8 +291,8 @@ export function SpecialPageProperties({
                   onChange={(e) =>
                   updateSetting("showButton", e.target.checked)
                   } />
-                    <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>                  </div>                </label>                {currentForm.thankYouSettings?.showButton &&
-            <div className="animate-in fade-in slide-in-from-top-1 duration-200 space-y-3">                    <div>                      <label className="block text-xs font-medium text-gray-500 mb-1">                        {t("builder.special_page.button_text")}                      </label>                      <input
+                    <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>              </div>            </label>            {currentForm.thankYouSettings?.showButton &&
+            <div className="animate-in fade-in slide-in-from-top-1 duration-200 space-y-3">              <div>                <label className="block text-xs font-medium text-gray-500 mb-1">                  {t("builder.special_page.button_text")}                </label>                <input
                   type="text"
                   className="w-full px-3 py-2 border border-gray-200 rounded-md text-sm focus:border-black focus:ring-1 focus:ring-black outline-none transition-all"
                   placeholder={t("public.thank_you.back_to_home")}
@@ -301,7 +301,7 @@ export function SpecialPageProperties({
                   updateSetting("buttonText", e.target.value)
                   }
                   onKeyDown={(e) => e.stopPropagation()} />
-                    </div>                    <div>                      <label className="block text-xs font-medium text-gray-500 mb-1">                        {t("builder.special_page.button_link")}                      </label>                      <input
+                    </div>              <div>                <label className="block text-xs font-medium text-gray-500 mb-1">                  {t("builder.special_page.button_link")}                </label>                <input
                   type="url"
                   className="w-full px-3 py-2 border border-gray-200 rounded-md text-sm focus:border-black focus:ring-1 focus:ring-black outline-none transition-all"
                   placeholder={t(
@@ -312,17 +312,17 @@ export function SpecialPageProperties({
                   updateSetting("buttonLink", e.target.value)
                   }
                   onKeyDown={(e) => e.stopPropagation()} />
-                    </div>                  </div>
-            }              </div>            </div>
-        }        </div>
+                    </div>            </div>
+            }          </div>        </div>
+        }      </div>
       }      {}      {isWelcome &&
-      <div className="pt-4 border-t border-gray-100 space-y-3">          <label className="flex items-center justify-between cursor-pointer">            <span className="text-sm font-medium text-gray-600">              {t("builder.special_page.show_start_button")}            </span>            <div className="relative">              <input
+      <div className="pt-4 border-t border-gray-100 space-y-3">        <label className="flex items-center justify-between cursor-pointer">          <span className="text-sm font-medium text-gray-600">            {t("builder.special_page.show_start_button")}          </span>          <div className="relative">            <input
               type="checkbox"
               className="sr-only peer"
               checked={currentForm.welcomeSettings?.showStartButton ?? true}
               onChange={(e) =>
               updateSetting("showStartButton", e.target.checked)
               } />
-              <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-black"></div>            </div>          </label>        </div>
+              <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-black"></div>          </div>        </label>      </div>
       }    </div>);
 }

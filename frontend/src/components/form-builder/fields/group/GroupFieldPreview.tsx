@@ -34,8 +34,8 @@ export function GroupFieldPreview({ field, children }: GroupFieldPreviewProps) {
         }}
         onClick={() => setIsCollapsed(!isCollapsed)}>
         {isCollapsed ? <ChevronRight size={16} /> : <ChevronDown size={16} />}        <Layers size={16} style={{ color: "#6366f1" }} />        {field.label || "Field Group"}      </legend>      {!isCollapsed &&
-      <div style={{ padding: "16px 20px" }}>          {children ||
-        <p style={{ color: "#9ca3af", fontSize: "14px", margin: 0 }}>              No fields in this group            </p>
-        }        </div>
+      <div style={{ padding: "16px 20px" }}>        {children ||
+        <p style={{ color: "#9ca3af", fontSize: "14px", margin: 0 }}>              No fields in this group        </p>
+        }      </div>
       }    </fieldset>);
 }

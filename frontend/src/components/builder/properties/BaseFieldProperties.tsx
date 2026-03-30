@@ -38,14 +38,14 @@ export default function BaseFieldProperties({
             onChange={(e) => onUpdate({ imageUrl: e.target.value })}
             placeholder="https://example.com/image.jpg" />
         </div>        {element.imageUrl &&
-        <div className="space-y-2">            <Label>              {t("builder.properties.image_width", "Image Size (Width)")}            </Label>            <Input
+        <div className="space-y-2">          <Label>            {t("builder.properties.image_width", "Image Size (Width)")}          </Label>          <Input
             value={element.imageWidth || ""}
             onChange={(e) => onUpdate({ imageWidth: e.target.value })}
             placeholder="e.g. 100%, 500px" />
-            <p className="text-xs text-muted-foreground">              {t(
+            <p className="text-xs text-muted-foreground">            {t(
               "builder.properties.image_width_desc",
               "Limit the display size of the image."
-            )}            </p>          </div>
+            )}          </p>        </div>
         }        <div className="space-y-2">          <Label>            {t("builder.properties.video_url", "YouTube Video URL")}          </Label>          <Input
             value={element.videoUrl || ""}
             onChange={(e) => onUpdate({ videoUrl: e.target.value })}

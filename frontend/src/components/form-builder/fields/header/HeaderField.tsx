@@ -84,6 +84,18 @@ export const HeaderField: React.FC<HeaderFieldProps> = ({
         return "text-left";
     }
   };
+  const handleRichTextLinkInteraction = (
+    event:
+      | React.MouseEvent<HTMLElement>
+      | React.PointerEvent<HTMLElement>
+  ) => {
+    const target = event.target as HTMLElement | null;
+    if (!target?.closest("a")) {
+      return;
+    }
+
+    event.stopPropagation();
+  };
   return (
     <div
       ref={headerContainerRef}
@@ -135,16 +147,19 @@ export const HeaderField: React.FC<HeaderFieldProps> = ({
               placeholder={t("builder.header.default_heading")}
               className={`${getHeaderSizeClass()} ${getHeaderAlignmentClass()} text-gray-900 leading-tight tracking-tight`}
               minHeight="50px" />
-            </React.Suspense>          </div> :
+            </React.Suspense>        </div> :
         <h2
-          className={`${getHeaderSizeClass()} ${getHeaderAlignmentClass()} text-gray-900 leading-tight tracking-tight break-words break-all prose max-w-none`}
+          className={`rich-text-content ${getHeaderSizeClass()} ${getHeaderAlignmentClass()} text-gray-900 leading-tight tracking-tight break-words break-all prose max-w-none`}
+          onMouseDownCapture={handleRichTextLinkInteraction}
+          onClickCapture={handleRichTextLinkInteraction}
+          onPointerDownCapture={handleRichTextLinkInteraction}
           dangerouslySetInnerHTML={{
             __html: sanitize(
               field.label || t("builder.header.default_heading")
             )
           }} />
         }        {(headerSubheading || isSelected) &&
-        <div className="mt-3 w-full">            {isSelected && !isMultiSelecting ?
+        <div className="mt-3 w-full">          {isSelected && !isMultiSelecting ?
           <div
             onClick={(e) => e.stopPropagation()}
             onMouseDown={(e) => e.stopPropagation()}
@@ -161,13 +176,16 @@ export const HeaderField: React.FC<HeaderFieldProps> = ({
                 placeholder={t("builder.header.subheading_placeholder")}
                 className="text-gray-500 text-lg"
                 minHeight="40px" />
-                </React.Suspense>              </div> :
+                </React.Suspense>          </div> :
           <div
-            className={`text-base text-gray-500 ${getHeaderAlignmentClass()} font-light prose max-w-none`}
+            className={`rich-text-content text-base text-gray-500 ${getHeaderAlignmentClass()} font-light prose max-w-none`}
+            onMouseDownCapture={handleRichTextLinkInteraction}
+            onClickCapture={handleRichTextLinkInteraction}
+            onPointerDownCapture={handleRichTextLinkInteraction}
             dangerouslySetInnerHTML={{
               __html: sanitize(field.placeholder || "")
             }} />
-          }          </div>
+          }        </div>
         }        {headingImage &&
         headingImage.startsWith("http") &&
         imagePosition !== "BACKGROUND" &&

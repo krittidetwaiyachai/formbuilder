@@ -241,28 +241,28 @@ export default function BundleEditor() {
                     <button
                     onClick={handleTitleSave}
                     className="text-green-600 p-1">
-                      <Check className="h-4 w-4" />                    </button>                    <button
+                      <Check className="h-4 w-4" />                  </button>                  <button
                     onClick={handleTitleCancel}
                     className="text-red-500 p-1">
-                      <X className="h-4 w-4" />                    </button>                  </div> :
+                      <X className="h-4 w-4" />                  </button>                </div> :
                 <div
                   className="flex items-center gap-2 min-w-0 group cursor-pointer"
                   onClick={() => setIsEditingTitle(true)}>
-                    <h1 className="text-lg md:text-xl font-bold text-black truncate leading-tight">                      {bundle?.name || t("admin.editor.untitled")}                    </h1>                    <Edit2 className="h-3.5 w-3.5 text-gray-400 group-hover:text-black opacity-0 group-hover:opacity-100 transition-all" />                  </div>
+                    <h1 className="text-lg md:text-xl font-bold text-black truncate leading-tight">                    {bundle?.name || t("admin.editor.untitled")}                  </h1>                  <Edit2 className="h-3.5 w-3.5 text-gray-400 group-hover:text-black opacity-0 group-hover:opacity-100 transition-all" />                </div>
                 }              </div>            </div>            <div className="flex items-center gap-2 md:gap-3">              <div className="flex items-center">                {saveStatus === "saving" ?
-                <div className="w-8 h-8 flex items-center justify-center">                    <Loader size={20} />                  </div> :
+                <div className="w-8 h-8 flex items-center justify-center">                  <Loader size={20} />                </div> :
                 saveStatus === "error" ?
                 <div
                   className="w-8 h-8 flex items-center justify-center rounded-full bg-red-50 text-red-600"
                   title={t("admin.editor.save_failed")}>
-                    <X className="h-4 w-4" />                  </div> :
-                <div className="w-8 h-8 flex items-center justify-center rounded-full bg-green-50 text-green-600">                    <Check className="h-4 w-4" />                  </div>
+                    <X className="h-4 w-4" />                </div> :
+                <div className="w-8 h-8 flex items-center justify-center rounded-full bg-green-50 text-green-600">                  <Check className="h-4 w-4" />                </div>
                 }                <span className="hidden md:inline text-xs text-gray-400 ml-2">                  {saveStatus === "saving" ?
                   t("admin.editor.saving") :
                   saveStatus === "error" ?
                   t("admin.editor.save_failed") :
-                  <span>                      {t("admin.editor.saved")}                      {lastSaved &&
-                    ` at ${lastSaved.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false })}`}                    </span>
+                  <span>                    {t("admin.editor.saved")}                    {lastSaved &&
+                    ` at ${lastSaved.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false })}`}                  </span>
                   }                </span>              </div>              <div className="h-6 w-px bg-gray-200 mx-1 hidden md:block" />              <div className="hidden md:flex items-center gap-1">                <button
                   onClick={undo}
                   disabled={history.past.length === 0}

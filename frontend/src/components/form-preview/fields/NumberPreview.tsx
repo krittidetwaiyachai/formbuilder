@@ -75,7 +75,7 @@ export const NumberPreview: React.FC<PreviewFieldProps> = ({
         {subLabel && subLabel !== "Sublabel" &&
         <p className="mt-1 text-sm text-gray-500 font-normal">{subLabel}</p>
         }      </div>      <div className={`flex-1 min-w-0`}>        <div className="relative group" title={hoverText}>          {!isPublic &&
-          <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">              <Hash className="h-4 w-4 text-gray-400" />            </div>
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">            <Hash className="h-4 w-4 text-gray-400" />          </div>
           }          {isPublic ?
           <input
             type="number"
@@ -127,6 +127,6 @@ export const NumberPreview: React.FC<PreviewFieldProps> = ({
             readOnly ? "bg-gray-100 cursor-not-allowed text-gray-500" : ""}`
             } />
           }        </div>        {fieldError &&
-        <p className="mt-1 text-sm text-red-600">            {fieldError.message as string}          </p>
+        <p className="mt-1 text-sm text-red-600">          {fieldError.message as string}        </p>
         }      </div>    </div>);
 };

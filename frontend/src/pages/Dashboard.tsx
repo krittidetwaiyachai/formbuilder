@@ -580,7 +580,7 @@ export default function DashboardPage() {
         onClose={() => setIsProfileSheetOpen(false)}
         username={user?.firstName || "User"} />
       {}      {}      {filteredForms.length > 4 && !selectedForm &&
-      <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 hidden md:flex items-center justify-center pointer-events-none">          {}          <div className="absolute inset-0 flex items-center justify-center">            {[...Array(5)].map((_, i) =>
+      <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 hidden md:flex items-center justify-center pointer-events-none">        {}        <div className="absolute inset-0 flex items-center justify-center">          {[...Array(5)].map((_, i) =>
           <motion.div
             key={i}
             className="absolute w-2 h-2 bg-gradient-to-t from-indigo-400 to-purple-400 rounded-full"
@@ -600,13 +600,13 @@ export default function DashboardPage() {
               delay: i * 0.4,
               ease: "easeOut"
             }} />
-          )}          </div>          {}          {}          <motion.div
+          )}        </div>        {}        {}        <motion.div
           className="relative flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-b from-white to-gray-50 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/50 text-gray-700 hover:text-black hover:scale-110 transition-all duration-300 cursor-pointer pointer-events-auto"
           onClick={handleScroll}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           whileHover={{ y: -2, transition: { duration: 0.2 } }}
           title={t("common.scroll_down", "Scroll Down")}>
-            <ChevronDown className="w-5 h-5 stroke-[3]" />          </motion.div>        </div>
+            <ChevronDown className="w-5 h-5 stroke-[3]" />        </motion.div>      </div>
       }    </div>);
 }

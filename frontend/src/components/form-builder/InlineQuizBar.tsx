@@ -130,10 +130,10 @@ export default function InlineQuizBar({
           ref={scoreModalRef}
           className="absolute z-50 mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 p-3 left-0"
           onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-2">              <label className="text-xs font-semibold text-gray-700">                {t("builder.quiz.score")}              </label>              <button
+            <div className="flex items-center justify-between mb-2">            <label className="text-xs font-semibold text-gray-700">              {t("builder.quiz.score")}            </label>            <button
               onClick={() => setShowScoreModal(false)}
               className="text-gray-400 hover:text-gray-600">
-                <X className="w-3 h-3" />              </button>            </div>            <div className="relative">              <input
+                <X className="w-3 h-3" />            </button>          </div>          <div className="relative">            <input
               type="text"
               inputMode="numeric"
               pattern="[0-9]*"
@@ -165,7 +165,8 @@ export default function InlineQuizBar({
               }}
               className="w-full px-2 py-1.5 pr-10 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               onClick={(e) => e.stopPropagation()} />
-              <div className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-500">                {t("builder.quiz.pts")}              </div>            </div>            <p className="mt-2 text-xs text-gray-600">              {t("builder.quiz.remaining")}{" "}              <span className="font-bold text-indigo-700">                {remainingScore}              </span>{" "}              / {totalScore}            </p>          </div>
+              <div className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-gray-500">              {t("builder.quiz.pts")}            </div>          </div>          <p className="mt-2 text-xs text-gray-600">            {t("builder.quiz.remaining")}{" "}            <span className="font-bold text-indigo-700">              {remainingScore}            </span>{" "}              / 
+            {totalScore}          </p>        </div>
         }      </div>      {}      <div className="h-4 w-px bg-indigo-200" />      {}      <div className="relative flex-1 min-w-0">        <button
           ref={answerButtonRef}
           onClick={(e) => {
@@ -179,10 +180,10 @@ export default function InlineQuizBar({
           ref={answerModalRef}
           className="absolute z-50 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 p-3 left-0"
           onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-2">              <label className="text-xs font-semibold text-gray-700">                {t("builder.quiz.correct_answer")}              </label>              <button
+            <div className="flex items-center justify-between mb-2">            <label className="text-xs font-semibold text-gray-700">              {t("builder.quiz.correct_answer")}            </label>            <button
               onClick={() => setShowAnswerModal(false)}
               className="text-gray-400 hover:text-gray-600">
-                <X className="w-3 h-3" />              </button>            </div>            {hasArrayOptions(typedField) &&
+                <X className="w-3 h-3" />            </button>          </div>          {hasArrayOptions(typedField) &&
           typedField.options?.items &&
           typedField.options.items.length > 0 ?
           <select
@@ -192,14 +193,14 @@ export default function InlineQuizBar({
             }
             className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-indigo-500"
             onClick={(e) => e.stopPropagation()}>
-                <option value="">{t("builder.quiz.select_placeholder")}</option>                {typedField.options.items.map(
+                <option value="">{t("builder.quiz.select_placeholder")}</option>            {typedField.options.items.map(
               (opt: {label: string;value: string;}, idx: number) =>
-              <option key={idx} value={opt.value}>                      {opt.label}                    </option>
-            )}              </select> :
+              <option key={idx} value={opt.value}>                {opt.label}              </option>
+            )}          </select> :
           hasCheckboxOptions(typedField) &&
           typedField.options?.items &&
           typedField.options.items.length > 0 ?
-          <div className="space-y-1.5 max-h-48 overflow-y-auto">                {typedField.options.items.map(
+          <div className="space-y-1.5 max-h-48 overflow-y-auto">            {typedField.options.items.map(
               (opt: {label: string;value: string;}, idx: number) => {
                 const correctAnswers = (field.correctAnswer || "").
                 split(",").
@@ -216,24 +217,24 @@ export default function InlineQuizBar({
                       handleCheckboxToggle(opt.value, e.target.checked)
                       }
                       className="h-3.5 w-3.5 text-indigo-600 rounded" />
-                        <span className="text-sm text-gray-700">                          {opt.label}                        </span>                      </label>);
+                        <span className="text-sm text-gray-700">                      {opt.label}                    </span>                  </label>);
               }
-            )}              </div> :
-          <div>                {}                {field.correctAnswer &&
+            )}          </div> :
+          <div>            {}            {field.correctAnswer &&
             field.correctAnswer.split(",").filter(Boolean).length > 0 &&
-            <div className="flex flex-wrap gap-1.5 mb-2 p-2 border border-gray-200 rounded bg-gray-50 max-h-32 overflow-y-auto">                      {field.correctAnswer.
+            <div className="flex flex-wrap gap-1.5 mb-2 p-2 border border-gray-200 rounded bg-gray-50 max-h-32 overflow-y-auto">              {field.correctAnswer.
               split(",").
               filter(Boolean).
               map((answer, idx) =>
               <span
                 key={idx}
                 className="inline-flex items-center gap-1 px-2 py-1 bg-indigo-100 text-indigo-800 rounded text-xs font-medium">
-                            {answer}                            <button
+                            {answer}                <button
                   onClick={() => removeAnswer(answer)}
                   className="hover:bg-indigo-200 rounded-full p-0.5 transition-colors">
-                              <X className="w-2.5 h-2.5" />                            </button>                          </span>
-              )}                    </div>
-            }                {}                <div className="flex gap-1.5">                  <input
+                              <X className="w-2.5 h-2.5" />                </button>              </span>
+              )}            </div>
+            }            {}            <div className="flex gap-1.5">              <input
                 type="text"
                 value={newAnswer}
                 onChange={(e) => setNewAnswer(e.target.value)}
@@ -244,7 +245,7 @@ export default function InlineQuizBar({
                   <button
                 onClick={addAnswer}
                 className="px-2 py-1.5 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition-colors">
-                    <Plus className="w-3.5 h-3.5" />                  </button>                </div>                <p className="mt-2 text-xs text-gray-500">                  {t("builder.quiz.answer_instruction")}                </p>              </div>
-          }          </div>
+                    <Plus className="w-3.5 h-3.5" />              </button>            </div>            <p className="mt-2 text-xs text-gray-500">              {t("builder.quiz.answer_instruction")}            </p>          </div>
+          }        </div>
         }      </div>    </div>);
 }

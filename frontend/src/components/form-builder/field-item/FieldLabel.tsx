@@ -26,6 +26,19 @@ export const FieldLabel: React.FC<FieldLabelProps> = ({
 }) => {
   const { t } = useTranslation();
   const subLabelRef = useRef<HTMLDivElement>(null);
+  const handleRichTextLinkInteraction = (
+    event:
+      | React.MouseEvent<HTMLElement>
+      | React.PointerEvent<HTMLElement>
+      | React.KeyboardEvent<HTMLElement>
+  ) => {
+    const target = event.target as HTMLElement | null;
+    if (!target?.closest("a")) {
+      return;
+    }
+
+    event.stopPropagation();
+  };
   const [subLabelHtml, setSubLabelHtml] = useState({
     __html:
     sanitize(field.options?.subLabel as string || "") || (
@@ -63,13 +76,16 @@ export const FieldLabel: React.FC<FieldLabelProps> = ({
             <div
               className={`flex items-start gap-1 ${labelAlignment === "RIGHT" ? "justify-end" : isCenterAligned ? "justify-center" : ""}`}>
                 <div
-                className={`font-medium text-black outline-none cursor-text break-words max-w-full ql-editor !p-0 ${labelAlignment === "RIGHT" ? "text-right" : ""} ${isCenterAligned ? "text-center" : ""}`}
+                className={`rich-text-content font-medium text-black outline-none cursor-text break-words max-w-full ql-editor !p-0 ${labelAlignment === "RIGHT" ? "text-right" : ""} ${isCenterAligned ? "text-center" : ""}`}
+                onMouseDownCapture={handleRichTextLinkInteraction}
+                onClickCapture={handleRichTextLinkInteraction}
+                onPointerDownCapture={handleRichTextLinkInteraction}
                 dangerouslySetInnerHTML={{
                   __html: sanitize(field.label || t("common.question"))
                 }} />
                 {field.required &&
-              <span className="text-red-500 select-none -mt-1 text-lg leading-none">                    *                  </span>
-              }              </div>
+              <span className="text-red-500 select-none -mt-1 text-lg leading-none">                    *              </span>
+              }            </div>
             }          </div>        </div>      </div>      <div
         className={`flex-1 min-w-0 w-full max-w-full pb-3 scrollbar-visible ${field.type === FieldType.GROUP ? "overflow-visible" : "overflow-x-auto"}`}>
         {children}        {![

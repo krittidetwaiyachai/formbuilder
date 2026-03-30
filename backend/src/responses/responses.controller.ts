@@ -10,13 +10,14 @@ import {
   Query,
   Ip,
   Sse,
-  MessageEvent
-} from '@nestjs/common';
+  MessageEvent } from
+'@nestjs/common';
 import { Observable, fromEvent } from 'rxjs';
 import { map } from 'rxjs/operators';
 import * as fs from 'fs';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Throttle } from '@nestjs/throttler';
+import { PublicSubmissionOrchestratorService } from '../form-security/public-submission-orchestrator.service';
 import { ResponsesService } from './responses.service';
 import { ResponsesStatsService } from './responses-stats.service';
 import { CreateResponseDto } from './dto/create-response.dto';
@@ -34,27 +35,39 @@ interface User {
   email: string;
   role: RoleType;
 }
-@Controller('responses') export class
-  ResponsesController {
+@Controller('responses')export class
+ResponsesController {
   constructor(
-    private readonly responsesService: ResponsesService,
-    private readonly statsService: ResponsesStatsService,
-    private readonly eventEmitter: EventEmitter2
-  ) { }
+  private readonly publicSubmissionOrchestrator: PublicSubmissionOrchestratorService,
+  private readonly responsesService: ResponsesService,
+  private readonly statsService: ResponsesStatsService,
+  private readonly eventEmitter: EventEmitter2)
+  {}
   @Post()
   @Public()
   @Throttle({ default: { limit: 30, ttl: 60000 } })
-  create(@Body() createResponseDto: CreateResponseDto, @Ip() ip: string) {
+  create(@Body()createResponseDto: CreateResponseDto, @Ip()ip: string) {
     createResponseDto.ipAddress = ip;
-    return this.responsesService.create(createResponseDto);
+    return this.publicSubmissionOrchestrator.submitPublicForm({
+      formId: createResponseDto.formId,
+      answers: createResponseDto.answers,
+      email: createResponseDto.respondentEmail,
+      captchaToken: createResponseDto.captchaToken,
+      sessionKey: createResponseDto.sessionKey,
+      fingerprint: createResponseDto.fingerprint,
+      bindingId: createResponseDto.bindingId,
+      grantToken: createResponseDto.grantToken,
+      ipAddress: ip,
+      userId: createResponseDto.userId
+    });
   }
   @Get('check/:formId')
   @Public()
   checkSubmissionStatus(
-    @Param('formId') formId: string,
-    @Query('userId') userId?: string,
-    @Query('respondentEmail') respondentEmail?: string,
-    @Query('fingerprint') fingerprint?: string) {
+    @Param('formId')formId: string,
+    @Query('userId')userId?: string,
+    @Query('respondentEmail')respondentEmail?: string,
+    @Query('fingerprint')fingerprint?: string) {
     return this.responsesService.checkSubmissionStatus(
       formId,
       userId,
@@ -66,25 +79,24 @@ interface User {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(RoleType.SUPER_ADMIN, RoleType.ADMIN, RoleType.EDITOR, RoleType.VIEWER)
   getStats(
-    @Param('formId') formId: string,
-    @Query() query: Record<string, unknown>,
-    @CurrentUser() user: User) {
+    @Param('formId')formId: string,
+    @Query()query: Record<string, unknown>,
+    @CurrentUser()user: User) {
     const month =
-      typeof query.month === 'string' ? query.month :
-      typeof query.selectedMonth === 'string' ? query.selectedMonth :
-      undefined;
-
+    typeof query.month === 'string' ? query.month :
+    typeof query.selectedMonth === 'string' ? query.selectedMonth :
+    undefined;
     return this.statsService.getStats(formId, user.id, user.role, { month });
   }
   @Get('form/:formId')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(RoleType.SUPER_ADMIN, RoleType.ADMIN, RoleType.EDITOR, RoleType.VIEWER)
   findAll(
-    @Param('formId') formId: string,
-    @CurrentUser() user: User,
-    @Query('page') page?: string,
-    @Query('limit') limit?: string,
-    @Query('sort') sort?: string) {
+    @Param('formId')formId: string,
+    @CurrentUser()user: User,
+    @Query('page')page?: string,
+    @Query('limit')limit?: string,
+    @Query('sort')sort?: string) {
     const pageNum = page ? parseInt(page, 10) : 1;
     const limitNum = limit ? parseInt(limit, 10) : 50;
     const sortOrder = sort === 'asc' ? 'asc' : 'desc';
@@ -94,48 +106,44 @@ interface User {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(RoleType.SUPER_ADMIN, RoleType.ADMIN, RoleType.EDITOR, RoleType.VIEWER)
   findOne(
-    @Param('id') id: string,
-    @CurrentUser() user: User) {
+    @Param('id')id: string,
+    @CurrentUser()user: User) {
     return this.responsesService.findOne(id, user.id, user.role);
   }
   @Post('form/:formId/export/start')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(RoleType.SUPER_ADMIN, RoleType.ADMIN, RoleType.EDITOR, RoleType.VIEWER)
   async startExport(
-    @Param('formId') formId: string,
-    @CurrentUser() user: User
-  ) {
+    @Param('formId')formId: string,
+    @CurrentUser()user: User)
+  {
     return this.responsesService.startExportJob(formId, user.id, user.role);
   }
-
   @Sse('export/progress/:jobId')
   @Public()
-  exportProgress(@Param('jobId') jobId: string): Observable<MessageEvent> {
+  exportProgress(@Param('jobId')jobId: string): Observable<MessageEvent> {
     return fromEvent(this.eventEmitter, `export.progress.${jobId}`).pipe(
       map((payload: any) => ({
         data: payload
-      } as MessageEvent))
+      }) as MessageEvent)
     );
   }
-
   @Get('export/download/:jobId')
   @Public()
   async downloadExport(
-    @Param('jobId') jobId: string,
-    @Res() res: Response
-  ) {
+    @Param('jobId')jobId: string,
+    @Res()res: Response)
+  {
     const { filePath, filename } = this.responsesService.getJobResultFilePath(jobId);
-
     res.setHeader('Content-Type', 'text/csv; charset=utf-8');
     res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
-
     const fileStream = fs.createReadStream(filePath);
     fileStream.pipe(res);
   }
   @Delete(':id')
   @UseGuards(JwtAuthGuard, PermissionsGuard)
   @Permissions('DELETE_RESPONSES')
-  async remove(@Param('id') id: string) {
+  async remove(@Param('id')id: string) {
     return this.responsesService.remove(id);
   }
 }

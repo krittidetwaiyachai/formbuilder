@@ -1,51 +1,51 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma, RoleType } from '@prisma/client';
-@Injectable() export class
-  AdminService {
-  constructor(private prisma: PrismaService) { }
+@Injectable()export class
+AdminService {
+  constructor(private prisma: PrismaService) {}
   async getStats() {
     const now = new Date();
     const startOfThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
     const [userCount, formCount, submissionCount, thisMonthUsers, lastMonthUsers, recentActivity] = await Promise.all([
-      this.prisma.user.count(),
-      this.prisma.form.count(),
-      this.prisma.formResponse.count(),
-      this.prisma.user.count({
-        where: {
-          createdAt: { gte: startOfThisMonth }
+    this.prisma.user.count(),
+    this.prisma.form.count(),
+    this.prisma.formResponse.count(),
+    this.prisma.user.count({
+      where: {
+        createdAt: { gte: startOfThisMonth }
+      }
+    }),
+    this.prisma.user.count({
+      where: {
+        createdAt: {
+          gte: startOfLastMonth,
+          lt: startOfThisMonth
         }
-      }),
-      this.prisma.user.count({
-        where: {
-          createdAt: {
-            gte: startOfLastMonth,
-            lt: startOfThisMonth
+      }
+    }),
+    this.prisma.activityLog.findMany({
+      take: 10,
+      orderBy: { createdAt: 'desc' },
+      include: {
+        user: {
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+            photoUrl: true
+          }
+        },
+        form: {
+          select: {
+            id: true,
+            title: true
           }
         }
-      }),
-      this.prisma.activityLog.findMany({
-        take: 10,
-        orderBy: { createdAt: 'desc' },
-        include: {
-          user: {
-            select: {
-              id: true,
-              email: true,
-              firstName: true,
-              lastName: true,
-              photoUrl: true
-            }
-          },
-          form: {
-            select: {
-              id: true,
-              title: true
-            }
-          }
-        }
-      })]
+      }
+    })]
     );
     let growthRate = 0;
     if (lastMonthUsers > 0) {
@@ -157,38 +157,38 @@ import { Prisma, RoleType } from '@prisma/client';
     const where: Prisma.UserWhereInput = {};
     if (search) {
       where.OR = [
-        { email: { contains: search, mode: 'insensitive' } },
-        { firstName: { contains: search, mode: 'insensitive' } },
-        { lastName: { contains: search, mode: 'insensitive' } }];
+      { email: { contains: search, mode: 'insensitive' } },
+      { firstName: { contains: search, mode: 'insensitive' } },
+      { lastName: { contains: search, mode: 'insensitive' } }];
     }
     if (role) {
       where.role = { name: role as RoleType };
     }
     const [users, total] = await Promise.all([
-      this.prisma.user.findMany({
-        where,
-        skip,
-        take: limit,
-        orderBy: { createdAt: 'desc' },
-        select: {
-          id: true,
-          email: true,
-          firstName: true,
-          lastName: true,
-          photoUrl: true,
-          provider: true,
-          isActive: true,
-          lastActiveAt: true,
-          createdAt: true,
-          role: {
-            select: {
-              id: true,
-              name: true
-            }
+    this.prisma.user.findMany({
+      where,
+      skip,
+      take: limit,
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        photoUrl: true,
+        provider: true,
+        isActive: true,
+        lastActiveAt: true,
+        createdAt: true,
+        role: {
+          select: {
+            id: true,
+            name: true
           }
         }
-      }),
-      this.prisma.user.count({ where })]
+      }
+    }),
+    this.prisma.user.count({ where })]
     );
     return {
       data: users,

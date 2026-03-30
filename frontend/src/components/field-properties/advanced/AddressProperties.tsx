@@ -39,12 +39,12 @@ export const AddressProperties: React.FC<AddressPropertiesProps> = ({
   };
   return (
     <div className="space-y-4">      {}      <PropertiesTabs activeTab={activeTab} setActiveTab={setActiveTab} />      {activeTab === "general" &&
-      <div className="space-y-4">          {}          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.field_label")}            </label>            <input
+      <div className="space-y-4">        {}        <div>          <label className="block text-sm font-medium text-black mb-1">            {t("builder.properties.field_label")}          </label>          <input
             type="text"
             value={stripHtml(field.label)}
             onChange={(e) => handleUpdate({ label: e.target.value })}
             className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text" />
-          </div>          {}          <div>            <label className="block text-sm font-medium text-black mb-2">              {t("builder.properties.label_alignment")}            </label>            <div className="flex gap-2">              {(["LEFT", "CENTER", "TOP"] as const).map((align) =>
+          </div>        {}        <div>          <label className="block text-sm font-medium text-black mb-2">            {t("builder.properties.label_alignment")}          </label>          <div className="flex gap-2">            {(["LEFT", "CENTER", "TOP"] as const).map((align) =>
             <button
               key={align}
               onClick={() => handleOptionUpdate("labelAlignment", align)}
@@ -58,13 +58,13 @@ export const AddressProperties: React.FC<AddressPropertiesProps> = ({
               t("builder.properties.left") :
               align === "CENTER" ?
               t("builder.properties.center") :
-              t("builder.properties.top")}                </button>
-            )}            </div>          </div>          {}          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.required")}            </label>            <label className="relative inline-flex items-center cursor-pointer">              <input
+              t("builder.properties.top")}            </button>
+            )}          </div>        </div>        {}        <div>          <label className="block text-sm font-medium text-black mb-1">            {t("builder.properties.required")}          </label>          <label className="relative inline-flex items-center cursor-pointer">            <input
               type="checkbox"
               checked={field.required}
               onChange={(e) => handleUpdate({ required: e.target.checked })}
               className="sr-only peer" />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>            </label>            <p className="mt-1 text-xs text-gray-500">              {t("builder.properties.required_desc")}            </p>          </div>          {}          <button
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>          </label>          <p className="mt-1 text-xs text-gray-500">            {t("builder.properties.required_desc")}          </p>        </div>        {}        <button
           type="button"
           onClick={() =>
           duplicatesField({
@@ -79,9 +79,9 @@ export const AddressProperties: React.FC<AddressPropertiesProps> = ({
           })
           }
           className="w-full mt-4 px-3 py-2 text-sm font-medium text-black bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors flex items-center justify-center gap-2">
-            <Copy className="h-4 w-4" />            {t("builder.properties.duplicate")}          </button>        </div>
+            <Copy className="h-4 w-4" />          {t("builder.properties.duplicate")}        </button>      </div>
       }      {activeTab === "options" &&
-      <div className="space-y-6">          {}          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.default_country")}            </label>            <input
+      <div className="space-y-6">        {}        <div>          <label className="block text-sm font-medium text-black mb-1">            {t("builder.properties.default_country")}          </label>          <input
             type="text"
             value={options.defaultCountry || ""}
             onChange={(e) =>
@@ -89,14 +89,14 @@ export const AddressProperties: React.FC<AddressPropertiesProps> = ({
             }
             className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
             placeholder={t("builder.properties.default_country_placeholder")} />
-            <p className="mt-1 text-xs text-gray-500">              {t("builder.properties.default_country_desc")}            </p>          </div>          {}          <div>            <label className="block text-sm font-medium text-black mb-2">              {t("builder.properties.state_input_type")}            </label>            <div className="flex gap-2">              <button
+            <p className="mt-1 text-xs text-gray-500">            {t("builder.properties.default_country_desc")}          </p>        </div>        {}        <div>          <label className="block text-sm font-medium text-black mb-2">            {t("builder.properties.state_input_type")}          </label>          <div className="flex gap-2">            <button
               onClick={() => handleOptionUpdate("stateInputType", "text")}
               className={`flex-1 px-3 py-2 text-xs font-medium rounded-md border transition-colors ${
               options.stateInputType === "text" || !options.stateInputType ?
               "bg-black text-white border-black" :
               "bg-white text-black border-gray-400 hover:bg-gray-50"}`
               }>
-                {t("builder.properties.text_input")}              </button>              <button
+                {t("builder.properties.text_input")}            </button>            <button
               onClick={() =>
               handleOptionUpdate("stateInputType", "thai_provinces")
               }
@@ -105,53 +105,53 @@ export const AddressProperties: React.FC<AddressPropertiesProps> = ({
               "bg-black text-white border-black" :
               "bg-white text-black border-gray-400 hover:bg-gray-50"}`
               }>
-                {t("builder.properties.thai_provinces")}              </button>            </div>          </div>          {}          <div>            <label className="block text-sm font-medium text-black mb-2">              {t("builder.properties.subfields_visibility")}            </label>            <div className="space-y-2">              <label className="flex items-center gap-2">                <input
+                {t("builder.properties.thai_provinces")}            </button>          </div>        </div>        {}        <div>          <label className="block text-sm font-medium text-black mb-2">            {t("builder.properties.subfields_visibility")}          </label>          <div className="space-y-2">            <label className="flex items-center gap-2">              <input
                 type="checkbox"
                 checked={options.showStreet !== false}
                 onChange={() => toggleSubfield("showStreet")}
                 className="rounded border-gray-300 text-black focus:ring-black" />
-                <span className="text-sm">{t("builder.address.street")}</span>              </label>              <label className="flex items-center gap-2">                <input
+                <span className="text-sm">{t("builder.address.street")}</span>            </label>            <label className="flex items-center gap-2">              <input
                 type="checkbox"
                 checked={options.showStreet2 !== false}
                 onChange={() => toggleSubfield("showStreet2")}
                 className="rounded border-gray-300 text-black focus:ring-black" />
-                <span className="text-sm">{t("builder.address.street2")}</span>              </label>              <label className="flex items-center gap-2">                <input
+                <span className="text-sm">{t("builder.address.street2")}</span>            </label>            <label className="flex items-center gap-2">              <input
                 type="checkbox"
                 checked={options.showCity !== false}
                 onChange={() => toggleSubfield("showCity")}
                 className="rounded border-gray-300 text-black focus:ring-black" />
-                <span className="text-sm">{t("builder.address.city")}</span>              </label>              <label className="flex items-center gap-2">                <input
+                <span className="text-sm">{t("builder.address.city")}</span>            </label>            <label className="flex items-center gap-2">              <input
                 type="checkbox"
                 checked={options.showState !== false}
                 onChange={() => toggleSubfield("showState")}
                 className="rounded border-gray-300 text-black focus:ring-black" />
-                <span className="text-sm">{t("builder.address.state")}</span>              </label>              <label className="flex items-center gap-2">                <input
+                <span className="text-sm">{t("builder.address.state")}</span>            </label>            <label className="flex items-center gap-2">              <input
                 type="checkbox"
                 checked={options.showZip !== false}
                 onChange={() => toggleSubfield("showZip")}
                 className="rounded border-gray-300 text-black focus:ring-black" />
-                <span className="text-sm">{t("builder.address.zip")}</span>              </label>              <label className="flex items-center gap-2">                <input
+                <span className="text-sm">{t("builder.address.zip")}</span>            </label>            <label className="flex items-center gap-2">              <input
                 type="checkbox"
                 checked={options.showCountry !== false}
                 onChange={() => toggleSubfield("showCountry")}
                 className="rounded border-gray-300 text-black focus:ring-black" />
-                <span className="text-sm">{t("builder.address.country")}</span>              </label>            </div>          </div>        </div>
+                <span className="text-sm">{t("builder.address.country")}</span>            </label>          </div>        </div>      </div>
       }      {activeTab === "advanced" &&
-      <div className="space-y-6">          {}          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.hover_text")}            </label>            <textarea
+      <div className="space-y-6">        {}        <div>          <label className="block text-sm font-medium text-black mb-1">            {t("builder.properties.hover_text")}          </label>          <textarea
             value={options.hoverText || ""}
             onChange={(e) => handleOptionUpdate("hoverText", e.target.value)}
             rows={2}
             className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text" />
-            <p className="mt-1 text-xs text-gray-500">              {t("builder.properties.hover_text_desc")}            </p>          </div>          {}          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.shrink")}            </label>            <label className="relative inline-flex items-center cursor-pointer">              <input
+            <p className="mt-1 text-xs text-gray-500">            {t("builder.properties.hover_text_desc")}          </p>        </div>        {}        <div>          <label className="block text-sm font-medium text-black mb-1">            {t("builder.properties.shrink")}          </label>          <label className="relative inline-flex items-center cursor-pointer">            <input
               type="checkbox"
               checked={options.shrink || false}
               onChange={(e) => handleOptionUpdate("shrink", e.target.checked)}
               className="sr-only peer" />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>            </label>            <p className="mt-1 text-xs text-gray-500">              {t("builder.properties.shrink_desc")}            </p>          </div>          {}          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.hide_field")}            </label>            <label className="relative inline-flex items-center cursor-pointer">              <input
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>          </label>          <p className="mt-1 text-xs text-gray-500">            {t("builder.properties.shrink_desc")}          </p>        </div>        {}        <div>          <label className="block text-sm font-medium text-black mb-1">            {t("builder.properties.hide_field")}          </label>          <label className="relative inline-flex items-center cursor-pointer">            <input
               type="checkbox"
               checked={options.hidden || false}
               onChange={(e) => handleOptionUpdate("hidden", e.target.checked)}
               className="sr-only peer" />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>            </label>            <p className="mt-1 text-xs text-gray-500">              {t("builder.properties.hide_field_desc")}            </p>          </div>        </div>
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>          </label>          <p className="mt-1 text-xs text-gray-500">            {t("builder.properties.hide_field_desc")}          </p>        </div>      </div>
       }    </div>);
 };

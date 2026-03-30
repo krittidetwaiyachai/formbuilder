@@ -35,12 +35,12 @@ export const SubmitProperties: React.FC<SubmitPropertiesProps> = ({
   };
   return (
     <div className="space-y-4">      {}      <PropertiesTabs activeTab={activeTab} setActiveTab={setActiveTab} />      {activeTab === "general" &&
-      <div className="space-y-4">          {}          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.button_text")}            </label>            <input
+      <div className="space-y-4">        {}        <div>          <label className="block text-sm font-medium text-black mb-1">            {t("builder.properties.button_text")}          </label>          <input
             type="text"
             value={options.buttonText || t("builder.submit.submit")}
             onChange={(e) => handleOptionUpdate("buttonText", e.target.value)}
             className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text" />
-          </div>          {}          <div>            <label className="block text-sm font-medium text-black mb-2">              {t("builder.properties.button_alignment")}            </label>            <div className="flex gap-2">              {(["LEFT", "CENTER", "RIGHT"] as const).map((align) =>
+          </div>        {}        <div>          <label className="block text-sm font-medium text-black mb-2">            {t("builder.properties.button_alignment")}          </label>          <div className="flex gap-2">            {(["LEFT", "CENTER", "RIGHT"] as const).map((align) =>
             <button
               key={align}
               onClick={() => handleOptionUpdate("buttonAlign", align)}
@@ -54,8 +54,8 @@ export const SubmitProperties: React.FC<SubmitPropertiesProps> = ({
               t("builder.properties.left") :
               align === "CENTER" ?
               t("builder.properties.center") :
-              t("builder.properties.right")}                </button>
-            )}            </div>          </div>          {}          <button
+              t("builder.properties.right")}            </button>
+            )}          </div>        </div>        {}        <button
           type="button"
           onClick={() =>
           duplicatesField({
@@ -70,34 +70,34 @@ export const SubmitProperties: React.FC<SubmitPropertiesProps> = ({
           })
           }
           className="w-full mt-4 px-3 py-2 text-sm font-medium text-black bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors flex items-center justify-center gap-2">
-            <Copy className="h-4 w-4" />            {t("builder.properties.duplicate")}          </button>        </div>
+            <Copy className="h-4 w-4" />          {t("builder.properties.duplicate")}        </button>      </div>
       }      {activeTab === "options" &&
-      <div className="space-y-6">          {}          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.reset_button")}            </label>            <label className="relative inline-flex items-center cursor-pointer">              <input
+      <div className="space-y-6">        {}        <div>          <label className="block text-sm font-medium text-black mb-1">            {t("builder.properties.reset_button")}          </label>          <label className="relative inline-flex items-center cursor-pointer">            <input
               type="checkbox"
               checked={options.resetButton || false}
               onChange={(e) =>
               handleOptionUpdate("resetButton", e.target.checked)
               }
               className="sr-only peer" />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>            </label>            <p className="mt-1 text-xs text-gray-500">              {t("builder.properties.reset_button_desc")}            </p>          </div>          {}          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.print_button")}            </label>            <label className="relative inline-flex items-center cursor-pointer">              <input
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>          </label>          <p className="mt-1 text-xs text-gray-500">            {t("builder.properties.reset_button_desc")}          </p>        </div>        {}        <div>          <label className="block text-sm font-medium text-black mb-1">            {t("builder.properties.print_button")}          </label>          <label className="relative inline-flex items-center cursor-pointer">            <input
               type="checkbox"
               checked={options.printButton || false}
               onChange={(e) =>
               handleOptionUpdate("printButton", e.target.checked)
               }
               className="sr-only peer" />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>            </label>            <p className="mt-1 text-xs text-gray-500">              {t("builder.properties.print_button_desc")}            </p>          </div>        </div>
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>          </label>          <p className="mt-1 text-xs text-gray-500">            {t("builder.properties.print_button_desc")}          </p>        </div>      </div>
       }      {activeTab === "advanced" &&
-      <div className="space-y-6">          {}          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.shrink")}            </label>            <label className="relative inline-flex items-center cursor-pointer">              <input
+      <div className="space-y-6">        {}        <div>          <label className="block text-sm font-medium text-black mb-1">            {t("builder.properties.shrink")}          </label>          <label className="relative inline-flex items-center cursor-pointer">            <input
               type="checkbox"
               checked={field.shrink || false}
               onChange={(e) => handleUpdate({ shrink: e.target.checked })}
               className="sr-only peer" />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>            </label>            <p className="mt-1 text-xs text-gray-500">              {t("builder.properties.shrink_desc")}            </p>          </div>          {}          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.hide_field")}            </label>            <label className="relative inline-flex items-center cursor-pointer">              <input
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>          </label>          <p className="mt-1 text-xs text-gray-500">            {t("builder.properties.shrink_desc")}          </p>        </div>        {}        <div>          <label className="block text-sm font-medium text-black mb-1">            {t("builder.properties.hide_field")}          </label>          <label className="relative inline-flex items-center cursor-pointer">            <input
               type="checkbox"
               checked={options.hidden || false}
               onChange={(e) => handleOptionUpdate("hidden", e.target.checked)}
               className="sr-only peer" />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>            </label>            <p className="mt-1 text-xs text-gray-500">              {t("builder.properties.hide_field_desc")}            </p>          </div>        </div>
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>          </label>          <p className="mt-1 text-xs text-gray-500">            {t("builder.properties.hide_field_desc")}          </p>        </div>      </div>
       }    </div>);
 };

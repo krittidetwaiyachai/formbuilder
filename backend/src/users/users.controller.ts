@@ -3,15 +3,15 @@ import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 @Controller('users')
-@UseGuards(JwtAuthGuard) export class
-  UsersController {
-  constructor(private readonly usersService: UsersService) { }
+@UseGuards(JwtAuthGuard)export class
+UsersController {
+  constructor(private readonly usersService: UsersService) {}
   @Get('me')
-  getProfile(@CurrentUser() user: { id: string }) {
+  getProfile(@CurrentUser()user: {id: string;}) {
     return this.usersService.getProfile(user.id);
   }
   @Delete('me/data')
-  deleteMyData(@CurrentUser() user: { id: string }) {
+  deleteMyData(@CurrentUser()user: {id: string;}) {
     return this.usersService.deleteUserData(user.id);
   }
 }

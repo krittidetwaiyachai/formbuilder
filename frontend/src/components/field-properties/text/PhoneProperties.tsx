@@ -52,12 +52,12 @@ export const PhoneProperties = ({
   };
   return (
     <>      <PropertiesTabs activeTab={activeTab} setActiveTab={setActiveTab} />      <div className="space-y-4">        {activeTab === "general" &&
-        <div className="space-y-4">            <div>              <label className="block text-sm font-medium text-black mb-1">                {t("builder.properties.field_label")}              </label>              <input
+        <div className="space-y-4">          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.field_label")}            </label>            <input
               type="text"
               value={stripHtml(field.label)}
               onChange={(e) => handleUpdate({ label: e.target.value })}
               className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text" />
-            </div>            <div>              <label className="block text-sm font-medium text-black mb-2">                {t("builder.properties.label_alignment")}              </label>              <div className="flex gap-2">                {(["LEFT", "CENTER", "TOP"] as const).map((align) =>
+            </div>          <div>            <label className="block text-sm font-medium text-black mb-2">              {t("builder.properties.label_alignment")}            </label>            <div className="flex gap-2">              {(["LEFT", "CENTER", "TOP"] as const).map((align) =>
               <button
                 key={align}
                 onClick={() => handleOptionUpdate("labelAlignment", align)}
@@ -71,18 +71,18 @@ export const PhoneProperties = ({
                 t("builder.properties.left") :
                 align === "CENTER" ?
                 t("builder.properties.center") :
-                t("builder.properties.top")}                  </button>
-              )}              </div>            </div>            <div>              <label className="block text-sm font-medium text-black mb-1">                {t("builder.properties.required")}              </label>              <label className="relative inline-flex items-center cursor-pointer">                <input
+                t("builder.properties.top")}              </button>
+              )}            </div>          </div>          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.required")}            </label>            <label className="relative inline-flex items-center cursor-pointer">              <input
                 type="checkbox"
                 checked={field.required}
                 onChange={(e) => handleUpdate({ required: e.target.checked })}
                 className="sr-only peer" />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>              </label>              <p className="mt-1 text-xs text-gray-500">                {t("builder.properties.required_desc")}              </p>            </div>            <div>              <label className="block text-sm font-medium text-black mb-1">                {t("builder.properties.sublabel")}              </label>              <input
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>            </label>            <p className="mt-1 text-xs text-gray-500">              {t("builder.properties.required_desc")}            </p>          </div>          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.sublabel")}            </label>            <input
               type="text"
               value={options.subLabel || ""}
               onChange={(e) => handleOptionUpdate("subLabel", e.target.value)}
               className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text" />
-              <p className="mt-1 text-xs text-gray-500">                {t("builder.properties.sublabel_desc")}              </p>            </div>            <button
+              <p className="mt-1 text-xs text-gray-500">              {t("builder.properties.sublabel_desc")}            </p>          </div>          <button
             onClick={() =>
             duplicatesField({
               type: field.type,
@@ -95,12 +95,12 @@ export const PhoneProperties = ({
             })
             }
             className="w-full mt-4 px-3 py-2 text-sm font-medium text-black bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 transition-colors flex items-center justify-center gap-2">
-              <Copy className="h-4 w-4" />              {t("builder.properties.duplicate")}            </button>            <PdpaToggle
+              <Copy className="h-4 w-4" />            {t("builder.properties.duplicate")}          </button>          <PdpaToggle
             value={field.isPII || false}
             onChange={(val) => handleUpdate({ isPII: val })} />
           </div>
         }        {activeTab === "options" &&
-        <div className="space-y-6">            <div>              <label className="block text-sm font-medium text-black mb-1">                {t("builder.properties.width")}              </label>              <label className="relative inline-flex items-center cursor-pointer">                <input
+        <div className="space-y-6">          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.width")}            </label>            <label className="relative inline-flex items-center cursor-pointer">              <input
                 type="checkbox"
                 checked={options.width === "FIXED"}
                 onChange={(e) =>
@@ -110,10 +110,10 @@ export const PhoneProperties = ({
                 )
                 }
                 className="sr-only peer" />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>              </label>              {options.width === "FIXED" &&
-            <div className="mt-2 text-xs font-bold px-2 py-1 bg-gray-200 rounded text-gray-600 inline-block">                  {t("builder.properties.fixed_width")}                </div>
-            }              {options.width === "FIXED" &&
-            <div className="mt-2">                  <label className="block text-xs font-medium text-gray-700 mb-1">                    {t("builder.properties.custom_width")}                  </label>                  <input
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>            </label>            {options.width === "FIXED" &&
+            <div className="mt-2 text-xs font-bold px-2 py-1 bg-gray-200 rounded text-gray-600 inline-block">              {t("builder.properties.fixed_width")}            </div>
+            }            {options.width === "FIXED" &&
+            <div className="mt-2">              <label className="block text-xs font-medium text-gray-700 mb-1">                {t("builder.properties.custom_width")}              </label>              <input
                 type="number"
                 value={options.customWidth || 300}
                 onChange={(e) =>
@@ -125,15 +125,15 @@ export const PhoneProperties = ({
                 className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
                 placeholder="Width in px" />
                 </div>
-            }              <p className="mt-1 text-xs text-gray-500">                {t("builder.properties.width_desc")}              </p>            </div>            <div>              <label className="block text-sm font-medium text-black mb-1">                {t("builder.properties.input_mask")}              </label>              <label className="relative inline-flex items-center cursor-pointer">                <input
+            }            <p className="mt-1 text-xs text-gray-500">              {t("builder.properties.width_desc")}            </p>          </div>          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.input_mask")}            </label>            <label className="relative inline-flex items-center cursor-pointer">              <input
                 type="checkbox"
                 checked={validation.hasInputMask || false}
                 onChange={(e) =>
                 handleValidationUpdate("hasInputMask", e.target.checked)
                 }
                 className="sr-only peer" />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>              </label>              {validation.hasInputMask &&
-            <div className="mt-2">                  <input
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>            </label>            {validation.hasInputMask &&
+            <div className="mt-2">              <input
                 type="text"
                 value={validation.inputMask || "(###) ###-####"}
                 onChange={(e) =>
@@ -142,48 +142,48 @@ export const PhoneProperties = ({
                 className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text"
                 placeholder="e.g. (###) ###-####" />
                 </div>
-            }              <p className="mt-1 text-xs text-gray-500">                {t("builder.properties.phone_input_mask_desc")}              </p>            </div>          </div>
+            }            <p className="mt-1 text-xs text-gray-500">              {t("builder.properties.phone_input_mask_desc")}            </p>          </div>        </div>
         }        {activeTab === "advanced" &&
-        <div className="space-y-6">            <div>              <label className="block text-sm font-medium text-black mb-1">                {t("builder.properties.placeholder")}              </label>              <input
+        <div className="space-y-6">          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.placeholder")}            </label>            <input
               type="text"
               value={field.placeholder || ""}
               onChange={(e) => handleUpdate({ placeholder: e.target.value })}
               className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text" />
-              <p className="mt-1 text-xs text-gray-500">                {t("builder.properties.phone_placeholder_desc")}              </p>            </div>            <div>              <label className="block text-sm font-medium text-black mb-1">                {t("builder.properties.hover_text")}              </label>              <textarea
+              <p className="mt-1 text-xs text-gray-500">              {t("builder.properties.phone_placeholder_desc")}            </p>          </div>          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.hover_text")}            </label>            <textarea
               value={options.hoverText || ""}
               onChange={(e) =>
               handleOptionUpdate("hoverText", e.target.value)
               }
               rows={2}
               className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text" />
-              <p className="mt-1 text-xs text-gray-500">                {t("builder.properties.hover_text_desc")}              </p>            </div>            <div>              <label className="block text-sm font-medium text-black mb-1">                {t("builder.properties.default_value")}              </label>              <input
+              <p className="mt-1 text-xs text-gray-500">              {t("builder.properties.hover_text_desc")}            </p>          </div>          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.default_value")}            </label>            <input
               type="tel"
               value={options.defaultValue || ""}
               onChange={(e) =>
               handleOptionUpdate("defaultValue", e.target.value)
               }
               className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white select-text" />
-              <p className="mt-1 text-xs text-gray-500">                {t("builder.properties.phone_default_value_desc")}              </p>            </div>            <div>              <label className="block text-sm font-medium text-black mb-1">                {t("builder.properties.read_only")}              </label>              <label className="relative inline-flex items-center cursor-pointer">                <input
+              <p className="mt-1 text-xs text-gray-500">              {t("builder.properties.phone_default_value_desc")}            </p>          </div>          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.read_only")}            </label>            <label className="relative inline-flex items-center cursor-pointer">              <input
                 type="checkbox"
                 checked={options.readOnly || false}
                 onChange={(e) =>
                 handleOptionUpdate("readOnly", e.target.checked)
                 }
                 className="sr-only peer" />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>              </label>              <p className="mt-1 text-xs text-gray-500">                {t("builder.properties.read_only_desc")}              </p>            </div>            <div>              <label className="block text-sm font-medium text-black mb-1">                {t("builder.properties.shrink")}              </label>              <label className="relative inline-flex items-center cursor-pointer">                <input
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>            </label>            <p className="mt-1 text-xs text-gray-500">              {t("builder.properties.read_only_desc")}            </p>          </div>          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.shrink")}            </label>            <label className="relative inline-flex items-center cursor-pointer">              <input
                 type="checkbox"
                 checked={options.shrink || false}
                 onChange={(e) =>
                 handleOptionUpdate("shrink", e.target.checked)
                 }
                 className="sr-only peer" />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>              </label>              <p className="mt-1 text-xs text-gray-500">                {t("builder.properties.shrink_desc")}              </p>            </div>            <div>              <label className="block text-sm font-medium text-black mb-1">                {t("builder.properties.hide_field")}              </label>              <label className="relative inline-flex items-center cursor-pointer">                <input
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>            </label>            <p className="mt-1 text-xs text-gray-500">              {t("builder.properties.shrink_desc")}            </p>          </div>          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("builder.properties.hide_field")}            </label>            <label className="relative inline-flex items-center cursor-pointer">              <input
                 type="checkbox"
                 checked={options.hidden || false}
                 onChange={(e) =>
                 handleOptionUpdate("hidden", e.target.checked)
                 }
                 className="sr-only peer" />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>              </label>            </div>          </div>
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-300 after:ease-in-out after:shadow-sm peer-checked:bg-black"></div>            </label>          </div>        </div>
         }      </div>    </>);
 };

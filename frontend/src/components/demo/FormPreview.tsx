@@ -41,7 +41,7 @@ export default function FormPreview() {
               type={element.type === FieldType.EMAIL ? "email" : element.type === FieldType.NUMBER ? "number" : "text"}
               placeholder={element.placeholder} />
             {element.helperText &&
-            <p className="text-sm text-muted-foreground">                {element.helperText}              </p>
+            <p className="text-sm text-muted-foreground">              {element.helperText}            </p>
             }          </div>);
       case FieldType.TEXTAREA:
         return (
@@ -52,54 +52,54 @@ export default function FormPreview() {
               placeholder={element.placeholder}
               rows={element.rows || 4} />
             {element.helperText &&
-            <p className="text-sm text-muted-foreground">                {element.helperText}              </p>
+            <p className="text-sm text-muted-foreground">              {element.helperText}            </p>
             }          </div>);
       case FieldType.DROPDOWN:
         return (
           <div className="space-y-2">            <Label htmlFor={element.id}>              {element.label}              {element.required &&
               <span className="text-destructive ml-1">*</span>
               }            </Label>            <Select>              <SelectTrigger id={element.id}>                <SelectValue placeholder={t('common.select_option')} />              </SelectTrigger>              <SelectContent>                {optionItems.map((opt) =>
-                <SelectItem key={opt.id} value={opt.value}>                    {opt.label}                  </SelectItem>
+                <SelectItem key={opt.id} value={opt.value}>                  {opt.label}                </SelectItem>
                 )}              </SelectContent>            </Select>            {element.helperText &&
-            <p className="text-sm text-muted-foreground">                {element.helperText}              </p>
+            <p className="text-sm text-muted-foreground">              {element.helperText}            </p>
             }          </div>);
       case FieldType.CHECKBOX:
         return (
           <div className="space-y-3">            <Label>              {element.label}              {element.required &&
               <span className="text-destructive ml-1">*</span>
               }            </Label>            <div className="space-y-2">              {optionItems.map((opt) =>
-              <div key={opt.id} className="flex items-center space-x-2">                  <Checkbox id={opt.id} />                  <Label
+              <div key={opt.id} className="flex items-center space-x-2">                <Checkbox id={opt.id} />                <Label
                   htmlFor={opt.id}
                   className="text-sm font-normal cursor-pointer">
-                    {opt.label}                  </Label>                </div>
+                    {opt.label}                </Label>              </div>
               )}            </div>            {element.helperText &&
-            <p className="text-sm text-muted-foreground">                {element.helperText}              </p>
+            <p className="text-sm text-muted-foreground">              {element.helperText}            </p>
             }          </div>);
       case FieldType.RADIO:
         return (
           <div className="space-y-3">            <Label>              {element.label}              {element.required &&
               <span className="text-destructive ml-1">*</span>
               }            </Label>            <RadioGroup name={element.id}>              {optionItems.map((opt) =>
-              <div key={opt.id} className="flex items-center space-x-2">                  <RadioGroupItem value={opt.value} id={opt.id} />                  <Label
+              <div key={opt.id} className="flex items-center space-x-2">                <RadioGroupItem value={opt.value} id={opt.id} />                <Label
                   htmlFor={opt.id}
                   className="text-sm font-normal cursor-pointer">
-                    {opt.label}                  </Label>                </div>
+                    {opt.label}                </Label>              </div>
               )}            </RadioGroup>            {element.helperText &&
-            <p className="text-sm text-muted-foreground">                {element.helperText}              </p>
+            <p className="text-sm text-muted-foreground">              {element.helperText}            </p>
             }          </div>);
       case FieldType.DATE:
         return (
           <div className="space-y-2">            <Label htmlFor={element.id}>              {element.label}              {element.required &&
               <span className="text-destructive ml-1">*</span>
               }            </Label>            <Input id={element.id} type="date" />            {element.helperText &&
-            <p className="text-sm text-muted-foreground">                {element.helperText}              </p>
+            <p className="text-sm text-muted-foreground">              {element.helperText}            </p>
             }          </div>);
       case FieldType.FILE:
         return (
           <div className="space-y-2">            <Label htmlFor={element.id}>              {element.label}              {element.required &&
               <span className="text-destructive ml-1">*</span>
               }            </Label>            <Input id={element.id} type="file" accept={element.accept} />            {element.helperText &&
-            <p className="text-sm text-muted-foreground">                {element.helperText}              </p>
+            <p className="text-sm text-muted-foreground">              {element.helperText}            </p>
             }          </div>);
       case FieldType.RATE:
         return (
@@ -110,9 +110,9 @@ export default function FormPreview() {
                 key={i}
                 type="button"
                 className="h-8 w-8 p-0 hover:opacity-80 transition-opacity">
-                  <Star className="h-6 w-6 text-yellow-400 fill-yellow-400" />                </button>
+                  <Star className="h-6 w-6 text-yellow-400 fill-yellow-400" />              </button>
               )}            </div>            {element.helperText &&
-            <p className="text-sm text-muted-foreground">                {element.helperText}              </p>
+            <p className="text-sm text-muted-foreground">              {element.helperText}            </p>
             }          </div>);
       default:
         return null;

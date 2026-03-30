@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { useFormStore } from "@/store/formStore";
-import { Draggable } from "@hello-pangea/dnd";
-import { allFields } from "./config";
 import type { SidebarFieldConfig } from "./config";
 import { useFieldLabels, getFieldColorTheme } from "./useSidebarTheme";
+import {
+  MOBILE_SIDEBAR_DRAG_END,
+  MOBILE_SIDEBAR_DRAG_MOVE,
+  MOBILE_SIDEBAR_DRAG_START,
+  dispatchMobileSidebarDragEvent } from
+"@/utils/mobileSidebarDrag";
 const FieldTypeButtonVisual = ({
   fieldType,
   isCollapsed,
@@ -19,29 +23,35 @@ const FieldTypeButtonVisual = ({
     return (
       <div
         className={`
-                group w-full aspect-[1.3] flex flex-col items-center justify-center p-3 
-                bg-white border hover:border-transparent rounded-xl transition-all duration-200
-                hover:shadow-lg hover:-translate-y-1 relative overflow-hidden
+                group w-full aspect-[1.14] flex flex-col items-center justify-center gap-2 p-3.5 
+                bg-white border md:hover:border-transparent rounded-2xl transition-all duration-200
+                md:hover:shadow-lg md:hover:-translate-y-1 relative overflow-hidden
+                active:scale-[0.98] active:bg-gray-50
                 ${theme.border}
             `}>
         <div
           className={`
-                    absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300
+                    absolute inset-0 opacity-0 md:group-hover:opacity-100 transition-opacity duration-300
                     bg-gradient-to-br ${theme.bg} to-white pointer-events-none
                 `} />
         <div
           className={`
-                    w-12 h-12 rounded-full flex items-center justify-center mb-2
-                    ${theme.bg} ${theme.text} group-hover:scale-110 transition-transform duration-300
+                    w-12 h-12 rounded-full flex items-center justify-center
+                    ${theme.bg} ${theme.text} md:group-hover:scale-110 transition-transform duration-300
                 `}>
-          <Icon className="h-6 w-6" />        </div>        <span
-          className={`text-xs font-semibold text-center leading-tight z-10 text-gray-700 group-hover:text-gray-900`}>
-          {translatedLabel}        </span>      </div>);
+          <Icon className="h-6 w-6" />
+        </div>
+        <span
+          className={`z-10 text-center text-[12px] font-semibold leading-[1.35] text-gray-700 md:group-hover:text-gray-900`}>
+          {translatedLabel}
+        </span>
+      </div>
+    );
   }
   return (
     <div
-      className={`w-full flex items-center ${isCollapsed ? "justify-center px-1" : "px-3"} py-2 text-sm text-black bg-white hover:bg-gray-50 rounded-md border border-gray-400 transition-colors cursor-grab active:cursor-grabbing touch-none select-none`}>
-      <Icon className={`h-4 w-4 ${isCollapsed ? "" : "mr-2"}`} />      {!isCollapsed && <span>{translatedLabel}</span>}    </div>);
+      className={`w-full flex items-center ${isCollapsed ? "justify-center px-1" : "px-3"} py-2 text-sm text-black bg-white md:hover:bg-gray-50 active:bg-gray-100 rounded-md border border-gray-400 transition-colors cursor-grab active:cursor-grabbing touch-none select-none`}>
+      <Icon className={`h-4 w-4 ${isCollapsed ? "" : "mr-2"}`} />      {!isCollapsed && <span>{translatedLabel}</span>}    </div>);
 };
 export function FieldTypeButton({
   fieldType,
@@ -51,8 +61,19 @@ export function FieldTypeButton({
   isTouch
 }: {fieldType: SidebarFieldConfig;isCollapsed?: boolean;onFieldAdd?: () => void;variant?: "list" | "grid";isTouch?: boolean;}) {
   const { addField } = useFormStore();
-  const index = allFields.findIndex((f) => f.type === fieldType.type);
-  const handleDoubleClick = (e: React.MouseEvent) => {
+  const customDragOverlayRef = useRef<HTMLDivElement | null>(null);
+  const customDragCleanupRef = useRef<(() => void) | null>(null);
+  const isCustomDraggingRef = useRef(false);
+  const lastTouchPointRef = useRef<{x: number;y: number;} | null>(null);
+  const useCustomSidebarDrag = Boolean(!isTouch || variant === "grid");
+  useEffect(() => {
+    return () => {
+      if (!isCustomDraggingRef.current) {
+        customDragCleanupRef.current?.();
+      }
+    };
+  }, []);
+  const handleTapAdd = (e: React.MouseEvent | React.TouchEvent) => {
     e.stopPropagation();
     addField({
       type: fieldType.type,
@@ -64,68 +85,127 @@ export function FieldTypeButton({
     });
     onFieldAdd?.();
   };
+  const handleCustomMobileDragStart = useCallback((event: PointerEvent) => {
+    if (
+    !useCustomSidebarDrag ||
+    event.pointerType !== "touch" &&
+    event.pointerType !== "mouse" &&
+    event.pointerType !== "pen" ||
+    event.pointerType === "mouse" && event.button !== 0 ||
+    !event.isPrimary)
+    {
+      return;
+    }
+    event.preventDefault();
+    event.stopPropagation();
+    customDragCleanupRef.current?.();
+    const overlay = customDragOverlayRef.current;
+    const activePointerId = event.pointerId;
+    const initialPoint = { x: event.clientX, y: event.clientY };
+    isCustomDraggingRef.current = true;
+    lastTouchPointRef.current = initialPoint;
+    try {
+      overlay?.setPointerCapture(activePointerId);
+    } catch {
+    }
+    dispatchMobileSidebarDragEvent(MOBILE_SIDEBAR_DRAG_START, {
+      fieldType: fieldType.type,
+      ...initialPoint
+    });
+    const handlePointerMove = (moveEvent: PointerEvent) => {
+      if (moveEvent.pointerId !== activePointerId) {
+        return;
+      }
+      const nextPoint = { x: moveEvent.clientX, y: moveEvent.clientY };
+      lastTouchPointRef.current = nextPoint;
+      moveEvent.preventDefault();
+      dispatchMobileSidebarDragEvent(MOBILE_SIDEBAR_DRAG_MOVE, {
+        fieldType: fieldType.type,
+        ...nextPoint
+      });
+    };
+    const finishDrag = (endEvent?: PointerEvent) => {
+      const finalPoint = endEvent ?
+      { x: endEvent.clientX, y: endEvent.clientY } :
+      lastTouchPointRef.current || initialPoint;
+      dispatchMobileSidebarDragEvent(MOBILE_SIDEBAR_DRAG_END, {
+        fieldType: fieldType.type,
+        ...finalPoint
+      });
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", handlePointerEnd);
+      window.removeEventListener("pointercancel", handlePointerCancel);
+      try {
+        overlay?.releasePointerCapture(activePointerId);
+      } catch {
+      }
+      isCustomDraggingRef.current = false;
+      customDragCleanupRef.current = null;
+      lastTouchPointRef.current = null;
+    };
+    const handlePointerEnd = (endEvent: PointerEvent) => {
+      if (endEvent.pointerId !== activePointerId) {
+        return;
+      }
+      endEvent.preventDefault();
+      finishDrag(endEvent);
+    };
+    const handlePointerCancel = (cancelEvent: PointerEvent) => {
+      if (cancelEvent.pointerId !== activePointerId) {
+        return;
+      }
+      finishDrag(cancelEvent);
+    };
+    window.addEventListener("pointermove", handlePointerMove, { passive: false });
+    window.addEventListener("pointerup", handlePointerEnd, { passive: false });
+    window.addEventListener("pointercancel", handlePointerCancel, { passive: false });
+    customDragCleanupRef.current = () => {
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", handlePointerEnd);
+      window.removeEventListener("pointercancel", handlePointerCancel);
+      try {
+        overlay?.releasePointerCapture(activePointerId);
+      } catch {
+      }
+    };
+  }, [fieldType.type, useCustomSidebarDrag]);
+  useEffect(() => {
+    const overlay = customDragOverlayRef.current;
+    if (!overlay || !useCustomSidebarDrag) {
+      return;
+    }
+    overlay.addEventListener("pointerdown", handleCustomMobileDragStart, {
+      passive: false
+    });
+    return () => {
+      overlay.removeEventListener("pointerdown", handleCustomMobileDragStart);
+    };
+  }, [handleCustomMobileDragStart, useCustomSidebarDrag]);
   return (
-    <div className="relative w-full h-full">      <div
+    <div className="relative w-full h-full">
+      <div
         className="relative z-0 select-none h-full"
         onClick={(e) => {
           if (isTouch && !isCollapsed && variant !== "grid") {
-            handleDoubleClick(e);
+            handleTapAdd(e);
           }
         }}>
         <FieldTypeButtonVisual
           fieldType={fieldType}
           isCollapsed={isCollapsed}
           variant={variant} />
-      </div>      <Draggable
-        draggableId={`sidebar-${fieldType.type}`}
-        index={index !== -1 ? index : 0}>
-        {(provided, snapshot) => {
-          const useSplitDrag = isTouch && !isCollapsed && variant !== "grid";
-          return (
-            <div
-              ref={provided.innerRef}
-              {...provided.draggableProps}
-              style={{
-                ...provided.draggableProps.style,
-                position: "absolute",
-                inset: 0,
-                zIndex: 20,
-                opacity: 0,
-                pointerEvents: "none"
-              }}>
-              <div
-                {...provided.dragHandleProps}
-                style={{
-                  position: "absolute",
-                  left: 0,
-                  top: 0,
-                  bottom: 0,
-                  width: useSplitDrag ? "60px" : "100%",
-                  touchAction: useSplitDrag ?
-                  "none" :
-                  isTouch ?
-                  "manipulation" :
-                  "none",
-                  pointerEvents: "auto",
-                  cursor: snapshot.isDragging ? "grabbing" : "grab"
-                }}
-                onClick={(e) => {
-                  if (!snapshot.isDragging) handleDoubleClick(e);
-                }} />
-              {useSplitDrag &&
-              <div
-                style={{
-                  position: "absolute",
-                  left: "60px",
-                  right: 0,
-                  top: 0,
-                  bottom: 0,
-                  pointerEvents: "auto",
-                  touchAction: "manipulation"
-                }}
-                onClick={(e) => {
-                  handleDoubleClick(e);
-                }} />
-              }            </div>);
-        }}      </Draggable>    </div>);
+      </div>
+      {useCustomSidebarDrag &&
+      <div
+        ref={customDragOverlayRef}
+        className="absolute inset-0 z-20 bg-transparent"
+        style={{
+          touchAction: "none",
+          WebkitTouchCallout: "none",
+          WebkitUserSelect: "none",
+          userSelect: "none",
+          cursor: "grab"
+        }} />
+      }
+    </div>);
 }
