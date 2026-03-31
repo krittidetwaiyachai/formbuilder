@@ -155,14 +155,14 @@ export interface FormSettings {
 }
 export type FormSettingsProperties = FormSettings;
 export type VerificationStateStatus =
-  | 'idle'
-  | 'pending'
-  | 'required'
-  | 'verified'
-  | 'expired';
+'idle' |
+'pending' |
+'required' |
+'verified' |
+'expired';
 export type CanonicalEmailSource =
-  | { mode: 'top_level' }
-  | { mode: 'field'; fieldId: string };
+{mode: 'top_level';} |
+{mode: 'field';fieldId: string;};
 export interface FormSecuritySettings {
   requireCaptcha?: boolean;
   requireEmailVerification?: boolean;
@@ -173,28 +173,16 @@ export interface FormSecuritySettings {
 }
 export interface VerificationRequestResponse {
   status: 'PENDING';
-  code: string;
-  bindingId?: string;
+  verificationRequestId?: string;
   message: string;
 }
-export interface VerifyEmailResponse {
-  status: 'VERIFIED';
-  code: string;
-  bindingId: string;
-  grantToken: string;
-  grantExpiresAt: string;
-}
 export interface VerifiedSubmissionStatusResponse {
-  status: 'VALID' | 'INVALID' | 'EXPIRED' | 'CONSUMED';
-  bindingId?: string;
-  expiresAt?: string;
+  status: 'PENDING' | 'VERIFIED_READY' | 'INVALID' | 'EXPIRED' | 'CONSUMED';
 }
 export interface PublicFormDraftState {
   sessionKey: string;
   formValues: Record<string, unknown>;
-  bindingId: string | null;
-  grantToken: string | null;
-  grantExpiresAt: string | null;
+  verificationRequestId: string | null;
   canonicalEmailSnapshot: string | null;
   verificationStatus: VerificationStateStatus;
   verificationMessage: string | null;

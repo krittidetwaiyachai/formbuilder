@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { GoogleLogin } from "@react-oauth/google";
 import { X, ArrowLeft } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
@@ -9,6 +9,12 @@ interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
+}
+function parseAllowedOrigins(rawValue: string | undefined) {
+  return (rawValue || "http://localhost:5173").
+  split(",").
+  map((origin) => origin.trim()).
+  filter(Boolean);
 }
 export default function LoginModal({
   isOpen,
@@ -21,6 +27,19 @@ export default function LoginModal({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(() => window.innerWidth >= 768);
+  const googleAllowedOrigins = useMemo(
+    () => parseAllowedOrigins(import.meta.env.VITE_GOOGLE_ALLOWED_ORIGINS),
+    []
+  );
+  const isGoogleOriginAllowed = googleAllowedOrigins.includes(window.location.origin);
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth >= 768);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -40,9 +59,7 @@ export default function LoginModal({
       setIsLoading(false);
     }
   };
-  const handleGoogleSuccess = async (credentialResponse: {
-    credential?: string;
-  }) => {
+  const handleGoogleSuccess = async (credentialResponse: {credential?: string;}) => {
     try {
       const res = await api.post("/auth/google/login", {
         token: credentialResponse.credential
@@ -59,48 +76,135 @@ export default function LoginModal({
       });
     }
   };
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  }
+  const googleAuthBlock = isGoogleOriginAllowed ?
+  <GoogleLogin
+    onSuccess={handleGoogleSuccess}
+    onError={() => {
+      toast({
+        title: t("auth.google_failed"),
+        description: t("auth.google_error"),
+        variant: "error"
+      });
+    }}
+    useOneTap={isDesktop}
+    theme="outline"
+    shape="pill"
+    size="large"
+    width={isDesktop ? 350 : 320}
+    logo_alignment={isDesktop ? "left" : undefined} /> :
+  <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+      Google Sign-In is disabled on this origin.
+      Add <span className="font-semibold">{window.location.origin}</span> to the Google OAuth
+      allowed origins, then update <span className="font-semibold">VITE_GOOGLE_ALLOWED_ORIGINS</span>.
+    </div>;
+  const formFields =
+  <form onSubmit={handleEmailLogin} className={isDesktop ? "space-y-6" : "space-y-5"}>
+      <div>
+        <label
+        className={
+        isDesktop ?
+        "block text-xs font-bold text-black/60 mb-3 uppercase tracking-wider" :
+        "block text-sm font-medium text-gray-700 mb-2"
+        }>
+          {t("auth.email")}
+        </label>
+        <input
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        className={
+        isDesktop ?
+        "w-full px-0 py-3 border-0 border-b-2 border-black/20 focus:border-black transition-all outline-none bg-transparent text-black placeholder-black/30 text-lg" :
+        "w-full px-4 py-4 bg-gray-100 border-0 rounded-xl text-base text-black placeholder-gray-400 focus:ring-2 focus:ring-black focus:bg-white transition-all outline-none"
+        }
+        placeholder={t("auth.email_placeholder")}
+        required />
+      </div>
+      <div>
+        <label
+        className={
+        isDesktop ?
+        "block text-xs font-bold text-black/60 mb-3 uppercase tracking-wider" :
+        "block text-sm font-medium text-gray-700 mb-2"
+        }>
+          {t("auth.password")}
+        </label>
+        <input
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        className={
+        isDesktop ?
+        "w-full px-0 py-3 border-0 border-b-2 border-black/20 focus:border-black transition-all outline-none bg-transparent text-black placeholder-black/30 text-lg" :
+        "w-full px-4 py-4 bg-gray-100 border-0 rounded-xl text-base text-black placeholder-gray-400 focus:ring-2 focus:ring-black focus:bg-white transition-all outline-none"
+        }
+        placeholder={t("auth.password_placeholder")}
+        required />
+      </div>
+      <button
+      type="submit"
+      disabled={isLoading}
+      className={
+      isDesktop ?
+      "w-full bg-black text-white py-4 rounded-2xl hover:bg-black/80 transition-all font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed shadow-xl hover:shadow-2xl transform hover:-translate-y-0.5 uppercase tracking-wider" :
+      "w-full bg-black text-white py-4 rounded-full font-semibold text-base active:bg-gray-800 transition-colors disabled:opacity-50"
+      }>
+        {isLoading ? t("auth.signing_in") : t("auth.sign_in_button")}
+      </button>
+    </form>;
+  if (!isDesktop) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-0 backdrop-blur-xl">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-white">
+          <div className="safe-area-pt safe-area-pb min-h-screen px-6 pb-10 pt-14">
+            <button
+              onClick={onClose}
+              className="safe-area-pt absolute left-4 top-4 rounded-full bg-gray-100 p-2 transition-colors active:bg-gray-200">
+              <ArrowLeft className="h-5 w-5 text-gray-700" />
+            </button>
+            <div className="mt-8">
+              <h1 className="mb-2 text-[32px] font-bold text-black">
+                {t("auth.sign_in")}
+              </h1>
+              <p className="mb-8 text-base text-gray-500">
+                {t("auth.sign_in_subtitle")}
+              </p>
+              <div className="mb-6 flex justify-center">{googleAuthBlock}</div>
+              <div className="relative my-8">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-200"></div>
+                </div>
+                <div className="relative flex justify-center">
+                  <span className="bg-white px-4 text-sm text-gray-400">
+                    {t("auth.or_continue")}
+                  </span>
+                </div>
+              </div>
+              {formFields}
+            </div>
+          </div>
+        </div>
+      </div>);
+  }
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-0 md:p-4 bg-black/80 backdrop-blur-xl">      {}      <div className="md:hidden fixed inset-0 bg-white z-50 overflow-y-auto">        <div className="min-h-screen px-6 pt-14 pb-10 safe-area-pt safe-area-pb">          <button
-            onClick={onClose}
-            className="absolute top-4 left-4 p-2 rounded-full bg-gray-100 active:bg-gray-200 transition-colors safe-area-pt">
-            <ArrowLeft className="w-5 h-5 text-gray-700" />          </button>          <div className="mt-8">            <h1 className="text-[32px] font-bold text-black mb-2">              {t("auth.sign_in")}            </h1>            <p className="text-gray-500 text-base mb-8">              {t("auth.sign_in_subtitle")}            </p>            <div className="mb-6 flex justify-center">              <GoogleLogin
-                onSuccess={handleGoogleSuccess}
-                onError={() => {
-                  toast({
-                    title: t("auth.google_failed"),
-                    description: t("auth.google_error"),
-                    variant: "error"
-                  });
-                }}
-                useOneTap
-                theme="outline"
-                shape="pill"
-                size="large"
-                width={320} />
-            </div>            <div className="relative my-8">              <div className="absolute inset-0 flex items-center">                <div className="w-full border-t border-gray-200"></div>              </div>              <div className="relative flex justify-center">                <span className="px-4 bg-white text-sm text-gray-400">                  {t("auth.or_continue")}                </span>              </div>            </div>            <form onSubmit={handleEmailLogin} className="space-y-5">              <div>                <label className="block text-sm font-medium text-gray-700 mb-2">                  {t("auth.email")}                </label>                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-4 bg-gray-100 border-0 rounded-xl text-base text-black placeholder-gray-400 focus:ring-2 focus:ring-black focus:bg-white transition-all outline-none"
-                  placeholder={t("auth.email_placeholder")}
-                  required />
-              </div>              <div>                <label className="block text-sm font-medium text-gray-700 mb-2">                  {t("auth.password")}                </label>                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-4 bg-gray-100 border-0 rounded-xl text-base text-black placeholder-gray-400 focus:ring-2 focus:ring-black focus:bg-white transition-all outline-none"
-                  placeholder={t("auth.password_placeholder")}
-                  required />
-              </div>              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full bg-black text-white py-4 rounded-full font-semibold text-base active:bg-gray-800 transition-colors disabled:opacity-50">
-                {isLoading ? t("auth.signing_in") : t("auth.sign_in_button")}              </button>            </form>          </div>        </div>      </div>      {}      <div className="hidden md:block relative bg-white rounded-3xl shadow-2xl w-full max-w-5xl h-[600px] overflow-hidden animate-in fade-in zoom-in duration-500">        <button
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-xl">
+      <div className="relative h-[600px] w-full max-w-5xl animate-in overflow-hidden rounded-3xl bg-white shadow-2xl fade-in zoom-in duration-500">
+        <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-50 w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-all group">
-          <X className="w-5 h-5 text-gray-600 group-hover:rotate-90 group-hover:text-black transition-all duration-300" />        </button>        <div className="flex h-full">          <div className="relative w-1/2 bg-black overflow-hidden">            <div className="absolute -right-24 top-0 bottom-0 w-48 bg-black transform skew-x-[-8deg] z-10"></div>            <div className="relative z-20 h-full flex flex-col justify-center px-16">              <div className="space-y-8">                <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-xl">                  <svg
-                    className="w-8 h-8 text-black"
+          className="group absolute right-4 top-4 z-50 flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 transition-all hover:bg-gray-200">
+          <X className="h-5 w-5 text-gray-600 transition-all duration-300 group-hover:rotate-90 group-hover:text-black" />
+        </button>
+        <div className="flex h-full">
+          <div className="relative w-1/2 overflow-hidden bg-black">
+            <div className="absolute -right-24 top-0 bottom-0 z-10 w-48 skew-x-[-8deg] transform bg-black"></div>
+            <div className="relative z-20 flex h-full flex-col justify-center px-16">
+              <div className="space-y-8">
+                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white shadow-xl">
+                  <svg
+                    className="h-8 w-8 text-black"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor">
@@ -109,42 +213,50 @@ export default function LoginModal({
                       strokeLinejoin="round"
                       strokeWidth={2.5}
                       d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                  </svg>                </div>                <div>                  <h1 className="text-6xl font-black text-white leading-none mb-3">                    {t("auth.welcome_back").
+                  </svg>
+                </div>
+                <div>
+                  <h1 className="mb-3 text-6xl font-black leading-none text-white">
+                    {t("auth.welcome_back").
                     split(" ").
-                    map((word, i) =>
-                    <React.Fragment key={i}>                      {word}                      {i === 0 && <br />}                    </React.Fragment>
-                    )}                  </h1>                  <div className="w-20 h-1 bg-white"></div>                </div>                <p className="text-gray-400 text-lg font-medium">                  {t("auth.sign_in_subtitle")}                </p>              </div>            </div>          </div>          <div className="relative w-1/2 bg-white p-16 flex items-center">            <div className="w-full max-w-sm mx-auto">              <h2 className="text-3xl font-bold text-black mb-8">                {t("auth.sign_in")}              </h2>              <div className="mb-8 p-4">                <GoogleLogin
-                  onSuccess={handleGoogleSuccess}
-                  onError={() => {
-                    toast({
-                      title: t("auth.google_failed"),
-                      description: t("auth.google_error"),
-                      variant: "error"
-                    });
-                  }}
-                  useOneTap
-                  theme="outline"
-                  shape="pill"
-                  size="large"
-                  width={350}
-                  logo_alignment="left" />
-              </div>              <div className="relative mb-8">                <div className="absolute inset-0 flex items-center">                  <div className="w-full border-t-2 border-black/10"></div>                </div>                <div className="relative flex justify-center">                  <span className="px-4 bg-white text-sm font-bold text-black/40 uppercase tracking-wider">                    {t("auth.or_continue")}                  </span>                </div>              </div>              <form onSubmit={handleEmailLogin} className="space-y-6">                <div>                  <label className="block text-xs font-bold text-black/60 mb-3 uppercase tracking-wider">                    {t("auth.email")}                  </label>                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-0 py-3 border-0 border-b-2 border-black/20 focus:border-black transition-all outline-none bg-transparent text-black placeholder-black/30 text-lg"
-                    placeholder={t("auth.email_placeholder")}
-                    required />
-                </div>                <div>                  <label className="block text-xs font-bold text-black/60 mb-3 uppercase tracking-wider">                    {t("auth.password")}                  </label>                  <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="w-full px-0 py-3 border-0 border-b-2 border-black/20 focus:border-black transition-all outline-none bg-transparent text-black placeholder-black/30 text-lg"
-                    placeholder={t("auth.password_placeholder")}
-                    required />
-                </div>                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="w-full bg-black text-white py-4 rounded-2xl hover:bg-black/80 transition-all font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed shadow-xl hover:shadow-2xl transform hover:-translate-y-0.5 uppercase tracking-wider">
-                  {isLoading ? t("auth.signing_in") : t("auth.sign_in_button")}                </button>              </form>              <p className="mt-8 text-xs text-black/40 text-center leading-relaxed">                {t("auth.protected_by")}              </p>            </div>          </div>        </div>      </div>    </div>);
+                    map((word, index) =>
+                    <React.Fragment key={index}>
+                          {word}
+                          {index === 0 && <br />}
+                        </React.Fragment>
+                    )}
+                  </h1>
+                  <div className="h-1 w-20 bg-white"></div>
+                </div>
+                <p className="text-lg font-medium text-gray-400">
+                  {t("auth.sign_in_subtitle")}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="relative flex w-1/2 items-center bg-white p-16">
+            <div className="mx-auto w-full max-w-sm">
+              <h2 className="mb-8 text-3xl font-bold text-black">
+                {t("auth.sign_in")}
+              </h2>
+              <div className="mb-8 p-4">{googleAuthBlock}</div>
+              <div className="relative mb-8">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t-2 border-black/10"></div>
+                </div>
+                <div className="relative flex justify-center">
+                  <span className="bg-white px-4 text-sm font-bold uppercase tracking-wider text-black/40">
+                    {t("auth.or_continue")}
+                  </span>
+                </div>
+              </div>
+              {formFields}
+              <p className="mt-8 text-center text-xs leading-relaxed text-black/40">
+                {t("auth.protected_by")}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>);
 }

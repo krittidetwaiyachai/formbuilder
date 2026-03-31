@@ -3,6 +3,21 @@ import type { FormBuilderState } from '../formStore';
 import type { Form } from '@/types';
 import { Socket } from 'socket.io-client';
 import api from '@/lib/api';
+export function buildFormSavePayload(currentForm: Form) {
+  const {
+    id,
+    createdAt,
+    updatedAt,
+    createdBy,
+    createdById,
+    responseCount,
+    viewCount,
+    collaborators,
+    _count,
+    ...payload
+  } = currentForm as Form & Record<string, unknown>;
+  return payload;
+}
 export interface FormSlice {
   currentForm: Form | null;
   socket: Socket | null;
@@ -51,11 +66,7 @@ export const createFormSlice: StateCreator<FormBuilderState, [], [], FormSlice> 
   saveForm: async (signal?: AbortSignal) => {
     const { currentForm } = get();
     if (!currentForm) return;
-    const {
-      id, createdAt, updatedAt, createdBy, createdById,
-      responseCount, viewCount, collaborators, _count,
-      ...payload
-    } = currentForm as Form & Record<string, unknown>;
+    const payload = buildFormSavePayload(currentForm);
     const response = await api.patch<Form>(`/forms/${currentForm.id}`, payload, { signal });
     return response.data;
   }

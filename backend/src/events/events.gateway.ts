@@ -7,6 +7,8 @@ import {
 import { Server, Socket } from 'socket.io';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { PrismaService } from '../prisma/prisma.service';
+import { authenticateSocket } from '../common/guards/ws-auth.util';
 @WebSocketGateway({
   cors: {
     origin: '*'
@@ -17,21 +19,23 @@ EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   server: Server;
   constructor(
   private jwtService: JwtService,
-  private configService: ConfigService)
+  private configService: ConfigService,
+  private prismaService: PrismaService)
   {}
   async handleConnection(client: Socket) {
     try {
-      const token = this.extractToken(client);
-      if (!token) {
+      const user = await authenticateSocket(
+        client,
+        this.jwtService,
+        this.configService,
+        this.prismaService
+      );
+      if (!user) {
         client.disconnect();
         return;
       }
-      const payload = this.jwtService.verify(token, {
-        secret: this.configService.get<string>('JWT_SECRET') || 'secret'
-      });
-      const userId = payload.sub;
-      client.join(`user_${userId}`);
-      console.log(`Client connected: ${client.id}, User: ${userId}`);
+      client.join(`user_${user.userId}`);
+      console.log(`Client connected: ${client.id}, User: ${user.userId}`);
     } catch (error) {
       console.log('Socket connection unauthorized');
       client.disconnect();
@@ -39,12 +43,5 @@ EventsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
   handleDisconnect(client: Socket) {
     console.log(`Client disconnected: ${client.id}`);
-  }
-  private extractToken(client: Socket): string | undefined {
-    const authHeader = client.handshake.headers.authorization;
-    if (authHeader && authHeader.split(' ')[0] === 'Bearer') {
-      return authHeader.split(' ')[1];
-    }
-    return client.handshake.query.token as string;
   }
 }

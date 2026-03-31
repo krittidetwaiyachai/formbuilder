@@ -2,32 +2,27 @@ import { useState, useEffect } from 'react';
 import api from '@/lib/api';
 import type { Form, FormResponse } from '@/types';
 const PAGE_SIZE = 10;
-
 const compareResponsesBySort = (
-  a: FormResponse,
-  b: FormResponse,
-  sort: 'asc' | 'desc'
-) => {
+a: FormResponse,
+b: FormResponse,
+sort: 'asc' | 'desc') =>
+{
   const submittedDiff =
-    new Date(a.submittedAt).getTime() - new Date(b.submittedAt).getTime();
+  new Date(a.submittedAt).getTime() - new Date(b.submittedAt).getTime();
   if (submittedDiff !== 0) {
     return sort === 'asc' ? submittedDiff : -submittedDiff;
   }
-
   const createdDiff =
-    new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+  new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
   if (createdDiff !== 0) {
     return sort === 'asc' ? createdDiff : -createdDiff;
   }
-
   return sort === 'asc' ? a.id.localeCompare(b.id) : b.id.localeCompare(a.id);
 };
-
 const sortResponsesForView = (
-  responses: FormResponse[],
-  sort: 'asc' | 'desc'
-) => [...responses].sort((a, b) => compareResponsesBySort(a, b, sort));
-
+responses: FormResponse[],
+sort: 'asc' | 'desc') =>
+[...responses].sort((a, b) => compareResponsesBySort(a, b, sort));
 export const useAnalyticsData = (id: string | undefined) => {
   const [form, setForm] = useState<Form | null>(null);
   const [viewResponses, setViewResponses] = useState<FormResponse[]>([]);
@@ -38,10 +33,10 @@ export const useAnalyticsData = (id: string | undefined) => {
   const [responsePage, setResponsePage] = useState(1);
   const [responseSort, setResponseSort] = useState<'desc' | 'asc'>('desc');
   const updateViewResponses = (
-    data: FormResponse[],
-    total: number,
-    sort: 'asc' | 'desc'
-  ) => {
+  data: FormResponse[],
+  total: number,
+  sort: 'asc' | 'desc') =>
+  {
     setViewResponses(sortResponsesForView(data, sort));
     setTotalPages(Math.ceil(total / PAGE_SIZE) || 1);
   };

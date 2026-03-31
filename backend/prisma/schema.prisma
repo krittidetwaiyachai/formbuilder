@@ -89,6 +89,9 @@ model Form {
   views        FormView[]
   emailVerifications FormEmailVerification[]
   verifiedSubmissionGrants FormVerifiedSubmissionGrant[]
+  publicSubmissionSessions PublicSubmissionSession[]
+  submissionVerificationRequests SubmissionVerificationRequest[]
+  submissionIdentityLocks SubmissionIdentityLock[]
 
   @@map("forms")
 }
@@ -238,6 +241,8 @@ model FormResponse {
   id          String           @id @default(uuid())
   formId      String
   userId      String?
+  submissionSessionId String?
+  verificationRequestId String?
   respondentEmail String?
   normalizedRespondentEmail String?
   emailVerifiedAt DateTime?
@@ -257,6 +262,9 @@ model FormResponse {
   answers     ResponseAnswer[]
   emailVerification FormEmailVerification? @relation(fields: [emailVerificationId], references: [id], onDelete: SetNull)
   submissionGrant FormVerifiedSubmissionGrant? @relation(fields: [submissionGrantId], references: [id], onDelete: SetNull)
+  submissionSession PublicSubmissionSession? @relation(fields: [submissionSessionId], references: [id], onDelete: SetNull)
+  verificationRequest SubmissionVerificationRequest? @relation(fields: [verificationRequestId], references: [id], onDelete: SetNull)
+  identityLocks SubmissionIdentityLock[]
 
   @@index([formId, userId])
   @@index([formId, fingerprint])
@@ -264,8 +272,67 @@ model FormResponse {
   @@index([formId, normalizedRespondentEmail])
   @@index([formId, ipAddress])
   @@index([formId, sessionKey])
+  @@index([submissionSessionId])
+  @@index([verificationRequestId])
   @@index([formId, submittedAt])
   @@map("form_responses")
+}
+
+model PublicSubmissionSession {
+  id              String       @id @default(uuid())
+  formId          String
+  tokenHash       String       @unique
+  ipHash          String?
+  userAgentHash   String?
+  createdAt       DateTime     @default(now())
+  lastSeenAt      DateTime     @default(now())
+  expiresAt       DateTime
+  submittedAt     DateTime?
+  form            Form         @relation(fields: [formId], references: [id], onDelete: Cascade)
+  responses       FormResponse[]
+  verificationRequests SubmissionVerificationRequest[]
+
+  @@index([formId, expiresAt])
+  @@index([formId, submittedAt])
+  @@map("public_submission_sessions")
+}
+
+model SubmissionVerificationRequest {
+  id                      String       @id @default(uuid())
+  formId                  String
+  sessionId               String
+  canonicalEmailNormalized String
+  canonicalEmailHash      String
+  tokenHash               String       @unique
+  requestedIpHash         String?
+  requestedUserAgentHash  String?
+  verifiedAt              DateTime?
+  expiresAt               DateTime
+  consumedAt              DateTime?
+  invalidatedAt           DateTime?
+  createdAt               DateTime     @default(now())
+  form                    Form         @relation(fields: [formId], references: [id], onDelete: Cascade)
+  session                 PublicSubmissionSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  responses               FormResponse[]
+
+  @@index([formId, sessionId, createdAt])
+  @@index([formId, canonicalEmailHash, createdAt])
+  @@index([expiresAt])
+  @@map("submission_verification_requests")
+}
+
+model SubmissionIdentityLock {
+  id         String       @id @default(uuid())
+  formId     String
+  lockType   SubmissionIdentityLockType
+  lockKeyHash String
+  responseId String       @unique
+  createdAt  DateTime     @default(now())
+  form       Form         @relation(fields: [formId], references: [id], onDelete: Cascade)
+  response   FormResponse @relation(fields: [responseId], references: [id], onDelete: Cascade)
+
+  @@unique([formId, lockType, lockKeyHash])
+  @@map("submission_identity_locks")
 }
 
 model FormEmailVerification {
@@ -380,6 +447,12 @@ enum FormStatus {
   DRAFT
   PUBLISHED
   ARCHIVED
+}
+
+enum SubmissionIdentityLockType {
+  CANONICAL_EMAIL
+  SESSION
+  IP
 }
 
 model ActivityLog {

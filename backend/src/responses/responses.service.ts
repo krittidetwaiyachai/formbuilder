@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { EncryptionService } from '../common/encryption.service';
-import { CreateResponseDto } from './dto/create-response.dto';
+import { FormAccessService } from '../common/guards/form-access.service';
 import { FormStatus, RoleType } from '@prisma/client';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ResponsePersistenceService } from '../form-security/response-persistence.service';
@@ -15,6 +15,7 @@ interface FormSettings {
 export interface ExportJob {
   id: string;
   formId: string;
+  ownerId: string;
   status: 'processing' | 'completed' | 'failed';
   loaded: number;
   total: number;
@@ -28,11 +29,9 @@ ResponsesService {
   constructor(
   private prisma: PrismaService,
   private encryptionService: EncryptionService,
+  private formAccessService: FormAccessService,
   private responsePersistenceService: ResponsePersistenceService,
   private eventEmitter: EventEmitter2) {}
-  async create(createResponseDto: CreateResponseDto) {
-    return this.responsePersistenceService.createLegacyCompatible(createResponseDto);
-  }
   async checkSubmissionStatus(
   formId: string,
   userId?: string,
@@ -80,15 +79,7 @@ ResponsesService {
   page: number = 1,
   limit: number = 50,
   sort: 'asc' | 'desc' = 'desc') {
-    const form = await this.prisma.form.findUnique({
-      where: { id: formId }
-    });
-    if (!form) {
-      throw new NotFoundException('Form not found');
-    }
-    if (userRole === RoleType.VIEWER && form.status !== FormStatus.PUBLISHED) {
-      throw new ForbiddenException('You can only view responses for published forms');
-    }
+    await this.formAccessService.assertReadAccess(formId, userId, userRole);
     const skip = (page - 1) * limit;
     const [responses, total] = await Promise.all([
     this.prisma.formResponse.findMany({
@@ -109,10 +100,9 @@ ResponsesService {
         }
       },
       orderBy: [
-        { submittedAt: sort },
-        { createdAt: sort },
-        { id: sort }
-      ],
+      { submittedAt: sort },
+      { createdAt: sort },
+      { id: sort }],
       take: limit,
       skip: skip
     }),
@@ -165,10 +155,7 @@ ResponsesService {
     if (!response) {
       throw new NotFoundException('Response not found');
     }
-    const form = response.form;
-    if (userRole === RoleType.VIEWER && form.status !== FormStatus.PUBLISHED) {
-      throw new ForbiddenException('You can only view responses for published forms');
-    }
+    await this.formAccessService.assertReadAccess(response.formId, userId, userRole);
     return {
       ...response,
       answers: response.answers.map((answer) => {
@@ -176,7 +163,7 @@ ResponsesService {
         if (answer.field?.isPII && answer.value) {
           try {
             value = this.encryptionService.decrypt(answer.value);
-          } catch (error) {
+          } catch {
             value = '[Error: Data Encrypted]';
           }
         }
@@ -188,14 +175,12 @@ ResponsesService {
     };
   }
   async startExportJob(formId: string, userId: string, userRole: RoleType) {
+    await this.formAccessService.assertReadAccess(formId, userId, userRole);
     const form = await this.prisma.form.findUnique({
       where: { id: formId },
       include: { fields: { orderBy: { order: 'asc' } } }
     });
     if (!form) throw new NotFoundException('Form not found');
-    if (userRole === RoleType.VIEWER && form.status !== FormStatus.PUBLISHED) {
-      throw new ForbiddenException('You can only view responses for published forms');
-    }
     const totalResponses = await this.prisma.formResponse.count({ where: { formId } });
     if (totalResponses === 0) {
       throw new NotFoundException('No responses to export');
@@ -210,6 +195,7 @@ ResponsesService {
     const newJob: ExportJob = {
       id: jobId,
       formId,
+      ownerId: userId,
       status: 'processing',
       loaded: 0,
       total: totalResponses,
@@ -227,20 +213,25 @@ ResponsesService {
     });
     return newJob;
   }
-  getExportJob(jobId: string): ExportJob {
+  assertJobOwner(jobId: string, userId: string, userRole: RoleType) {
     const job = this.exportJobs.get(jobId);
     if (!job) throw new NotFoundException('Export job not found or expired');
+    if (userRole === RoleType.SUPER_ADMIN || userRole === RoleType.ADMIN) {
+      return job;
+    }
+    if (job.ownerId !== userId) {
+      throw new ForbiddenException('You do not have access to this export job');
+    }
     return job;
   }
-  getJobResultFilePath(jobId: string): {filePath: string;filename: string;} {
-    const job = this.exportJobs.get(jobId);
-    if (!job) throw new NotFoundException('Export job not found');
+  getJobResultFilePath(jobId: string, userId: string, userRole: RoleType): {filePath: string;filename: string;} {
+    const job = this.assertJobOwner(jobId, userId, userRole);
     if (job.status !== 'completed') throw new ForbiddenException('Export job is not ready yet');
     const filePath = path.join(process.cwd(), 'uploads', 'exports', `${jobId}.csv`);
     if (!fs.existsSync(filePath)) throw new NotFoundException('Export file not found, it might have been deleted.');
     return { filePath, filename: job.filename || 'export.csv' };
   }
-  private async processExportJobInBackground(form: any, jobId: string, filePath: string) {
+  private async processExportJobInBackground(form: Record<string, unknown> & {id: string;title: string;isQuiz: boolean;settings: unknown;fields: Array<Record<string, unknown> & {id: string;type: string;label: string;isPII?: boolean;score?: number;options?: unknown;}>;}, jobId: string, filePath: string) {
     const job = this.exportJobs.get(jobId)!;
     const writeStream = fs.createWriteStream(filePath, { encoding: 'utf8' });
     writeStream.write('\uFEFF');
@@ -368,13 +359,14 @@ ResponsesService {
       }
     }, 15 * 60 * 1000);
   }
-  async remove(id: string) {
+  async remove(id: string, userId: string, userRole: RoleType) {
     const response = await this.prisma.formResponse.findUnique({
       where: { id }
     });
     if (!response) {
       throw new NotFoundException('Response not found');
     }
+    await this.formAccessService.assertReadAccess(response.formId, userId, userRole);
     await this.prisma.responseAnswer.deleteMany({
       where: { responseId: id }
     });

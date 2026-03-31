@@ -27,16 +27,15 @@ export const FieldLabel: React.FC<FieldLabelProps> = ({
   const { t } = useTranslation();
   const subLabelRef = useRef<HTMLDivElement>(null);
   const handleRichTextLinkInteraction = (
-    event:
-      | React.MouseEvent<HTMLElement>
-      | React.PointerEvent<HTMLElement>
-      | React.KeyboardEvent<HTMLElement>
-  ) => {
+  event:
+  React.MouseEvent<HTMLElement> |
+  React.PointerEvent<HTMLElement> |
+  React.KeyboardEvent<HTMLElement>) =>
+  {
     const target = event.target as HTMLElement | null;
     if (!target?.closest("a")) {
       return;
     }
-
     event.stopPropagation();
   };
   const [subLabelHtml, setSubLabelHtml] = useState({

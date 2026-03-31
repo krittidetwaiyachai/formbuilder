@@ -1,8 +1,7 @@
 const axios = require('axios');
 
 const BASE_URL = 'http://localhost:3000';
-const API_URL = `${BASE_URL}/api/responses`;
-const FORM_API_URL = `${BASE_URL}/api/forms`;
+const FORM_API_URL = `${BASE_URL}/api/public/forms`;
 
 const args = process.argv.slice(2);
 const TARGET_FORM_ID = args[0] || 'REPLACE_WITH_FORM_ID';
@@ -89,12 +88,17 @@ function generateDummyData(field) {
     }
 }
 
-async function fetchFormDefinition(formId) {
+async function fetchFormDefinition(formId, quiet = false) {
     try {
-        console.log(`🔍 Fetching definition for Form ID: ${formId}...`);
-        const url = `${FORM_API_URL}/${formId}/public`;
+        if (!quiet) {
+            console.log(`🔍 Fetching definition for Form ID: ${formId}...`);
+        }
+        const url = `${FORM_API_URL}/${formId}`;
         const response = await axios.get(url);
-        return response.data.form;
+        return {
+            form: response.data.form,
+            cookieHeader: response.headers['set-cookie'] ? response.headers['set-cookie'][0] : null
+        };
     } catch (error) {
         console.error(`❌ Failed to fetch form: ${error.message}`);
         if(error.response) console.error(error.response.data);
@@ -110,7 +114,8 @@ async function runLoadTest() {
     console.log(`Concurrency: ${CONCURRENCY}`);
     console.log(`-----------------------------------\n`);
 
-    const form = await fetchFormDefinition(TARGET_FORM_ID);
+    const initialFetch = await fetchFormDefinition(TARGET_FORM_ID);
+    const form = initialFetch.form;
     
     const submitFields = form.fields.filter(f => 
         !['HEADER', 'PARAGRAPH', 'DIVIDER', 'PAGE_BREAK', 'IMAGE', 'VIDEO'].includes(f.type)
@@ -133,8 +138,6 @@ async function runLoadTest() {
         }));
 
         const payload = {
-             formId: TARGET_FORM_ID,
-             fingerprint: `load-test-${generateRandomString(10)}`,
              answers: answers
          };
  
@@ -142,7 +145,11 @@ async function runLoadTest() {
          while (true) {
              try {
                  attempt++;
-                 await axios.post(API_URL, payload);
+                 const sessionFetch = await fetchFormDefinition(TARGET_FORM_ID, true);
+                 const cookieHeader = sessionFetch.cookieHeader;
+                 await axios.post(`${FORM_API_URL}/${TARGET_FORM_ID}/submissions`, payload, {
+                    headers: cookieHeader ? { Cookie: cookieHeader.split(';')[0] } : undefined
+                 });
                  success++;
                  process.stdout.write('▆');
                  break;

@@ -1,20 +1,12 @@
 import { useEffect } from 'react';
 import { io } from 'socket.io-client';
 import { useAuthStore } from '@/store/authStore';
+import { resolveSocketBaseUrl } from '@/lib/socket-url';
 export function useSocketLogout() {
   const { token, logout, isAuthenticated } = useAuthStore();
   useEffect(() => {
     if (!isAuthenticated || !token) return;
-    const socketUrl = import.meta.env.VITE_API_URL;
-    const backendUrl = import.meta.env.VITE_BACKEND_URL;
-    let baseUrl: string;
-    if (socketUrl) {
-      baseUrl = socketUrl.replace('/api', '');
-    } else if (backendUrl) {
-      baseUrl = backendUrl.replace('/api', '');
-    } else {
-      baseUrl = window.location.origin;
-    }
+    const baseUrl = resolveSocketBaseUrl();
     const socket = io(baseUrl, {
       query: { token },
       transports: ['websocket', 'polling'],

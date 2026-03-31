@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { FormAccessService } from '../common/guards/form-access.service';
 import { RoleType, FormStatus, Prisma } from '@prisma/client';
 export interface ValueCount {
   value: string;
@@ -44,7 +45,9 @@ interface FieldOption {
 }
 @Injectable()export class
 ResponsesStatsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+  private prisma: PrismaService,
+  private formAccessService: FormAccessService) {}
   async getStats(
   formId: string,
   userId: string,
@@ -56,9 +59,7 @@ ResponsesStatsService {
       include: { fields: { orderBy: { order: 'asc' } } }
     });
     if (!form) throw new NotFoundException('Form not found');
-    if (userRole === RoleType.VIEWER && form.status !== FormStatus.PUBLISHED) {
-      throw new ForbiddenException('You can only view stats for published forms');
-    }
+    await this.formAccessService.assertReadAccess(formId, userId, userRole);
     const [responseTrend, fieldStats, quizStats] = await Promise.all([
     this.getResponseTrend(formId, opts?.month),
     this.getFieldStats(formId, form),

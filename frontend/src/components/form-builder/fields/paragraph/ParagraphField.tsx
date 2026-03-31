@@ -30,15 +30,14 @@ export const ParagraphField: React.FC<ParagraphFieldProps> = ({
   const { t } = useTranslation();
   const updateField = useFormStore((state) => state.updateField);
   const handleRichTextLinkInteraction = (
-    event:
-      | React.MouseEvent<HTMLElement>
-      | React.PointerEvent<HTMLElement>
-  ) => {
+  event:
+  React.MouseEvent<HTMLElement> |
+  React.PointerEvent<HTMLElement>) =>
+  {
     const target = event.target as HTMLElement | null;
     if (!target?.closest("a")) {
       return;
     }
-
     event.stopPropagation();
   };
   const htmlContent = {

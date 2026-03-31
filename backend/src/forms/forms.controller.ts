@@ -1,11 +1,11 @@
 import {
   Controller,
-  Get,
-  Post,
   Body,
   Patch,
   Param,
   Delete,
+  Get,
+  Post,
   UseGuards,
   Query } from
 '@nestjs/common';
@@ -17,8 +17,8 @@ import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { RoleType } from '@prisma/client';
-import { Public } from '../auth/decorators/public.decorator';
 import { ActivityLogService } from '../activity-log/activity-log.service';
+import { FormAccessService } from '../common/guards/form-access.service';
 interface User {
   id: string;
   email: string;
@@ -29,7 +29,8 @@ interface User {
 FormsController {
   constructor(
   private readonly formsService: FormsService,
-  private readonly activityLogService: ActivityLogService)
+  private readonly activityLogService: ActivityLogService,
+  private readonly formAccessService: FormAccessService)
   {}
   @Post()
   @Roles(RoleType.SUPER_ADMIN, RoleType.ADMIN, RoleType.EDITOR)
@@ -72,12 +73,14 @@ FormsController {
   @Get(':id/activity')
   async getFormActivity(
     @Param('id')id: string,
-    @Query('page')page: string = '1',
-    @Query('limit')limit: string = '20',
-    @Query('sort')sort: 'asc' | 'desc' = 'desc',
+    @CurrentUser()user: User,
+  page: string = '1',
+  limit: string = '20',
+  sort: 'asc' | 'desc' = 'desc',
     @Query('action')action?: string,
     @Query('userId')userId?: string)
   {
+    await this.formAccessService.assertReadAccess(id, user.id, user.role);
     return this.activityLogService.getFormActivity(
       id,
       parseInt(page),
@@ -88,26 +91,21 @@ FormsController {
     );
   }
   @Get(':id/activity/editors')
-  async getFormEditors(@Param('id')id: string) {
-    return this.activityLogService.getFormEditors(id);
-  }
-  @Get(':id/public')
-  @Public()
-  findPublic(
+  async getFormEditors(
     @Param('id')id: string,
-    @Query('fingerprint')fingerprint?: string,
-    @Query('ip')ipAddress?: string,
-    @Query('ua')userAgent?: string)
+    @CurrentUser()user: User)
   {
-    return this.formsService.findPublic(id, fingerprint, ipAddress, userAgent).then((form) => ({ form }));
+    await this.formAccessService.assertReadAccess(id, user.id, user.role);
+    return this.activityLogService.getFormEditors(id);
   }
   @Post(':id/collaborators')
   @Roles(RoleType.SUPER_ADMIN, RoleType.ADMIN, RoleType.EDITOR)
   async addCollaborator(
     @Param('id')id: string,
+    @CurrentUser()user: User,
     @Body('email')email: string)
   {
-    return this.formsService.addCollaborator(id, email);
+    return this.formsService.addCollaborator(id, email, user.id, user.role);
   }
   @Delete(':id/collaborators/:userId')
   @Roles(RoleType.SUPER_ADMIN, RoleType.ADMIN, RoleType.EDITOR)

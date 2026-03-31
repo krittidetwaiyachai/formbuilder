@@ -1,20 +1,11 @@
 import { io, Socket } from 'socket.io-client';
 import type { ActiveUser, JoinFormPayload, FieldSelectionPayload } from '../types/collaboration';
+import { resolveSocketBaseUrl } from '@/lib/socket-url';
 class CollaborationService {
   private socket: Socket | null = null;
   private SOCKET_URL = '';
   constructor() {
-    const socketUrl = import.meta.env.VITE_API_URL;
-    const backendUrl = import.meta.env.VITE_BACKEND_URL;
-    let baseUrl: string;
-    if (socketUrl) {
-      baseUrl = socketUrl.replace('/api', '');
-    } else if (backendUrl) {
-      baseUrl = backendUrl.replace('/api', '');
-    } else {
-      baseUrl = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000';
-    }
-    this.SOCKET_URL = baseUrl;
+    this.SOCKET_URL = resolveSocketBaseUrl();
   }
   connect() {
     if (this.socket?.connected) {

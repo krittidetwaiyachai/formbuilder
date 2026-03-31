@@ -63,11 +63,11 @@ export default function FieldSidebar({
             <h2 className="font-semibold text-gray-800 whitespace-nowrap overflow-hidden">
               {t("builder.fields")}
             </h2>
-            {isMobileMode && (
-              <p className="text-xs text-gray-500">
+            {isMobileMode &&
+          <p className="text-xs text-gray-500">
                 {t("builder.add_field")}
               </p>
-            )}
+          }
           </div>
         }
       </div>

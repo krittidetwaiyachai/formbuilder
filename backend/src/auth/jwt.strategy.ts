@@ -32,11 +32,12 @@ JwtStrategy extends PassportStrategy(Strategy) {
     if (user.isActive === false) {
       throw new UnauthorizedException({ message: 'Account is disabled', code: 'ACCOUNT_DISABLED' });
     }
-    if (payload.sessionToken) {
-      const isValidSession = await this.authService.validateSession(payload.sub, payload.sessionToken);
-      if (!isValidSession) {
-        throw new UnauthorizedException({ message: 'Session expired', code: 'SESSION_EXPIRED' });
-      }
+    if (!payload.sessionToken) {
+      throw new UnauthorizedException({ message: 'Session expired', code: 'SESSION_EXPIRED' });
+    }
+    const isValidSession = await this.authService.validateSession(payload.sub, payload.sessionToken);
+    if (!isValidSession) {
+      throw new UnauthorizedException({ message: 'Session expired', code: 'SESSION_EXPIRED' });
     }
     return user;
   }

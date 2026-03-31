@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 import api from '@/lib/api';
-import { getBrowserFingerprint } from '@/utils/fingerprint';
 interface UseQuizTimerProps {
   formId: string | undefined;
   isQuiz: boolean;
@@ -86,11 +85,8 @@ export function useSubmissionCheck({
         return;
       }
       try {
-        const fingerprint = await getBrowserFingerprint();
-        const response = await api.get(`/responses/check/${formId}`, {
-          params: { fingerprint }
-        });
-        if (response.data.hasSubmitted) {
+        const response = await api.get(`/public/forms/${formId}/submission-state`);
+        if (response.data.status === 'ALREADY_SUBMITTED') {
           setHasAlreadySubmitted(true);
         }
       } catch {

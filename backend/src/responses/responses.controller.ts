@@ -2,13 +2,11 @@ import {
   Controller,
   Get,
   Post,
-  Body,
   Param,
   Delete,
   UseGuards,
   Res,
   Query,
-  Ip,
   Sse,
   MessageEvent } from
 '@nestjs/common';
@@ -16,18 +14,14 @@ import { Observable, fromEvent } from 'rxjs';
 import { map } from 'rxjs/operators';
 import * as fs from 'fs';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { Throttle } from '@nestjs/throttler';
-import { PublicSubmissionOrchestratorService } from '../form-security/public-submission-orchestrator.service';
 import { ResponsesService } from './responses.service';
 import { ResponsesStatsService } from './responses-stats.service';
-import { CreateResponseDto } from './dto/create-response.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { PermissionsGuard } from '../auth/permissions.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { Permissions } from '../auth/decorators/permissions.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
-import { Public } from '../auth/decorators/public.decorator';
 import { RoleType } from '@prisma/client';
 import { Response } from 'express';
 interface User {
@@ -38,43 +32,10 @@ interface User {
 @Controller('responses')export class
 ResponsesController {
   constructor(
-  private readonly publicSubmissionOrchestrator: PublicSubmissionOrchestratorService,
   private readonly responsesService: ResponsesService,
   private readonly statsService: ResponsesStatsService,
   private readonly eventEmitter: EventEmitter2)
   {}
-  @Post()
-  @Public()
-  @Throttle({ default: { limit: 30, ttl: 60000 } })
-  create(@Body()createResponseDto: CreateResponseDto, @Ip()ip: string) {
-    createResponseDto.ipAddress = ip;
-    return this.publicSubmissionOrchestrator.submitPublicForm({
-      formId: createResponseDto.formId,
-      answers: createResponseDto.answers,
-      email: createResponseDto.respondentEmail,
-      captchaToken: createResponseDto.captchaToken,
-      sessionKey: createResponseDto.sessionKey,
-      fingerprint: createResponseDto.fingerprint,
-      bindingId: createResponseDto.bindingId,
-      grantToken: createResponseDto.grantToken,
-      ipAddress: ip,
-      userId: createResponseDto.userId
-    });
-  }
-  @Get('check/:formId')
-  @Public()
-  checkSubmissionStatus(
-    @Param('formId')formId: string,
-    @Query('userId')userId?: string,
-    @Query('respondentEmail')respondentEmail?: string,
-    @Query('fingerprint')fingerprint?: string) {
-    return this.responsesService.checkSubmissionStatus(
-      formId,
-      userId,
-      respondentEmail,
-      fingerprint
-    );
-  }
   @Get('form/:formId/stats')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(RoleType.SUPER_ADMIN, RoleType.ADMIN, RoleType.EDITOR, RoleType.VIEWER)
@@ -120,21 +81,27 @@ ResponsesController {
     return this.responsesService.startExportJob(formId, user.id, user.role);
   }
   @Sse('export/progress/:jobId')
-  @Public()
-  exportProgress(@Param('jobId')jobId: string): Observable<MessageEvent> {
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(RoleType.SUPER_ADMIN, RoleType.ADMIN, RoleType.EDITOR, RoleType.VIEWER)
+  exportProgress(
+    @Param('jobId')jobId: string,
+    @CurrentUser()user: User): Observable<MessageEvent> {
+    this.responsesService.assertJobOwner(jobId, user.id, user.role);
     return fromEvent(this.eventEmitter, `export.progress.${jobId}`).pipe(
-      map((payload: any) => ({
+      map((payload: Record<string, unknown>) => ({
         data: payload
       }) as MessageEvent)
     );
   }
   @Get('export/download/:jobId')
-  @Public()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(RoleType.SUPER_ADMIN, RoleType.ADMIN, RoleType.EDITOR, RoleType.VIEWER)
   async downloadExport(
     @Param('jobId')jobId: string,
+    @CurrentUser()user: User,
     @Res()res: Response)
   {
-    const { filePath, filename } = this.responsesService.getJobResultFilePath(jobId);
+    const { filePath, filename } = this.responsesService.getJobResultFilePath(jobId, user.id, user.role);
     res.setHeader('Content-Type', 'text/csv; charset=utf-8');
     res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
     const fileStream = fs.createReadStream(filePath);
@@ -143,7 +110,9 @@ ResponsesController {
   @Delete(':id')
   @UseGuards(JwtAuthGuard, PermissionsGuard)
   @Permissions('DELETE_RESPONSES')
-  async remove(@Param('id')id: string) {
-    return this.responsesService.remove(id);
+  async remove(
+    @Param('id')id: string,
+    @CurrentUser()user: User) {
+    return this.responsesService.remove(id, user.id, user.role);
   }
 }

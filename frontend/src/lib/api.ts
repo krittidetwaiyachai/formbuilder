@@ -7,6 +7,7 @@ const REQUEST_TIMEOUT_MS = 30000;
 const RETRY_BASE_DELAY_MS = 1000;
 export const api = axios.create({
   baseURL: API_URL,
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json'
   },

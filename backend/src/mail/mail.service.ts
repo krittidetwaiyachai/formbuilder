@@ -1,6 +1,15 @@
 import { Injectable, Logger } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 import { ConfigService } from '@nestjs/config';
+function getPrimaryFrontendUrl(rawFrontendUrl: string | undefined) {
+  if (!rawFrontendUrl) {
+    return 'http://localhost:5173';
+  }
+  return rawFrontendUrl.
+  split(',').
+  map((value) => value.trim().replace(/^"(.*)"$/, '$1')).
+  find(Boolean) || 'http://localhost:5173';
+}
 @Injectable()export class
 MailService {
   private transporter: nodemailer.Transporter;
@@ -29,7 +38,7 @@ MailService {
   async sendNewSubmissionEmail(to: string[], formTitle: string, submissionId: string, answers: {formId?: string;[key: string]: unknown;}) {
     if (!to || to.length === 0) return;
     const subject = `New Submission: ${formTitle}`;
-    const frontendUrl = this.configService.get('FRONTEND_URL') || 'http://localhost:5173';
+    const frontendUrl = getPrimaryFrontendUrl(this.configService.get<string>('FRONTEND_URL'));
     const link = `${frontendUrl}/forms/${answers.formId || ''}/responses`;
     const htmlContent = `
       <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">

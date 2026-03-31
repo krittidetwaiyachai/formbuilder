@@ -58,6 +58,7 @@ export default {
   "builder_header.all_saved": "All changes saved at",
   "builder_header.last_saved": "Last saved at",
   "builder_header.not_saved": "Not saved yet",
+  "builder_header.save_failed": "Save failed",
   "builder_header.preview": "Preview",
   "builder_header.share": "Share",
   "builder_header.share_title": "Share Form",

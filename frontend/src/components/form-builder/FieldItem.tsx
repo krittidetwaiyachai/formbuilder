@@ -121,8 +121,7 @@ function FieldItem({
           isNewFromSidebar ?
           `border-blue-500 ring-4 ring-blue-500/10 shadow-blue-100/50 ${fieldStyle.cardBorder}` :
           `${isPageBreak ? "" : "border-gray-200"} ${fieldStyle.cardBorder} ${isPageBreak ? "" : disableHover ? "" : "hover:border-gray-300 hover:shadow-md hover:z-30"}`} ${
-          isSelected && !isOverlay && !isDragging ? "scale-[1.004] -translate-y-px" : ""
-          } ${
+          isSelected && !isOverlay && !isDragging ? "scale-[1.004] -translate-y-px" : ""} ${
           isDragging ? "shadow-2xl rotate-1 !h-auto !bg-white !opacity-100 z-[9999]" : ""} ${isHidden ? "opacity-50" : ""}`}>
           {!hideDragHandle &&
           <div

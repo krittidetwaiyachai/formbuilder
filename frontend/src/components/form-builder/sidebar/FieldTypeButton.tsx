@@ -45,13 +45,14 @@ const FieldTypeButtonVisual = ({
           className={`z-10 text-center text-[12px] font-semibold leading-[1.35] text-gray-700 md:group-hover:text-gray-900`}>
           {translatedLabel}
         </span>
-      </div>
-    );
+      </div>);
   }
   return (
     <div
       className={`w-full flex items-center ${isCollapsed ? "justify-center px-1" : "px-3"} py-2 text-sm text-black bg-white md:hover:bg-gray-50 active:bg-gray-100 rounded-md border border-gray-400 transition-colors cursor-grab active:cursor-grabbing touch-none select-none`}>
-      <Icon className={`h-4 w-4 ${isCollapsed ? "" : "mr-2"}`} />      {!isCollapsed && <span>{translatedLabel}</span>}    </div>);
+      <Icon className={`h-4 w-4 ${isCollapsed ? "" : "mr-2"}`} />{" "}
+      {!isCollapsed && <span>{translatedLabel}</span>}{" "}
+    </div>);
 };
 export function FieldTypeButton({
   fieldType,
@@ -85,90 +86,96 @@ export function FieldTypeButton({
     });
     onFieldAdd?.();
   };
-  const handleCustomMobileDragStart = useCallback((event: PointerEvent) => {
-    if (
-    !useCustomSidebarDrag ||
-    event.pointerType !== "touch" &&
-    event.pointerType !== "mouse" &&
-    event.pointerType !== "pen" ||
-    event.pointerType === "mouse" && event.button !== 0 ||
-    !event.isPrimary)
-    {
-      return;
-    }
-    event.preventDefault();
-    event.stopPropagation();
-    customDragCleanupRef.current?.();
-    const overlay = customDragOverlayRef.current;
-    const activePointerId = event.pointerId;
-    const initialPoint = { x: event.clientX, y: event.clientY };
-    isCustomDraggingRef.current = true;
-    lastTouchPointRef.current = initialPoint;
-    try {
-      overlay?.setPointerCapture(activePointerId);
-    } catch {
-    }
-    dispatchMobileSidebarDragEvent(MOBILE_SIDEBAR_DRAG_START, {
-      fieldType: fieldType.type,
-      ...initialPoint
-    });
-    const handlePointerMove = (moveEvent: PointerEvent) => {
-      if (moveEvent.pointerId !== activePointerId) {
+  const handleCustomMobileDragStart = useCallback(
+    (event: PointerEvent) => {
+      if (
+      !useCustomSidebarDrag ||
+      event.pointerType !== "touch" &&
+      event.pointerType !== "mouse" &&
+      event.pointerType !== "pen" ||
+      event.pointerType === "mouse" && event.button !== 0 ||
+      !event.isPrimary)
+      {
         return;
       }
-      const nextPoint = { x: moveEvent.clientX, y: moveEvent.clientY };
-      lastTouchPointRef.current = nextPoint;
-      moveEvent.preventDefault();
-      dispatchMobileSidebarDragEvent(MOBILE_SIDEBAR_DRAG_MOVE, {
-        fieldType: fieldType.type,
-        ...nextPoint
-      });
-    };
-    const finishDrag = (endEvent?: PointerEvent) => {
-      const finalPoint = endEvent ?
-      { x: endEvent.clientX, y: endEvent.clientY } :
-      lastTouchPointRef.current || initialPoint;
-      dispatchMobileSidebarDragEvent(MOBILE_SIDEBAR_DRAG_END, {
-        fieldType: fieldType.type,
-        ...finalPoint
-      });
-      window.removeEventListener("pointermove", handlePointerMove);
-      window.removeEventListener("pointerup", handlePointerEnd);
-      window.removeEventListener("pointercancel", handlePointerCancel);
+      event.preventDefault();
+      event.stopPropagation();
+      customDragCleanupRef.current?.();
+      const overlay = customDragOverlayRef.current;
+      const activePointerId = event.pointerId;
+      const initialPoint = { x: event.clientX, y: event.clientY };
+      isCustomDraggingRef.current = true;
+      lastTouchPointRef.current = initialPoint;
       try {
-        overlay?.releasePointerCapture(activePointerId);
-      } catch {
-      }
-      isCustomDraggingRef.current = false;
-      customDragCleanupRef.current = null;
-      lastTouchPointRef.current = null;
-    };
-    const handlePointerEnd = (endEvent: PointerEvent) => {
-      if (endEvent.pointerId !== activePointerId) {
-        return;
-      }
-      endEvent.preventDefault();
-      finishDrag(endEvent);
-    };
-    const handlePointerCancel = (cancelEvent: PointerEvent) => {
-      if (cancelEvent.pointerId !== activePointerId) {
-        return;
-      }
-      finishDrag(cancelEvent);
-    };
-    window.addEventListener("pointermove", handlePointerMove, { passive: false });
-    window.addEventListener("pointerup", handlePointerEnd, { passive: false });
-    window.addEventListener("pointercancel", handlePointerCancel, { passive: false });
-    customDragCleanupRef.current = () => {
-      window.removeEventListener("pointermove", handlePointerMove);
-      window.removeEventListener("pointerup", handlePointerEnd);
-      window.removeEventListener("pointercancel", handlePointerCancel);
-      try {
-        overlay?.releasePointerCapture(activePointerId);
-      } catch {
-      }
-    };
-  }, [fieldType.type, useCustomSidebarDrag]);
+        overlay?.setPointerCapture(activePointerId);
+      } catch {}
+      dispatchMobileSidebarDragEvent(MOBILE_SIDEBAR_DRAG_START, {
+        fieldType: fieldType.type,
+        ...initialPoint
+      });
+      const handlePointerMove = (moveEvent: PointerEvent) => {
+        if (moveEvent.pointerId !== activePointerId) {
+          return;
+        }
+        const nextPoint = { x: moveEvent.clientX, y: moveEvent.clientY };
+        lastTouchPointRef.current = nextPoint;
+        moveEvent.preventDefault();
+        dispatchMobileSidebarDragEvent(MOBILE_SIDEBAR_DRAG_MOVE, {
+          fieldType: fieldType.type,
+          ...nextPoint
+        });
+      };
+      const finishDrag = (endEvent?: PointerEvent) => {
+        const finalPoint = endEvent ?
+        { x: endEvent.clientX, y: endEvent.clientY } :
+        lastTouchPointRef.current || initialPoint;
+        dispatchMobileSidebarDragEvent(MOBILE_SIDEBAR_DRAG_END, {
+          fieldType: fieldType.type,
+          ...finalPoint
+        });
+        window.removeEventListener("pointermove", handlePointerMove);
+        window.removeEventListener("pointerup", handlePointerEnd);
+        window.removeEventListener("pointercancel", handlePointerCancel);
+        try {
+          overlay?.releasePointerCapture(activePointerId);
+        } catch {}
+        isCustomDraggingRef.current = false;
+        customDragCleanupRef.current = null;
+        lastTouchPointRef.current = null;
+      };
+      const handlePointerEnd = (endEvent: PointerEvent) => {
+        if (endEvent.pointerId !== activePointerId) {
+          return;
+        }
+        endEvent.preventDefault();
+        finishDrag(endEvent);
+      };
+      const handlePointerCancel = (cancelEvent: PointerEvent) => {
+        if (cancelEvent.pointerId !== activePointerId) {
+          return;
+        }
+        finishDrag(cancelEvent);
+      };
+      window.addEventListener("pointermove", handlePointerMove, {
+        passive: false
+      });
+      window.addEventListener("pointerup", handlePointerEnd, {
+        passive: false
+      });
+      window.addEventListener("pointercancel", handlePointerCancel, {
+        passive: false
+      });
+      customDragCleanupRef.current = () => {
+        window.removeEventListener("pointermove", handlePointerMove);
+        window.removeEventListener("pointerup", handlePointerEnd);
+        window.removeEventListener("pointercancel", handlePointerCancel);
+        try {
+          overlay?.releasePointerCapture(activePointerId);
+        } catch {}
+      };
+    },
+    [fieldType.type, useCustomSidebarDrag]
+  );
   useEffect(() => {
     const overlay = customDragOverlayRef.current;
     if (!overlay || !useCustomSidebarDrag) {

@@ -2,20 +2,12 @@ import { useEffect } from 'react';
 import { io, Socket } from 'socket.io-client';
 import type { Form } from '@/types';
 import { useFormStore } from '@/store/formStore';
+import { resolveSocketBaseUrl } from '@/lib/socket-url';
 export const useFormSocket = (id: string | undefined) => {
   const { setSocket, updateForm, currentForm } = useFormStore();
   useEffect(() => {
     if (!id || id.startsWith('temp-')) return;
-    const socketUrl = import.meta.env.VITE_API_URL;
-    const backendUrl = import.meta.env.VITE_BACKEND_URL;
-    let baseUrl: string;
-    if (socketUrl) {
-      baseUrl = socketUrl.replace('/api', '');
-    } else if (backendUrl) {
-      baseUrl = backendUrl.replace('/api', '');
-    } else {
-      baseUrl = window.location.origin;
-    }
+    const baseUrl = resolveSocketBaseUrl();
     const socket = io(`${baseUrl}/forms`, {
       path: '/socket.io',
       transports: ['websocket', 'polling']

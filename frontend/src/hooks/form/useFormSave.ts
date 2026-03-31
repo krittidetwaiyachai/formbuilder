@@ -3,7 +3,9 @@ import { useNavigate, useBeforeUnload } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { useFormStore } from '@/store/formStore';
+import { useAuthStore } from '@/store/authStore';
 import { useFormShortcuts } from '@/hooks/form/useFormShortcuts';
+import { buildFormSavePayload } from '@/store/slices/createFormSlice';
 const AUTOSAVE_DELAY_MS = 1000;
 const UNDO_REDO_SAVE_DELAY_MS = 3000;
 const SAVE_INDICATOR_SHOW_DELAY_MS = 180;
@@ -18,11 +20,13 @@ export const useFormSave = (id: string | undefined) => {
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [isNavigating, setIsNavigating] = useState(false);
   const previousFormStrRef = useRef<string>('');
+  const currentFormRef = useRef(currentForm);
   const firstRenderRef = useRef(true);
   const pendingTimerRef = useRef<NodeJS.Timeout | null>(null);
   const lastSaveTimestampRef = useRef<number>(0);
   const pendingNavigationRef = useRef<string | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
+  const savingRef = useRef(false);
   const savingIndicatorShowTimerRef = useRef<NodeJS.Timeout | null>(null);
   const savingIndicatorHideTimerRef = useRef<NodeJS.Timeout | null>(null);
   const savingIndicatorVisibleSinceRef = useRef<number | null>(null);
@@ -47,21 +51,22 @@ export const useFormSave = (id: string | undefined) => {
       clearTimeout(savingIndicatorHideTimerRef.current);
       savingIndicatorHideTimerRef.current = null;
     }
-    if (saving || savingIndicatorShowTimerRef.current) {
+    if (savingRef.current || savingIndicatorShowTimerRef.current) {
       return;
     }
     savingIndicatorShowTimerRef.current = setTimeout(() => {
       savingIndicatorShowTimerRef.current = null;
       savingIndicatorVisibleSinceRef.current = Date.now();
+      savingRef.current = true;
       setSaving(true);
     }, SAVE_INDICATOR_SHOW_DELAY_MS);
-  }, [saving]);
+  }, []);
   const hideSavingIndicator = useCallback(() => {
     if (savingIndicatorShowTimerRef.current) {
       clearTimeout(savingIndicatorShowTimerRef.current);
       savingIndicatorShowTimerRef.current = null;
     }
-    if (!saving) {
+    if (!savingRef.current) {
       return;
     }
     const visibleSince = savingIndicatorVisibleSinceRef.current;
@@ -73,9 +78,49 @@ export const useFormSave = (id: string | undefined) => {
     savingIndicatorHideTimerRef.current = setTimeout(() => {
       savingIndicatorHideTimerRef.current = null;
       savingIndicatorVisibleSinceRef.current = null;
+      savingRef.current = false;
       setSaving(false);
     }, remaining);
-  }, [saving]);
+  }, []);
+  const buildCurrentFormString = useCallback((form = currentFormRef.current) => {
+    if (!form) {
+      return null;
+    }
+    const { updatedAt, createdAt, ...contentToTrack } = form;
+    return JSON.stringify(contentToTrack);
+  }, []);
+  const flushPendingTimer = useCallback(() => {
+    if (pendingTimerRef.current) {
+      clearTimeout(pendingTimerRef.current);
+      pendingTimerRef.current = null;
+    }
+  }, []);
+  const persistKeepaliveSave = useCallback(() => {
+    const form = currentFormRef.current;
+    const token = useAuthStore.getState().token;
+    if (!form || !token || form.id.startsWith('temp-')) {
+      return;
+    }
+    const currentFormStr = buildCurrentFormString(form);
+    if (!currentFormStr || currentFormStr === previousFormStrRef.current) {
+      return;
+    }
+    const apiBaseUrl = import.meta.env.VITE_API_URL as string | undefined || `${window.location.origin}/api`;
+    try {
+      fetch(`${apiBaseUrl}/forms/${form.id}`, {
+        method: 'PATCH',
+        keepalive: true,
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(buildFormSavePayload(form))
+      });
+    } catch (error) {
+      console.error('Keepalive save failed:', error);
+    }
+  }, [buildCurrentFormString]);
   const handleSave = useCallback(async (isAutoSave = false, silent = false, checkDebounce = false) => {
     if (!currentForm) return;
     const { updatedAt, createdAt, ...contentToTrack } = currentForm;
@@ -118,6 +163,12 @@ export const useFormSave = (id: string | undefined) => {
   }, [currentForm, id, navigate, saveForm, cancelInflightSave, clearUndoRedoFlag, hideSavingIndicator, showSavingIndicator, t]);
   useFormShortcuts(handleSave);
   useEffect(() => {
+    currentFormRef.current = currentForm;
+  }, [currentForm]);
+  useEffect(() => {
+    savingRef.current = saving;
+  }, [saving]);
+  useEffect(() => {
     if (currentForm?.updatedAt && lastSaved === null) {
       setLastSaved(new Date(currentForm.updatedAt));
     }
@@ -150,12 +201,13 @@ export const useFormSave = (id: string | undefined) => {
   useBeforeUnload(
     useCallback(() => {
       if (!currentForm) return false;
-      const { updatedAt, createdAt, ...contentToTrack } = currentForm;
-      const currentFormStr = JSON.stringify(contentToTrack);
+      const currentFormStr = buildCurrentFormString(currentForm);
       if (currentFormStr !== previousFormStrRef.current) {
+        flushPendingTimer();
+        persistKeepaliveSave();
         return 'You have unsaved changes.';
       }
-    }, [currentForm])
+    }, [currentForm, buildCurrentFormString, flushPendingTimer, persistKeepaliveSave])
   );
   useEffect(() => {
     const handleLinkClick = async (e: MouseEvent) => {
@@ -170,10 +222,7 @@ export const useFormSave = (id: string | undefined) => {
       if ((hasPendingSave || currentFormStr !== previousFormStrRef.current) && !isNavigating) {
         e.preventDefault();
         e.stopPropagation();
-        if (pendingTimerRef.current) {
-          clearTimeout(pendingTimerRef.current);
-          pendingTimerRef.current = null;
-        }
+        flushPendingTimer();
         setIsNavigating(true);
         showSavingIndicator();
         pendingNavigationRef.current = href;
@@ -204,10 +253,7 @@ export const useFormSave = (id: string | undefined) => {
       const currentFormStr = JSON.stringify(contentToTrack);
       if (hasPendingSave || currentFormStr !== previousFormStrRef.current) {
         window.history.pushState(null, '', window.location.href);
-        if (pendingTimerRef.current) {
-          clearTimeout(pendingTimerRef.current);
-          pendingTimerRef.current = null;
-        }
+        flushPendingTimer();
         setIsNavigating(true);
         showSavingIndicator();
         try {
@@ -236,29 +282,35 @@ export const useFormSave = (id: string | undefined) => {
       document.removeEventListener('click', handleLinkClick, true);
       window.removeEventListener('popstate', handlePopState);
     };
-  }, [currentForm, hideSavingIndicator, isNavigating, navigate, saveForm, showSavingIndicator, t]);
+  }, [currentForm, flushPendingTimer, hideSavingIndicator, isNavigating, navigate, saveForm, showSavingIndicator, t]);
   useEffect(() => {
     return () => {
       clearSavingIndicatorTimers();
     };
   }, [clearSavingIndicatorTimers]);
   useEffect(() => {
-    const handleBeforeUnload = async (e: BeforeUnloadEvent) => {
-      if (!currentForm) return;
-      const { updatedAt, createdAt, ...contentToTrack } = currentForm;
-      const currentFormStr = JSON.stringify(contentToTrack);
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      const currentFormStr = buildCurrentFormString();
       if (currentFormStr !== previousFormStrRef.current) {
+        flushPendingTimer();
+        persistKeepaliveSave();
         e.preventDefault();
         e.returnValue = '';
-        try {
-          await saveForm();
-        } catch (error) {
-          console.error('Failed to save before unload:', error);
-        }
+      }
+    };
+    const handlePageHide = () => {
+      const currentFormStr = buildCurrentFormString();
+      if (currentFormStr !== previousFormStrRef.current) {
+        flushPendingTimer();
+        persistKeepaliveSave();
       }
     };
     window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [currentForm, saveForm]);
+    window.addEventListener('pagehide', handlePageHide);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener('pagehide', handlePageHide);
+    };
+  }, [buildCurrentFormString, flushPendingTimer, persistKeepaliveSave]);
   return { saving, hasUnsavedChanges, message, lastSaved, handleSave };
 };

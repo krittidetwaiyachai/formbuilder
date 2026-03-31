@@ -6,6 +6,26 @@ import helmet from 'helmet';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 import * as express from 'express';
+function normalizeOriginList(rawOrigins: string | undefined) {
+  if (!rawOrigins) {
+    return [];
+  }
+  return [...new Set(
+    rawOrigins.
+    split(',').
+    map((origin) => origin.trim().replace(/^"(.*)"$/, '$1')).
+    filter(Boolean)
+  )];
+}
+function toSocketOrigin(origin: string) {
+  if (origin.startsWith('https://')) {
+    return origin.replace('https://', 'wss://');
+  }
+  if (origin.startsWith('http://')) {
+    return origin.replace('http://', 'ws://');
+  }
+  return origin;
+}
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.set('trust proxy', 1);
@@ -15,6 +35,16 @@ async function bootstrap() {
   app.useStaticAssets(join(process.cwd(), '..', 'frontend', 'public'), {
     prefix: '/'
   });
+  const configService = app.get(ConfigService);
+  const logger = new Logger('Bootstrap');
+  const allowedOrigins = normalizeOriginList(configService.get<string>('FRONTEND_URL'));
+  const connectOrigins = [
+  "'self'",
+  ...allowedOrigins,
+  ...allowedOrigins.map(toSocketOrigin),
+  'http://localhost:*',
+  'ws://localhost:*',
+  'https:'];
   app.use(helmet({
     crossOriginResourcePolicy: { policy: 'cross-origin' },
     contentSecurityPolicy: {
@@ -24,13 +54,10 @@ async function bootstrap() {
         styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
         fontSrc: ["'self'", "https://fonts.gstatic.com"],
         imgSrc: ["'self'", "data:", "https:"],
-        connectSrc: ["'self'", "http://localhost:*", "ws://localhost:*", "http://10.15.211.15:*", "ws://10.15.211.15:*", "https:"]
+        connectSrc: connectOrigins
       }
     }
   }));
-  const configService = app.get(ConfigService);
-  const logger = new Logger('Bootstrap');
-  const allowedOrigins = configService.get<string>('FRONTEND_URL')?.split(',') || [];
   app.enableCors({
     origin: allowedOrigins.length > 0 ? allowedOrigins : ['http://localhost:5173'],
     credentials: true,

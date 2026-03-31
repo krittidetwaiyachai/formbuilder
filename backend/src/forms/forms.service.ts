@@ -158,15 +158,14 @@ FormsService {
     if (!form) {
       throw new NotFoundException('Form not found');
     }
-    if (
-    userRole === RoleType.VIEWER &&
-    form.status !== FormStatus.PUBLISHED) {
+    if (userRole === RoleType.VIEWER && form.status !== FormStatus.PUBLISHED) {
       throw new ForbiddenException('You can only view published forms');
     }
     const isCreator = form.createdById === userId;
     const isCollaborator = form.collaborators?.some((c) => c.id === userId);
     if (
-    userRole !== RoleType.VIEWER &&
+    userRole !== RoleType.SUPER_ADMIN &&
+    userRole !== RoleType.ADMIN &&
     !isCreator &&
     !isCollaborator) {
       throw new ForbiddenException('You can only access your own forms or forms shared with you');
@@ -178,6 +177,23 @@ FormsService {
       where: { id },
       include: {
         fields: {
+          select: {
+            id: true,
+            type: true,
+            label: true,
+            placeholder: true,
+            required: true,
+            validation: true,
+            order: true,
+            options: true,
+            groupId: true,
+            shrink: true,
+            isPII: true,
+            imageUrl: true,
+            imageWidth: true,
+            videoUrl: true,
+            formId: true
+          },
           orderBy: { order: 'asc' }
         },
         conditions: {
@@ -460,7 +476,7 @@ FormsService {
     });
     return newForm;
   }
-  async addCollaborator(formId: string, email: string) {
+  async addCollaborator(formId: string, email: string, requestingUserId: string, requestingUserRole: RoleType) {
     const user = await this.prisma.user.findUnique({
       where: { email }
     });
@@ -473,6 +489,12 @@ FormsService {
     });
     if (!form) {
       throw new NotFoundException('Form not found');
+    }
+    if (
+    requestingUserRole !== RoleType.SUPER_ADMIN &&
+    requestingUserRole !== RoleType.ADMIN &&
+    form.createdById !== requestingUserId) {
+      throw new ForbiddenException('Only the form owner can add collaborators');
     }
     const isAlreadyCollaborator = form.collaborators.some((c) => c.id === user.id);
     if (isAlreadyCollaborator) {
@@ -489,7 +511,7 @@ FormsService {
         }
       }
     });
-    await this.activityLog.log(formId, user.id, 'COLLABORATOR_ADDED', { email });
+    await this.activityLog.log(formId, user.id, 'COLLABORATOR_ADDED', { email, addedBy: requestingUserId });
     return { message: 'Collaborator added successfully', user: { id: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName, photoUrl: user.photoUrl } };
   }
   async removeCollaborator(formId: string, userIdToRemove: string, requestingUserId: string, userRole: RoleType) {

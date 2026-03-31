@@ -58,6 +58,7 @@ export default {
   "builder_header.all_saved": "บันทึกทั้งหมดเรียบร้อยเมื่อ",
   "builder_header.last_saved": "บันทึกล่าสุดเมื่อ",
   "builder_header.not_saved": "ยังไม่ได้บันทึก",
+  "builder_header.save_failed": "บันทึกไม่สำเร็จ",
   "builder_header.preview": "ตัวอย่าง",
   "builder_header.share": "แชร์",
   "builder_header.share_title": "แชร์ฟอร์ม",
