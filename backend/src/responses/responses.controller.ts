@@ -7,6 +7,7 @@ import {
   UseGuards,
   Res,
   Query,
+  Headers,
   Sse,
   MessageEvent } from
 '@nestjs/common';
@@ -76,17 +77,18 @@ ResponsesController {
   @Roles(RoleType.SUPER_ADMIN, RoleType.ADMIN, RoleType.EDITOR, RoleType.VIEWER)
   async startExport(
     @Param('formId')formId: string,
-    @CurrentUser()user: User)
+    @CurrentUser()user: User,
+    @Headers('idempotency-key') idempotencyKey?: string)
   {
-    return this.responsesService.startExportJob(formId, user.id, user.role);
+    return this.responsesService.startExportJob(formId, user.id, user.role, idempotencyKey);
   }
   @Sse('export/progress/:jobId')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(RoleType.SUPER_ADMIN, RoleType.ADMIN, RoleType.EDITOR, RoleType.VIEWER)
-  exportProgress(
+  async exportProgress(
     @Param('jobId')jobId: string,
-    @CurrentUser()user: User): Observable<MessageEvent> {
-    this.responsesService.assertJobOwner(jobId, user.id, user.role);
+    @CurrentUser()user: User): Promise<Observable<MessageEvent>> {
+    await this.responsesService.assertJobOwner(jobId, user.id, user.role);
     return fromEvent(this.eventEmitter, `export.progress.${jobId}`).pipe(
       map((payload: Record<string, unknown>) => ({
         data: payload
@@ -101,7 +103,7 @@ ResponsesController {
     @CurrentUser()user: User,
     @Res()res: Response)
   {
-    const { filePath, filename } = this.responsesService.getJobResultFilePath(jobId, user.id, user.role);
+    const { filePath, filename } = await this.responsesService.getJobResultFilePath(jobId, user.id, user.role);
     res.setHeader('Content-Type', 'text/csv; charset=utf-8');
     res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
     const fileStream = fs.createReadStream(filePath);

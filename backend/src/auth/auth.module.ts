@@ -15,6 +15,7 @@ import { EventsModule } from '../events/events.module';
   JwtModule.registerAsync({
     inject: [ConfigService],
     useFactory: (configService: ConfigService) => {
+      const expiresIn = (configService.get<string>('JWT_EXPIRES_IN') || '7d') as `${number}${'ms' | 's' | 'm' | 'h' | 'd' | 'w' | 'y'}`;
       const secret = configService.get<string>('JWT_SECRET');
       if (!secret) {
         if (process.env.NODE_ENV === 'production') {
@@ -25,7 +26,7 @@ import { EventsModule } from '../events/events.module';
       return {
         secret: secret || 'secret',
         signOptions: {
-          expiresIn: configService.get<string>('JWT_EXPIRES_IN') || '7d'
+          expiresIn
         }
       };
     }
