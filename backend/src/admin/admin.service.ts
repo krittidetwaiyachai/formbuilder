@@ -200,6 +200,64 @@ AdminService {
       }
     };
   }
+  async getSystemLogs(params: {
+    page?: number;
+    limit?: number;
+    search?: string;
+    action?: string;
+  }) {
+    const { page = 1, limit = 20, search, action } = params;
+    const skip = (page - 1) * limit;
+    const where: Prisma.ActivityLogWhereInput = {
+      NOT: { action: 'UPDATED' }
+    };
+    if (action) {
+      where.action = { contains: action, mode: 'insensitive' };
+    }
+    if (search) {
+      where.OR = [
+      { action: { contains: search, mode: 'insensitive' } },
+      { user: { email: { contains: search, mode: 'insensitive' } } },
+      { user: { firstName: { contains: search, mode: 'insensitive' } } },
+      { user: { lastName: { contains: search, mode: 'insensitive' } } },
+      { form: { title: { contains: search, mode: 'insensitive' } } }];
+    }
+    const [logs, total] = await Promise.all([
+    this.prisma.activityLog.findMany({
+      where,
+      skip,
+      take: limit,
+      orderBy: { createdAt: 'desc' },
+      include: {
+        user: {
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+            photoUrl: true
+          }
+        },
+        form: {
+          select: {
+            id: true,
+            title: true
+          }
+        }
+      }
+    }),
+    this.prisma.activityLog.count({ where })]
+    );
+    return {
+      data: logs,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit)
+      }
+    };
+  }
   async toggleUserBan(userId: string) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
@@ -267,9 +325,11 @@ AdminService {
     });
   }
   async setUserPermissionOverrides(userId: string, permissions: string[] | null) {
+    const normalizedPermissions =
+      Array.isArray(permissions) && permissions.length === 0 ? null : permissions;
     return this.prisma.user.update({
       where: { id: userId },
-      data: { permissionOverrides: permissions },
+      data: { permissionOverrides: normalizedPermissions },
       select: {
         id: true,
         email: true,

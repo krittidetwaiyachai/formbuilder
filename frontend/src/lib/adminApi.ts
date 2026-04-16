@@ -70,8 +70,40 @@ export interface Role {
     users: number;
   };
 }
+export interface AdminActivityLog {
+  id: string;
+  action: string;
+  createdAt: string;
+  details?: Record<string, unknown>;
+  user: {
+    id: string;
+    email: string;
+    firstName?: string;
+    lastName?: string;
+    photoUrl?: string;
+  };
+  form: {
+    id: string;
+    title: string;
+  };
+}
+export interface ActivityLogsResponse {
+  data: AdminActivityLog[];
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}
 export const adminApi = {
   getStats: () => api.get<StatsResponse>('/admin/stats'),
+  getLogs: (params?: {
+    page?: number;
+    limit?: number;
+    search?: string;
+    action?: string;
+  }) => api.get<ActivityLogsResponse>('/admin/logs', { params }),
   getUsers: (params?: {page?: number;limit?: number;search?: string;role?: string;}) =>
   api.get<UsersResponse>('/admin/users', { params }),
   toggleBan: (userId: string) =>

@@ -5,7 +5,7 @@ import {
 '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateBundleDto, CreateBundleFieldDto } from './dto/create-bundle.dto';
-import { RoleType, BundleField, Prisma } from '@prisma/client';
+import { RoleType, Prisma } from '@prisma/client';
 interface BundleOptions {
   deleted?: boolean;
 }
@@ -131,63 +131,127 @@ BundlesService {
     );
     return bundleFields;
   }
-  async update(id: string, userId: string, updateData: Partial<CreateBundleDto>) {
+  async update(id: string, _userId: string, updateData: Partial<CreateBundleDto>) {
     const bundle = await this.findOne(id);
     const { fields, ...bundleData } = updateData;
+    const nextName = bundleData.name ?? bundle.name;
+
     const latestBundle = await this.prisma.bundle.findFirst({
-      where: { name: bundleData.name },
+      where: {
+        name: nextName,
+        id: { not: id }
+      },
       orderBy: { version: 'desc' }
     });
+
     const version = latestBundle ? latestBundle.version + 1 : bundle.version + 1;
-    const nameChanged = bundleData.name && bundleData.name !== bundle.name;
-    const currentOptions = bundle.options as unknown as BundleOptions || {};
-    await this.prisma.bundle.update({
-      where: { id },
-      data: {
-        isActive: false,
-        options: (nameChanged ? { ...currentOptions, deleted: true } : currentOptions) as Prisma.InputJsonValue
-      }
-    });
-    const newBundle = await this.prisma.bundle.create({
-      data: {
-        name: bundleData.name ?? bundle.name,
-        description: bundleData.description ?? bundle.description,
-        isPII: bundleData.isPII ?? bundle.isPII,
-        isActive: bundleData.isActive ?? bundle.isActive,
-        options: (bundleData.options as unknown as BundleOptions ?? bundle.options) as Prisma.InputJsonValue,
-        version,
-        createdBy: { connect: { id: userId } },
-        fields: {
-          create: (fields || bundle.fields).map((field: CreateBundleFieldDto | BundleField) => ({
+
+    type UpsertBundleField = CreateBundleFieldDto & { id?: string };
+    const incomingFields = (fields as UpsertBundleField[] | undefined)?.map((field, index) => ({
+      ...field,
+      order: field.order ?? index
+    }));
+
+    const updatedBundle = await this.prisma.$transaction(async (tx) => {
+      await tx.bundle.update({
+        where: { id },
+        data: {
+          name: nextName,
+          description: bundleData.description ?? bundle.description,
+          isPII: bundleData.isPII ?? bundle.isPII,
+          isActive: bundleData.isActive ?? bundle.isActive,
+          options: (bundleData.options as Prisma.InputJsonValue) ?? (bundle.options as Prisma.InputJsonValue),
+          version
+        }
+      });
+
+      if (incomingFields) {
+        const existingFieldIds = new Set(bundle.fields.map((field) => field.id));
+        const retainedFieldIds = new Set<string>();
+
+        for (const field of incomingFields) {
+          const data = {
             type: field.type,
             label: field.label,
             placeholder: field.placeholder,
-            required: field.required,
+            required: field.required ?? false,
             validation: field.validation as Prisma.InputJsonValue,
             order: field.order ?? 0,
             options: field.options as Prisma.InputJsonValue,
-            isPII: field.isPII ?? false
-          }))
+            isPII: field.isPII ?? false,
+            imageUrl: field.imageUrl,
+            imageWidth: field.imageWidth,
+            videoUrl: field.videoUrl
+          };
+
+          if (field.id && existingFieldIds.has(field.id)) {
+            retainedFieldIds.add(field.id);
+            await tx.bundleField.update({
+              where: { id: field.id },
+              data
+            });
+            continue;
+          }
+
+          await tx.bundleField.create({
+            data: {
+              ...(field.id ? { id: field.id } : {}),
+              bundleId: id,
+              ...data
+            }
+          });
         }
-      },
-      include: {
-        fields: {
-          orderBy: { order: 'asc' }
+
+        const deletedFieldIds = bundle.fields.
+        filter((field) => !retainedFieldIds.has(field.id)).
+        map((field) => field.id);
+
+        if (deletedFieldIds.length > 0) {
+          await tx.bundleField.deleteMany({
+            where: {
+              bundleId: id,
+              id: { in: deletedFieldIds }
+            }
+          });
         }
       }
+
+      return tx.bundle.findUnique({
+        where: { id },
+        include: {
+          fields: {
+            orderBy: { order: 'asc' }
+          }
+        }
+      });
     });
-    return newBundle;
+
+    if (!updatedBundle) {
+      throw new NotFoundException('Bundle not found');
+    }
+
+    return updatedBundle;
   }
   async remove(id: string) {
     const bundle = await this.findOne(id);
-    const currentOptions = bundle.options as unknown as BundleOptions || {};
-    await this.prisma.bundle.update({
-      where: { id },
-      data: {
-        isActive: false,
-        options: { ...currentOptions, deleted: true } as Prisma.InputJsonValue
-      }
+    const relatedBundles = await this.prisma.bundle.findMany({
+      where: { name: bundle.name },
+      select: { id: true, options: true },
     });
+
+    await this.prisma.$transaction(
+      relatedBundles.map((item) => {
+        const currentOptions = (item.options as unknown as BundleOptions) || {};
+        return this.prisma.bundle.update({
+          where: { id: item.id },
+          data: {
+            isActive: false,
+            options: { ...currentOptions, deleted: true } as Prisma.InputJsonValue,
+          },
+        });
+      }),
+    );
+
     return { message: 'Bundle deactivated successfully' };
   }
 }

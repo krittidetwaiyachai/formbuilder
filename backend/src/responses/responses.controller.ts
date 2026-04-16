@@ -23,12 +23,15 @@ import { PermissionsGuard } from '../auth/permissions.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { Permissions } from '../auth/decorators/permissions.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { Permissions as PermissionKeys } from '../auth/permissions.constants';
 import { RoleType } from '@prisma/client';
 import { Response } from 'express';
 interface User {
   id: string;
   email: string;
   role: RoleType;
+  rolePermissions?: string[];
+  permissionOverrides?: string[] | null;
 }
 @Controller('responses')export class
 ResponsesController {
@@ -37,6 +40,16 @@ ResponsesController {
   private readonly statsService: ResponsesStatsService,
   private readonly eventEmitter: EventEmitter2)
   {}
+
+  private canBypassPdpa(user: User) {
+    if (user.role === RoleType.SUPER_ADMIN) {
+      return true;
+    }
+    const permissions = Array.isArray(user.permissionOverrides) ?
+    user.permissionOverrides :
+    Array.isArray(user.rolePermissions) ? user.rolePermissions : [];
+    return permissions.includes(PermissionKeys.BYPASS_PDPA);
+  }
   @Get('form/:formId/stats')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(RoleType.SUPER_ADMIN, RoleType.ADMIN, RoleType.EDITOR, RoleType.VIEWER)
@@ -62,7 +75,15 @@ ResponsesController {
     const pageNum = page ? parseInt(page, 10) : 1;
     const limitNum = limit ? parseInt(limit, 10) : 50;
     const sortOrder = sort === 'asc' ? 'asc' : 'desc';
-    return this.responsesService.findAll(formId, user.id, user.role, pageNum, limitNum, sortOrder);
+    return this.responsesService.findAll(
+      formId,
+      user.id,
+      user.role,
+      this.canBypassPdpa(user),
+      pageNum,
+      limitNum,
+      sortOrder,
+    );
   }
   @Get(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -70,7 +91,7 @@ ResponsesController {
   findOne(
     @Param('id')id: string,
     @CurrentUser()user: User) {
-    return this.responsesService.findOne(id, user.id, user.role);
+    return this.responsesService.findOne(id, user.id, user.role, this.canBypassPdpa(user));
   }
   @Post('form/:formId/export/start')
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -80,7 +101,13 @@ ResponsesController {
     @CurrentUser()user: User,
     @Headers('idempotency-key') idempotencyKey?: string)
   {
-    return this.responsesService.startExportJob(formId, user.id, user.role, idempotencyKey);
+    return this.responsesService.startExportJob(
+      formId,
+      user.id,
+      user.role,
+      idempotencyKey,
+      this.canBypassPdpa(user),
+    );
   }
   @Sse('export/progress/:jobId')
   @UseGuards(JwtAuthGuard, RolesGuard)

@@ -40,10 +40,10 @@ export default function DashboardPage() {
   const { t, i18n } = useTranslation();
   const [forms, setForms] = useState<FormWithStats[]>([]);
   const [loading, setLoading] = useState(true);
-  const { scrollTo } = useSmoothScroll("dashboard-scroll-container", {
-    enabled: !loading
-  });
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const { scrollTo } = useSmoothScroll("dashboard-scroll-container", {
+    enabled: !loading && !isLoginModalOpen
+  });
   const [selectedForm, setSelectedForm] = useState<FormWithStats | null>(null);
   const [collaboratorModalData, setCollaboratorModalData] = useState<{
     isOpen: boolean;
@@ -143,6 +143,19 @@ export default function DashboardPage() {
       document.removeEventListener("keydown", handleKeyDown, true);
     };
   }, []);
+  useEffect(() => {
+    if (!isLoginModalOpen) {
+      return;
+    }
+    const originalBodyOverflow = document.body.style.overflow;
+    const originalHtmlOverflow = document.documentElement.style.overflow;
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = originalBodyOverflow;
+      document.documentElement.style.overflow = originalHtmlOverflow;
+    };
+  }, [isLoginModalOpen]);
   const [isCreating, setIsCreating] = useState(false);
   const createNewForm = async () => {
     if (!isAuthenticated) {
@@ -375,7 +388,7 @@ export default function DashboardPage() {
         }} />
       {}      <div
         id="dashboard-scroll-container"
-        className="hidden md:block flex-1 overflow-y-auto">
+        className={`hidden md:block flex-1 ${isLoginModalOpen ? "overflow-hidden" : "overflow-y-auto"}`}>
         {}        <DashboardHeader
           username={user?.firstName}
           onCreateForm={createNewForm}
@@ -610,3 +623,4 @@ export default function DashboardPage() {
             <ChevronDown className="w-5 h-5 stroke-[3]" />        </motion.div>      </div>
       }    </div>);
 }
+

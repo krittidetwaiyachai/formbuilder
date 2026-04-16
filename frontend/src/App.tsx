@@ -16,12 +16,48 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminBundles from './pages/admin/AdminBundles';
 import BundleEditor from './pages/admin/BundleEditor';
+import AdminLogs from './pages/admin/AdminLogs';
+import AdminSettings from './pages/admin/AdminSettings';
+
 function AppContent() {
   useInactivityLogout();
   useSocketLogout();
+
   return (
-    <Routes>      <Route path="/forms/:id/view" element={<PublicForm />} />      <Route path="/" element={<Layout />}>        <Route index element={<Navigate to="/dashboard" />} />        <Route path="dashboard" element={<Dashboard />} />        <Route element={<ProtectedRoute />}>          <Route path="forms/:id/builder" element={<FormEdit />} />          <Route path="forms/:id/activity" element={<ActivityPage />} />          <Route path="forms/:id/analytics" element={<AnalyticsPage />} />        </Route>      </Route>      <Route path="/admin" element={<AdminLayout />}>        <Route element={<AdminProtectedRoute />}>          <Route index element={<Navigate to="/admin/dashboard" />} />          <Route path="dashboard" element={<AdminDashboard />} />          <Route path="users" element={<AdminUsers />} />          <Route path="bundles" element={<AdminBundles />} />        </Route>      </Route>      <Route element={<AdminProtectedRoute />}>        <Route path="/admin/bundles/:id" element={<BundleEditor />} />      </Route>      <Route path="forms/:id/preview" element={<FormPreview />} />      <Route path="*" element={<ErrorPage code={404} />} />    </Routes>);
+    <Routes>
+      <Route path="/forms/:id/view" element={<PublicForm />} />
+
+      <Route path="/" element={<Layout />}>
+        <Route index element={<Navigate to="/dashboard" />} />
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="forms/:id/builder" element={<FormEdit />} />
+          <Route path="forms/:id/activity" element={<ActivityPage />} />
+          <Route path="forms/:id/analytics" element={<AnalyticsPage />} />
+        </Route>
+      </Route>
+
+      <Route path="/admin" element={<AdminLayout />}>
+        <Route element={<AdminProtectedRoute />}>
+          <Route index element={<Navigate to="/admin/dashboard" />} />
+          <Route path="dashboard" element={<AdminDashboard />} />
+          <Route path="users" element={<AdminUsers />} />
+          <Route path="bundles" element={<AdminBundles />} />
+          <Route path="logs" element={<AdminLogs />} />
+          <Route path="settings" element={<AdminSettings />} />
+        </Route>
+      </Route>
+
+      <Route element={<AdminProtectedRoute />}>
+        <Route path="/admin/bundles/:id" element={<BundleEditor />} />
+      </Route>
+
+      <Route path="forms/:id/preview" element={<FormPreview />} />
+      <Route path="*" element={<ErrorPage code={404} />} />
+    </Routes>
+  );
 }
+
 function App() {
   return (
     <BrowserRouter
@@ -29,6 +65,9 @@ function App() {
         v7_startTransition: true,
         v7_relativeSplatPath: true
       }}>
-      <AppContent />    </BrowserRouter>);
+      <AppContent />
+    </BrowserRouter>
+  );
 }
+
 export default App;

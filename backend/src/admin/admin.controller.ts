@@ -38,6 +38,29 @@ AdminController {
       role
     });
   }
+  @Get('logs')
+  @UseGuards(PermissionsGuard)
+  @Permissions('VIEW_SYSTEM_LOGS')
+  getSystemLogs(
+    @Query('page')page?: string,
+    @Query('limit')limit?: string,
+    @Query('search')search?: string,
+    @Query('action')action?: string)
+  {
+    const parsedPage = page ? parseInt(page, 10) : 1;
+    const parsedLimit = limit ? parseInt(limit, 10) : 20;
+    const safePage = Number.isFinite(parsedPage) && parsedPage > 0 ? parsedPage : 1;
+    const safeLimit =
+    Number.isFinite(parsedLimit) && parsedLimit > 0 ?
+    Math.min(parsedLimit, 100) :
+    20;
+    return this.adminService.getSystemLogs({
+      page: safePage,
+      limit: safeLimit,
+      search,
+      action
+    });
+  }
   @Patch('users/:id/ban')
   @Roles(RoleType.SUPER_ADMIN)
   @UseGuards(PermissionsGuard)

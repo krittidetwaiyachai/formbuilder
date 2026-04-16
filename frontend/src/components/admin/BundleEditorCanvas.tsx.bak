@@ -1,0 +1,87 @@
+import BundleDesignerElementCard from './BundleDesignerElementCard';
+import React from "react";
+import { Droppable, Draggable } from "@hello-pangea/dnd";
+import { useBundleEditorStore } from "@/store/bundleEditorStore";
+import type { BundleField } from "@/store/bundleEditorStore";
+import { Trash2, Image, Video } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { FieldType } from "@/types";
+import type { Field } from "@/types";
+import { useTranslation } from "react-i18next";
+import { ShortTextField } from "@/components/form-builder/fields/short-text";
+import { EmailField } from "@/components/form-builder/fields/email";
+import { PhoneField } from "@/components/form-builder/fields/phone/PhoneField";
+import { NumberField } from "@/components/form-builder/fields/number";
+import { LongTextField } from "@/components/form-builder/fields/long-text/LongTextField";
+import { DropdownField } from "@/components/form-builder/fields/dropdown/DropdownField";
+import { RadioField } from "@/components/form-builder/fields/radio/RadioField";
+import { CheckboxField } from "@/components/form-builder/fields/checkbox/CheckboxField";
+import { DateField } from "@/components/form-builder/fields/date/DateField";
+import { TimeField } from "@/components/form-builder/fields/time/TimeField";
+import { RateField } from "@/components/form-builder/fields/rate/RateField";
+import { HeaderField } from "@/components/form-builder/fields/header/HeaderField";
+import { FullNameField } from "@/components/form-builder/fields/full-name/FullNameField";
+import { AddressField } from "@/components/form-builder/fields/address/AddressField";
+import { ParagraphField } from "@/components/form-builder/fields/paragraph/ParagraphField";
+import { DividerField } from "@/components/form-builder/fields/divider/DividerField";
+import { SubmitField } from "@/components/form-builder/fields/submit/SubmitField";
+  }
+  const sortedFields = [...bundle.fields].sort((a, b) => a.order - b.order);
+  return (
+    <div className="flex-1 bg-white overflow-y-auto px-4 md:px-8">
+      <div className="max-w-2xl flex-grow mx-auto flex flex-col min-h-full py-8 w-full">
+        <Droppable droppableId="BUNDLE-CANVAS">
+          {(provided, snapshot) =>
+          <div
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+            onClick={(e) => {
+              if (e.target === e.currentTarget) {
+                setSelectedFieldId(null);
+              }
+            }}
+            className={cn(
+              "min-h-full flex-1 transition-all duration-200 pt-10 pb-32 relative rounded-xl bg-gray-50 border border-gray-200",
+              snapshot.isDraggingOver ?
+              "ring-2 ring-indigo-300 ring-dashed border-transparent bg-indigo-50/30" :
+              ""
+            )}>
+              {sortedFields.length > 0 ?
+            <div className="flex flex-col gap-3 w-full px-4">
+                  {sortedFields.map((field, index) =>
+              <Draggable
+                key={field.id}
+                draggableId={field.id}
+                index={index}>
+                      {(dragProvided, dragSnapshot) =>
+                <div
+                  ref={dragProvided.innerRef}
+                  {...dragProvided.draggableProps}
+                  style={dragProvided.draggableProps.style}>
+                  <BundleDesignerElementCard
+                    element={field as any}
+                    isSelected={!!(selectedFieldId === field.id)}
+                    isDragging={dragSnapshot.isDragging}
+                    dragHandleProps={dragProvided.dragHandleProps}
+                    onClick={() => { setSelectedFieldId(field.id); }}
+                    onDelete={(e) => { e.stopPropagation(); deleteField(field.id); }}
+                  />
+                </div>
+                }
+                    </Draggable>
+              )}
+                  {provided.placeholder}
+                </div> :
+            <div className="flex flex-col items-center justify-center py-32 text-gray-400">
+                  <p className="text-sm font-medium">
+                    {t("builder.drag_drop_instructions")}
+                  </p>
+                  {provided.placeholder}
+                </div>
+            }
+            </div>
+          }
+        </Droppable>
+      </div>
+    </div>);
+}

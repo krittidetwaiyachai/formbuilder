@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Star } from "lucide-react";
-import { useFormStore } from "@/store/formStore";
+import { useBundleEditorStore } from "@/store/bundleEditorStore";
 import { useRef, useEffect, useLayoutEffect } from "react";
 import { cn } from "@/lib/ui/utils";
 interface FormElementRendererProps {
@@ -23,7 +23,7 @@ export default function FormElementRenderer({
   element,
   isDesigner = false
 }: FormElementRendererProps) {
-  const { selectedFieldId, updateField, selectField } = useFormStore();
+  const { selectedFieldId, updateField, setSelectedFieldId } = useBundleEditorStore();
   const isSelected = selectedFieldId === element.id;
   const headingRef = useRef<HTMLHeadingElement | null>(null);
   const paragraphRef = useRef<HTMLParagraphElement | null>(null);
@@ -39,7 +39,7 @@ export default function FormElementRenderer({
     };
     const handleLabelFocus = (_e: React.FocusEvent<HTMLDivElement>) => {
       if (isDesigner) {
-        selectField(element.id);
+        setSelectedFieldId(element.id);
       }
       isEditingRef.current = true;
     };
@@ -271,7 +271,7 @@ export default function FormElementRenderer({
         _e: React.FocusEvent<HTMLHeadingElement>) =>
         {
           if (isDesigner) {
-            selectField(element.id);
+            setSelectedFieldId(element.id);
           }
           isEditingRef.current = true;
         };
@@ -410,7 +410,7 @@ export default function FormElementRenderer({
         _e: React.FocusEvent<HTMLParagraphElement>) =>
         {
           if (isDesigner) {
-            selectField(element.id);
+            setSelectedFieldId(element.id);
           }
           isEditingRef.current = true;
         };

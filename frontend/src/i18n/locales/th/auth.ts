@@ -13,6 +13,8 @@ export default {
   "auth.invalid_credentials": "อีเมลหรือรหัสผ่านไม่ถูกต้อง",
   "auth.google_failed": "Google Login ไม่สำเร็จ",
   "auth.google_error": "ไม่สามารถเข้าสู่ระบบด้วย Google ได้",
+  "auth.captcha_required_sign_in": "กรุณายืนยันตัวตนด้วย Captcha ก่อนเข้าสู่ระบบ",
+  "auth.captcha_check_failed": "การยืนยัน Captcha ไม่สำเร็จ กรุณาลองใหม่อีกครั้ง",
   "auth.error": "เกิดข้อผิดพลาด",
   "auth.error_message": "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
   "auth.logout": "ออกจากระบบ",

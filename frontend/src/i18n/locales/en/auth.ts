@@ -13,6 +13,8 @@ export default {
   "auth.invalid_credentials": "Invalid email or password",
   "auth.google_failed": "Google Login Failed",
   "auth.google_error": "Could not sign in with Google.",
+  "auth.captcha_required_sign_in": "Complete the captcha before signing in.",
+  "auth.captcha_check_failed": "Captcha verification failed. Please try again.",
   "auth.error": "Error",
   "auth.error_message": "Something went wrong. Please try again.",
   "auth.logout": "Log Out",

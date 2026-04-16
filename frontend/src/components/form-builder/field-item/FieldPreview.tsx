@@ -60,11 +60,32 @@ export const FieldPreview: React.FC<FieldPreviewProps> = ({
     case FieldType.PHONE:
       return <PhoneField field={field} fieldStyle={fieldStyle} />;
     case FieldType.DROPDOWN:
-      return <DropdownField field={field} fieldStyle={fieldStyle} />;
+      return (
+        <DropdownField
+          field={field}
+          fieldStyle={fieldStyle}
+          updateField={updateField}
+          isSelected={isSelected}
+        />
+      );
     case FieldType.CHECKBOX:
-      return <CheckboxField field={field} fieldStyle={fieldStyle} />;
+      return (
+        <CheckboxField
+          field={field}
+          fieldStyle={fieldStyle}
+          updateField={updateField}
+          isSelected={isSelected}
+        />
+      );
     case FieldType.RADIO:
-      return <RadioField field={field} fieldStyle={fieldStyle} />;
+      return (
+        <RadioField
+          field={field}
+          fieldStyle={fieldStyle}
+          updateField={updateField}
+          isSelected={isSelected}
+        />
+      );
     case FieldType.DATE:
       return <DateField field={field} fieldStyle={fieldStyle} />;
     case FieldType.TIME:

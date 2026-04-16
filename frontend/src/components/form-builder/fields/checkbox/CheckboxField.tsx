@@ -215,12 +215,12 @@ export const CheckboxField: React.FC<CheckboxFieldProps> = ({
                 type="button"
                 onClick={() => handleRemoveOption(idx)}
                 className="p-1 text-gray-400 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100">
-                  <X className="h-3.5 w-3.5" />              </button>            </div>          </div>
-          )}        </div>        <div className="flex items-center gap-2">          <div className="w-6" />          <div className="w-5 h-5 border-2 border-dashed border-gray-300 rounded shrink-0" />          <div className="flex-1 flex items-center gap-2 bg-white rounded-lg px-3 py-2 border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors">            <button
+                  <X className="h-3.5 w-3.5" />              </button>            </div>          </div>
+          )}        </div>        <div className="flex items-center gap-2">          <div className="w-6" />          <div className="flex-1 flex items-center gap-2 bg-white rounded-lg px-3 py-2 border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors">            <button
               type="button"
               onClick={handleAddOption}
               className="p-0.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded transition-colors">
-              <Plus className="h-4 w-4" />            </button>            <input
+              <Plus className="h-4 w-4" />            </button>            <input
               type="text"
               value={newOptionText}
               onChange={(e) => setNewOptionText(e.target.value)}

@@ -11,7 +11,8 @@ import {
   ChevronRight,
   GripVertical,
   ChevronDown,
-  Trash2 } from
+  Trash2,
+  ArrowUp } from
 "lucide-react";
 import { useTranslation } from "react-i18next";
 import { FieldType } from "@/types";
@@ -50,6 +51,8 @@ interface PageNavigationProps {
   onReorderPages?: (oldIndex: number, newIndex: number) => void;
   hasWelcome?: boolean;
   hasThankYou?: boolean;
+  showScrollTop?: boolean;
+  onScrollToTop?: () => void;
   className?: string;
 }
 interface PageTabProps {
@@ -198,6 +201,8 @@ export default function PageNavigation({
   pageSettings = [],
   hasWelcome = true,
   hasThankYou = true,
+  showScrollTop = false,
+  onScrollToTop,
   className = ""
 }: PageNavigationProps & {pageSettings?: {id: string;title: string;}[];}) {
   const { t } = useTranslation();
@@ -421,48 +426,58 @@ export default function PageNavigation({
             </button>
           }
         </div>
-        <div className="relative group ml-4 z-50">
+        <div className="relative ml-4 z-50">
+          {showScrollTop && onScrollToTop &&
           <button
-            onClick={onAddPage}
-            className="flex items-center px-4 py-2 bg-black text-white text-sm font-medium rounded-lg shadow-sm hover:bg-gray-800 hover:shadow-md transition-all duration-200 active:scale-95">
-            <Plus className="h-4 w-4 mr-1.5" />
-            {t("builder.pagination.add_page")}
-          </button>
-          <div className="absolute bottom-full right-0 mb-2 w-52 bg-white rounded-xl shadow-xl border border-gray-100 py-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-bottom-right scale-95 group-hover:scale-100">
+            onClick={onScrollToTop}
+            className="absolute bottom-full right-0 mb-5 p-3 bg-white text-gray-600 rounded-full shadow-lg border border-gray-200 hover:bg-gray-50 transition-all duration-300 animate-in fade-in slide-in-from-bottom-4"
+            title={t("common.scroll_top")}>
+              <ArrowUp className="w-5 h-5" />
+            </button>
+          }
+          <div className="relative group/addpage">
             <button
               onClick={onAddPage}
-              className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-black flex items-center transition-colors first:rounded-t-xl">
-              <FileText className="w-4 h-4 mr-2.5 text-gray-400" />
-              {t("builder.pagination.page_generic")}
+              className="flex items-center px-4 py-2 bg-black text-white text-sm font-medium rounded-lg shadow-sm hover:bg-gray-800 hover:shadow-md transition-all duration-200 active:scale-95">
+              <Plus className="h-4 w-4 mr-1.5" />
+              {t("builder.pagination.add_page")}
             </button>
-            <button
-              onClick={() => !hasWelcome && onAddWelcome?.()}
-              disabled={hasWelcome}
-              className={`w-full text-left px-4 py-2.5 text-sm flex items-center transition-colors ${
-              hasWelcome ?
-              "text-gray-400 bg-gray-50 cursor-not-allowed" :
-              "text-gray-700 hover:bg-gray-50 hover:text-black"}`
-              }>
-              <LayoutTemplate
-                className={`w-4 h-4 mr-2.5 ${hasWelcome ? "text-gray-300" : "text-gray-400"}`} />
-              {hasWelcome ?
-              `${t("builder.pagination.welcome_page")} ${t("builder.pagination.added")}` :
-              t("builder.pagination.welcome_page")}
-            </button>
-            <button
-              onClick={() => !hasThankYou && onAddThankYou?.()}
-              disabled={hasThankYou}
-              className={`w-full text-left px-4 py-2.5 text-sm flex items-center transition-colors last:rounded-b-xl ${
-              hasThankYou ?
-              "text-gray-400 bg-gray-50 cursor-not-allowed" :
-              "text-gray-700 hover:bg-gray-50 hover:text-black"}`
-              }>
-              <CheckCircle2
-                className={`w-4 h-4 mr-2.5 ${hasThankYou ? "text-gray-300" : "text-gray-400"}`} />
-              {hasThankYou ?
-              `${t("builder.pagination.end_page")} ${t("builder.pagination.added")}` :
-              t("builder.pagination.end_page")}
-            </button>
+            <div className="absolute bottom-full right-0 mb-2 w-52 bg-white rounded-xl shadow-xl border border-gray-100 py-1 opacity-0 invisible group-hover/addpage:opacity-100 group-hover/addpage:visible transition-all duration-200 transform origin-bottom-right scale-95 group-hover/addpage:scale-100">
+              <button
+                onClick={onAddPage}
+                className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-black flex items-center transition-colors first:rounded-t-xl">
+                <FileText className="w-4 h-4 mr-2.5 text-gray-400" />
+                {t("builder.pagination.page_generic")}
+              </button>
+              <button
+                onClick={() => !hasWelcome && onAddWelcome?.()}
+                disabled={hasWelcome}
+                className={`w-full text-left px-4 py-2.5 text-sm flex items-center transition-colors ${
+                hasWelcome ?
+                "text-gray-400 bg-gray-50 cursor-not-allowed" :
+                "text-gray-700 hover:bg-gray-50 hover:text-black"}`
+                }>
+                <LayoutTemplate
+                  className={`w-4 h-4 mr-2.5 ${hasWelcome ? "text-gray-300" : "text-gray-400"}`} />
+                {hasWelcome ?
+                `${t("builder.pagination.welcome_page")} ${t("builder.pagination.added")}` :
+                t("builder.pagination.welcome_page")}
+              </button>
+              <button
+                onClick={() => !hasThankYou && onAddThankYou?.()}
+                disabled={hasThankYou}
+                className={`w-full text-left px-4 py-2.5 text-sm flex items-center transition-colors last:rounded-b-xl ${
+                hasThankYou ?
+                "text-gray-400 bg-gray-50 cursor-not-allowed" :
+                "text-gray-700 hover:bg-gray-50 hover:text-black"}`
+                }>
+                <CheckCircle2
+                  className={`w-4 h-4 mr-2.5 ${hasThankYou ? "text-gray-300" : "text-gray-400"}`} />
+                {hasThankYou ?
+                `${t("builder.pagination.end_page")} ${t("builder.pagination.added")}` :
+                t("builder.pagination.end_page")}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -519,6 +534,14 @@ export default function PageNavigation({
           </div>
         </div>
         <div className="flex items-center gap-1 relative">
+          {showScrollTop && onScrollToTop &&
+          <button
+            onClick={onScrollToTop}
+            className="absolute bottom-full right-0 mb-4 p-2.5 bg-white text-gray-600 rounded-full shadow-lg border border-gray-200 hover:bg-gray-50 transition-all duration-300 z-[9999]"
+            title={t("common.scroll_top")}>
+              <ArrowUp className="w-4 h-4" />
+            </button>
+          }
           <button
             onClick={handleNextPage}
             disabled={

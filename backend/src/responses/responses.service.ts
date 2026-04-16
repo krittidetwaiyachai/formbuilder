@@ -323,6 +323,7 @@ export class ResponsesService {
     formId: string,
     userId: string,
     userRole: RoleType,
+    canViewPii: boolean,
     page: number = 1,
     limit: number = 50,
     sort: 'asc' | 'desc' = 'desc',
@@ -355,13 +356,22 @@ export class ResponsesService {
     ]);
     const decryptedResponses = responses.map((response) => ({
       ...response,
+      respondentEmail:
+      canViewPii || !response.respondentEmail ?
+      response.respondentEmail :
+      '[Redacted: Respondent Email]',
+      normalizedRespondentEmail: canViewPii ? response.normalizedRespondentEmail : null,
       answers: response.answers.map((answer) => {
         let value = answer.value;
         if (answer.field?.isPII && answer.value) {
-          try {
-            value = this.encryptionService.decrypt(answer.value);
-          } catch {
-            value = '[Error: Data Encrypted]';
+          if (!canViewPii) {
+            value = '[Redacted: PII]';
+          } else {
+            try {
+              value = this.encryptionService.decrypt(answer.value);
+            } catch {
+              value = '[Error: Data Encrypted]';
+            }
           }
         }
         return { ...answer, value };
@@ -378,7 +388,7 @@ export class ResponsesService {
     };
   }
 
-  async findOne(id: string, userId: string, userRole: RoleType) {
+  async findOne(id: string, userId: string, userRole: RoleType, canViewPii: boolean) {
     const response = await this.prisma.formResponse.findUnique({
       where: { id },
       include: {
@@ -404,13 +414,22 @@ export class ResponsesService {
     await this.formAccessService.assertReadAccess(response.formId, userId, userRole);
     return {
       ...response,
+      respondentEmail:
+      canViewPii || !response.respondentEmail ?
+      response.respondentEmail :
+      '[Redacted: Respondent Email]',
+      normalizedRespondentEmail: canViewPii ? response.normalizedRespondentEmail : null,
       answers: response.answers.map((answer) => {
         let value = answer.value;
         if (answer.field?.isPII && answer.value) {
-          try {
-            value = this.encryptionService.decrypt(answer.value);
-          } catch {
-            value = '[Error: Data Encrypted]';
+          if (!canViewPii) {
+            value = '[Redacted: PII]';
+          } else {
+            try {
+              value = this.encryptionService.decrypt(answer.value);
+            } catch {
+              value = '[Error: Data Encrypted]';
+            }
           }
         }
         return {
@@ -426,6 +445,7 @@ export class ResponsesService {
     userId: string,
     userRole: RoleType,
     idempotencyKey?: string,
+    canViewPii: boolean = false,
   ) {
     await this.formAccessService.assertReadAccess(formId, userId, userRole);
     const normalizedIdempotencyKey = this.normalizeIdempotencyKey(idempotencyKey);
@@ -503,6 +523,7 @@ export class ResponsesService {
         ownerId: userId,
         formId,
         lockToken,
+        canViewPii,
       }).catch(async (err) => {
         this.logger.error(`Export Job ${jobId} failed: ${String(err)}`);
         const latestJob = (await this.readJob(jobId)) || newJob;
@@ -568,7 +589,7 @@ export class ResponsesService {
     },
     jobId: string,
     filePath: string,
-    lock: { ownerId: string; formId: string; lockToken: string },
+    lock: { ownerId: string; formId: string; lockToken: string;canViewPii: boolean; },
   ) {
     const job = await this.readJob(jobId);
     if (!job) {
@@ -639,7 +660,11 @@ export class ResponsesService {
           });
           const row: string[] = [escapeCsv(formattedDate)];
           if (safeSettings?.collectEmail) {
-            row.push(escapeCsv(response.respondentEmail || ''));
+            const emailCell =
+            lock.canViewPii || !response.respondentEmail ?
+            response.respondentEmail || '' :
+            '[Redacted: Respondent Email]';
+            row.push(escapeCsv(emailCell));
           }
           form.fields.forEach((field) => {
             if (['HEADER', 'PARAGRAPH', 'DIVIDER', 'PAGE_BREAK', 'SUBMIT'].includes(field.type)) {
@@ -648,10 +673,14 @@ export class ResponsesService {
             const answer = response.answers.find((a) => a.fieldId === field.id);
             let value: unknown = answer?.value || '';
             if (piiFieldIds.has(field.id) && answer?.value) {
-              try {
-                value = this.encryptionService.decrypt(answer.value);
-              } catch {
-                value = '[Encrypted]';
+              if (!lock.canViewPii) {
+                value = '[Redacted: PII]';
+              } else {
+                try {
+                  value = this.encryptionService.decrypt(answer.value);
+                } catch {
+                  value = '[Encrypted]';
+                }
               }
             }
             if (field.type === 'MATRIX') {

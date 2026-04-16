@@ -23,7 +23,7 @@ PermissionsGuard implements CanActivate {
     );
   }
   private getUserPermissions(user: {permissionOverrides?: string[] | null;rolePermissions?: string[] | null;}): string[] {
-    if (user.permissionOverrides && Array.isArray(user.permissionOverrides)) {
+    if (user.permissionOverrides && Array.isArray(user.permissionOverrides) && user.permissionOverrides.length > 0) {
       return user.permissionOverrides;
     }
     if (user.rolePermissions && Array.isArray(user.rolePermissions)) {

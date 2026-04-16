@@ -14,6 +14,8 @@ interface SmoothScrollContextValue {
   options?: {offset?: number;duration?: number;})
   => void;
   resize: () => void;
+  start: () => void;
+  stop: () => void;
   isReady: boolean;
 }
 const SmoothScrollContext = createContext<SmoothScrollContextValue | null>(
@@ -114,8 +116,20 @@ export function SmoothScrollProvider({
       lenisRef.current.resize();
     }
   }, []);
+
+  const start = useCallback(() => {
+    if (lenisRef.current) {
+      lenisRef.current.start();
+    }
+  }, []);
+
+  const stop = useCallback(() => {
+    if (lenisRef.current) {
+      lenisRef.current.stop();
+    }
+  }, []);
   return (
-    <SmoothScrollContext.Provider value={{ scrollTo, resize, isReady }}>      {children}    </SmoothScrollContext.Provider>);
+    <SmoothScrollContext.Provider value={{ scrollTo, resize, start, stop, isReady }}>      {children}    </SmoothScrollContext.Provider>);
 }
 export function useBuilderScroll() {
   const context = useContext(SmoothScrollContext);
@@ -123,6 +137,8 @@ export function useBuilderScroll() {
     return {
       scrollTo: () => {},
       resize: () => {},
+      start: () => {},
+      stop: () => {},
       isReady: false
     };
   }

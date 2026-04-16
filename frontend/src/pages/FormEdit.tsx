@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo, useEffect } from "react";
+import { useState, useRef, useMemo, useEffect, useCallback } from "react";
 import type { Dispatch, MutableRefObject, SetStateAction } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -18,7 +18,7 @@ import { usePageManagement } from "@/hooks/form/usePageManagement";
 import { useFormDragAndDrop } from "@/hooks/form/useDragAndDrop";
 import { useCollaboration } from "@/hooks/useCollaboration";
 import ThemeSelectionModal from "@/components/builder/ThemeSelectionModal";
-import { SmoothScrollProvider, useBuilderScroll } from "@/contexts/SmoothScrollContext";
+import { SmoothScrollProvider } from "@/contexts/SmoothScrollContext";
 import { useFormLoad } from "@/hooks/form/useFormLoad";
 import { useFormSocket } from "@/hooks/form/useFormSocket";
 import { useFormSave } from "@/hooks/form/useFormSave";
@@ -38,7 +38,6 @@ import {
   MOBILE_SIDEBAR_DRAG_MOVE,
   MOBILE_SIDEBAR_DRAG_START } from
 "@/utils/mobileSidebarDrag";
-import { ArrowUp } from "lucide-react";
 const checkTouchDevice = () => {
   if (typeof window === "undefined") return false;
   return (
@@ -285,18 +284,6 @@ interface MobileCanvasDragState {
   height: number;
   sourceIndex: number;
 }
-function ScrollToTopButton({ show }: {show: boolean;}) {
-  const { scrollTo } = useBuilderScroll();
-  const { t } = useTranslation();
-  if (!show) return null;
-  return (
-    <button
-      onClick={() => scrollTo(0, { duration: 1.5 })}
-      className="absolute bottom-24 right-8 z-50 p-3 bg-white text-gray-600 rounded-full shadow-lg border border-gray-200 hover:bg-gray-50 transition-all duration-300 animate-in fade-in slide-in-from-bottom-4"
-      title={t("common.scroll_top")}>
-      <ArrowUp className="w-5 h-5" />
-    </button>);
-}
 const triggerDroppedFieldAnimation = (
 fieldId: string,
 cleanupRef: MutableRefObject<number | null>,
@@ -374,6 +361,7 @@ export default function FormBuilderPage() {
   const mobileCanvasDropCleanupTimeoutRef = useRef<number | null>(null);
   const sidebarDropCleanupTimeoutRef = useRef<number | null>(null);
   const desktopDropCleanupTimeoutRef = useRef<number | null>(null);
+  const scrollToTopRafRef = useRef<number | null>(null);
   const isDraggingMobileCanvasRef = useRef(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
@@ -406,6 +394,55 @@ export default function FormBuilderPage() {
     additionalSelectedIds,
     setActiveSidebarTab
   } = useFormStore();
+  const scrollCanvasToTop = useCallback(() => {
+    const container = scrollContainerRef.current;
+    if (!container) {
+      return;
+    }
+    if (scrollToTopRafRef.current !== null) {
+      cancelAnimationFrame(scrollToTopRafRef.current);
+      scrollToTopRafRef.current = null;
+    }
+    const startTop = container.scrollTop;
+    if (startTop <= 0) {
+      return;
+    }
+    const startTime = performance.now();
+    const durationMs = 550;
+    const easeOutCubic = (progress: number) => 1 - Math.pow(1 - progress, 3);
+    const animate = (timestamp: number) => {
+      const elapsed = timestamp - startTime;
+      const progress = Math.min(1, elapsed / durationMs);
+      const eased = easeOutCubic(progress);
+      container.scrollTop = Math.max(0, startTop * (1 - eased));
+      if (progress < 1 && container.scrollTop > 0) {
+        scrollToTopRafRef.current = requestAnimationFrame(animate);
+        return;
+      }
+      container.scrollTop = 0;
+      scrollToTopRafRef.current = null;
+      setShowScrollTop(false);
+    };
+    scrollToTopRafRef.current = requestAnimationFrame(animate);
+  }, []);
+  const updateScrollTopButtonVisibility = useCallback(() => {
+    const container = scrollContainerRef.current;
+    if (!container || currentPage < 0 || activeSidebarTab === "logic") {
+      setShowScrollTop(false);
+      return;
+    }
+    const nativeScrolled = container.scrollTop > 300;
+    const firstTopLevelSlot = container.querySelector<HTMLElement>(
+      '[data-top-level-field-slot="true"]'
+    );
+    let visuallyScrolled = false;
+    if (firstTopLevelSlot) {
+      const containerRect = container.getBoundingClientRect();
+      const firstFieldRect = firstTopLevelSlot.getBoundingClientRect();
+      visuallyScrolled = firstFieldRect.top < containerRect.top - 120;
+    }
+    setShowScrollTop(nativeScrolled || visuallyScrolled);
+  }, [activeSidebarTab, currentPage]);
   const { loadingError } = useFormLoad(id);
   useFormSocket(id);
   const { saving, hasUnsavedChanges, message, lastSaved, handleSave } = useFormSave(id);
@@ -414,6 +451,18 @@ export default function FormBuilderPage() {
       setActiveFields(currentForm.fields);
     }
   }, [currentForm?.fields]);
+  useEffect(() => {
+    const rafId = requestAnimationFrame(() => {
+      updateScrollTopButtonVisibility();
+    });
+    return () => cancelAnimationFrame(rafId);
+  }, [
+  selectedFieldId,
+  currentPage,
+  activeSidebarTab,
+  currentForm?.fields?.length,
+  updateScrollTopButtonVisibility]
+  );
   useEffect(() => {
     setIsTouchDevice(checkTouchDevice());
   }, []);
@@ -999,6 +1048,9 @@ export default function FormBuilderPage() {
       if (desktopDropCleanupTimeoutRef.current !== null) {
         window.clearTimeout(desktopDropCleanupTimeoutRef.current);
       }
+      if (scrollToTopRafRef.current !== null) {
+        cancelAnimationFrame(scrollToTopRafRef.current);
+      }
       stopMobileAutoScrollLoop();
       stopMobileCanvasAutoScrollLoop();
     };
@@ -1192,10 +1244,7 @@ export default function FormBuilderPage() {
                     ref={scrollContainerRef}
                     className={`canvas-scroll-container flex-1 flex flex-col ${currentPage < 0 ? "overflow-hidden" : "overflow-y-auto"} px-4 md:px-8 pt-0 pb-0 scrollbar-hide relative`}
                     style={{ overscrollBehaviorX: "none" }}
-                    onScroll={(e) => {
-                      const target = e.target as HTMLDivElement;
-                      setShowScrollTop(target.scrollTop > 300);
-                    }}
+                    onScroll={updateScrollTopButtonVisibility}
                     onClick={() => {
                       if (selectedFieldId) selectField(null);
                     }}>
@@ -1247,7 +1296,6 @@ export default function FormBuilderPage() {
                           </div>
                       }                      </>
                     }                  </div>
-                  <ScrollToTopButton show={showScrollTop} />
                 </SmoothScrollProvider>                {currentForm &&
                 <PageNavigation
                   fields={currentForm?.fields || []}
@@ -1260,7 +1308,9 @@ export default function FormBuilderPage() {
                   onRenamePage={handleRenamePage}
                   onReorderPages={handleReorderPages}
                   hasWelcome={currentForm?.hasWelcome}
-                  hasThankYou={currentForm?.hasThankYou} />
+                  hasThankYou={currentForm?.hasThankYou}
+                  showScrollTop={showScrollTop}
+                  onScrollToTop={scrollCanvasToTop} />
                 }
               </div>
               <div className="hidden lg:flex w-[320px] bg-white border-l border-gray-200 flex-col h-full z-20">

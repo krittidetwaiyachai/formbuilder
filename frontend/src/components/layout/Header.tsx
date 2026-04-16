@@ -31,18 +31,27 @@ export default function Header() {
                   user={user || {}}
                   className="h-8 w-8 group-hover:scale-105 transition-transform duration-300 border-2 border-white shadow-sm" />
                   <div className="hidden md:block text-left mr-1">                  <p className="text-sm font-bold text-gray-800 leading-none">                    {user?.firstName || user?.email?.split("@")[0]}                  </p>                  <p className="text-[10px] uppercase tracking-wider font-semibold text-indigo-600 mt-0.5">                    {user?.role}                  </p>                </div>              </div>              {}              {isProfileMenuOpen &&
-              <>                <div
+
+              <>                <div
                   className="fixed inset-0 z-30 bg-transparent"
                   onClick={() => setIsProfileMenuOpen(false)} />
-                    <div className="absolute top-full right-0 mt-2 w-64 bg-white rounded-xl shadow-xl border border-gray-100 p-4 z-40 origin-top-right animate-in fade-in zoom-in-95 duration-200">                  <div className="flex items-center gap-3 mb-3 pb-3 border-b border-gray-50">                    <UserAvatar
+                    <div className="absolute top-full right-0 mt-2 w-64 bg-white rounded-xl shadow-xl border border-gray-100 p-4 z-40 origin-top-right animate-in fade-in zoom-in-95 duration-200">                  <div className="flex items-center gap-3 mb-3 pb-3 border-b border-gray-50">                    <UserAvatar
                       user={user || {}}
                       className="h-10 w-10 shadow-sm" />
-                        <div className="overflow-hidden">                      <p className="text-sm font-bold text-gray-900 truncate">                        {user?.firstName} {user?.lastName}                      </p>                      <p className="text-xs text-gray-500 truncate">                        {user?.email}                      </p>                    </div>                  </div>                  <div className="space-y-1">                    <button
+                        <div className="overflow-hidden">                      <p className="text-sm font-bold text-gray-900 truncate">                        {user?.firstName} {user?.lastName}                      </p>                      <p className="text-xs text-gray-500 truncate">                        {user?.email}                      </p>                    </div>                  </div>                  <div className="space-y-1">                    {user?.role === "SUPER_ADMIN" && (
+                      <button
+                        onClick={() => {
+                          setIsProfileMenuOpen(false);
+                          navigate("/admin");
+                        }}
+                        className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition-colors font-medium mb-1">
+                        <FileText className="h-4 w-4" />                        {t("admin.admin_console", "Admin Console")}                      </button>
+                    )}                    <button
                       onClick={handleLogout}
                       className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors font-medium">
-                          <LogOut className="h-4 w-4" />                      {t("sign_out")}                    </button>                  </div>                </div>              </>
-              }              {}              {}            </div> :
-            <div className="flex items-center gap-3">              <LanguageSwitcher />              <div className="relative group/btn">                {}                <div className="absolute -inset-10 pointer-events-none overflow-hidden z-20">                  {}                  <svg
+                          <LogOut className="h-4 w-4" />                      {t("sign_out")}                    </button>                  </div>                </div>              </>
+              }              {}              {}            </div> :
+            <div className="flex items-center gap-3">              <LanguageSwitcher />              <div className="relative group/btn">                {}                <div className="absolute -inset-10 pointer-events-none overflow-hidden z-20">                  {}                  <svg
                     className="absolute w-4 h-4 text-yellow-300 opacity-60 group-hover/btn:opacity-100 transition-all duration-500"
                     style={{
                       top: "30%",

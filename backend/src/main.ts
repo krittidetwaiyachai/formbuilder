@@ -28,14 +28,18 @@ function toSocketOrigin(origin: string) {
 }
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  app.set('trust proxy', 1);
+  const configService = app.get(ConfigService);
+  const trustProxyHopsRaw = configService.get<string>('TRUST_PROXY_HOPS');
+  const trustProxyHops = Number.isFinite(Number(trustProxyHopsRaw))
+    ? Math.max(0, Number(trustProxyHopsRaw))
+    : 0;
+  app.set('trust proxy', trustProxyHops);
   app.use(require('compression')());
   app.use(express.json({ limit: '5mb' }));
   app.use(express.urlencoded({ limit: '5mb', extended: true }));
   app.useStaticAssets(join(process.cwd(), '..', 'frontend', 'public'), {
     prefix: '/'
   });
-  const configService = app.get(ConfigService);
   const logger = new Logger('Bootstrap');
   const allowedOrigins = normalizeOriginList(configService.get<string>('FRONTEND_URL'));
   const connectOrigins = [
@@ -62,7 +66,13 @@ async function bootstrap() {
     origin: allowedOrigins.length > 0 ? allowedOrigins : ['http://localhost:5173'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'Idempotency-Key',
+      'X-Request-Id',
+      'X-CSRF-Token',
+    ]
   });
   app.useGlobalPipes(
     new ValidationPipe({
