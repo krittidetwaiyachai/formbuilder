@@ -26,6 +26,48 @@ function toSocketOrigin(origin: string) {
   }
   return origin;
 }
+
+const toPositiveInt = (value: string | undefined, fallback: number): number => {
+  const parsed = Number.parseInt(value || '', 10);
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : fallback;
+};
+
+const shouldEnablePortFallback = (rawValue: string | undefined): boolean => {
+  if (typeof rawValue === 'string') {
+    return rawValue.toLowerCase() === 'true';
+  }
+  return process.env.NODE_ENV !== 'production';
+};
+
+const listenWithPortFallback = async (
+  app: NestExpressApplication,
+  initialPort: number,
+  logger: Logger,
+  enableFallback: boolean,
+  maxRetries: number,
+) => {
+  let port = initialPort;
+
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      await app.listen(port);
+      return port;
+    } catch (error) {
+      const listenError = error as NodeJS.ErrnoException;
+      const canRetry = enableFallback && listenError?.code === 'EADDRINUSE' && attempt < maxRetries;
+      if (!canRetry) {
+        throw error;
+      }
+      logger.warn(
+        `Port ${port} is already in use. Retrying on ${port + 1} (${attempt + 1}/${maxRetries})`,
+      );
+      port += 1;
+    }
+  }
+
+  throw new Error(`Failed to bind a port after ${maxRetries + 1} attempts`);
+};
+
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const configService = app.get(ConfigService);
@@ -82,9 +124,21 @@ async function bootstrap() {
   );
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.setGlobalPrefix('api');
-  const port = configService.get<number>('PORT') || 3000;
-  await app.listen(port);
-  logger.log(`🚀 Application is running on: http://localhost:${port}`);
+  const preferredPort = Number(configService.get<number>('PORT')) || 3000;
+  const enablePortFallback = shouldEnablePortFallback(configService.get<string>('PORT_AUTO_INCREMENT'));
+  const maxPortFallbackRetries = toPositiveInt(
+    configService.get<string>('PORT_AUTO_INCREMENT_MAX'),
+    10,
+  );
+  const activePort = await listenWithPortFallback(
+    app,
+    preferredPort,
+    logger,
+    enablePortFallback,
+    maxPortFallbackRetries,
+  );
+
+  logger.log(`🚀 Application is running on: http://localhost:${activePort}`);
   if (allowedOrigins.length > 0) {
     logger.log(`Allowed Origins: ${allowedOrigins.join(', ')}`);
   }

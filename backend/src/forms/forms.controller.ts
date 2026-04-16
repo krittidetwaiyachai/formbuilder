@@ -44,6 +44,14 @@ FormsController {
   findAll(@CurrentUser()user: User) {
     return this.formsService.findAll(user.id, user.role).then((forms) => ({ forms }));
   }
+  @Post('collaborator-invitations/accept')
+  @Roles(RoleType.SUPER_ADMIN, RoleType.ADMIN, RoleType.EDITOR, RoleType.VIEWER, RoleType.USER)
+  async acceptCollaboratorInvitation(
+    @CurrentUser()user: User,
+    @Body('token')token: string)
+  {
+    return this.formsService.acceptCollaboratorInvitation(token, user.id, user.email);
+  }
   @Get(':id')
   findOne(
     @Param('id')id: string,
@@ -106,6 +114,32 @@ FormsController {
     @Body('email')email: string)
   {
     return this.formsService.addCollaborator(id, email, user.id, user.role);
+  }
+  @Get(':id/collaborator-access')
+  @Roles(RoleType.SUPER_ADMIN, RoleType.ADMIN, RoleType.EDITOR)
+  async getCollaboratorAccess(
+    @Param('id')id: string,
+    @CurrentUser()user: User)
+  {
+    return this.formsService.getCollaboratorAccess(id, user.id, user.role);
+  }
+  @Post(':id/collaborator-invitations/:invitationId/resend')
+  @Roles(RoleType.SUPER_ADMIN, RoleType.ADMIN, RoleType.EDITOR)
+  async resendCollaboratorInvitation(
+    @Param('id')id: string,
+    @Param('invitationId')invitationId: string,
+    @CurrentUser()user: User)
+  {
+    return this.formsService.resendCollaboratorInvitation(id, invitationId, user.id, user.role);
+  }
+  @Delete(':id/collaborator-invitations/:invitationId')
+  @Roles(RoleType.SUPER_ADMIN, RoleType.ADMIN, RoleType.EDITOR)
+  async revokeCollaboratorInvitation(
+    @Param('id')id: string,
+    @Param('invitationId')invitationId: string,
+    @CurrentUser()user: User)
+  {
+    return this.formsService.revokeCollaboratorInvitation(id, invitationId, user.id, user.role);
   }
   @Delete(':id/collaborators/:userId')
   @Roles(RoleType.SUPER_ADMIN, RoleType.ADMIN, RoleType.EDITOR)

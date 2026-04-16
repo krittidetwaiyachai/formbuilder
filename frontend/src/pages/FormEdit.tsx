@@ -535,6 +535,16 @@ export default function FormBuilderPage() {
     formId: id || "",
     enabled: !!id && !id.startsWith("temp-")
   });
+  useEffect(() => {
+    if (!id || id.startsWith("temp-")) {
+      return;
+    }
+    if (selectedFieldId) {
+      notifySelectField(selectedFieldId);
+      return;
+    }
+    notifyDeselectField();
+  }, [id, selectedFieldId, notifySelectField, notifyDeselectField]);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [mobileDrawerContent, setMobileDrawerContent] = useState<
     "fields" | "properties" | "settings" | null>(

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import api from "@/lib/api";
 import type { Form } from "@/types";
 import { useAuthStore } from "@/store/authStore";
@@ -30,6 +30,7 @@ import MobileSearchFilters from "@/components/mobile/MobileSearchFilters";
 import MobileMoveFolderSheet from "@/components/mobile/MobileMoveFolderSheet";
 import MobileFilterSheet from "@/components/mobile/MobileFilterSheet";
 import MobileProfileSheet from "@/components/mobile/MobileProfileSheet";
+import { getAxiosErrorMessage } from "@/utils/error";
 interface FormWithStats extends Form {
   responseCount: number;
   viewCount: number;
@@ -38,6 +39,22 @@ interface FormWithStats extends Form {
 import { useSmoothScroll } from "@/hooks/useSmoothScroll";
 export default function DashboardPage() {
   const { t, i18n } = useTranslation();
+  const translateInvitationMessage = (rawMessage?: string | null) => {
+    if (!rawMessage) return "";
+    const normalized = rawMessage.trim().toLowerCase();
+    const messageMap: Record<string, string> = {
+      "invitation accepted successfully": "dashboard.collaborators.message.invitation_accepted",
+      "invitation token is required": "dashboard.collaborators.message.invitation_token_required",
+      "invitation not found": "dashboard.collaborators.message.invitation_not_found",
+      "invitation is no longer valid": "dashboard.collaborators.message.invitation_invalid",
+      "invitation has expired": "dashboard.collaborators.message.invitation_expired",
+      "invitation was revoked": "dashboard.collaborators.message.invitation_revoked_by_owner",
+      "invitation has already been accepted": "dashboard.collaborators.message.invitation_already_accepted",
+      "this invitation was sent to a different email": "dashboard.collaborators.message.invitation_different_email"
+    };
+    const key = messageMap[normalized];
+    return key ? t(key) : rawMessage;
+  };
   const [forms, setForms] = useState<FormWithStats[]>([]);
   const [loading, setLoading] = useState(true);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -75,6 +92,7 @@ export default function DashboardPage() {
     null);
   const [isProfileSheetOpen, setIsProfileSheetOpen] = useState(false);
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [formToDelete, setFormToDelete] = useState<string | null>(null);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [folderToDelete, setFolderToDelete] = useState<string | null>(null);
@@ -122,6 +140,52 @@ export default function DashboardPage() {
       setLoading(false);
     }
   }, [isAuthenticated]);
+  useEffect(() => {
+    const inviteToken = searchParams.get("inviteToken");
+    if (inviteToken && !isAuthenticated) {
+      setIsLoginModalOpen(true);
+    }
+  }, [isAuthenticated, searchParams]);
+  useEffect(() => {
+    const inviteToken = searchParams.get("inviteToken");
+    if (!inviteToken || !isAuthenticated) {
+      return;
+    }
+
+    let cancelled = false;
+    const acceptInvitation = async () => {
+      try {
+        await api.post("/forms/collaborator-invitations/accept", { token: inviteToken });
+        if (cancelled) return;
+        toast({
+          variant: "success",
+          title: t("dashboard.collaborators.message.invitation_accepted"),
+          description: t("dashboard.collaborators.message.invitation_accepted")
+        });
+        await loadForms();
+      } catch (error) {
+        if (cancelled) return;
+        const rawMessage = getAxiosErrorMessage(error, t("dashboard.collaborators.message.invitation_invalid"));
+        toast({
+          variant: "error",
+          title: t("dashboard.toast.error"),
+          description:
+          translateInvitationMessage(rawMessage) ||
+          t("dashboard.collaborators.message.invitation_invalid")
+        });
+      } finally {
+        if (cancelled) return;
+        const nextParams = new URLSearchParams(searchParams);
+        nextParams.delete("inviteToken");
+        setSearchParams(nextParams, { replace: true });
+      }
+    };
+
+    void acceptInvitation();
+    return () => {
+      cancelled = true;
+    };
+  }, [isAuthenticated, searchParams, setSearchParams, t, toast]);
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === "a") {

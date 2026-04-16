@@ -48,6 +48,26 @@ interface BundleEditorState {
   reset: () => void;
 }
 
+const stabilizeFieldIds = (previousFields: BundleField[], incomingFields: BundleField[]): BundleField[] => {
+  if (previousFields.length !== incomingFields.length) {
+    return incomingFields;
+  }
+
+  return incomingFields.map((incomingField, index) => {
+    const previousField = previousFields[index];
+    if (!previousField) {
+      return incomingField;
+    }
+    if (
+      previousField.type === incomingField.type &&
+      previousField.order === incomingField.order
+    ) {
+      return { ...incomingField, id: previousField.id };
+    }
+    return incomingField;
+  });
+};
+
 const isDeepEqual = (a: unknown, b: unknown): boolean => {
   if (Object.is(a, b)) {
     return true;
@@ -243,7 +263,14 @@ export const useBundleEditorStore = create<BundleEditorState>((set, get) => ({
         isActive: bundle.isActive,
         options: bundle.options
       });
-      const newBundle = response.data;
+      const responseBundle = response.data as Bundle;
+      const shouldKeepCurrentId = Boolean(bundle.id) && responseBundle.id !== bundle.id;
+      const stableFields = stabilizeFieldIds(bundle.fields || [], responseBundle.fields || []);
+      const newBundle: Bundle = {
+        ...responseBundle,
+        id: shouldKeepCurrentId ? bundle.id : responseBundle.id,
+        fields: stableFields
+      };
       const currentSelectedId = get().selectedFieldId;
       let newSelectedId = null;
       if (currentSelectedId && bundle.fields) {
@@ -258,7 +285,10 @@ export const useBundleEditorStore = create<BundleEditorState>((set, get) => ({
         isDirty: false,
         isUndoRedoAction: false
       });
-      window.history.replaceState(null, '', `/admin/bundles/${newBundle.id}`);
+      const isFirstPersist = (!bundle.id || bundle.id.trim() === '') && Boolean(newBundle.id);
+      if (isFirstPersist) {
+        window.history.replaceState(null, '', `/admin/bundles/${newBundle.id}`);
+      }
     } catch (error) {
       console.error("Failed to save bundle:", error);
       throw error;

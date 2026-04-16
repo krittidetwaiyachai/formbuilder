@@ -63,7 +63,7 @@ export default {
   "admin.users.action.ban": "Ban User",
   "admin.users.action.unban": "Unban",
   "admin.users.action.change_role": "Change Role",
-  "admin.users.search_placeholder": "Search users...",
+  "admin.users.search_placeholder": "Search users, email, or UUID...",
   "admin.users.no_users": "No users found",
   "admin.users.page_info": "Page {{page}} of {{total}}",
   "admin.stats.total_users": "Total Users",

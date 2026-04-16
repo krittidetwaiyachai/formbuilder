@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   X,
   Mail,
@@ -6,7 +6,10 @@ import {
   Trash2,
   CheckCircle,
   AlertCircle,
-  LogOut } from
+  LogOut,
+  RefreshCw,
+  Clock3,
+  Ban } from
 "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import UserAvatar from "@/components/common/UserAvatar";
@@ -15,6 +18,7 @@ import { useAuthStore } from "@/store/authStore";
 import { useTranslation } from "react-i18next";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import { getAxiosErrorMessage } from "@/utils/error";
+
 interface Collaborator {
   id?: string;
   firstName?: string;
@@ -23,6 +27,22 @@ interface Collaborator {
   photoUrl?: string;
   role?: string;
 }
+
+interface PendingInvitation {
+  id: string;
+  invitedEmail: string;
+  status: "PENDING" | "ACCEPTED" | "REVOKED" | "EXPIRED";
+  createdAt: string;
+  expiresAt: string;
+}
+
+interface CollaboratorAccessResponse {
+  owner: Collaborator;
+  collaborators: Collaborator[];
+  pendingInvitations: PendingInvitation[];
+  canManage: boolean;
+}
+
 interface CollaboratorListModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -31,6 +51,7 @@ interface CollaboratorListModalProps {
   formId: string;
   onUpdate: () => void;
 }
+
 export default function CollaboratorListModal({
   isOpen,
   onClose,
@@ -40,14 +61,97 @@ export default function CollaboratorListModal({
   onUpdate
 }: CollaboratorListModalProps) {
   const { t } = useTranslation();
+  const { user: currentUser } = useAuthStore();
+
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const { user: currentUser } = useAuthStore();
+
+  const [accessLoading, setAccessLoading] = useState(false);
+  const [owner, setOwner] = useState<Collaborator | null>(null);
+  const [currentCollaborators, setCurrentCollaborators] = useState<Collaborator[]>([]);
+  const [pendingInvitations, setPendingInvitations] = useState<PendingInvitation[]>([]);
+  const [canManage, setCanManage] = useState(false);
+
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [collaboratorToRemove, setCollaboratorToRemove] = useState<string | null>(null);
+
+  const translateCollaboratorMessage = (rawMessage?: string | null) => {
+    if (!rawMessage) return "";
+    const normalized = rawMessage.trim().toLowerCase();
+    const messageMap: Record<string, string> = {
+      "invitation sent successfully": "dashboard.collaborators.message.invite_success",
+      "invitation accepted successfully": "dashboard.collaborators.message.invitation_accepted",
+      "invitation resent successfully": "dashboard.collaborators.message.invitation_resent",
+      "invitation revoked successfully": "dashboard.collaborators.message.invitation_revoked",
+      "invitation token is required": "dashboard.collaborators.message.invitation_token_required",
+      "invitation not found": "dashboard.collaborators.message.invitation_not_found",
+      "invitation is no longer valid": "dashboard.collaborators.message.invitation_invalid",
+      "invitation has expired": "dashboard.collaborators.message.invitation_expired",
+      "invitation was revoked": "dashboard.collaborators.message.invitation_revoked_by_owner",
+      "invitation has already been accepted": "dashboard.collaborators.message.invitation_already_accepted",
+      "this invitation was sent to a different email": "dashboard.collaborators.message.invitation_different_email",
+      "email is required": "dashboard.collaborators.message.email_required",
+      "user is already a collaborator": "dashboard.collaborators.message.already_collaborator",
+      "user is the owner of the form": "dashboard.collaborators.message.owner_cannot_be_collaborator",
+      "only the form owner can add collaborators": "dashboard.collaborators.message.only_owner_can_invite",
+      "you do not have permission to remove collaborators": "dashboard.collaborators.message.remove_permission_denied",
+      "user not found": "dashboard.collaborators.message.user_not_found",
+      "form not found": "dashboard.collaborators.message.form_not_found"
+    };
+    const key = messageMap[normalized];
+    return key ? t(key) : rawMessage;
+  };
+
+  const mergedCollaborators = useMemo(() => {
+    if (owner || currentCollaborators.length > 0) {
+      return [
+        ...(owner ? [owner] : []),
+        ...currentCollaborators
+      ];
+    }
+    return collaborators;
+  }, [owner, currentCollaborators, collaborators]);
+
+  const fetchAccess = async () => {
+    if (!formId) return;
+    try {
+      setAccessLoading(true);
+      const response = await api.get<CollaboratorAccessResponse>(`/forms/${formId}/collaborator-access`);
+      setOwner(response.data.owner || null);
+      setCurrentCollaborators(response.data.collaborators || []);
+      setPendingInvitations(response.data.pendingInvitations || []);
+      setCanManage(response.data.canManage === true);
+    } catch (err) {
+      setCanManage(false);
+      if (!owner && currentCollaborators.length === 0) {
+        setCurrentCollaborators(collaborators.slice(1));
+        setOwner(collaborators[0] || null);
+      }
+      console.error("Failed to fetch collaborator access:", err);
+    } finally {
+      setAccessLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!isOpen || !formId) {
+      return;
+    }
+
+    void fetchAccess();
+    const timer = setInterval(() => {
+      void fetchAccess();
+    }, 3000);
+
+    return () => clearInterval(timer);
+  }, [isOpen, formId]);
+
   const handleInvite = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) return;
+    if (!email || !canManage) return;
+
     setLoading(true);
     setError(null);
     setSuccess(null);
@@ -55,121 +159,267 @@ export default function CollaboratorListModal({
       await api.post(`/forms/${formId}/collaborators`, { email });
       setSuccess(t("dashboard.collaborators.invite_success"));
       setEmail("");
+      await fetchAccess();
       onUpdate();
     } catch (err: unknown) {
       console.error("Failed to invite:", err);
+      const rawMessage = getAxiosErrorMessage(err, t("dashboard.collaborators.invite_error"));
       setError(
-        getAxiosErrorMessage(err, t("dashboard.collaborators.invite_error"))
+        translateCollaboratorMessage(rawMessage) || t("dashboard.collaborators.invite_error")
       );
     } finally {
       setLoading(false);
     }
   };
-  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
-  const [collaboratorToRemove, setCollaboratorToRemove] = useState<
-    string | null>(
-    null);
+
+  const handleResendInvitation = async (invitationId: string) => {
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+    try {
+      await api.post(`/forms/${formId}/collaborator-invitations/${invitationId}/resend`);
+      setSuccess(t("dashboard.collaborators.message.invitation_resent"));
+      await fetchAccess();
+    } catch (err: unknown) {
+      const rawMessage = getAxiosErrorMessage(err, t("dashboard.collaborators.invite_error"));
+      setError(translateCollaboratorMessage(rawMessage) || t("dashboard.collaborators.invite_error"));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRevokeInvitation = async (invitationId: string) => {
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+    try {
+      await api.delete(`/forms/${formId}/collaborator-invitations/${invitationId}`);
+      setSuccess(t("dashboard.collaborators.message.invitation_revoked"));
+      await fetchAccess();
+    } catch (err: unknown) {
+      const rawMessage = getAxiosErrorMessage(err, t("dashboard.collaborators.invite_error"));
+      setError(translateCollaboratorMessage(rawMessage) || t("dashboard.collaborators.invite_error"));
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleRemove = async (userId: string) => {
     setCollaboratorToRemove(userId);
     setDeleteConfirmOpen(true);
   };
+
   const confirmRemove = async () => {
     if (!collaboratorToRemove) return;
     setLoading(true);
     try {
-      await api.delete(
-        `/forms/${formId}/collaborators/${collaboratorToRemove}`
-      );
+      await api.delete(`/forms/${formId}/collaborators/${collaboratorToRemove}`);
+      await fetchAccess();
       onUpdate();
     } catch (err: unknown) {
       console.error("Failed to remove:", err);
-      setError(
-        getAxiosErrorMessage(err, t("dashboard.collaborators.remove_error"))
-      );
+      const rawMessage = getAxiosErrorMessage(err, t("dashboard.collaborators.remove_error"));
+      setError(translateCollaboratorMessage(rawMessage) || t("dashboard.collaborators.remove_error"));
     } finally {
       setLoading(false);
       setCollaboratorToRemove(null);
     }
   };
+
   if (!isOpen) return null;
+
+  const ownerId = owner?.id || collaborators[0]?.id;
+
   return (
-    <AnimatePresence>      <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 sm:p-6">        <motion.div
+    <AnimatePresence>
+      <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 sm:p-6">
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
           className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+
         <motion.div
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
           className="relative w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 flex flex-col max-h-[85vh]"
           onClick={(e) => e.stopPropagation()}>
-          {}          <div className="px-5 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">            <div>              <h3 className="text-lg font-bold text-gray-900">                {t("dashboard.collaborators.manage_access")}              </h3>              <p className="text-xs text-gray-500 truncate max-w-[250px]">                {formTitle}              </p>            </div>            <button
+          <div className="px-5 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+            <div>
+              <h3 className="text-lg font-bold text-gray-900">
+                {t("dashboard.collaborators.manage_access")}
+              </h3>
+              <p className="text-xs text-gray-500 truncate max-w-[250px]">
+                {formTitle}
+              </p>
+            </div>
+            <button
               onClick={onClose}
               className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors">
-              <X className="w-5 h-5" />            </button>          </div>          <div className="flex-1 overflow-y-auto">            {}            <div className="p-5 border-b border-gray-100">              <label className="text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2 block">                {t("dashboard.collaborators.add_people")}              </label>              <form onSubmit={handleInvite} className="flex gap-2">                <div className="relative flex-1">                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />                  <input
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          <div className="flex-1 overflow-y-auto">
+            <div className="p-5 border-b border-gray-100">
+              <label className="text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2 block">
+                {t("dashboard.collaborators.add_people")}
+              </label>
+              <form onSubmit={handleInvite} className="flex gap-2">
+                <div className="relative flex-1">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder={t("dashboard.collaborators.email_placeholder")}
                     className="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
-                    disabled={loading} />
-                </div>                <button
+                    disabled={loading || !canManage} />
+                </div>
+                <button
                   type="submit"
-                  disabled={loading || !email}
+                  disabled={loading || !email || !canManage}
                   className="px-4 py-2 bg-black text-white rounded-lg text-xs font-bold hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2">
-                  {loading ? "..." : t("dashboard.collaborators.invite")}                </button>              </form>              {}              <AnimatePresence mode="wait">                {error &&
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="flex items-center gap-2 mt-3 text-xs text-red-600 bg-red-50 p-2 rounded-md">
-                    <AlertCircle className="w-3.5 h-3.5" />                  {error}                </motion.div>
-                }                {success &&
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="flex items-center gap-2 mt-3 text-xs text-green-600 bg-green-50 p-2 rounded-md">
-                    <CheckCircle className="w-3.5 h-3.5" />                  {success}                </motion.div>
-                }              </AnimatePresence>            </div>            {}            <div className="p-2">              <label className="px-3 text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1 block mt-2">                {t("dashboard.collaborators.current_access")} (                {collaborators.length})              </label>              {collaborators.length === 0 ?
-              <div className="p-8 text-center text-gray-500">                <User className="w-10 h-10 mx-auto mb-2 text-gray-300" />                <p>{t("dashboard.collaborators.no_collaborators")}</p>              </div> :
-              <div className="space-y-1">                {collaborators.map((user, index) => {
-                  const isOwner = index === 0;
-                  const isMe = user.id === currentUser?.id;
-                  return (
-                    <motion.div
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      key={user.id || user.email || index}
-                      className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-xl transition-colors group">
-                        {}                      <div className="flex-shrink-0">                        <UserAvatar
-                          user={user}
-                          className="w-10 h-10 rounded-full border border-gray-200 object-cover shadow-sm" />
-                        </div>                      {}                      <div className="min-w-0 flex-1">                        <p className="text-sm font-bold text-gray-900 truncate flex items-center gap-2">                          {user.firstName} {user.lastName}                          {isOwner &&
-                          <span className="text-[9px] bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded-full border border-gray-200">                            {t("dashboard.collaborators.owner")}                          </span>
-                          }                          {isMe &&
-                          <span className="text-[9px] bg-indigo-50 text-indigo-600 px-1.5 py-0.5 rounded-full border border-indigo-100">                            {t("dashboard.collaborators.you")}                          </span>
-                          }                        </p>                        <div className="flex items-center gap-1 text-xs text-gray-500 truncate">                          <Mail className="w-3 h-3 flex-shrink-0" />                          <span className="truncate">                            {user.email ||
-                            t("dashboard.collaborators.no_email")}                          </span>                        </div>                      </div>                      {}                      {!isOwner && (
-                      currentUser?.id === collaborators[0]?.id ||
-                      isMe) &&
-                      <button
-                        onClick={() => user.id && handleRemove(user.id)}
-                        title={
-                        isMe ?
-                        t("dashboard.collaborators.leave") :
-                        t("dashboard.collaborators.remove_access")
+                  {loading ? "..." : t("dashboard.collaborators.invite")}
+                </button>
+              </form>
+
+              <AnimatePresence mode="wait" initial={false}>
+                {(error || success) &&
+                  <motion.div
+                    key={error ? "collaborator-alert-error" : "collaborator-alert-success"}
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className={`flex items-center gap-2 mt-3 text-xs p-2 rounded-md ${
+                    error ? "text-red-600 bg-red-50" : "text-green-600 bg-green-50"
+                    }`}>
+                    {error ? <AlertCircle className="w-3.5 h-3.5" /> : <CheckCircle className="w-3.5 h-3.5" />}
+                    {error || success}
+                  </motion.div>
+                }
+              </AnimatePresence>
+            </div>
+
+            <div className="p-2 border-b border-gray-100">
+              <label className="px-3 text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1 block mt-2">
+                {t("dashboard.collaborators.pending_title")} ({pendingInvitations.length})
+              </label>
+
+              {pendingInvitations.length === 0 ?
+                <div className="px-3 py-3 text-xs text-gray-400">
+                  {t("dashboard.collaborators.pending_empty")}
+                </div> :
+                <div className="space-y-1">
+                  {pendingInvitations.map((invitation, index) =>
+                    <div
+                      key={invitation.id || `${invitation.invitedEmail || "invitation"}-${invitation.createdAt || index}`}
+                      className="flex items-center gap-2 p-3 hover:bg-gray-50 rounded-xl transition-colors">
+                      <div className="w-9 h-9 rounded-full bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600">
+                        <Clock3 className="w-4 h-4" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-semibold text-gray-900 truncate">
+                          {invitation.invitedEmail}
+                        </p>
+                        <p className="text-xs text-amber-700 truncate">
+                          {t("dashboard.collaborators.pending_note")}
+                        </p>
+                      </div>
+                      {canManage &&
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => handleResendInvitation(invitation.id)}
+                            className="p-2 rounded-lg text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 transition-colors"
+                            title={t("dashboard.collaborators.resend")}
+                            disabled={loading}>
+                            <RefreshCw className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleRevokeInvitation(invitation.id)}
+                            className="p-2 rounded-lg text-gray-500 hover:text-red-600 hover:bg-red-50 transition-colors"
+                            title={t("dashboard.collaborators.revoke")}
+                            disabled={loading}>
+                            <Ban className="w-4 h-4" />
+                          </button>
+                        </div>
+                      }
+                    </div>
+                  )}
+                </div>
+              }
+            </div>
+
+            <div className="p-2">
+              <label className="px-3 text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1 block mt-2">
+                {t("dashboard.collaborators.current_access")} ({mergedCollaborators.length})
+                {accessLoading && <span className="ml-2 normal-case">...</span>}
+              </label>
+
+              {mergedCollaborators.length === 0 ?
+                <div className="p-8 text-center text-gray-500">
+                  <User className="w-10 h-10 mx-auto mb-2 text-gray-300" />
+                  <p>{t("dashboard.collaborators.no_collaborators")}</p>
+                </div> :
+                <div className="space-y-1">
+                  {mergedCollaborators.map((user, index) => {
+                    const isOwner = user.id === ownerId || (!ownerId && index === 0);
+                    const isMe = user.id === currentUser?.id;
+                    const canRemoveUser = !isOwner && (canManage || isMe);
+
+                    return (
+                      <motion.div
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        key={user.id || user.email || index}
+                        className="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-xl transition-colors group">
+                        <div className="flex-shrink-0">
+                          <UserAvatar
+                            user={user}
+                            className="w-10 h-10 rounded-full border border-gray-200 object-cover shadow-sm" />
+                        </div>
+
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-bold text-gray-900 truncate flex items-center gap-2">
+                            {user.firstName} {user.lastName}
+                            {isOwner &&
+                              <span className="text-[9px] bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded-full border border-gray-200">
+                                {t("dashboard.collaborators.owner")}
+                              </span>
+                            }
+                            {isMe &&
+                              <span className="text-[9px] bg-indigo-50 text-indigo-600 px-1.5 py-0.5 rounded-full border border-indigo-100">
+                                {t("dashboard.collaborators.you")}
+                              </span>
+                            }
+                          </p>
+                          <div className="flex items-center gap-1 text-xs text-gray-500 truncate">
+                            <Mail className="w-3 h-3 flex-shrink-0" />
+                            <span className="truncate">{user.email || t("dashboard.collaborators.no_email")}</span>
+                          </div>
+                        </div>
+
+                        {canRemoveUser &&
+                          <button
+                            onClick={() => user.id && handleRemove(user.id)}
+                            title={isMe ? t("dashboard.collaborators.leave") : t("dashboard.collaborators.remove_access")}
+                            className={`p-2 rounded-lg transition-all opacity-0 group-hover:opacity-100 ${isMe ? "text-gray-400 hover:text-red-600 hover:bg-red-50" : "text-gray-300 hover:text-red-500 hover:bg-red-50"}`}>
+                            {isMe ? <LogOut className="w-4 h-4" /> : <Trash2 className="w-4 h-4" />}
+                          </button>
                         }
-                        className={`p-2 rounded-lg transition-all opacity-0 group-hover:opacity-100 ${isMe ? "text-gray-400 hover:text-red-600 hover:bg-red-50" : "text-gray-300 hover:text-red-500 hover:bg-red-50"}`}>
-                              {isMe ?
-                        <LogOut className="w-4 h-4" /> :
-                        <Trash2 className="w-4 h-4" />
-                        }                      </button>
-                      }                    </motion.div>);
-                })}              </div>
-              }            </div>          </div>        </motion.div>      </div>      <ConfirmDialog
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              }
+            </div>
+          </div>
+        </motion.div>
+      </div>
+
+      <ConfirmDialog
         open={deleteConfirmOpen}
         onOpenChange={setDeleteConfirmOpen}
         title={t("dashboard.collaborators.remove_confirm_title")}
@@ -178,5 +428,6 @@ export default function CollaboratorListModal({
         confirmText={t("common.delete")}
         cancelText={t("common.cancel")}
         variant="destructive" />
-    </AnimatePresence>);
+    </AnimatePresence>
+  );
 }

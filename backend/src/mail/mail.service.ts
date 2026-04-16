@@ -1,22 +1,26 @@
 import { Injectable, Logger } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 import { ConfigService } from '@nestjs/config';
+
 function getPrimaryFrontendUrl(rawFrontendUrl: string | undefined) {
   if (!rawFrontendUrl) {
     return 'http://localhost:5173';
   }
-  return rawFrontendUrl.
-  split(',').
-  map((value) => value.trim().replace(/^"(.*)"$/, '$1')).
-  find(Boolean) || 'http://localhost:5173';
+  return rawFrontendUrl
+    .split(',')
+    .map((value) => value.trim().replace(/^"(.*)"$/, '$1'))
+    .find(Boolean) || 'http://localhost:5173';
 }
-@Injectable()export class
-MailService {
+
+@Injectable()
+export class MailService {
   private transporter: nodemailer.Transporter;
   private readonly logger = new Logger(MailService.name);
+
   constructor(private configService: ConfigService) {
     this.createTransporter();
   }
+
   private async createTransporter() {
     const host = this.configService.get<string>('SMTP_HOST');
     const user = this.configService.get<string>('SMTP_USER');
@@ -35,8 +39,19 @@ MailService {
       this.logger.warn('⚠️ No SMTP configuration found. Emails will be logged to console only.');
     }
   }
-  async sendNewSubmissionEmail(to: string[], formTitle: string, submissionId: string, answers: {formId?: string;[key: string]: unknown;}) {
+
+  private getFromAddress() {
+    return this.configService.get<string>('SMTP_FROM') || 'noreply@formbuilder.com';
+  }
+
+  async sendNewSubmissionEmail(
+    to: string[],
+    formTitle: string,
+    submissionId: string,
+    answers: { formId?: string; [key: string]: unknown }
+  ) {
     if (!to || to.length === 0) return;
+
     const subject = `New Submission: ${formTitle}`;
     const frontendUrl = getPrimaryFrontendUrl(this.configService.get<string>('FRONTEND_URL'));
     const link = `${frontendUrl}/forms/${answers.formId || ''}/responses`;
@@ -56,12 +71,13 @@ MailService {
         </p>
       </div>
     `;
+
     if (this.transporter) {
       try {
         const info = await this.transporter.sendMail({
-          from: '"Form Builder" <noreply@formbuilder.com>',
+          from: `"Form Builder" <${this.getFromAddress()}>`,
           to: to.join(', '),
-          subject: subject,
+          subject,
           html: htmlContent
         });
         this.logger.log(`✅ Email sent: ${info.messageId}`);
@@ -72,7 +88,8 @@ MailService {
       this.logger.log(`[MOCK EMAIL] To: ${to.join(', ')} | Subject: ${subject}`);
     }
   }
-  async sendFormVerificationEmail(params: {to: string;formTitle: string;verificationUrl: string;}) {
+
+  async sendFormVerificationEmail(params: { to: string; formTitle: string; verificationUrl: string }) {
     const { to, formTitle, verificationUrl } = params;
     const subject = `Verify your email for ${formTitle}`;
     const htmlContent = `
@@ -88,10 +105,11 @@ MailService {
         <p style="word-break: break-all; color: #555;">${verificationUrl}</p>
       </div>
     `;
+
     if (this.transporter) {
       try {
         const info = await this.transporter.sendMail({
-          from: '"Form Builder" <noreply@formbuilder.com>',
+          from: `"Form Builder" <${this.getFromAddress()}>`,
           to,
           subject,
           html: htmlContent
@@ -103,5 +121,50 @@ MailService {
     } else {
       this.logger.log(`[MOCK EMAIL] To: ${to} | Subject: ${subject} | Link: ${verificationUrl}`);
     }
+  }
+
+  async sendCollaboratorInviteEmail(params: {
+    to: string;
+    formTitle: string;
+    acceptUrl: string;
+    invitedByName?: string;
+    invitedByEmail?: string;
+  }): Promise<{ sent: boolean; mode: 'smtp' | 'mock' | 'failed' }> {
+    const { to, formTitle, acceptUrl, invitedByName, invitedByEmail } = params;
+    const subject = `You've been invited to collaborate on ${formTitle}`;
+    const inviterLabel =
+      invitedByName && invitedByName.trim().length > 0 ? invitedByName : invitedByEmail || 'a teammate';
+    const htmlContent = `
+      <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+        <h2 style="color: #000;">You've been invited</h2>
+        <p><strong>${inviterLabel}</strong> invited you to collaborate on <strong>${formTitle}</strong>.</p>
+        <p>This invitation link expires in 3 days.</p>
+        <p>
+          <a href="${acceptUrl}" style="display: inline-block; padding: 10px 20px; background-color: #000; color: #fff; text-decoration: none; border-radius: 5px;">
+            Accept Invitation
+          </a>
+        </p>
+        <p style="word-break: break-all; color: #555;">${acceptUrl}</p>
+      </div>
+    `;
+
+    if (this.transporter) {
+      try {
+        const info = await this.transporter.sendMail({
+          from: `"Form Builder" <${this.getFromAddress()}>`,
+          to,
+          subject,
+          html: htmlContent
+        });
+        this.logger.log(`✅ Collaborator invite email sent: ${info.messageId}`);
+        return { sent: true, mode: 'smtp' };
+      } catch (error) {
+        this.logger.error('❌ Failed to send collaborator invite email', error);
+        return { sent: false, mode: 'failed' };
+      }
+    }
+
+    this.logger.log(`[MOCK EMAIL] To: ${to} | Subject: ${subject} | Link: ${acceptUrl}`);
+    return { sent: false, mode: 'mock' };
   }
 }

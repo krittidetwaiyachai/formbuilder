@@ -153,13 +153,15 @@ AdminService {
     role?: string;
   }) {
     const { page = 1, limit = 10, search, role } = params;
+    const searchTerm = search?.trim();
     const skip = (page - 1) * limit;
     const where: Prisma.UserWhereInput = {};
-    if (search) {
+    if (searchTerm) {
       where.OR = [
-      { email: { contains: search, mode: 'insensitive' } },
-      { firstName: { contains: search, mode: 'insensitive' } },
-      { lastName: { contains: search, mode: 'insensitive' } }];
+      { id: { contains: searchTerm, mode: 'insensitive' } },
+      { email: { contains: searchTerm, mode: 'insensitive' } },
+      { firstName: { contains: searchTerm, mode: 'insensitive' } },
+      { lastName: { contains: searchTerm, mode: 'insensitive' } }];
     }
     if (role) {
       where.role = { name: role as RoleType };

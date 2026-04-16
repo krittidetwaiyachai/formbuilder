@@ -9,10 +9,10 @@ const USER_COLORS = [
 '#84cc16',
 '#f97316',
 '#6366f1'];
-export function getUserColor(userId: string): string {
-  const hash = userId.split('').reduce((acc, char) => {
-    return char.charCodeAt(0) + ((acc << 5) - acc);
-  }, 0);
-  const index = Math.abs(hash) % USER_COLORS.length;
-  return USER_COLORS[index];
+
+export function getRandomUserColor(usedColors: Set<string> = new Set()): string {
+  const availableColors = USER_COLORS.filter((color) => !usedColors.has(color));
+  const palette = availableColors.length > 0 ? availableColors : USER_COLORS;
+  const index = Math.floor(Math.random() * palette.length);
+  return palette[index];
 }

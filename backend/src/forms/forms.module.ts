@@ -6,10 +6,12 @@ import { FormsController } from './forms.controller';
 import { PrismaModule } from '../prisma/prisma.module';
 import { ActivityLogModule } from '../activity-log/activity-log.module';
 import { FormGateway } from './form.gateway';
+import { MailModule } from '../mail/mail.module';
 @Module({
   imports: [
   PrismaModule,
   ActivityLogModule,
+  MailModule,
   ConfigModule,
   JwtModule.registerAsync({
     inject: [ConfigService],

@@ -26,6 +26,8 @@ model User {
   responses    FormResponse[]
   formsCreated Form[]         @relation("FormCreator")
   formsCollaborated Form[]    @relation("FormCollaborators")
+  collaboratorInvitationsSent FormCollaboratorInvitation[] @relation("FormCollaboratorInvitationInvitedBy")
+  collaboratorInvitationsReceived FormCollaboratorInvitation[] @relation("FormCollaboratorInvitationInvitedUser")
   activityLogs ActivityLog[]
   folders      Folder[]
   bundlesCreated Bundle[]     @relation("BundleCreator")
@@ -83,6 +85,7 @@ model Form {
   createdBy    User             @relation("FormCreator", fields: [createdById], references: [id])
   folder       Folder?          @relation(fields: [folderId], references: [id], onDelete: SetNull)
   collaborators User[]          @relation("FormCollaborators")
+  collaboratorInvitations FormCollaboratorInvitation[]
   bundleFields BundleField[]
   logicRules   LogicRule[]
   activityLogs ActivityLog[]
@@ -94,6 +97,33 @@ model Form {
   submissionIdentityLocks SubmissionIdentityLock[]
 
   @@map("forms")
+}
+
+model FormCollaboratorInvitation {
+  id                     String                       @id @default(uuid())
+  formId                 String
+  invitedByUserId        String                       @map("invitedByUserId")
+  invitedUserId          String?
+  invitedEmail           String
+  normalizedInvitedEmail String                       @map("normalizedInvitedEmail")
+  tokenHash              String                       @unique
+  status                 CollaboratorInvitationStatus @default(PENDING)
+  expiresAt              DateTime
+  acceptedAt             DateTime?
+  revokedAt              DateTime?
+  lastSentAt             DateTime                     @default(now()) @map("lastSentAt")
+  resendCount            Int                          @default(0) @map("resendCount")
+  metadata               Json?
+  createdAt              DateTime                     @default(now())
+  updatedAt              DateTime                     @updatedAt
+  form                   Form                         @relation(fields: [formId], references: [id], onDelete: Cascade)
+  invitedBy              User                         @relation("FormCollaboratorInvitationInvitedBy", fields: [invitedByUserId], references: [id], onDelete: Cascade)
+  invitedUser            User?                        @relation("FormCollaboratorInvitationInvitedUser", fields: [invitedUserId], references: [id], onDelete: SetNull)
+
+  @@index([formId, status, expiresAt])
+  @@index([formId, normalizedInvitedEmail, status])
+  @@index([invitedByUserId, createdAt])
+  @@map("form_collaborator_invitations")
 }
 
 model FormView {
@@ -453,6 +483,13 @@ enum SubmissionIdentityLockType {
   CANONICAL_EMAIL
   SESSION
   IP
+}
+
+enum CollaboratorInvitationStatus {
+  PENDING
+  ACCEPTED
+  REVOKED
+  EXPIRED
 }
 
 model ActivityLog {

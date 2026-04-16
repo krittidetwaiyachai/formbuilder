@@ -63,7 +63,7 @@ export default {
   "admin.users.action.ban": "แบนผู้ใช้",
   "admin.users.action.unban": "ปลดแบน",
   "admin.users.action.change_role": "เปลี่ยน Role",
-  "admin.users.search_placeholder": "ค้นหาผู้ใช้...",
+  "admin.users.search_placeholder": "ค้นหาผู้ใช้ อีเมล หรือ UUID...",
   "admin.users.no_users": "ไม่พบผู้ใช้",
   "admin.users.page_info": "หน้า {{page}} จาก {{total}}",
   "admin.stats.total_users": "ผู้ใช้ทั้งหมด",

@@ -12,7 +12,7 @@ import { ForbiddenException, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { ActiveUser, FieldSelectionPayload, JoinFormPayload } from './types';
-import { getUserColor } from './user-colors.util';
+import { getRandomUserColor } from './user-colors.util';
 import { authenticateSocket, WsAuthenticatedUser } from '../common/guards/ws-auth.util';
 import { PrismaService } from '../prisma/prisma.service';
 import { FormAccessService } from '../common/guards/form-access.service';
@@ -91,7 +91,11 @@ CollaborationGateway implements OnGatewayConnection, OnGatewayDisconnect {
       this.activeUsers.set(formId, new Map());
     }
     const formUsers = this.activeUsers.get(formId);
-    const color = getUserColor(authenticatedUser.userId);
+    const existingUserColor = Array.from(formUsers!.values()).find(
+      (activeUser) => activeUser.id === authenticatedUser.userId
+    )?.color;
+    const usedColors = new Set(Array.from(formUsers!.values()).map((activeUser) => activeUser.color));
+    const color = existingUserColor || getRandomUserColor(usedColors);
     const user: ActiveUser = {
       id: authenticatedUser.userId,
       name: userName || authenticatedUser.email,

@@ -105,24 +105,12 @@ export default function UserTable({ onRefresh }: UserTableProps) {
       header: t("admin.users.table.role"),
       cell: (info) => {
         const user = info.row.original;
-        const isEditing = editingRole === user.id;
-        if (isEditing) {
-          return (
-            <select
-              className="px-3 py-1.5 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              defaultValue={user.role.id}
-              onChange={(e) => handleUpdateRole(user.id, e.target.value)}
-              onBlur={() => setEditingRole(null)}
-              autoFocus>
-                {roles.map((role) =>
-              <option key={role.id} value={role.id}>                {role.name}              </option>
-              )}            </select>);
-        }
         return (
-          <button
-            onClick={() => setEditingRole(user.id)}
-            className={`px-3 py-1 rounded-full text-xs font-medium border ${getRoleBadgeColor(user.role.name)} hover:opacity-80 transition-opacity`}>
-              {user.role.name}          </button>);
+          <span
+            className={`inline-flex px-3 py-1 rounded-full text-xs font-medium border ${getRoleBadgeColor(user.role.name)}`}>
+            {user.role.name}
+          </span>
+        );
       }
     }),
     columnHelper.accessor("provider", {
@@ -162,9 +150,31 @@ export default function UserTable({ onRefresh }: UserTableProps) {
       header: "",
       cell: (info) => {
         const user = info.row.original;
+        const isEditing = editingRole === user.id;
         if (!hasManageUsers) return null;
         return (
-          <div className="flex items-center gap-2">            <button
+          <div className="flex items-center justify-end gap-2">
+            {isEditing ?
+            <select
+              className="px-3 py-1.5 rounded-lg border border-gray-200 text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              defaultValue={user.role.id}
+              onChange={(e) => handleUpdateRole(user.id, e.target.value)}
+              onBlur={() => setEditingRole(null)}
+              autoFocus>
+                {roles.map((role) =>
+              <option key={role.id} value={role.id}>
+                    {role.name}
+                  </option>
+              )}
+              </select> :
+            <button
+              onClick={() => setEditingRole(user.id)}
+              className="p-2 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors"
+              title={t("admin.users.action.change_role")}>
+                <UserCog className="w-4 h-4" />
+              </button>
+            }
+            <button
               onClick={() => handleToggleBan(user.id)}
               className={`p-2 rounded-lg transition-colors ${
               user.isActive ?
@@ -179,14 +189,12 @@ export default function UserTable({ onRefresh }: UserTableProps) {
                 {user.isActive ?
               <Ban className="w-4 h-4" /> :
               <CheckCircle className="w-4 h-4" />
-              }            </button>            <button
-              onClick={() => setEditingRole(user.id)}
-              className="p-2 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors"
-              title={t("admin.users.action.change_role")}>
-                <UserCog className="w-4 h-4" />            </button>          </div>);
+              }
+            </button>
+          </div>);
       }
     })],
-    [editingRole, roles]
+    [editingRole, roles, hasManageUsers, t]
   );
   const table = useReactTable({
     data: users,

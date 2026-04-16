@@ -6,6 +6,9 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateBundleDto, CreateBundleFieldDto } from './dto/create-bundle.dto';
 import { RoleType, Prisma } from '@prisma/client';
+
+export const BUNDLES_UPDATE_STRATEGY = 'in-place-v2';
+
 interface BundleOptions {
   deleted?: boolean;
 }
