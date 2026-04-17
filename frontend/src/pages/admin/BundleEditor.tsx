@@ -193,7 +193,7 @@ export default function BundleEditor() {
       case FieldType.TABLE:
         return t("admin.editor.field.table");
       default:
-        return "Field";
+        return t("common.field");
     }
   };
 

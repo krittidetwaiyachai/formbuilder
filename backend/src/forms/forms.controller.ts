@@ -82,18 +82,23 @@ FormsController {
   async getFormActivity(
     @Param('id')id: string,
     @CurrentUser()user: User,
-  page: string = '1',
-  limit: string = '20',
-  sort: 'asc' | 'desc' = 'desc',
+    @Query('page')page: string = '1',
+    @Query('limit')limit: string = '20',
+    @Query('sort')sort: 'asc' | 'desc' = 'desc',
     @Query('action')action?: string,
     @Query('userId')userId?: string)
   {
     await this.formAccessService.assertReadAccess(id, user.id, user.role);
+    const parsedPage = Number.parseInt(page, 10);
+    const parsedLimit = Number.parseInt(limit, 10);
+    const safePage = Number.isFinite(parsedPage) && parsedPage > 0 ? parsedPage : 1;
+    const safeLimit = Number.isFinite(parsedLimit) && parsedLimit > 0 ? parsedLimit : 20;
+    const safeSort: 'asc' | 'desc' = sort === 'asc' ? 'asc' : 'desc';
     return this.activityLogService.getFormActivity(
       id,
-      parseInt(page),
-      parseInt(limit),
-      sort,
+      safePage,
+      safeLimit,
+      safeSort,
       action,
       userId
     );

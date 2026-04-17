@@ -7,11 +7,13 @@ import { PrismaModule } from '../prisma/prisma.module';
 import { ActivityLogModule } from '../activity-log/activity-log.module';
 import { FormGateway } from './form.gateway';
 import { MailModule } from '../mail/mail.module';
+import { SystemSettingsModule } from '../system-settings/system-settings.module';
 @Module({
   imports: [
   PrismaModule,
   ActivityLogModule,
   MailModule,
+  SystemSettingsModule,
   ConfigModule,
   JwtModule.registerAsync({
     inject: [ConfigService],

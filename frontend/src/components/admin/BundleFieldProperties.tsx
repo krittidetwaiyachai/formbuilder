@@ -293,20 +293,49 @@ const IconMap: Record<string, React.ElementType> = {
 import type { Bundle } from "@/store/bundleEditorStore";
 function BundleSettings({
   bundle,
-  updateBundleMeta
-}: {bundle: Bundle;updateBundleMeta: (meta: Partial<Bundle>) => void;}) {
+  updateBundleMeta,
+  t
+}: {
+  bundle: Bundle;
+  updateBundleMeta: (meta: Partial<Bundle>) => void;
+  t: (key: string, options?: any) => string;
+}) {
   return (
-    <div className="space-y-6">      <div className="space-y-4">        <div>          <label className="block text-sm font-medium text-black mb-1">            Bundle Name          </label>          <input
+    <div className="space-y-6">
+      <div className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium text-black mb-1">
+            {t("admin.bundle_settings.name")}
+          </label>
+          <input
             type="text"
             value={bundle.name}
             onChange={(e) => updateBundleMeta({ name: e.target.value })}
             className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white" />
-        </div>        <div>          <label className="block text-sm font-medium text-black mb-1">            Description          </label>          <textarea
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-black mb-1">
+            {t("admin.bundle_settings.description")}
+          </label>
+          <textarea
             value={bundle.description || ""}
             onChange={(e) => updateBundleMeta({ description: e.target.value })}
             rows={3}
             className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-black bg-white resize-none" />
-        </div>        {}        <div className="space-y-4 pt-4 border-t border-gray-100">          <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">            Appearance          </h4>          {}          <div>            <label className="block text-sm font-medium text-black mb-2">              Icon            </label>            <div className="max-h-48 overflow-y-auto rounded-lg border border-gray-100 p-2">              <div className="grid grid-cols-6 gap-1.5">                {ICON_OPTIONS.map((iconOpt) => {
+        </div>
+        {}
+        <div className="space-y-4 pt-4 border-t border-gray-100">
+          <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+            {t("admin.bundle_settings.appearance")}
+          </h4>
+          {}
+          <div>
+            <label className="block text-sm font-medium text-black mb-2">
+              {t("admin.bundle_settings.icon")}
+            </label>
+            <div className="max-h-48 overflow-y-auto rounded-lg border border-gray-100 p-2">
+              <div className="grid grid-cols-6 gap-1.5">
+                {ICON_OPTIONS.map((iconOpt) => {
                   const IconComponent = IconMap[iconOpt.value] || Layers;
                   const isSelected =
                   (bundle.options?.icon || "Layers") === iconOpt.value;
@@ -327,8 +356,19 @@ function BundleSettings({
                                             `
                       }
                       title={iconOpt.label}>
-                      <IconComponent className="w-4 h-4" />                    </button>);
-                })}              </div>            </div>          </div>          {}          <div>            <label className="block text-sm font-medium text-black mb-2">              Color Theme            </label>            <div className="grid grid-cols-4 gap-2">              {COLOR_OPTIONS.map((color) => {
+                      <IconComponent className="w-4 h-4" />
+                    </button>);
+                })}
+              </div>
+            </div>
+          </div>
+          {}
+          <div>
+            <label className="block text-sm font-medium text-black mb-2">
+              {t("admin.bundle_settings.color_theme")}
+            </label>
+            <div className="grid grid-cols-4 gap-2">
+              {COLOR_OPTIONS.map((color) => {
                 const isSelected =
                 (bundle.options?.color || "text-gray-600") === color.text;
                 return (
@@ -349,10 +389,20 @@ function BundleSettings({
                                          `}>
                     <div
                       className={`w-4 h-4 rounded-full ${color.bg} border border-black/5`}>
-                    </div>                    <span className="ml-2 text-xs text-gray-600 font-medium capitalize">                      {color.label}                    </span>                    {isSelected &&
+                    </div>
+                    <span className="ml-2 text-xs text-gray-600 font-medium capitalize">
+                      {t(`admin.bundle_settings.colors.${color.value}`)}
+                    </span>
+                    {isSelected &&
                     <div className="absolute inset-0 rounded-md ring-2 ring-black pointer-events-none" />
-                    }                  </button>);
-              })}            </div>          </div>        </div>      </div>    </div>);
+                    }
+                  </button>);
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>);
 }
 export default function BundleFieldProperties() {
   const { t } = useTranslation();
@@ -365,9 +415,22 @@ export default function BundleFieldProperties() {
   };
   if (!bundle) return null;
   return (
-    <div className="w-[320px] bg-white border-l border-gray-200 flex flex-col h-full z-20 shadow-[-2px_0_15px_-3px_rgba(0,0,0,0.05)]">      {}      <div className="border-b border-gray-100 bg-white px-4 py-3 sticky top-0 z-10 shrink-0 h-[57px] flex items-center">        <div className="flex items-center gap-2 text-gray-800 font-semibold">          <Settings className="w-4 h-4" />          <span>            {selectedField ? t("builder.tabs.properties") : "Bundle Settings"}          </span>        </div>      </div>      <div className="flex-1 overflow-y-auto p-4 content-container">        {!selectedField ?
-        <BundleSettings bundle={bundle} updateBundleMeta={updateBundleMeta} /> :
-        <div className="space-y-4">          {}          {(() => {
+    <div className="w-[320px] bg-white border-l border-gray-200 flex flex-col h-full z-20 shadow-[-2px_0_15px_-3px_rgba(0,0,0,0.05)]">
+      {}
+      <div className="border-b border-gray-100 bg-white px-4 py-3 sticky top-0 z-10 shrink-0 h-[57px] flex items-center">
+        <div className="flex items-center gap-2 text-gray-800 font-semibold">
+          <Settings className="w-4 h-4" />
+          <span>
+            {selectedField ? t("builder.tabs.properties") : t("admin.bundle_settings.title")}
+          </span>
+        </div>
+      </div>
+      <div className="flex-1 overflow-y-auto p-4 content-container">
+        {!selectedField ?
+        <BundleSettings bundle={bundle} updateBundleMeta={updateBundleMeta} t={t} /> :
+        <div className="space-y-4">
+          {}
+          {(() => {
             const fieldProps = {
               field: { ...selectedField, formId: "bundle-preview" },
               updateField: updateField,
@@ -484,9 +547,17 @@ export default function BundleFieldProperties() {
                     } />);
               default:
                 return (
-                  <div className="p-4 text-center text-gray-500 text-sm">                      Properties for 
-                    {selectedField.type} not available.                  </div>);
+                  <div className="p-4 text-center text-gray-500 text-sm">
+                      {t("admin.bundle_settings.properties_unavailable", {
+                      type: selectedField.type
+                    })}
+                  </div>);
             }
-          })()}        </div>
-        }      </div>    </div>);
+          })()}
+        </div>
+        }
+      </div>
+    </div>);
 }
+
+

@@ -15,8 +15,10 @@ import {
 
 const ACTION_FILTERS = [
   "CREATED",
+  "UPDATED",
   "DELETED",
   "PUBLISHED",
+  "COLLABORATOR_INVITED",
   "COLLABORATOR_ADDED",
   "COLLABORATOR_REMOVED"
 ];
@@ -28,6 +30,43 @@ type BeforeAfterDiff = {
   before: unknown;
   after: unknown;
 };
+
+function extractThemeName(value: unknown): string | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return null;
+  }
+  const record = value as Record<string, unknown>;
+  if (typeof record.themeName === "string" && record.themeName.trim().length > 0) {
+    return record.themeName.trim();
+  }
+  return null;
+}
+
+function decodeBasicHtmlEntities(value: string) {
+  return value
+    .replaceAll("&nbsp;", " ")
+    .replaceAll("&amp;", "&")
+    .replaceAll("&lt;", "<")
+    .replaceAll("&gt;", ">")
+    .replaceAll("&quot;", '"')
+    .replaceAll("&#39;", "'");
+}
+
+function normalizeAuditText(value: string) {
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return "";
+  }
+  const hasHtmlTag = /<\/?[a-z][^>]*>/i.test(trimmed);
+  if (!hasHtmlTag) {
+    return decodeBasicHtmlEntities(trimmed);
+  }
+  const stripped = decodeBasicHtmlEntities(trimmed)
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  return stripped || "(empty)";
+}
 
 function formatActionLabel(action: string) {
   return action
@@ -68,19 +107,24 @@ function getSeverityStyles(severity: Severity) {
   };
 }
 
-function stringifyDetails(details: unknown) {
-  if (!details) return "";
-  if (typeof details === "string") return details;
-  try {
-    return JSON.stringify(details);
-  } catch {
+function normalizeDetails(details: unknown): unknown {
+  if (typeof details !== "string") {
+    return details;
+  }
+  const trimmed = details.trim();
+  if (!trimmed) {
     return "";
+  }
+  try {
+    return JSON.parse(trimmed);
+  } catch {
+    return details;
   }
 }
 
 function toCompactValue(value: unknown) {
   if (value === null || value === undefined) return "null";
-  if (typeof value === "string") return value;
+  if (typeof value === "string") return normalizeAuditText(value);
   if (typeof value === "number" || typeof value === "boolean") return String(value);
   try {
     return JSON.stringify(value);
@@ -90,18 +134,22 @@ function toCompactValue(value: unknown) {
 }
 
 function toPrettyJson(details: unknown) {
-  if (!details) return "";
-  if (typeof details === "string") return details;
+  const normalizedDetails = normalizeDetails(details);
+  if (!normalizedDetails) return "";
+  if (typeof normalizedDetails === "string") return normalizedDetails;
   try {
-    return JSON.stringify(details, null, 2);
+    return JSON.stringify(normalizedDetails, null, 2);
   } catch {
-    return String(details);
+    return String(normalizedDetails);
   }
 }
 
 function extractBeforeAfter(details: unknown): BeforeAfterDiff | null {
-  if (!details || typeof details !== "object" || Array.isArray(details)) return null;
-  const record = details as Record<string, unknown>;
+  const normalizedDetails = normalizeDetails(details);
+  if (!normalizedDetails || typeof normalizedDetails !== "object" || Array.isArray(normalizedDetails)) {
+    return null;
+  }
+  const record = normalizedDetails as Record<string, unknown>;
 
   if (
     Object.prototype.hasOwnProperty.call(record, "before") &&
@@ -123,6 +171,22 @@ function extractBeforeAfter(details: unknown): BeforeAfterDiff | null {
       Object.prototype.hasOwnProperty.call(change, "after")
   );
   if (firstSettingsDiff) {
+    const rawProperty =
+      typeof firstSettingsDiff.property === "string"
+        ? firstSettingsDiff.property.toLowerCase()
+        : "";
+    const themeBefore = extractThemeName(firstSettingsDiff.before);
+    const themeAfter = extractThemeName(firstSettingsDiff.after);
+    if (
+      rawProperty === "settings" &&
+      (themeBefore !== null || themeAfter !== null)
+    ) {
+      return {
+        property: "themeName",
+        before: themeBefore ?? "none",
+        after: themeAfter ?? "none"
+      };
+    }
     return {
       property:
         typeof firstSettingsDiff.property === "string"
@@ -148,10 +212,12 @@ function extractBeforeAfter(details: unknown): BeforeAfterDiff | null {
     if (firstFieldDiff) {
       const fieldLabel =
         typeof field.label === "string" && field.label.trim().length > 0
-          ? field.label
+          ? normalizeAuditText(field.label)
           : undefined;
       const property =
-        typeof firstFieldDiff.property === "string" ? firstFieldDiff.property : undefined;
+        typeof firstFieldDiff.property === "string"
+          ? normalizeAuditText(firstFieldDiff.property)
+          : undefined;
       return {
         property: fieldLabel ? `${fieldLabel}.${property || "change"}` : property,
         before: firstFieldDiff.before,
@@ -187,6 +253,86 @@ function extractBeforeAfter(details: unknown): BeforeAfterDiff | null {
   }
 
   return null;
+}
+
+function formatHumanDetails(
+  log: AdminActivityLog,
+  t: (key: string, options?: Record<string, unknown>) => string
+) {
+  const details = normalizeDetails(log.details);
+  const detailRecord =
+    details && typeof details === "object" && !Array.isArray(details)
+      ? (details as Record<string, unknown>)
+      : {};
+
+  switch (log.action) {
+    case "COLLABORATOR_INVITED": {
+      const invitedEmail =
+        typeof detailRecord.email === "string" && detailRecord.email.trim().length > 0
+          ? detailRecord.email.trim()
+          : null;
+      if (invitedEmail) {
+        return t("admin.logs.details_text.collaborator_invited", { email: invitedEmail });
+      }
+      return t("admin.logs.details_text.collaborator_invited_generic");
+    }
+    case "COLLABORATOR_ADDED": {
+      const acceptedFromInvitation = detailRecord.acceptedFromInvitation === true;
+      if (acceptedFromInvitation) {
+        return t("admin.logs.details_text.collaborator_added_from_invite");
+      }
+      return t("admin.logs.details_text.collaborator_added");
+    }
+    case "COLLABORATOR_REMOVED": {
+      const removedUserNameFromDetails =
+        typeof detailRecord.removedUserName === "string" && detailRecord.removedUserName.trim().length > 0
+          ? detailRecord.removedUserName.trim()
+          : null;
+      const removedUserEmailFromDetails =
+        typeof detailRecord.removedUserEmail === "string" && detailRecord.removedUserEmail.trim().length > 0
+          ? detailRecord.removedUserEmail.trim()
+          : null;
+      const removedFallbackFullName = [log.user.firstName, log.user.lastName]
+        .filter((value): value is string => typeof value === "string" && value.trim().length > 0)
+        .join(" ")
+        .trim();
+      const removedName = removedUserNameFromDetails || removedFallbackFullName || log.user.email;
+      const removedEmail = removedUserEmailFromDetails || log.user.email;
+      const removedBy =
+        typeof detailRecord.removedBy === "string" && detailRecord.removedBy.trim().length > 0
+          ? detailRecord.removedBy.trim()
+          : null;
+      if (removedBy) {
+        return t("admin.logs.details_text.collaborator_removed_target_by", {
+          name: removedName,
+          email: removedEmail
+        });
+      }
+      return t("admin.logs.details_text.collaborator_removed_target", {
+        name: removedName,
+        email: removedEmail
+      });
+    }
+    case "CREATED":
+      return t("admin.logs.details_text.created");
+    case "DELETED":
+      return t("admin.logs.details_text.deleted");
+    case "PUBLISHED":
+      return t("admin.logs.details_text.published");
+    case "UPDATED": {
+      const diff = extractBeforeAfter(log.details);
+      if (diff?.property) {
+        return t("admin.logs.details_text.updated_change", {
+          property: diff.property,
+          before: toCompactValue(diff.before),
+          after: toCompactValue(diff.after)
+        });
+      }
+      return t("admin.logs.details_text.updated");
+    }
+    default:
+      return t("admin.logs.details_text.generic");
+  }
 }
 
 export default function AdminLogs() {
@@ -305,7 +451,7 @@ export default function AdminLogs() {
               rows.map((log) => {
                 const severity = resolveSeverity(log.action);
                 const severityStyles = getSeverityStyles(severity);
-                const detailsText = stringifyDetails(log.details);
+                const detailsText = formatHumanDetails(log, t);
                 const beforeAfter = extractBeforeAfter(log.details);
                 const isExpanded = expandedRows[log.id] === true;
                 const toggleJson = () =>

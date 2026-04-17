@@ -74,7 +74,7 @@ export default function AdminLayout() {
             </div>
             <div>
               <h1 className="font-bold text-lg">{t("admin.layout.title")}</h1>
-              <p className="text-xs text-gray-400">Form Builder</p>
+              <p className="text-xs text-gray-400">{t("admin.layout.product_name")}</p>
             </div>
           </div>
         </div>

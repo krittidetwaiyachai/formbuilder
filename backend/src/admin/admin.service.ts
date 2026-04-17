@@ -1,9 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma, RoleType } from '@prisma/client';
+import { MailService } from '../mail/mail.service';
+import { SystemSettingsService } from '../system-settings/system-settings.service';
 @Injectable()export class
 AdminService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly mailService: MailService,
+    private readonly systemSettingsService: SystemSettingsService,
+  ) {}
   async getStats() {
     const now = new Date();
     const startOfThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -210,20 +216,44 @@ AdminService {
   }) {
     const { page = 1, limit = 20, search, action } = params;
     const skip = (page - 1) * limit;
-    const where: Prisma.ActivityLogWhereInput = {
-      NOT: { action: 'UPDATED' }
+    const allowedActionFilter: Prisma.ActivityLogWhereInput = {
+      OR: [
+        {
+          action: {
+            in: [
+              'CREATED',
+              'DELETED',
+              'PUBLISHED',
+              'COLLABORATOR_INVITED',
+              'COLLABORATOR_ADDED',
+              'COLLABORATOR_REMOVED']
+          }
+        },
+        {
+          AND: [
+            { action: 'UPDATED' },
+            { details: { path: ['settingsChanges'], not: [] } },
+            { details: { path: ['settingsChanges'], not: null } }]
+        }]
     };
+    const andFilters: Prisma.ActivityLogWhereInput[] = [allowedActionFilter];
     if (action) {
-      where.action = { contains: action, mode: 'insensitive' };
+      andFilters.push({
+        action: { contains: action, mode: 'insensitive' }
+      });
     }
     if (search) {
-      where.OR = [
-      { action: { contains: search, mode: 'insensitive' } },
-      { user: { email: { contains: search, mode: 'insensitive' } } },
-      { user: { firstName: { contains: search, mode: 'insensitive' } } },
-      { user: { lastName: { contains: search, mode: 'insensitive' } } },
-      { form: { title: { contains: search, mode: 'insensitive' } } }];
+      andFilters.push({
+        OR: [
+        { action: { contains: search, mode: 'insensitive' } },
+        { user: { email: { contains: search, mode: 'insensitive' } } },
+        { user: { firstName: { contains: search, mode: 'insensitive' } } },
+        { user: { lastName: { contains: search, mode: 'insensitive' } } },
+        { form: { title: { contains: search, mode: 'insensitive' } } }]
+      });
     }
+    const where: Prisma.ActivityLogWhereInput =
+    andFilters.length === 1 ? andFilters[0] : { AND: andFilters };
     const [logs, total] = await Promise.all([
     this.prisma.activityLog.findMany({
       where,
@@ -250,15 +280,151 @@ AdminService {
     }),
     this.prisma.activityLog.count({ where })]
     );
+    const sanitizedLogs = logs.map((log) => ({
+      ...log,
+      details: this.sanitizeSystemLogDetails(log.action, log.details as Prisma.JsonValue | null)
+    }));
+    const filteredLogs = sanitizedLogs.filter(
+      (log) => !(log.action === 'UPDATED' && !log.details),
+    );
+    const removerIds = Array.from(
+      new Set(
+        filteredLogs.
+        filter((log) => log.action === 'COLLABORATOR_REMOVED').
+        map((log) => {
+          const details =
+            log.details && typeof log.details === 'object' && !Array.isArray(log.details) ?
+            log.details as Record<string, unknown> :
+            null;
+          return typeof details?.removedBy === 'string' ? details.removedBy : null;
+        }).
+        filter((value): value is string => Boolean(value))
+      )
+    );
+    const removersById = removerIds.length > 0 ?
+    new Map(
+      (
+        await this.prisma.user.findMany({
+          where: { id: { in: removerIds } },
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+            photoUrl: true
+          }
+        })
+      ).map((user) => [user.id, user])
+    ) :
+    new Map<string, {
+      id: string;
+      email: string;
+      firstName: string | null;
+      lastName: string | null;
+      photoUrl: string | null;
+    }>();
+    const normalizedLogs = filteredLogs.map((log) => {
+      if (log.action !== 'COLLABORATOR_REMOVED') {
+        return log;
+      }
+      const details =
+        log.details && typeof log.details === 'object' && !Array.isArray(log.details) ?
+        log.details as Record<string, unknown> :
+        null;
+      const removedBy = typeof details?.removedBy === 'string' ? details.removedBy : null;
+      if (!removedBy) {
+        return log;
+      }
+      const remover = removersById.get(removedBy);
+      if (!remover) {
+        return log;
+      }
+      const removedUserName =
+        log.user && (log.user.firstName || log.user.lastName) ?
+        `${log.user.firstName || ''} ${log.user.lastName || ''}`.trim() :
+        null;
+      const normalizedDetails: Record<string, unknown> = details ? { ...details } : {};
+      if (typeof normalizedDetails.removedUserId !== 'string' || normalizedDetails.removedUserId.length === 0) {
+        normalizedDetails.removedUserId = log.user.id;
+      }
+      if (
+        typeof normalizedDetails.removedUserEmail !== 'string' ||
+        normalizedDetails.removedUserEmail.length === 0
+      ) {
+        normalizedDetails.removedUserEmail = log.user.email;
+      }
+      if (
+        typeof normalizedDetails.removedUserName !== 'string' ||
+        normalizedDetails.removedUserName.length === 0
+      ) {
+        normalizedDetails.removedUserName = removedUserName;
+      }
+      return {
+        ...log,
+        user: remover,
+        details: normalizedDetails as Prisma.JsonValue
+      };
+    });
+    const adjustedTotal = Math.max(0, total - (sanitizedLogs.length - filteredLogs.length));
     return {
-      data: logs,
+      data: normalizedLogs,
       meta: {
-        total,
+        total: adjustedTotal,
         page,
         limit,
-        totalPages: Math.ceil(total / limit)
+        totalPages: Math.max(1, Math.ceil(adjustedTotal / limit))
       }
     };
+  }
+  async getSystemSettings() {
+    return this.systemSettingsService.getPublicSettings();
+  }
+  async updateSystemEmailSettings(payload: {
+    smtpHost?: string | null;
+    smtpPort?: number | string | null;
+    smtpSecure?: boolean | null;
+    smtpUser?: string | null;
+    smtpPass?: string | null;
+    clearSmtpPass?: boolean;
+    smtpFrom?: string | null;
+    smtpFromName?: string | null;
+  }) {
+    return this.systemSettingsService.updateEmailSettings(payload);
+  }
+  async updateSystemInviteSettings(payload: { expiryDays?: number | string | null }) {
+    return this.systemSettingsService.updateInviteSettings(payload);
+  }
+  async sendSystemTestEmail(to: string) {
+    return this.mailService.sendTestEmail({ to });
+  }
+  private sanitizeSystemLogDetails(action: string, details: Prisma.JsonValue | null) {
+    if (!details || action !== 'UPDATED' || typeof details !== 'object' || Array.isArray(details)) {
+      return details;
+    }
+    const record = details as Record<string, unknown>;
+    const sanitized: Record<string, unknown> = {};
+    if (Array.isArray(record.settingsChanges)) {
+      const settingsChanges = record.settingsChanges.filter((change) => {
+        if (!change || typeof change !== 'object' || Array.isArray(change)) {
+          return false;
+        }
+        const property = (change as Record<string, unknown>).property;
+        return String(property || '').toLowerCase() !== 'pagesettings';
+      });
+      if (settingsChanges.length > 0) {
+        sanitized.settingsChanges = settingsChanges;
+      }
+    }
+    if (Array.isArray(record.changes)) {
+      const filteredChanges = record.changes.filter((change) => {
+        const normalized = String(change || '').toLowerCase();
+        return normalized !== 'fields' && normalized !== 'pagesettings';
+      });
+      if (filteredChanges.length > 0) {
+        sanitized.changes = filteredChanges;
+      }
+    }
+    return Object.keys(sanitized).length > 0 ? sanitized as Prisma.JsonValue : null;
   }
   async toggleUserBan(userId: string) {
     const user = await this.prisma.user.findUnique({

@@ -13,6 +13,20 @@ export default function SettingsChangeRenderer({
   actionFilter
 }: SettingsChangeRendererProps) {
   const { t, i18n } = useTranslation();
+  const extractThemeName = (value: unknown): string | null => {
+    if (typeof value === "string" && value.trim().length > 0) {
+      return value.trim();
+    }
+    if (!value || typeof value !== "object" || Array.isArray(value)) {
+      return null;
+    }
+    const record = value as Record<string, unknown>;
+    const rawThemeName = record.themeName ?? record.theme_name ?? record.theme;
+    if (typeof rawThemeName === "string" && rawThemeName.trim().length > 0) {
+      return rawThemeName.trim();
+    }
+    return null;
+  };
   const isVisible = (section: "updated") => {
     if (actionFilter === "ALL") return true;
     if (actionFilter === "UPDATED") return true;
@@ -92,6 +106,20 @@ export default function SettingsChangeRenderer({
     const prop = String(change.property || "").
     toLowerCase().
     replace(/[^a-z]/g, "");
+    const themeBefore = extractThemeName(change.before);
+    const themeAfter = extractThemeName(change.after);
+    if (
+    (prop.includes("settings") || prop.includes("theme")) &&
+    (themeBefore !== null || themeAfter !== null))
+    {
+      processedChanges = [
+      {
+        property: "themeName",
+        before: themeBefore,
+        after: themeAfter
+      }];
+      break;
+    }
     if (prop.includes("theme") && !prop.includes("color")) {
       processedChanges = [change];
       break;
@@ -193,8 +221,7 @@ export default function SettingsChangeRenderer({
           {
             const formatThemeName = (name: unknown) => {
               if (!name) return t("activity.values.custom");
-              return (
-                String(name).charAt(0).toUpperCase() + String(name).slice(1));
+              return String(name).trim();
             };
             return (
               <div key={i} className="flex items-center gap-1.5 text-xs">                <span className="text-gray-500 font-medium whitespace-nowrap">                  {t("activity.changes.theme_changed")}                </span>                <div className="bg-red-50 text-red-700 px-2 py-1 rounded border border-red-100 line-through opacity-75 break-words min-w-0">                  {formatThemeName(change.before)}                </div>                <ArrowRight className="w-3 h-3 text-gray-300 flex-shrink-0" />                <div className="bg-emerald-50 text-emerald-700 px-2 py-1 rounded border border-emerald-100 font-medium break-words min-w-0">                  {formatThemeName(change.after)}                </div>              </div>);

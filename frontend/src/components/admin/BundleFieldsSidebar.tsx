@@ -197,7 +197,11 @@ export default function BundleFieldsSidebar() {
       <button
         onClick={() => setIsCollapsed((prev) => !prev)}
         className="absolute -right-4 top-1/2 z-50 flex h-8 w-8 -translate-y-1/2 transform items-center justify-center rounded-full border border-gray-200 bg-white p-1.5 text-gray-400 shadow-md transition-all hover:scale-110 hover:text-gray-600"
-        title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+        title={
+          isCollapsed
+            ? t("admin.bundle_settings.expand_sidebar")
+            : t("admin.bundle_settings.collapse_sidebar")
+        }
       >
         {isCollapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
       </button>

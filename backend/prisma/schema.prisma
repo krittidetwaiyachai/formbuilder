@@ -505,3 +505,19 @@ model ActivityLog {
 
   @@map("activity_logs")
 }
+
+model SystemSetting {
+  id               String   @id @default("default")
+  smtpHost         String?
+  smtpPort         Int?
+  smtpSecure       Boolean  @default(false)
+  smtpUser         String?
+  smtpPass         String?
+  smtpFrom         String?
+  smtpFromName     String?
+  inviteExpiryDays Int      @default(3)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("system_settings")
+}

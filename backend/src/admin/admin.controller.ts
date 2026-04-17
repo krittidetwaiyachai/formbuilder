@@ -1,6 +1,7 @@
 import {
   Controller,
   Get,
+  Post,
   Patch,
   Param,
   Query,
@@ -15,6 +16,9 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { RoleType } from '@prisma/client';
 import { PermissionsGuard } from '../auth/permissions.guard';
 import { Permissions } from '../auth/decorators/permissions.decorator';
+import { AdminUpdateSystemEmailSettingsDto } from './dto/admin-update-system-email-settings.dto';
+import { AdminUpdateSystemInviteSettingsDto } from './dto/admin-update-system-invite-settings.dto';
+import { AdminSendTestEmailDto } from './dto/admin-send-test-email.dto';
 @Controller('admin')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(RoleType.SUPER_ADMIN, RoleType.ADMIN)export class
@@ -122,5 +126,29 @@ AdminController {
     @Body('description')description: string)
   {
     return this.adminService.updateRoleDescription(id, description);
+  }
+  @Get('settings/system')
+  @UseGuards(PermissionsGuard)
+  @Permissions('MANAGE_SETTINGS')
+  getSystemSettings() {
+    return this.adminService.getSystemSettings();
+  }
+  @Patch('settings/system/email')
+  @UseGuards(PermissionsGuard)
+  @Permissions('MANAGE_SETTINGS')
+  updateSystemEmailSettings(@Body()dto: AdminUpdateSystemEmailSettingsDto) {
+    return this.adminService.updateSystemEmailSettings(dto);
+  }
+  @Patch('settings/system/invite')
+  @UseGuards(PermissionsGuard)
+  @Permissions('MANAGE_SETTINGS')
+  updateSystemInviteSettings(@Body()dto: AdminUpdateSystemInviteSettingsDto) {
+    return this.adminService.updateSystemInviteSettings(dto);
+  }
+  @Post('settings/system/email/test')
+  @UseGuards(PermissionsGuard)
+  @Permissions('MANAGE_SETTINGS')
+  sendSystemTestEmail(@Body()dto: AdminSendTestEmailDto) {
+    return this.adminService.sendSystemTestEmail(dto.to);
   }
 }

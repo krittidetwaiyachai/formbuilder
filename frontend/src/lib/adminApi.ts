@@ -19,7 +19,7 @@ export interface StatsResponse {
       id: string;
       title: string;
     };
-    details?: Record<string, unknown>;
+    details?: unknown;
   }>;
   monthlyStats: Array<{
     name: string;
@@ -74,7 +74,7 @@ export interface AdminActivityLog {
   id: string;
   action: string;
   createdAt: string;
-  details?: Record<string, unknown>;
+  details?: unknown;
   user: {
     id: string;
     email: string;
@@ -96,6 +96,37 @@ export interface ActivityLogsResponse {
     totalPages: number;
   };
 }
+export interface AdminSystemSettingsResponse {
+  email: {
+    smtpHost: string;
+    smtpPort: number;
+    smtpSecure: boolean;
+    smtpUser: string;
+    smtpFrom: string;
+    smtpFromName: string;
+    hasPassword: boolean;
+    isConfigured: boolean;
+  };
+  invite: {
+    expiryDays: number;
+  };
+}
+
+export interface AdminUpdateSystemEmailSettingsPayload {
+  smtpHost?: string | null;
+  smtpPort?: number | null;
+  smtpSecure?: boolean;
+  smtpUser?: string | null;
+  smtpPass?: string | null;
+  clearSmtpPass?: boolean;
+  smtpFrom?: string | null;
+  smtpFromName?: string | null;
+}
+
+export interface AdminUpdateSystemInviteSettingsPayload {
+  expiryDays: number;
+}
+
 export const adminApi = {
   getStats: () => api.get<StatsResponse>('/admin/stats'),
   getLogs: (params?: {
@@ -119,6 +150,14 @@ export const adminApi = {
   updateRolePermissions: (roleId: string, permissions: string[]) =>
   api.patch(`/admin/roles/${roleId}/permissions`, { permissions }),
   updateRoleDescription: (roleId: string, description: string) =>
-  api.patch(`/admin/roles/${roleId}/description`, { description })
+  api.patch(`/admin/roles/${roleId}/description`, { description }),
+  getSystemSettings: () =>
+  api.get<AdminSystemSettingsResponse>('/admin/settings/system'),
+  updateSystemEmailSettings: (payload: AdminUpdateSystemEmailSettingsPayload) =>
+  api.patch<AdminSystemSettingsResponse>('/admin/settings/system/email', payload),
+  updateSystemInviteSettings: (payload: AdminUpdateSystemInviteSettingsPayload) =>
+  api.patch<AdminSystemSettingsResponse>('/admin/settings/system/invite', payload),
+  sendSystemTestEmail: (to: string) =>
+  api.post<{sent: boolean;mode: 'smtp' | 'mock' | 'failed';reason?: string;}>('/admin/settings/system/email/test', { to })
 };
 export default adminApi;

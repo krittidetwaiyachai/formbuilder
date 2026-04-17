@@ -19,6 +19,7 @@ import { FormDiffHelper } from './helpers/form-diff.helper';
 import { FieldUpdateHelper } from './helpers/field-update.helper';
 import { MailService } from '../mail/mail.service';
 import { createHash, randomBytes } from 'crypto';
+import { SystemSettingsService } from '../system-settings/system-settings.service';
 @Injectable()export class
 FormsService implements OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(FormsService.name);
@@ -32,7 +33,8 @@ FormsService implements OnModuleInit, OnModuleDestroy {
   private prisma: PrismaService,
   private activityLog: ActivityLogService,
   private encryptionService: EncryptionService,
-  private mailService: MailService) {}
+  private mailService: MailService,
+  private systemSettingsService: SystemSettingsService) {}
   onModuleInit() {
     void this.cleanupExpiredInvitations();
     this.invitationCleanupTimer = setInterval(() => {
@@ -628,13 +630,14 @@ FormsService implements OnModuleInit, OnModuleDestroy {
     });
 
     const invitationToken = this.generateInvitationToken();
+    const inviteExpiryDays = await this.systemSettingsService.getInviteExpiryDays();
     const invitationData: Record<string, unknown> = {
       formId,
       invitedEmail: email.trim(),
       invitedUserId: invitedUser?.id,
       tokenHash: this.hashInvitationToken(invitationToken),
       status: CollaboratorInvitationStatus.PENDING,
-      expiresAt: this.getInvitationExpiryDate()
+      expiresAt: this.getInvitationExpiryDate(inviteExpiryDays)
     };
     invitationData[this.getInvitationCompatFields().normalizedEmailField] = normalizedEmail;
     invitationData[this.getInvitationCompatFields().invitedByField] = requestingUserId;
@@ -654,7 +657,8 @@ FormsService implements OnModuleInit, OnModuleDestroy {
       formTitle: form.title,
       acceptUrl: this.buildInvitationAcceptUrl(invitationToken),
       invitedByName: requesterName,
-      invitedByEmail: requester?.email
+      invitedByEmail: requester?.email,
+      expiresInDays: inviteExpiryDays
     });
     if (!inviteResult.sent) {
       this.logger.warn(
@@ -710,11 +714,12 @@ FormsService implements OnModuleInit, OnModuleDestroy {
     }
 
     const invitationToken = this.generateInvitationToken();
+    const inviteExpiryDays = await this.systemSettingsService.getInviteExpiryDays();
     const invitationUpdateData: Record<string, unknown> = {
       tokenHash: this.hashInvitationToken(invitationToken),
       lastSentAt: new Date(),
       resendCount: { increment: 1 },
-      expiresAt: this.getInvitationExpiryDate()
+      expiresAt: this.getInvitationExpiryDate(inviteExpiryDays)
     };
     invitationUpdateData[this.getInvitationCompatFields().invitedByField] = requestingUserId;
     const updatedInvitation = await this.prisma.formCollaboratorInvitation.update({
@@ -743,7 +748,8 @@ FormsService implements OnModuleInit, OnModuleDestroy {
       formTitle: form.title,
       acceptUrl: this.buildInvitationAcceptUrl(invitationToken),
       invitedByName: requesterName,
-      invitedByEmail: requester?.email
+      invitedByEmail: requester?.email,
+      expiresInDays: inviteExpiryDays
     });
 
     return {
@@ -896,6 +902,7 @@ FormsService implements OnModuleInit, OnModuleDestroy {
     userIdToRemove !== requestingUserId) {
       throw new ForbiddenException('You do not have permission to remove collaborators');
     }
+    const removedCollaborator = form.collaborators.find((collaborator) => collaborator.id === userIdToRemove);
     await this.prisma.form.update({
       where: { id: formId },
       data: {
@@ -904,7 +911,15 @@ FormsService implements OnModuleInit, OnModuleDestroy {
         }
       }
     });
-    await this.activityLog.log(formId, userIdToRemove, 'COLLABORATOR_REMOVED', { removedBy: requestingUserId });
+    await this.activityLog.log(formId, requestingUserId, 'COLLABORATOR_REMOVED', {
+      removedBy: requestingUserId,
+      removedUserId: userIdToRemove,
+      removedUserEmail: removedCollaborator?.email ?? null,
+      removedUserName:
+        removedCollaborator && (removedCollaborator.firstName || removedCollaborator.lastName)
+          ? `${removedCollaborator.firstName || ''} ${removedCollaborator.lastName || ''}`.trim()
+          : null
+    });
     return { message: 'Collaborator removed successfully' };
   }
   private normalizeEmail(email?: string | null) {
@@ -916,8 +931,9 @@ FormsService implements OnModuleInit, OnModuleDestroy {
   private generateInvitationToken() {
     return randomBytes(32).toString('hex');
   }
-  private getInvitationExpiryDate() {
-    return new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
+  private getInvitationExpiryDate(expiryDays: number) {
+    const safeDays = Number.isFinite(expiryDays) && expiryDays > 0 ? expiryDays : 3;
+    return new Date(Date.now() + safeDays * 24 * 60 * 60 * 1000);
   }
   private async cleanupExpiredInvitations() {
     if (this.isCleaningExpiredInvitations) {

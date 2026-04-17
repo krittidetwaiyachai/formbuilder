@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FileText, LogOut } from "lucide-react";
+import { FileText, LogOut, Mail } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
 import LoginModal from "@/components/auth/LoginModal";
 import UserAvatar from "@/components/common/UserAvatar";
@@ -10,6 +10,7 @@ export default function Header() {
   const { user, logout, isAuthenticated } = useAuthStore();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const supportEmail = import.meta.env.VITE_SUPPORT_EMAIL || "support@formbuilder.com";
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   useEffect(() => {
@@ -24,7 +25,15 @@ export default function Header() {
               to={isAuthenticated ? "/dashboard" : "/"}
               className="flex items-center">
               <FileText className="h-8 w-8 text-black" />              <span className="ml-2 text-xl font-bold text-black">                Form Builder              </span>            </Link>          </div>          <div className="flex items-center">            {isAuthenticated ?
-            <div className="flex items-center gap-3 pl-4 border-l border-gray-200 relative">              <LanguageSwitcher />              <div
+            <div className="flex items-center gap-3 pl-4 border-l border-gray-200 relative">              <LanguageSwitcher />
+              <a
+                href={`mailto:${supportEmail}`}
+                title={t("admin.layout.contact")}
+                className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                <Mail className="h-4 w-4" />
+                <span className="hidden md:inline">{t("admin.layout.contact")}</span>
+              </a>
+              <div
                 onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
                 className="flex items-center gap-3 bg-gray-50 hover:bg-gray-100 pr-2 pl-1 py-1 rounded-full transition-all duration-300 border border-gray-200 group cursor-pointer relative z-40">
                   <UserAvatar
@@ -156,3 +165,4 @@ export default function Header() {
         onSuccess={() => navigate("/dashboard")} />
     </nav>);
 }
+
