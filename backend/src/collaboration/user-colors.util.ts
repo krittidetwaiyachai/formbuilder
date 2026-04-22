@@ -9,7 +9,6 @@ const USER_COLORS = [
 '#84cc16',
 '#f97316',
 '#6366f1'];
-
 export function getRandomUserColor(usedColors: Set<string> = new Set()): string {
   const availableColors = USER_COLORS.filter((color) => !usedColors.has(color));
   const palette = availableColors.length > 0 ? availableColors : USER_COLORS;

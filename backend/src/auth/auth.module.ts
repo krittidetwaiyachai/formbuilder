@@ -9,10 +9,12 @@ import { JwtAuthGuard } from './jwt-auth.guard';
 import { RolesGuard } from './roles.guard';
 import { EventsModule } from '../events/events.module';
 import { FormSecurityModule } from '../form-security/form-security.module';
+import { SystemSettingsModule } from '../system-settings/system-settings.module';
 @Module({
   imports: [
   EventsModule,
   FormSecurityModule,
+  SystemSettingsModule,
   PassportModule,
   JwtModule.registerAsync({
     inject: [ConfigService],

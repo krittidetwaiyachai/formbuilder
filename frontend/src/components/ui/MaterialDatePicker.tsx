@@ -108,9 +108,7 @@ export const MaterialDatePicker: React.FC<MaterialDatePickerProps> = ({
             backgroundColor: isSelected ? themeColor : "transparent",
             borderColor: isToday && !isSelected ? themeColor : "transparent",
             color: isToday && !isSelected ? themeColor : undefined
-          }}>
-          {day}
-        </motion.button>
+          }}>          {day}        </motion.button>
       );
     }
     return days;
@@ -167,9 +165,7 @@ export const MaterialDatePicker: React.FC<MaterialDatePickerProps> = ({
           "text-white shadow-md scale-110" :
           "text-gray-400 hover:text-gray-800"}`
           }
-          style={isSelected ? { backgroundColor: themeColor } : {}}>
-          {year}
-        </button>
+          style={isSelected ? { backgroundColor: themeColor } : {}}>          {year}        </button>
       );
     }
     return (
@@ -177,9 +173,7 @@ export const MaterialDatePicker: React.FC<MaterialDatePickerProps> = ({
         ref={yearListRef}
         className="flex flex-col items-center gap-2 h-[260px] overflow-y-auto overscroll-contain py-4 scroll-smooth touch-pan-y isolate relative"
         onTouchMove={(e) => e.stopPropagation()}
-        onWheel={(e) => e.stopPropagation()}>
-        {years}
-      </div>);
+        onWheel={(e) => e.stopPropagation()}>        {years}      </div>);
   };
   const renderMonths = () => {
     const months = [];
@@ -198,15 +192,11 @@ export const MaterialDatePicker: React.FC<MaterialDatePickerProps> = ({
           type="button"
           onClick={() => handleMonthClick(i)}
           className={`py-3 rounded-lg text-sm font-semibold transition-colors ${isSelected ? "text-white" : "text-gray-700 hover:bg-gray-100"}`}
-          style={isSelected ? { backgroundColor: themeColor } : {}}>
-          {monthName}
-        </button>
+          style={isSelected ? { backgroundColor: themeColor } : {}}>          {monthName}        </button>
       );
     }
     return (
-      <div className="grid grid-cols-3 gap-3 h-[260px] content-center">
-        {months}
-      </div>);
+      <div className="grid grid-cols-3 gap-3 h-[260px] content-center">        {months}      </div>);
   };
   const monthName = viewDate.toLocaleDateString(
     i18n.language === "th" ? "th-TH" : "en-US",
@@ -231,131 +221,60 @@ export const MaterialDatePicker: React.FC<MaterialDatePickerProps> = ({
   ["อา", "จ", "อ", "พ", "พฤ", "ศ", "ส"] :
   ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   return (
-    <AnimatePresence>
-      {isOpen &&
-      <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 touch-none">
-          {}
-          <motion.div
+    <AnimatePresence>      {isOpen &&
+      <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 touch-none">        {}        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
-          className="absolute inset-0 bg-black/0" />
-          <motion.div
+          className="absolute inset-0 bg-black/0" />        <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.9 }}
-          className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100 overflow-hidden w-full max-w-[360px] flex flex-col relative z-10">
-            {}
-            <div
+          className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100 overflow-hidden w-full max-w-[360px] flex flex-col relative z-10">          {}          <div
             className="p-6 text-white transition-colors"
-            style={{ backgroundColor: themeColor }}>
-              <p
+            style={{ backgroundColor: themeColor }}>            <p
               className={`text-sm font-medium opacity-70 mb-1 cursor-pointer hover:opacity-100 transition-opacity ${view === "year" ? "opacity-100 font-bold" : ""}`}
-              onClick={() => setView("year")}>
-                {yearText}
-              </p>
-              <h2
+              onClick={() => setView("year")}>              {yearText}            </p>            <h2
               className={`text-3xl font-bold cursor-pointer hover:opacity-80 transition-opacity ${view === "day" ? "opacity-100" : "opacity-60"}`}
-              onClick={() => setView(mode === "month" ? "month" : "day")}>
-                {dateText}
-              </h2>
-            </div>
-            {}
-            <div className="p-4">
-              {}
-              {view === "day" && mode !== "month" &&
-            <div className="flex items-center justify-between mb-4 px-2">
-                  <button
+              onClick={() => setView(mode === "month" ? "month" : "day")}>              {dateText}            </h2>          </div>          {}          <div className="p-4">            {}            {view === "day" && mode !== "month" &&
+            <div className="flex items-center justify-between mb-4 px-2">              <button
                 type="button"
                 onClick={handlePrevMonth}
-                className="p-1 rounded-full hover:bg-gray-100">
-                    <ChevronLeft className="w-6 h-6 text-gray-600" />
-                  </button>
-                  <span
+                className="p-1 rounded-full hover:bg-gray-100">                <ChevronLeft className="w-6 h-6 text-gray-600" />              </button>              <span
                 className="font-bold text-gray-800 text-lg cursor-pointer hover:text-primary transition-colors"
                 onClick={() => setView("month")}
-                style={{ color: "inherit" }}>
-                    {monthName}
-                  </span>
-                  <button
+                style={{ color: "inherit" }}>                {monthName}              </span>              <button
                 type="button"
                 onClick={handleNextMonth}
-                className="p-1 rounded-full hover:bg-gray-100">
-                    <ChevronRight className="w-6 h-6 text-gray-600" />
-                  </button>
-                </div>
-            }
-              {view === "year" &&
-            <div className="flex items-center justify-center mb-4">
-                  <span className="font-bold text-gray-800 text-lg">
-                    Select Year
-                  </span>
-                </div>
-            }
-              {view === "month" &&
-            <div className="flex items-center justify-center mb-4">
-                  <button
+                className="p-1 rounded-full hover:bg-gray-100">                <ChevronRight className="w-6 h-6 text-gray-600" />              </button>            </div>
+            }            {view === "year" &&
+            <div className="flex items-center justify-center mb-4">              <span className="font-bold text-gray-800 text-lg">                    Select Year              </span>            </div>
+            }            {view === "month" &&
+            <div className="flex items-center justify-center mb-4">              <button
                 type="button"
                 onClick={() => setView("year")}
                 className="font-bold text-gray-800 text-lg hover:text-gray-900 transition-colors"
-                title={t("common.date.year")}>
-                    {viewDate.getFullYear()}
-                  </button>
-                </div>
-            }
-              {}
-              {view === "day" && mode !== "month" &&
-            <div className="grid grid-cols-7 mb-2 text-center">
-                  {weekDays.map((day) =>
+                title={t("common.date.year")}>                {viewDate.getFullYear()}              </button>            </div>
+            }            {}            {view === "day" && mode !== "month" &&
+            <div className="grid grid-cols-7 mb-2 text-center">              {weekDays.map((day) =>
               <div
                 key={day}
-                className="text-xs font-semibold text-gray-400 w-10 h-10 flex items-center justify-center">
-                      {day}
-                    </div>
-              )}
-                </div>
-            }
-              {}
-              <div className="h-[260px]">
-                {view === "day" && mode !== "month" &&
-              <div className="grid grid-cols-7 gap-y-1 justify-items-center">
-                    <AnimatePresence mode="popLayout" custom={slideDirection}>
-                      {renderCalendarDays()}
-                    </AnimatePresence>
-                  </div>
-              }
-                {view === "year" && renderYears()}
-                {view === "month" && renderMonths()}
-              </div>
-            </div>
-            {}
-            <div className="flex items-center justify-between p-4 px-6 border-t border-gray-100">
-              <button
+                className="text-xs font-semibold text-gray-400 w-10 h-10 flex items-center justify-center">                {day}              </div>
+              )}            </div>
+            }            {}            <div className="h-[260px]">              {view === "day" && mode !== "month" &&
+              <div className="grid grid-cols-7 gap-y-1 justify-items-center">                <AnimatePresence mode="popLayout" custom={slideDirection}>                  {renderCalendarDays()}                </AnimatePresence>              </div>
+              }              {view === "year" && renderYears()}              {view === "month" && renderMonths()}            </div>          </div>          {}          <div className="flex items-center justify-between p-4 px-6 border-t border-gray-100">            <button
               type="button"
               onClick={handleToday}
               className="text-sm font-semibold hover:bg-gray-50 px-3 py-2 rounded-lg transition-colors"
-              style={{ color: themeColor }}>
-                {t("common.today", "Today")}
-              </button>
-              <div className="flex gap-2">
-                <button
+              style={{ color: themeColor }}>              {t("common.today", "Today")}            </button>            <div className="flex gap-2">              <button
                 type="button"
                 onClick={onClose}
-                className="text-sm font-semibold text-gray-500 hover:bg-gray-100 px-4 py-2 rounded-lg transition-colors">
-                  {t("common.cancel", "Cancel")}
-                </button>
-                <button
+                className="text-sm font-semibold text-gray-500 hover:bg-gray-100 px-4 py-2 rounded-lg transition-colors">                {t("common.cancel", "Cancel")}              </button>              <button
                 type="button"
                 onClick={handleApply}
                 className="text-sm font-semibold hover:bg-opacity-90 px-4 py-2 rounded-lg transition-colors text-white shadow-md active:shadow-sm"
-                style={{ backgroundColor: themeColor }}>
-                  {t("common.ok", "OK")}
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      }
-    </AnimatePresence>);
+                style={{ backgroundColor: themeColor }}>                {t("common.ok", "OK")}              </button>            </div>          </div>        </motion.div>      </div>
+      }    </AnimatePresence>);
 };

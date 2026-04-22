@@ -7,8 +7,9 @@ import { TurnstileService } from './turnstile.service';
 import { UnifiedPublicSubmissionController } from './unified-public-submission.controller';
 import { UnifiedPublicSubmissionService } from './unified-public-submission.service';
 import { PublicSubmissionSessionService } from './public-submission-session.service';
+import { SystemSettingsModule } from '../system-settings/system-settings.module';
 @Module({
-  imports: [MailModule, FormsModule],
+  imports: [MailModule, FormsModule, SystemSettingsModule],
   controllers: [UnifiedPublicSubmissionController],
   providers: [
   TurnstileService,

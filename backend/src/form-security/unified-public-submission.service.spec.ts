@@ -54,7 +54,20 @@ describe('UnifiedPublicSubmissionService', () => {
       responsePersistenceService as any,
       rateLimitService as any,
       { verifyToken: jest.fn().mockResolvedValue(undefined) } as any,
-      publicSessionService as any
+      publicSessionService as any,
+      {
+        getRateLimitSettings: jest.fn().mockResolvedValue({
+          authLoginLimit: 10,
+          authLoginWindowSeconds: 60,
+          publicVerifySessionLimit: 5,
+          publicVerifyIpLimit: 20,
+          publicVerifyWindowSeconds: 600,
+          publicSubmitSessionLimit: 10,
+          publicSubmitIpLimit: 20,
+          publicSubmitWindowSeconds: 600,
+          verificationCooldownSeconds: 60
+        })
+      } as any
     );
   });
   it('returns VERIFIED_READY only for the same verified session-bound request', async () => {

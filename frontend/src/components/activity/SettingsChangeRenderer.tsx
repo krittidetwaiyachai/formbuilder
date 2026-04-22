@@ -109,8 +109,8 @@ export default function SettingsChangeRenderer({
     const themeBefore = extractThemeName(change.before);
     const themeAfter = extractThemeName(change.after);
     if (
-    (prop.includes("settings") || prop.includes("theme")) &&
-    (themeBefore !== null || themeAfter !== null))
+    (prop.includes("settings") || prop.includes("theme")) && (
+    themeBefore !== null || themeAfter !== null))
     {
       processedChanges = [
       {

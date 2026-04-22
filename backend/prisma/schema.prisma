@@ -19,6 +19,8 @@ model User {
   provider     String         @default("local")
   sessionToken String?
   isActive     Boolean        @default(true)
+  failedLoginAttempts Int     @default(0)
+  lockedUntil   DateTime?
   permissionOverrides Json?
   lastActiveAt DateTime?
   createdAt    DateTime       @default(now())
@@ -515,6 +517,42 @@ model SystemSetting {
   smtpPass         String?
   smtpFrom         String?
   smtpFromName     String?
+  supportEmail     String?
+  supportLineId    String?
+  brandingAppName  String?
+  brandingLogoUrl  String?
+  brandingPrimaryColor String?
+  authSessionIdleTimeoutMinutes Int @default(30)
+  authMaxFailedLoginAttempts Int @default(5)
+  authLockoutMinutes Int @default(15)
+  passwordMinLength Int @default(8)
+  passwordRequireUppercase Boolean @default(true)
+  passwordRequireLowercase Boolean @default(true)
+  passwordRequireNumber Boolean @default(true)
+  passwordRequireSymbol Boolean @default(false)
+  rateAuthLoginLimit Int @default(10)
+  rateAuthLoginWindowSeconds Int @default(60)
+  ratePublicVerifySessionLimit Int @default(5)
+  ratePublicVerifyIpLimit Int @default(20)
+  ratePublicVerifyWindowSeconds Int @default(600)
+  ratePublicSubmitSessionLimit Int @default(10)
+  ratePublicSubmitIpLimit Int @default(20)
+  ratePublicSubmitWindowSeconds Int @default(600)
+  rateVerificationCooldownSeconds Int @default(60)
+  retentionAutoCleanupEnabled Boolean @default(false)
+  retentionResponsesDays Int?
+  retentionAuditLogsDays Int @default(180)
+  retentionInvitationsDays Int @default(90)
+  retentionCleanupIntervalHours Int @default(24)
+  retentionLastCleanupAt DateTime?
+  backupAutoEnabled Boolean @default(false)
+  backupIntervalHours Int @default(24)
+  backupRetentionDays Int @default(14)
+  backupDirectory String?
+  backupLastRunAt DateTime?
+  backupLastStatus String?
+  backupLastFile String?
+  backupLastError String?
   inviteExpiryDays Int      @default(3)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt

@@ -1,4 +1,5 @@
 import * as React from "react";
+import ReactDOM from "react-dom";
 import { cn } from "@/lib/ui/utils";
 interface DialogProps {
   open?: boolean;
@@ -7,11 +8,16 @@ interface DialogProps {
 }
 const Dialog = ({ open, onOpenChange, children }: DialogProps) => {
   if (!open) return null;
-  return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center">      <div
+  if (typeof document === "undefined") return null;
+  return ReactDOM.createPortal(
+    <div className="fixed inset-0 z-[100] flex items-center justify-center">
+      <div
         className="fixed inset-0 bg-black/50 backdrop-blur-sm"
         onClick={() => onOpenChange?.(false)} />
-      <div className="relative z-[100]">{children}</div>    </div>);
+      <div className="relative z-[100]">{children}</div>
+    </div>,
+    document.body
+  );
 };
 const DialogContent = React.forwardRef<
   HTMLDivElement,
@@ -20,7 +26,7 @@ const DialogContent = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "fixed left-[50%] top-[50%] z-[100] grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg",
+      "fixed left-1/2 top-1/2 z-[100] grid w-full max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg",
       className
     )}
     {...props} />
@@ -31,10 +37,7 @@ const DialogHeader = ({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) =>
 <div
-  className={cn(
-    "flex flex-col space-y-1.5 text-center sm:text-left",
-    className
-  )}
+  className={cn("flex flex-col space-y-1.5 text-center sm:text-left", className)}
   {...props} />;
 DialogHeader.displayName = "DialogHeader";
 const DialogTitle = React.forwardRef<
@@ -43,10 +46,7 @@ const DialogTitle = React.forwardRef<
   ({ className, ...props }, ref) =>
   <h2
     ref={ref}
-    className={cn(
-      "text-lg font-semibold leading-none tracking-tight",
-      className
-    )}
+    className={cn("text-lg font-semibold leading-none tracking-tight", className)}
     {...props} />
 );
 DialogTitle.displayName = "DialogTitle";
@@ -54,10 +54,7 @@ const DialogDescription = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>>(
   ({ className, ...props }, ref) =>
-  <p
-    ref={ref}
-    className={cn("text-sm text-muted-foreground", className)}
-    {...props} />
+  <p ref={ref} className={cn("text-sm text-muted-foreground", className)} {...props} />
 );
 DialogDescription.displayName = "DialogDescription";
 const DialogFooter = ({
@@ -65,10 +62,7 @@ const DialogFooter = ({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) =>
 <div
-  className={cn(
-    "flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2",
-    className
-  )}
+  className={cn("flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2", className)}
   {...props} />;
 DialogFooter.displayName = "DialogFooter";
 export {

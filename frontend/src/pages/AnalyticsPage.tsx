@@ -156,45 +156,27 @@ export default function AnalyticsPage() {
   };
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
-        <motion.div
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="text-center">
-          <Loader className="mx-auto mb-4" />
-          <p className="text-gray-500 font-medium">{t("analytics.loading")}</p>
-        </motion.div>
-      </div>);
+          className="text-center">          <Loader className="mx-auto mb-4" />          <p className="text-gray-500 font-medium">{t("analytics.loading")}</p>        </motion.div>      </div>);
   }
   return (
-    <div className="min-h-screen bg-white pb-32 md:pb-12">
-      <AnalyticsHeader
+    <div className="min-h-screen bg-white pb-32 md:pb-12">      <AnalyticsHeader
         form={form}
         id={id}
         onViewResponses={() => setShowResponseViewer(true)}
-        onExport={handleExport} />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 md:mt-8">
-        <AnalyticsSummaryCards form={form} totalResponses={totalResponses} />
-        {totalResponses === 0 ?
+        onExport={handleExport} />      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 md:mt-8">        <AnalyticsSummaryCards form={form} totalResponses={totalResponses} />        {totalResponses === 0 ?
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="bg-white rounded-2xl p-12 border border-gray-200 text-center">
-            <BarChart3 className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              {t("analytics.no_responses")}
-            </h3>
-            <p className="text-gray-500">{t("analytics.no_responses_desc")}</p>
-          </motion.div> :
-        <>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-              <ResponseTrendChart
+          className="bg-white rounded-2xl p-12 border border-gray-200 text-center">          <BarChart3 className="w-16 h-16 text-gray-300 mx-auto mb-4" />          <h3 className="text-lg font-semibold text-gray-900 mb-2">            {t("analytics.no_responses")}          </h3>          <p className="text-gray-500">{t("analytics.no_responses_desc")}</p>        </motion.div> :
+        <>          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">            <ResponseTrendChart
               data={responseTrend}
               selectedMonth={selectedTrendMonth}
               onMonthChange={setSelectedTrendMonth}
               onCopy={copyChartToClipboard}
-              copySuccess={copySuccess} />
-              <FieldDistributionWidget
+              copySuccess={copySuccess} />            <FieldDistributionWidget
               form={form}
               fieldStats={fieldStats}
               totalResponses={totalResponses}
@@ -202,9 +184,7 @@ export default function AnalyticsPage() {
               onFieldChange={setSelectedField}
               initialSelectedField={selectedField}
               onCopy={copyChartToClipboard}
-              copySuccess={copySuccess} />
-            </div>
-            {form?.isQuiz &&
+              copySuccess={copySuccess} />          </div>          {form?.isQuiz &&
           <QuizStatsCards
             stats={quizStats}
             onCopy={copyChartToClipboard}
@@ -212,8 +192,7 @@ export default function AnalyticsPage() {
             formId={id}
             form={form}
             onModalOpenChange={setQuizModalOpen} />
-          }
-            <FieldDetailedAnalysis
+          }          <FieldDetailedAnalysis
             form={form}
             fieldStats={fieldStats}
             totalResponses={totalResponses}
@@ -221,11 +200,8 @@ export default function AnalyticsPage() {
             onFieldChange={setSelectedField}
             initialSelectedField={selectedField}
             onCopy={copyChartToClipboard}
-            copySuccess={copySuccess} />
-          </>
-        }
-      </div>
-      <ResponseViewer
+            copySuccess={copySuccess} />        </>
+        }      </div>      <ResponseViewer
         isOpen={showResponseViewer}
         onClose={() => setShowResponseViewer(false)}
         responses={viewResponses}
@@ -236,30 +212,18 @@ export default function AnalyticsPage() {
         responseSort={responseSort}
         loadingResponses={loadingResponses}
         onPageChange={loadResponses}
-        onDeleteResponse={handleDeleteClick} />
-      <AnimatePresence>
-        {isExporting && exportState &&
+        onDeleteResponse={handleDeleteClick} />      <AnimatePresence>        {isExporting && exportState &&
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[100] flex flex-col items-center justify-center p-4 bg-white/80 backdrop-blur-sm">
-            <motion.div
+          className="fixed inset-0 z-[100] flex flex-col items-center justify-center p-4 bg-white/80 backdrop-blur-sm">          <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
-            className="w-full max-w-md bg-white p-8 rounded-3xl shadow-2xl flex flex-col items-center text-center mx-4">
-              <div className="mb-6 relative w-16 h-16 flex items-center justify-center">
-                <Loader className="w-12 h-12 text-blue-600 animate-spin absolute" />
-                <BarChart3 className="w-5 h-5 text-blue-600 absolute" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">
-                {exportState.status === "processing" ?
+            className="w-full max-w-md bg-white p-8 rounded-3xl shadow-2xl flex flex-col items-center text-center mx-4">            <div className="mb-6 relative w-16 h-16 flex items-center justify-center">              <Loader className="w-12 h-12 text-blue-600 animate-spin absolute" />              <BarChart3 className="w-5 h-5 text-blue-600 absolute" />            </div>            <h3 className="text-xl font-bold text-gray-900 mb-2">              {exportState.status === "processing" ?
               t("analytics.exporting_csv", "Exporting CSV...") :
-              t("analytics.export_success", "Export Ready")}
-              </h3>
-              <p className="text-gray-500 mb-6 font-medium text-sm">
-                {exportState.status === "processing" ?
+              t("analytics.export_success", "Export Ready")}            </h3>            <p className="text-gray-500 mb-6 font-medium text-sm">              {exportState.status === "processing" ?
               t(
                 "analytics.export_dont_close",
                 "Please don't close this page"
@@ -267,27 +231,10 @@ export default function AnalyticsPage() {
               t(
                 "analytics.downloading_now",
                 "Your download will start automatically..."
-              )}
-              </p>
-              <div className="w-full">
-                <div className="flex justify-between text-xs font-semibold text-gray-500 mb-2">
-                  <motion.span>{displayLoadedCount}</motion.span>
-                  <span>{exportState.total.toLocaleString()} rows</span>
-                </div>
-                <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden shadow-inner">
-                  <motion.div
+              )}            </p>            <div className="w-full">              <div className="flex justify-between text-xs font-semibold text-gray-500 mb-2">                <motion.span>{displayLoadedCount}</motion.span>                <span>{exportState.total.toLocaleString()} rows</span>              </div>              <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden shadow-inner">                <motion.div
                   style={{ width: displayPercentage }}
-                  className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full" />
-                </div>
-                <div className="mt-3 text-2xl font-bold text-gray-900">
-                  <motion.span>{displayPercentage}</motion.span>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        }
-      </AnimatePresence>
-      <ConfirmDialog
+                  className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full" />              </div>              <div className="mt-3 text-2xl font-bold text-gray-900">                <motion.span>{displayPercentage}</motion.span>              </div>            </div>          </motion.div>        </motion.div>
+        }      </AnimatePresence>      <ConfirmDialog
         open={deleteConfirmOpen}
         onOpenChange={setDeleteConfirmOpen}
         title={t("analytics.confirm_delete_title")}
@@ -295,6 +242,5 @@ export default function AnalyticsPage() {
         confirmText={t("common.delete")}
         cancelText={t("common.cancel")}
         variant="destructive"
-        onConfirm={confirmDeleteResponse} />
-    </div>);
+        onConfirm={confirmDeleteResponse} />    </div>);
 }

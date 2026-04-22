@@ -548,11 +548,10 @@ FormsService implements OnModuleInit, OnModuleDestroy {
     const isCreator = form.createdById === requestingUserId;
     const isCollaborator = form.collaborators.some((c) => c.id === requestingUserId);
     const isAdmin =
-      requestingUserRole === RoleType.SUPER_ADMIN || requestingUserRole === RoleType.ADMIN;
+    requestingUserRole === RoleType.SUPER_ADMIN || requestingUserRole === RoleType.ADMIN;
     if (!isCreator && !isCollaborator && !isAdmin) {
       throw new ForbiddenException('You can only access your own forms or forms shared with you');
     }
-
     return {
       owner: form.createdBy,
       collaborators: form.collaborators,
@@ -566,7 +565,6 @@ FormsService implements OnModuleInit, OnModuleDestroy {
     if (!normalizedEmail) {
       throw new BadRequestException('Email is required');
     }
-
     const form = await this.prisma.form.findUnique({
       where: { id: formId },
       include: {
@@ -582,10 +580,10 @@ FormsService implements OnModuleInit, OnModuleDestroy {
       throw new NotFoundException('Form not found');
     }
     if (
-      requestingUserRole !== RoleType.SUPER_ADMIN &&
-      requestingUserRole !== RoleType.ADMIN &&
-      form.createdById !== requestingUserId
-    ) {
+    requestingUserRole !== RoleType.SUPER_ADMIN &&
+    requestingUserRole !== RoleType.ADMIN &&
+    form.createdById !== requestingUserId)
+    {
       throw new ForbiddenException('Only the form owner can add collaborators');
     }
     if (this.normalizeEmail(form.createdBy.email) === normalizedEmail) {
@@ -594,7 +592,6 @@ FormsService implements OnModuleInit, OnModuleDestroy {
     if (form.collaborators.some((c) => this.normalizeEmail(c.email) === normalizedEmail)) {
       throw new ConflictException('User is already a collaborator');
     }
-
     const invitedUser = await this.prisma.user.findFirst({
       where: {
         email: { equals: normalizedEmail, mode: 'insensitive' }
@@ -607,16 +604,14 @@ FormsService implements OnModuleInit, OnModuleDestroy {
         photoUrl: true
       }
     });
-
     const requester = await this.prisma.user.findUnique({
       where: { id: requestingUserId },
       select: { email: true, firstName: true, lastName: true }
     });
     const requesterName =
-      requester && (requester.firstName || requester.lastName)
-        ? `${requester.firstName || ''} ${requester.lastName || ''}`.trim()
-        : undefined;
-
+    requester && (requester.firstName || requester.lastName) ?
+    `${requester.firstName || ''} ${requester.lastName || ''}`.trim() :
+    undefined;
     await this.prisma.formCollaboratorInvitation.updateMany({
       where: {
         formId,
@@ -628,7 +623,6 @@ FormsService implements OnModuleInit, OnModuleDestroy {
         revokedAt: new Date()
       }
     });
-
     const invitationToken = this.generateInvitationToken();
     const inviteExpiryDays = await this.systemSettingsService.getInviteExpiryDays();
     const invitationData: Record<string, unknown> = {
@@ -651,7 +645,6 @@ FormsService implements OnModuleInit, OnModuleDestroy {
         expiresAt: true
       }
     });
-
     const inviteResult = await this.mailService.sendCollaboratorInviteEmail({
       to: normalizedEmail,
       formTitle: form.title,
@@ -662,10 +655,9 @@ FormsService implements OnModuleInit, OnModuleDestroy {
     });
     if (!inviteResult.sent) {
       this.logger.warn(
-        `Invitation created for form ${form.id}, but invite email was not sent (mode=${inviteResult.mode})`,
+        `Invitation created for form ${form.id}, but invite email was not sent (mode=${inviteResult.mode})`
       );
     }
-
     await this.activityLog.log(formId, requestingUserId, 'COLLABORATOR_INVITED', {
       email: normalizedEmail
     });
@@ -677,11 +669,11 @@ FormsService implements OnModuleInit, OnModuleDestroy {
     };
   }
   async resendCollaboratorInvitation(
-    formId: string,
-    invitationId: string,
-    requestingUserId: string,
-    requestingUserRole: RoleType,
-  ) {
+  formId: string,
+  invitationId: string,
+  requestingUserId: string,
+  requestingUserRole: RoleType)
+  {
     await this.cleanupExpiredInvitations();
     const form = await this.prisma.form.findUnique({
       where: { id: formId },
@@ -691,13 +683,12 @@ FormsService implements OnModuleInit, OnModuleDestroy {
       throw new NotFoundException('Form not found');
     }
     if (
-      requestingUserRole !== RoleType.SUPER_ADMIN &&
-      requestingUserRole !== RoleType.ADMIN &&
-      form.createdById !== requestingUserId
-    ) {
+    requestingUserRole !== RoleType.SUPER_ADMIN &&
+    requestingUserRole !== RoleType.ADMIN &&
+    form.createdById !== requestingUserId)
+    {
       throw new ForbiddenException('Only the form owner can add collaborators');
     }
-
     const invitation = await this.prisma.formCollaboratorInvitation.findFirst({
       where: {
         id: invitationId,
@@ -712,7 +703,6 @@ FormsService implements OnModuleInit, OnModuleDestroy {
     if (!invitation) {
       throw new NotFoundException('Invitation not found');
     }
-
     const invitationToken = this.generateInvitationToken();
     const inviteExpiryDays = await this.systemSettingsService.getInviteExpiryDays();
     const invitationUpdateData: Record<string, unknown> = {
@@ -733,16 +723,14 @@ FormsService implements OnModuleInit, OnModuleDestroy {
         expiresAt: true
       }
     });
-
     const requester = await this.prisma.user.findUnique({
       where: { id: requestingUserId },
       select: { email: true, firstName: true, lastName: true }
     });
     const requesterName =
-      requester && (requester.firstName || requester.lastName)
-        ? `${requester.firstName || ''} ${requester.lastName || ''}`.trim()
-        : undefined;
-
+    requester && (requester.firstName || requester.lastName) ?
+    `${requester.firstName || ''} ${requester.lastName || ''}`.trim() :
+    undefined;
     const inviteResult = await this.mailService.sendCollaboratorInviteEmail({
       to: invitation.invitedEmail,
       formTitle: form.title,
@@ -751,7 +739,6 @@ FormsService implements OnModuleInit, OnModuleDestroy {
       invitedByEmail: requester?.email,
       expiresInDays: inviteExpiryDays
     });
-
     return {
       message: 'Invitation resent successfully',
       invitationEmailSent: inviteResult.sent,
@@ -760,11 +747,11 @@ FormsService implements OnModuleInit, OnModuleDestroy {
     };
   }
   async revokeCollaboratorInvitation(
-    formId: string,
-    invitationId: string,
-    requestingUserId: string,
-    requestingUserRole: RoleType,
-  ) {
+  formId: string,
+  invitationId: string,
+  requestingUserId: string,
+  requestingUserRole: RoleType)
+  {
     await this.cleanupExpiredInvitations();
     const form = await this.prisma.form.findUnique({
       where: { id: formId },
@@ -774,13 +761,12 @@ FormsService implements OnModuleInit, OnModuleDestroy {
       throw new NotFoundException('Form not found');
     }
     if (
-      requestingUserRole !== RoleType.SUPER_ADMIN &&
-      requestingUserRole !== RoleType.ADMIN &&
-      form.createdById !== requestingUserId
-    ) {
+    requestingUserRole !== RoleType.SUPER_ADMIN &&
+    requestingUserRole !== RoleType.ADMIN &&
+    form.createdById !== requestingUserId)
+    {
       throw new ForbiddenException('Only the form owner can add collaborators');
     }
-
     const invitation = await this.prisma.formCollaboratorInvitation.findFirst({
       where: {
         id: invitationId,
@@ -792,7 +778,6 @@ FormsService implements OnModuleInit, OnModuleDestroy {
     if (!invitation) {
       throw new NotFoundException('Invitation not found');
     }
-
     await this.prisma.formCollaboratorInvitation.update({
       where: { id: invitation.id },
       data: {
@@ -800,7 +785,6 @@ FormsService implements OnModuleInit, OnModuleDestroy {
         revokedAt: new Date()
       }
     });
-
     return { message: 'Invitation revoked successfully' };
   }
   async acceptCollaboratorInvitation(token: string, userId: string, userEmail: string) {
@@ -809,7 +793,6 @@ FormsService implements OnModuleInit, OnModuleDestroy {
       throw new BadRequestException('Invitation token is required');
     }
     const tokenHash = this.hashInvitationToken(token);
-
     const invitation = await this.prisma.formCollaboratorInvitation.findUnique({
       where: { tokenHash },
       include: {
@@ -846,18 +829,16 @@ FormsService implements OnModuleInit, OnModuleDestroy {
       throw new BadRequestException('Invitation has expired');
     }
     const invitedEmailNormalized = (
-      invitation as unknown as Record<string, unknown>
-    )[this.getInvitationCompatFields().normalizedEmailField];
+    invitation as unknown as Record<string, unknown>)[
+    this.getInvitationCompatFields().normalizedEmailField];
     if (this.normalizeEmail(String(invitedEmailNormalized || '')) !== normalizedEmail) {
       throw new ForbiddenException('This invitation was sent to a different email');
     }
-
     if (this.normalizeEmail(invitation.form.createdBy.email) === normalizedEmail) {
       throw new BadRequestException('User is the owner of the form');
     }
-
     const isAlreadyCollaborator = invitation.form.collaborators.some(
-      (collaborator) => collaborator.id === userId || this.normalizeEmail(collaborator.email) === normalizedEmail,
+      (collaborator) => collaborator.id === userId || this.normalizeEmail(collaborator.email) === normalizedEmail
     );
     if (!isAlreadyCollaborator) {
       await this.prisma.form.update({
@@ -872,7 +853,6 @@ FormsService implements OnModuleInit, OnModuleDestroy {
         acceptedFromInvitation: true
       });
     }
-
     await this.prisma.formCollaboratorInvitation.update({
       where: { id: invitation.id },
       data: {
@@ -881,7 +861,6 @@ FormsService implements OnModuleInit, OnModuleDestroy {
         invitedUserId: userId
       }
     });
-
     return {
       message: 'Invitation accepted successfully',
       formId: invitation.formId
@@ -916,9 +895,9 @@ FormsService implements OnModuleInit, OnModuleDestroy {
       removedUserId: userIdToRemove,
       removedUserEmail: removedCollaborator?.email ?? null,
       removedUserName:
-        removedCollaborator && (removedCollaborator.firstName || removedCollaborator.lastName)
-          ? `${removedCollaborator.firstName || ''} ${removedCollaborator.lastName || ''}`.trim()
-          : null
+      removedCollaborator && (removedCollaborator.firstName || removedCollaborator.lastName) ?
+      `${removedCollaborator.firstName || ''} ${removedCollaborator.lastName || ''}`.trim() :
+      null
     });
     return { message: 'Collaborator removed successfully' };
   }
@@ -981,10 +960,10 @@ FormsService implements OnModuleInit, OnModuleDestroy {
       return this.invitationCompatFields;
     }
     const models = (
-      Prisma as unknown as {
-        dmmf?: {datamodel?: {models?: Array<{name: string;fields?: Array<{name: string}>}>};};
-      }
-    ).dmmf?.
+    Prisma as unknown as {
+      dmmf?: {datamodel?: {models?: Array<{name: string;fields?: Array<{name: string;}>;}>;};};
+    }).
+    dmmf?.
     datamodel?.
     models || [];
     const invitationModel = models.find((model) => model.name === 'FormCollaboratorInvitation');

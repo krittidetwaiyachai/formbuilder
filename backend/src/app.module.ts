@@ -20,6 +20,7 @@ import { AppController } from './app.controller';
 import { CollaborationModule } from './collaboration/collaboration.module';
 import { RedisModule } from './common/redis/redis.module';
 import { FormSecurityModule } from './form-security/form-security.module';
+import { SystemSettingsModule } from './system-settings/system-settings.module';
 @Module({
   imports: [
   ConfigModule.forRoot({
@@ -40,6 +41,7 @@ import { FormSecurityModule } from './form-security/form-security.module';
   FoldersModule,
   EventsModule,
   CommonModule,
+  SystemSettingsModule,
   RedisModule,
   FormSecurityModule,
   AdminModule,

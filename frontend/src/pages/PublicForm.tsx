@@ -42,36 +42,20 @@ export default function PublicForm() {
   };
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50">
-        <motion.div
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="text-center">
-          <Loader className="mx-auto mb-4" />
-          <p className="font-medium text-gray-500">{t("public.loading")}</p>
-        </motion.div>
-      </div>);
+          className="text-center">          <Loader className="mx-auto mb-4" />          <p className="font-medium text-gray-500">{t("public.loading")}</p>        </motion.div>      </div>);
   }
   if (!form) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
-        <motion.div
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-md rounded-2xl bg-white p-10 text-center shadow-xl">
-          <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
-            <FileQuestion className="h-8 w-8 text-gray-500" />
-          </div>
-          <h2 className="mb-4 text-2xl font-bold text-gray-900">
-            {t("public.form_not_found_title")}
-          </h2>
-          <p className="text-gray-600">{t("public.form_not_found_desc")}</p>
-        </motion.div>
-      </div>);
+          className="w-full max-w-md rounded-2xl bg-white p-10 text-center shadow-xl">          <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">            <FileQuestion className="h-8 w-8 text-gray-500" />          </div>          <h2 className="mb-4 text-2xl font-bold text-gray-900">            {t("public.form_not_found_title")}          </h2>          <p className="text-gray-600">{t("public.form_not_found_desc")}</p>        </motion.div>      </div>);
   }
   return (
-    <>
-      <div
+    <>      <div
         className="fixed inset-0 z-0 transition-colors duration-500"
         style={{
           background:
@@ -90,12 +74,8 @@ export default function PublicForm() {
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat"
-        }} />
-      <div
+        }} />      <div
         id="public-form-scroll-container"
         className="relative z-10 min-h-screen w-full overflow-x-hidden overflow-y-auto"
-        style={{ fontFamily: form.settings?.fontFamily || "inherit" }}>
-        <PublicFormRenderer form={form} loading={loading} />
-      </div>
-    </>);
+        style={{ fontFamily: form.settings?.fontFamily || "inherit" }}>        <PublicFormRenderer form={form} loading={loading} />      </div>    </>);
 }

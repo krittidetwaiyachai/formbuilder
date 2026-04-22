@@ -19,19 +19,14 @@ import { ResponsesService } from './responses.service';
 import { ResponsesStatsService } from './responses-stats.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
-import { PermissionsGuard } from '../auth/permissions.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
-import { Permissions } from '../auth/decorators/permissions.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
-import { Permissions as PermissionKeys } from '../auth/permissions.constants';
 import { RoleType } from '@prisma/client';
 import { Response } from 'express';
 interface User {
   id: string;
   email: string;
   role: RoleType;
-  rolePermissions?: string[];
-  permissionOverrides?: string[] | null;
 }
 @Controller('responses')export class
 ResponsesController {
@@ -40,15 +35,8 @@ ResponsesController {
   private readonly statsService: ResponsesStatsService,
   private readonly eventEmitter: EventEmitter2)
   {}
-
   private canBypassPdpa(user: User) {
-    if (user.role === RoleType.SUPER_ADMIN) {
-      return true;
-    }
-    const permissions = Array.isArray(user.permissionOverrides) ?
-    user.permissionOverrides :
-    Array.isArray(user.rolePermissions) ? user.rolePermissions : [];
-    return permissions.includes(PermissionKeys.BYPASS_PDPA);
+    return user.role === RoleType.SUPER_ADMIN;
   }
   @Get('form/:formId/stats')
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -82,7 +70,7 @@ ResponsesController {
       this.canBypassPdpa(user),
       pageNum,
       limitNum,
-      sortOrder,
+      sortOrder
     );
   }
   @Get(':id')
@@ -99,14 +87,14 @@ ResponsesController {
   async startExport(
     @Param('formId')formId: string,
     @CurrentUser()user: User,
-    @Headers('idempotency-key') idempotencyKey?: string)
+    @Headers('idempotency-key')idempotencyKey?: string)
   {
     return this.responsesService.startExportJob(
       formId,
       user.id,
       user.role,
       idempotencyKey,
-      this.canBypassPdpa(user),
+      this.canBypassPdpa(user)
     );
   }
   @Sse('export/progress/:jobId')
@@ -137,8 +125,8 @@ ResponsesController {
     fileStream.pipe(res);
   }
   @Delete(':id')
-  @UseGuards(JwtAuthGuard, PermissionsGuard)
-  @Permissions('DELETE_RESPONSES')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(RoleType.SUPER_ADMIN, RoleType.ADMIN)
   async remove(
     @Param('id')id: string,
     @CurrentUser()user: User) {

@@ -18,15 +18,12 @@ import AdminBundles from './pages/admin/AdminBundles';
 import BundleEditor from './pages/admin/BundleEditor';
 import AdminLogs from './pages/admin/AdminLogs';
 import AdminSettings from './pages/admin/AdminSettings';
-
 function AppContent() {
   useInactivityLogout();
   useSocketLogout();
-
   return (
     <Routes>
       <Route path="/forms/:id/view" element={<PublicForm />} />
-
       <Route path="/" element={<Layout />}>
         <Route index element={<Navigate to="/dashboard" />} />
         <Route path="dashboard" element={<Dashboard />} />
@@ -36,7 +33,6 @@ function AppContent() {
           <Route path="forms/:id/analytics" element={<AnalyticsPage />} />
         </Route>
       </Route>
-
       <Route path="/admin" element={<AdminLayout />}>
         <Route element={<AdminProtectedRoute />}>
           <Route index element={<Navigate to="/admin/dashboard" />} />
@@ -47,17 +43,13 @@ function AppContent() {
           <Route path="settings" element={<AdminSettings />} />
         </Route>
       </Route>
-
       <Route element={<AdminProtectedRoute />}>
         <Route path="/admin/bundles/:id" element={<BundleEditor />} />
       </Route>
-
       <Route path="forms/:id/preview" element={<FormPreview />} />
       <Route path="*" element={<ErrorPage code={404} />} />
-    </Routes>
-  );
+    </Routes>);
 }
-
 function App() {
   return (
     <BrowserRouter
@@ -66,8 +58,6 @@ function App() {
         v7_relativeSplatPath: true
       }}>
       <AppContent />
-    </BrowserRouter>
-  );
+    </BrowserRouter>);
 }
-
 export default App;

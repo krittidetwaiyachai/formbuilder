@@ -2,23 +2,19 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useBundleEditorStore } from "@/store/bundleEditorStore";
-
 const AUTOSAVE_DELAY_MS = 1000;
 const UNDO_REDO_SAVE_DELAY_MS = 3000;
 const SAVE_INDICATOR_SHOW_DELAY_MS = 180;
 const SAVE_INDICATOR_MIN_VISIBLE_MS = 700;
-
 export const useBundleSave = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const { bundle, isDirty, isUndoRedoAction, saveBundle, clearUndoRedoFlag } =
-    useBundleEditorStore();
-
+  useBundleEditorStore();
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [message, setMessage] = useState<{type: "success" | "error";text: string;} | null>(null);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
-
   const pendingTimerRef = useRef<NodeJS.Timeout | null>(null);
   const bundleRef = useRef(bundle);
   const isDirtyRef = useRef(isDirty);
@@ -28,7 +24,6 @@ export const useBundleSave = () => {
   const savingIndicatorShowTimerRef = useRef<NodeJS.Timeout | null>(null);
   const savingIndicatorHideTimerRef = useRef<NodeJS.Timeout | null>(null);
   const savingIndicatorVisibleSinceRef = useRef<number | null>(null);
-
   const clearSavingIndicatorTimers = useCallback(() => {
     if (savingIndicatorShowTimerRef.current) {
       clearTimeout(savingIndicatorShowTimerRef.current);
@@ -39,7 +34,6 @@ export const useBundleSave = () => {
       savingIndicatorHideTimerRef.current = null;
     }
   }, []);
-
   const showSavingIndicator = useCallback(() => {
     if (savingIndicatorHideTimerRef.current) {
       clearTimeout(savingIndicatorHideTimerRef.current);
@@ -55,7 +49,6 @@ export const useBundleSave = () => {
       setSaving(true);
     }, SAVE_INDICATOR_SHOW_DELAY_MS);
   }, []);
-
   const hideSavingIndicator = useCallback(() => {
     if (savingIndicatorShowTimerRef.current) {
       clearTimeout(savingIndicatorShowTimerRef.current);
@@ -77,20 +70,17 @@ export const useBundleSave = () => {
       setSaving(false);
     }, remaining);
   }, []);
-
   const clearPendingTimer = useCallback(() => {
     if (pendingTimerRef.current) {
       clearTimeout(pendingTimerRef.current);
       pendingTimerRef.current = null;
     }
   }, []);
-
   const handleSave = useCallback(
     async (isAutoSave = false, showSuccessToast = !isAutoSave) => {
       if (!bundleRef.current || !isDirtyRef.current) {
         return;
       }
-
       showSavingIndicator();
       try {
         await saveBundle();
@@ -107,28 +97,23 @@ export const useBundleSave = () => {
         hideSavingIndicator();
       }
     },
-    [clearUndoRedoFlag, hideSavingIndicator, saveBundle, showSavingIndicator, t],
+    [clearUndoRedoFlag, hideSavingIndicator, saveBundle, showSavingIndicator, t]
   );
-
   useEffect(() => {
     bundleRef.current = bundle;
   }, [bundle]);
-
   useEffect(() => {
     isDirtyRef.current = isDirty;
   }, [isDirty]);
-
   useEffect(() => {
     currentPathRef.current = `${location.pathname}${location.search}${location.hash}`;
   }, [location.hash, location.pathname, location.search]);
-
   useEffect(() => {
     if (!bundle?.updatedAt || lastSaved !== null) {
       return;
     }
     setLastSaved(new Date(bundle.updatedAt));
   }, [bundle?.updatedAt, lastSaved]);
-
   useEffect(() => {
     if (!isDirty) {
       clearPendingTimer();
@@ -144,7 +129,6 @@ export const useBundleSave = () => {
       clearPendingTimer();
     };
   }, [clearPendingTimer, handleSave, isDirty, isUndoRedoAction]);
-
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
@@ -156,7 +140,6 @@ export const useBundleSave = () => {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [clearPendingTimer, handleSave]);
-
   useEffect(() => {
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
       if (!isDirty) {
@@ -170,7 +153,6 @@ export const useBundleSave = () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, [isDirty]);
-
   useEffect(() => {
     const resolveInternalPath = (rawHref: string) => {
       if (!rawHref || rawHref.startsWith("#")) {
@@ -189,7 +171,6 @@ export const useBundleSave = () => {
         return rawHref;
       }
     };
-
     const handleLinkClick = async (event: MouseEvent) => {
       if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
         return;
@@ -206,10 +187,9 @@ export const useBundleSave = () => {
       if (!nextPath || nextPath === currentPathRef.current) {
         return;
       }
-      if ((!isDirtyRef.current && !pendingTimerRef.current) || isNavigatingRef.current) {
+      if (!isDirtyRef.current && !pendingTimerRef.current || isNavigatingRef.current) {
         return;
       }
-
       event.preventDefault();
       event.stopPropagation();
       isNavigatingRef.current = true;
@@ -218,9 +198,8 @@ export const useBundleSave = () => {
       navigate(nextPath);
       isNavigatingRef.current = false;
     };
-
     const handlePopState = async () => {
-      if ((!isDirtyRef.current && !pendingTimerRef.current) || isNavigatingRef.current) {
+      if (!isDirtyRef.current && !pendingTimerRef.current || isNavigatingRef.current) {
         return;
       }
       const destinationPath = `${window.location.pathname}${window.location.search}${window.location.hash}`;
@@ -228,7 +207,6 @@ export const useBundleSave = () => {
       if (destinationPath === currentPath) {
         return;
       }
-
       window.history.pushState(null, "", currentPath);
       isNavigatingRef.current = true;
       clearPendingTimer();
@@ -236,7 +214,6 @@ export const useBundleSave = () => {
       navigate(destinationPath);
       isNavigatingRef.current = false;
     };
-
     document.addEventListener("click", handleLinkClick, true);
     window.addEventListener("popstate", handlePopState);
     return () => {
@@ -244,19 +221,17 @@ export const useBundleSave = () => {
       window.removeEventListener("popstate", handlePopState);
     };
   }, [clearPendingTimer, handleSave, navigate]);
-
   useEffect(() => {
     return () => {
       clearPendingTimer();
       clearSavingIndicatorTimers();
     };
   }, [clearPendingTimer, clearSavingIndicatorTimers]);
-
   return {
     saving,
     hasUnsavedChanges: isDirty,
     message,
     lastSaved,
-    handleSave,
+    handleSave
   };
 };

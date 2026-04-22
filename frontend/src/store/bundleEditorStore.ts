@@ -47,27 +47,24 @@ interface BundleEditorState {
   saveBundle: () => Promise<void>;
   reset: () => void;
 }
-
 const stabilizeFieldIds = (previousFields: BundleField[], incomingFields: BundleField[]): BundleField[] => {
   if (previousFields.length !== incomingFields.length) {
     return incomingFields;
   }
-
   return incomingFields.map((incomingField, index) => {
     const previousField = previousFields[index];
     if (!previousField) {
       return incomingField;
     }
     if (
-      previousField.type === incomingField.type &&
-      previousField.order === incomingField.order
-    ) {
+    previousField.type === incomingField.type &&
+    previousField.order === incomingField.order)
+    {
       return { ...incomingField, id: previousField.id };
     }
     return incomingField;
   });
 };
-
 const isDeepEqual = (a: unknown, b: unknown): boolean => {
   if (Object.is(a, b)) {
     return true;
@@ -112,7 +109,6 @@ const isDeepEqual = (a: unknown, b: unknown): boolean => {
   }
   return false;
 };
-
 const pushHistory = (state: BundleEditorState): {past: Bundle[];} => {
   if (!state.bundle) return { past: state.history.past };
   const newPast = [...state.history.past, state.bundle];
@@ -126,7 +122,7 @@ export const useBundleEditorStore = create<BundleEditorState>((set, get) => ({
   isUndoRedoAction: false,
   history: { past: [], future: [] },
   setBundle: (bundle) =>
-    set({ bundle, isDirty: false, isUndoRedoAction: false, history: { past: [], future: [] } }),
+  set({ bundle, isDirty: false, isUndoRedoAction: false, history: { past: [], future: [] } }),
   setSelectedFieldId: (id) => set({ selectedFieldId: id }),
   addField: (fieldData, index) => set((state) => {
     if (!state.bundle) return state;
@@ -155,15 +151,12 @@ export const useBundleEditorStore = create<BundleEditorState>((set, get) => ({
   }),
   updateField: (id, updates) => set((state) => {
     if (!state.bundle) return state;
-
     const currentField = state.bundle.fields.find((field) => field.id === id);
     if (!currentField) return state;
-
     const nextField = { ...currentField, ...updates };
     if (isDeepEqual(currentField, nextField)) {
       return state;
     }
-
     const historyUpdate = { history: { ...state.history, ...pushHistory(state), future: [] } };
     return {
       ...historyUpdate,
@@ -295,11 +288,11 @@ export const useBundleEditorStore = create<BundleEditorState>((set, get) => ({
     }
   },
   reset: () =>
-    set({
-      bundle: null,
-      selectedFieldId: null,
-      isDirty: false,
-      isUndoRedoAction: false,
-      history: { past: [], future: [] }
-    })
+  set({
+    bundle: null,
+    selectedFieldId: null,
+    isDirty: false,
+    isUndoRedoAction: false,
+    history: { past: [], future: [] }
+  })
 }));

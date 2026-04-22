@@ -122,17 +122,12 @@ const PageTab = React.forwardRef<HTMLDivElement, PageTabProps>(
         "bg-white text-gray-600 border-transparent hover:bg-gray-50"} ${
         isDragging ? "opacity-0" : ""} ${isOverlay ? "shadow-2xl scale-105 cursor-grabbing opacity-100 z-50" : ""}`}
         onClick={() => !isEditing && !isOverlay && onPageChange?.(pageIndex)}
-        {...dragAttributes}>
-        <div
+        {...dragAttributes}>        <div
           {...dragListeners}
           className="mr-2 cursor-grab active:cursor-grabbing hover:opacity-70 touch-none"
-          onClick={(e) => e.stopPropagation()}>
-          <GripVertical
-            className={`w-3 h-3 ${currentPage === pageIndex ? "text-gray-400" : "text-gray-300"}`} />
-        </div>
-        <FileText
-          className={`w-4 h-4 mr-2 ${currentPage === pageIndex ? "text-gray-300" : "text-gray-400"}`} />
-        {isEditing ?
+          onClick={(e) => e.stopPropagation()}>          <GripVertical
+            className={`w-3 h-3 ${currentPage === pageIndex ? "text-gray-400" : "text-gray-300"}`} />        </div>        <FileText
+          className={`w-4 h-4 mr-2 ${currentPage === pageIndex ? "text-gray-300" : "text-gray-400"}`} />        {isEditing ?
         <input
           autoFocus
           value={editValue}
@@ -143,23 +138,17 @@ const PageTab = React.forwardRef<HTMLDivElement, PageTabProps>(
           className="bg-transparent border-b border-white/50 text-white focus:outline-none w-20 px-0.5" /> :
         <span
           onDoubleClick={handleDoubleClick}
-          title={t("builder.navigation.double_click_rename")}>
-            {pageTitle}
-          </span>
-        }
-        {totalContentPages > 1 &&
+          title={t("builder.navigation.double_click_rename")}>          {pageTitle}        </span>
+        }        {totalContentPages > 1 &&
         <span
           onClick={(e) => {
             e.stopPropagation();
             onDeletePage?.(pageIndex);
           }}
           className="ml-2 w-4 h-4 flex items-center justify-center rounded-full hover:bg-white/20 hover:text-white transition-colors opacity-0 group-hover:opacity-100"
-          title={t("builder.navigation.delete_page")}>
-            <X
-            className={`w-3 h-3 ${currentPage === pageIndex ? "text-gray-400" : "text-gray-400"}`} />
-          </span>
-        }
-      </div>);
+          title={t("builder.navigation.delete_page")}>          <X
+            className={`w-3 h-3 ${currentPage === pageIndex ? "text-gray-400" : "text-gray-400"}`} />        </span>
+        }      </div>);
   }
 );
 interface SortablePageTabProps extends PageTabProps {
@@ -283,36 +272,25 @@ export default function PageNavigation({
     }
   };
   return (
-    <>
-      <div
-        className={`hidden md:flex bg-white border-t border-gray-200 shadow-lg items-center justify-between px-4 h-16 ${className}`}>
-        <div className="flex items-center space-x-1 mr-4 text-gray-400 flex-shrink-0 border-r border-gray-200 pr-4 h-8">
-          <button
+    <>      <div
+        className={`hidden md:flex bg-white border-t border-gray-200 shadow-lg items-center justify-between px-4 h-16 ${className}`}>        <div className="flex items-center space-x-1 mr-4 text-gray-400 flex-shrink-0 border-r border-gray-200 pr-4 h-8">          <button
             onClick={handlePrevPage}
             disabled={currentOrderedIndex <= 0}
             className="p-1.5 hover:bg-gray-100 rounded-md disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
-            title={t("builder.pagination.prev")}>
-            <ChevronLeft className="w-5 h-5" />
-          </button>
-          <button
+            title={t("builder.pagination.prev")}>            <ChevronLeft className="w-5 h-5" />          </button>          <button
             onClick={handleNextPage}
             disabled={
             currentOrderedIndex === -1 ||
             currentOrderedIndex >= orderedPages.length - 1
             }
             className="p-1.5 hover:bg-gray-100 rounded-md disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
-            title={t("builder.pagination.next")}>
-            <ChevronRight className="w-5 h-5" />
-          </button>
-        </div>
-        <div
+            title={t("builder.pagination.next")}>            <ChevronRight className="w-5 h-5" />          </button>        </div>        <div
           ref={containerRef}
           className={`flex flex-1 items-center space-x-2 overflow-x-auto p-1 min-w-0 max-w-full 
             [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar]:block 
             [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300 hover:[&::-webkit-scrollbar-thumb]:bg-gray-400 
             [&::-webkit-scrollbar-track]:bg-transparent pb-2`}
-          style={{ scrollbarWidth: "thin" }}>
-          {hasWelcome &&
+          style={{ scrollbarWidth: "thin" }}>          {hasWelcome &&
           <button
             onClick={() => onPageChange(-1)}
             data-active={currentPage === -1}
@@ -323,38 +301,26 @@ export default function PageNavigation({
             "bg-black text-white border-black shadow-sm" :
             "bg-white text-gray-600 border-transparent hover:bg-gray-50"}
                 `
-            }>
-              <LayoutTemplate
-              className={`w-4 h-4 mr-2 ${currentPage === -1 ? "text-gray-300" : "text-gray-400"}`} />
-              {t("builder.pagination.welcome_page")}
-              <span
+            }>            <LayoutTemplate
+              className={`w-4 h-4 mr-2 ${currentPage === -1 ? "text-gray-300" : "text-gray-400"}`} />            {t("builder.pagination.welcome_page")}            <span
               onClick={(e) => {
                 e.stopPropagation();
                 onDeletePage?.(-1);
               }}
               className="ml-2 w-4 h-4 flex items-center justify-center rounded-full hover:bg-white/20 transition-colors opacity-0 group-hover:opacity-100"
-              title={t("builder.pagination.delete_page")}>
-                <X className="w-3 h-3" />
-              </span>
-            </button>
-          }
-          {hasWelcome &&
+              title={t("builder.pagination.delete_page")}>              <X className="w-3 h-3" />            </span>          </button>
+          }          {hasWelcome &&
           <div className="w-px h-5 bg-gray-200 mx-1 flex-shrink-0" />
-          }
-          {}
-          <DndContext
+          }          {}          <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
-            modifiers={[restrictToHorizontalAxis]}>
-            <SortableContext
+            modifiers={[restrictToHorizontalAxis]}>            <SortableContext
               items={contentPages.map(
                 (_, i) => pageSettings?.[i]?.id || `page-idx-${i}`
               )}
-              strategy={horizontalListSortingStrategy}>
-              <div className="flex items-center space-x-2">
-                {contentPages.map((pageIndex) => {
+              strategy={horizontalListSortingStrategy}>              <div className="flex items-center space-x-2">                {contentPages.map((pageIndex) => {
                   const pageId =
                   pageSettings?.[pageIndex]?.id || `page-idx-${pageIndex}`;
                   return (
@@ -368,11 +334,7 @@ export default function PageNavigation({
                       onPageChange={onPageChange}
                       onDeletePage={onDeletePage}
                       onRenamePage={onRenamePage} />);
-                })}
-              </div>
-            </SortableContext>
-            <DragOverlay dropAnimation={dropAnimation}>
-              {activeDragId ?
+                })}              </div>            </SortableContext>            <DragOverlay dropAnimation={dropAnimation}>              {activeDragId ?
               <PageTab
                 pageIndex={orderedPages.findIndex(
                   (idx) =>
@@ -393,13 +355,9 @@ export default function PageNavigation({
                   return t("builder.pagination.page_generic");
                 })()}
                 isOverlay={true} /> :
-              null}
-            </DragOverlay>
-          </DndContext>
-          {hasThankYou &&
+              null}            </DragOverlay>          </DndContext>          {hasThankYou &&
           <div className="w-px h-5 bg-gray-200 mx-1 flex-shrink-0" />
-          }
-          {hasThankYou &&
+          }          {hasThankYou &&
           <button
             onClick={() => onPageChange(-2)}
             data-active={currentPage === -2}
@@ -410,22 +368,15 @@ export default function PageNavigation({
             "bg-black text-white border-black shadow-sm" :
             "bg-white text-gray-600 border-transparent hover:bg-gray-50"}
                     `
-            }>
-              <CheckCircle2
-              className={`w-4 h-4 mr-2 ${currentPage === -2 ? "text-gray-300" : "text-gray-400"}`} />
-              {t("builder.pagination.end_page")}
-              <span
+            }>            <CheckCircle2
+              className={`w-4 h-4 mr-2 ${currentPage === -2 ? "text-gray-300" : "text-gray-400"}`} />            {t("builder.pagination.end_page")}            <span
               onClick={(e) => {
                 e.stopPropagation();
                 onDeletePage?.(-2);
               }}
               className="ml-2 w-4 h-4 flex items-center justify-center rounded-full hover:bg-white/20 transition-colors opacity-0 group-hover:opacity-100"
-              title={t("builder.pagination.delete_page")}>
-                <X className="w-3 h-3" />
-              </span>
-            </button>
-          }
-        </div>
+              title={t("builder.pagination.delete_page")}>              <X className="w-3 h-3" />            </span>          </button>
+          }        </div>
         <div className="relative ml-4 z-50">
           {showScrollTop && onScrollToTop &&
           <button
@@ -480,11 +431,8 @@ export default function PageNavigation({
             </div>
           </div>
         </div>
-      </div>
-      <div
-        className={`md:hidden fixed bottom-0 left-0 right-0 z-[80] bg-white border-t border-gray-200 shadow-[0_-4px_20px_-5px_rgba(0,0,0,0.1)] px-3 h-16 flex items-center justify-between pb-safesafe ${className}`}>
-        <div className="flex items-center gap-1">
-          <button
+      </div>      <div
+        className={`md:hidden fixed bottom-0 left-0 right-0 z-[80] bg-white border-t border-gray-200 shadow-[0_-4px_20px_-5px_rgba(0,0,0,0.1)] px-3 h-16 flex items-center justify-between pb-safesafe ${className}`}>        <div className="flex items-center gap-1">          <button
             onClick={(e) => {
               e.stopPropagation();
               if (currentPage === -1) onDeletePage?.(-1);else
@@ -497,42 +445,21 @@ export default function PageNavigation({
             currentPage >= 0 && totalContentPages <= 1 ?
             t("builder.pagination.last_page_delete_error") :
             t("builder.pagination.delete_page")
-            }>
-            <Trash2 className="w-5 h-5" />
-          </button>
-          <button
+            }>            <Trash2 className="w-5 h-5" />          </button>          <button
             onClick={handlePrevPage}
             disabled={currentOrderedIndex <= 0}
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-50 text-gray-600 hover:bg-gray-100 disabled:opacity-30 disabled:bg-transparent transition-all">
-            <ChevronLeft className="w-5 h-5" />
-          </button>
-        </div>
-        <div className="flex-1 px-2 relative flex justify-center min-w-0">
-          <div className="relative inline-flex items-center justify-center max-w-full">
-            <button
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-50 text-gray-600 hover:bg-gray-100 disabled:opacity-30 disabled:bg-transparent transition-all">            <ChevronLeft className="w-5 h-5" />          </button>        </div>        <div className="flex-1 px-2 relative flex justify-center min-w-0">          <div className="relative inline-flex items-center justify-center max-w-full">            <button
               type="button"
               onClick={() => setIsMobilePagePickerOpen(true)}
               aria-haspopup="dialog"
               aria-expanded={isMobilePagePickerOpen}
-              className="flex items-center justify-between gap-2 bg-black text-white px-4 py-2.5 rounded-full shadow-lg text-sm font-medium w-full max-w-[180px] active:scale-[0.99] transition-transform">
-              <span className="truncate flex-1 text-left">
-                {currentPage === -1 ?
+              className="flex items-center justify-between gap-2 bg-black text-white px-4 py-2.5 rounded-full shadow-lg text-sm font-medium w-full max-w-[180px] active:scale-[0.99] transition-transform">              <span className="truncate flex-1 text-left">                {currentPage === -1 ?
                 t("builder.pagination.welcome_page") :
                 currentPage === -2 ?
                 t("builder.pagination.end_page") :
-                getPageTitle(currentPage)}
-              </span>
-              {orderedPages.length > 1 &&
-              <div className="flex items-center gap-1 opacity-70 flex-shrink-0">
-                  <span className="text-[10px] uppercase font-bold tracking-wider">
-                    {t("builder.pagination.more")}
-                  </span>
-                  <ChevronDown className="w-3 h-3" />
-                </div>
-              }
-            </button>
-          </div>
-        </div>
+                getPageTitle(currentPage)}              </span>              {orderedPages.length > 1 &&
+              <div className="flex items-center gap-1 opacity-70 flex-shrink-0">                <span className="text-[10px] uppercase font-bold tracking-wider">                  {t("builder.pagination.more")}                </span>                <ChevronDown className="w-3 h-3" />              </div>
+              }            </button>          </div>        </div>
         <div className="flex items-center gap-1 relative">
           {showScrollTop && onScrollToTop &&
           <button
@@ -548,43 +475,19 @@ export default function PageNavigation({
             currentOrderedIndex === -1 ||
             currentOrderedIndex >= orderedPages.length - 1
             }
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-50 text-gray-600 hover:bg-gray-100 disabled:opacity-30 disabled:bg-transparent transition-all">
-            <ChevronRight className="w-5 h-5" />
-          </button>
-          <div className="w-px h-6 bg-gray-200 mx-1"></div>
-          <div className="relative">
-            <button
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-50 text-gray-600 hover:bg-gray-100 disabled:opacity-30 disabled:bg-transparent transition-all">            <ChevronRight className="w-5 h-5" />          </button>          <div className="w-px h-6 bg-gray-200 mx-1"></div>          <div className="relative">            <button
               onClick={() => setShowMobileAddMenu(!showMobileAddMenu)}
-              className="w-10 h-10 flex items-center justify-center rounded-full bg-black text-white shadow-lg active:scale-95 transition-all">
-              <Plus
-                className={`w-5 h-5 transition-transform duration-200 ${showMobileAddMenu ? "rotate-45" : ""}`} />
-            </button>
-            {showMobileAddMenu &&
+              className="w-10 h-10 flex items-center justify-center rounded-full bg-black text-white shadow-lg active:scale-95 transition-all">              <Plus
+                className={`w-5 h-5 transition-transform duration-200 ${showMobileAddMenu ? "rotate-45" : ""}`} />            </button>            {showMobileAddMenu &&
             createPortal(
-              <>
-                  <div
+              <>                <div
                   className="fixed inset-0 z-[9999]"
-                  onClick={() => setShowMobileAddMenu(false)} />
-                  <div className="fixed bottom-24 right-4 w-64 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 z-[9999] overflow-hidden animate-in slide-in-from-bottom-2 fade-in duration-200">
-                    <button
+                  onClick={() => setShowMobileAddMenu(false)} />                <div className="fixed bottom-24 right-4 w-64 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 z-[9999] overflow-hidden animate-in slide-in-from-bottom-2 fade-in duration-200">                  <button
                     onClick={() => {
                       onAddPage();
                       setShowMobileAddMenu(false);
                     }}
-                    className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-black flex items-center transition-colors border-b border-gray-50">
-                      <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center mr-3 text-gray-500">
-                        <FileText className="w-4 h-4" />
-                      </div>
-                      <div>
-                        <div className="font-medium">
-                          {t("builder.pagination.page_generic")}
-                        </div>
-                        <div className="text-xs text-gray-400">
-                          {t("builder.pagination.add_new_blank")}
-                        </div>
-                      </div>
-                    </button>
-                    <button
+                    className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-black flex items-center transition-colors border-b border-gray-50">                    <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center mr-3 text-gray-500">                      <FileText className="w-4 h-4" />                    </div>                    <div>                      <div className="font-medium">                        {t("builder.pagination.page_generic")}                      </div>                      <div className="text-xs text-gray-400">                        {t("builder.pagination.add_new_blank")}                      </div>                    </div>                  </button>                  <button
                     onClick={() => {
                       if (!hasWelcome) {
                         onAddWelcome?.();
@@ -596,26 +499,12 @@ export default function PageNavigation({
                     hasWelcome ?
                     "opacity-50 cursor-not-allowed bg-gray-50/50" :
                     "text-gray-700 hover:bg-gray-50 hover:text-black"}`
-                    }>
-                      <div
-                      className={`w-8 h-8 rounded-full flex items-center justify-center mr-3 ${hasWelcome ? "bg-gray-100 text-gray-300" : "bg-indigo-50 text-indigo-500"}`}>
-                        <LayoutTemplate className="w-4 h-4" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="font-medium">
-                          {t("builder.pagination.welcome_page")}
-                        </div>
-                        <div className="text-xs text-gray-400">
-                          {hasWelcome ?
+                    }>                    <div
+                      className={`w-8 h-8 rounded-full flex items-center justify-center mr-3 ${hasWelcome ? "bg-gray-100 text-gray-300" : "bg-indigo-50 text-indigo-500"}`}>                      <LayoutTemplate className="w-4 h-4" />                    </div>                    <div className="flex-1">                      <div className="font-medium">                        {t("builder.pagination.welcome_page")}                      </div>                      <div className="text-xs text-gray-400">                        {hasWelcome ?
                         t("builder.pagination.already_added") :
-                        t("builder.pagination.active_intro")}
-                        </div>
-                      </div>
-                      {hasWelcome &&
+                        t("builder.pagination.active_intro")}                      </div>                    </div>                    {hasWelcome &&
                     <CheckCircle2 className="w-4 h-4 text-green-500 ml-2" />
-                    }
-                    </button>
-                    <button
+                    }                  </button>                  <button
                     onClick={() => {
                       if (!hasThankYou) {
                         onAddThankYou?.();
@@ -627,72 +516,31 @@ export default function PageNavigation({
                     hasThankYou ?
                     "opacity-50 cursor-not-allowed bg-gray-50/50" :
                     "text-gray-700 hover:bg-gray-50 hover:text-black"}`
-                    }>
-                      <div
-                      className={`w-8 h-8 rounded-full flex items-center justify-center mr-3 ${hasThankYou ? "bg-gray-100 text-gray-300" : "bg-emerald-50 text-emerald-500"}`}>
-                        <CheckCircle2 className="w-4 h-4" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="font-medium">
-                          {t("builder.pagination.end_page")}
-                        </div>
-                        <div className="text-xs text-gray-400">
-                          {hasThankYou ?
+                    }>                    <div
+                      className={`w-8 h-8 rounded-full flex items-center justify-center mr-3 ${hasThankYou ? "bg-gray-100 text-gray-300" : "bg-emerald-50 text-emerald-500"}`}>                      <CheckCircle2 className="w-4 h-4" />                    </div>                    <div className="flex-1">                      <div className="font-medium">                        {t("builder.pagination.end_page")}                      </div>                      <div className="text-xs text-gray-400">                        {hasThankYou ?
                         t("builder.pagination.already_added") :
-                        t("builder.pagination.active_success")}
-                        </div>
-                      </div>
-                      {hasThankYou &&
+                        t("builder.pagination.active_success")}                      </div>                    </div>                    {hasThankYou &&
                     <CheckCircle2 className="w-4 h-4 text-green-500 ml-2" />
-                    }
-                    </button>
-                  </div>
-                </>,
+                    }                  </button>                </div>              </>,
               document.body
-            )}
-          </div>
-        </div>
-      </div>
-      {isMobilePagePickerOpen &&
+            )}          </div>        </div>      </div>      {isMobilePagePickerOpen &&
       createPortal(
-        <>
-          <motion.div
+        <>          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="fixed inset-0 z-[9998] bg-black/40 backdrop-blur-[2px]"
-            onClick={() => setIsMobilePagePickerOpen(false)} />
-          <motion.div
+            onClick={() => setIsMobilePagePickerOpen(false)} />          <motion.div
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
             transition={{ type: "spring", damping: 34, stiffness: 380, bounce: 0 }}
-            className="fixed inset-x-0 bottom-0 z-[9999]">
-            <div className="mx-auto max-w-md">
-              <div className="bg-white rounded-t-3xl shadow-2xl border border-gray-200 overflow-hidden">
-                <div className="px-4 pt-3 pb-2">
-                  <div className="w-10 h-1 bg-gray-200 rounded-full mx-auto mb-3" />
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="min-w-0">
-                      <div className="text-sm font-semibold text-gray-900 truncate">
-                        {t("builder.pagination.page_generic")}
-                      </div>
-                      <div className="text-xs text-gray-500 truncate">
-                        {currentPage === -1 ?
+            className="fixed inset-x-0 bottom-0 z-[9999]">            <div className="mx-auto max-w-md">              <div className="bg-white rounded-t-3xl shadow-2xl border border-gray-200 overflow-hidden">                <div className="px-4 pt-3 pb-2">                  <div className="w-10 h-1 bg-gray-200 rounded-full mx-auto mb-3" />                  <div className="flex items-center justify-between gap-3">                    <div className="min-w-0">                      <div className="text-sm font-semibold text-gray-900 truncate">                        {t("builder.pagination.page_generic")}                      </div>                      <div className="text-xs text-gray-500 truncate">                        {currentPage === -1 ?
                         t("builder.pagination.welcome_page") :
                         currentPage === -2 ?
                         t("builder.pagination.end_page") :
-                        getPageTitle(currentPage)}
-                      </div>
-                    </div>
-                    <button
+                        getPageTitle(currentPage)}                      </div>                    </div>                    <button
                       type="button"
                       onClick={() => setIsMobilePagePickerOpen(false)}
-                      className="w-9 h-9 rounded-full bg-gray-50 text-gray-700 flex items-center justify-center hover:bg-gray-100 transition-colors">
-                      <X className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-                <div className="max-h-[60vh] overflow-y-auto px-2 pb-2">
-                  {orderedPages.map((pageIdx) => {
+                      className="w-9 h-9 rounded-full bg-gray-50 text-gray-700 flex items-center justify-center hover:bg-gray-100 transition-colors">                      <X className="w-4 h-4" />                    </button>                  </div>                </div>                <div className="max-h-[60vh] overflow-y-auto px-2 pb-2">                  {orderedPages.map((pageIdx) => {
                     const isActive = currentPage === pageIdx;
                     const title =
                     pageIdx === -1 ?
@@ -716,44 +564,19 @@ export default function PageNavigation({
                         isActive ?
                         "bg-black text-white" :
                         "bg-white text-gray-800 hover:bg-gray-50"}`
-                        }>
-                        <div
+                        }>                        <div
                           className={`w-9 h-9 rounded-2xl flex items-center justify-center flex-shrink-0 ${
                           isActive ? "bg-white/10" : "bg-gray-100"}`
-                          }>
-                          <Icon className={`w-4 h-4 ${isActive ? "text-white" : "text-gray-600"}`} />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <div className="text-sm font-medium truncate">
-                            {title}
-                          </div>
-                        </div>
-                        <div className="flex-shrink-0">
-                          {isActive &&
+                          }>                          <Icon className={`w-4 h-4 ${isActive ? "text-white" : "text-gray-600"}`} />                        </div>                        <div className="min-w-0 flex-1">                          <div className="text-sm font-medium truncate">                            {title}                          </div>                        </div>                        <div className="flex-shrink-0">                          {isActive &&
                           <CheckCircle2 className="w-5 h-5 text-white/90" />
-                          }
-                        </div>
-                      </button>);
-                  })}
-                </div>
-                <div className="px-4 pt-1 pb-4">
-                  <button
+                          }                        </div>                      </button>);
+                  })}                </div>                <div className="px-4 pt-1 pb-4">                  <button
                     type="button"
                     onClick={() => {
                       onAddPage();
                       setIsMobilePagePickerOpen(false);
                     }}
-                    className="w-full mt-1 flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-gray-900 text-white font-medium shadow-lg active:scale-[0.99] transition-transform">
-                    <Plus className="w-4 h-4" />
-                    {t("builder.pagination.add_page")}
-                  </button>
-                </div>
-              </div>
-              <div className="h-[max(env(safe-area-inset-bottom),12px)] bg-white" />
-            </div>
-          </motion.div>
-        </>,
+                    className="w-full mt-1 flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-gray-900 text-white font-medium shadow-lg active:scale-[0.99] transition-transform">                    <Plus className="w-4 h-4" />                    {t("builder.pagination.add_page")}                  </button>                </div>              </div>              <div className="h-[max(env(safe-area-inset-bottom),12px)] bg-white" />            </div>          </motion.div>        </>,
         document.body
-      )}
-    </>);
+      )}    </>);
 }

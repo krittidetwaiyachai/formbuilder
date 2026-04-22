@@ -3,6 +3,29 @@ import type { FormBuilderState } from '../formStore';
 import type { Form } from '@/types';
 import { Socket } from 'socket.io-client';
 import api from '@/lib/api';
+const createHistorySnapshot = (form: Form): Form => {
+  const snapshot = JSON.parse(JSON.stringify(form)) as Form;
+  delete snapshot.collaborators;
+  delete snapshot.createdBy;
+  delete snapshot.responseCount;
+  delete snapshot.viewCount;
+  delete snapshot._count;
+  return snapshot;
+};
+const mergeRuntimeFormState = (snapshot: Form, currentForm: Form | null): Form => {
+  if (!currentForm) {
+    return snapshot;
+  }
+  return {
+    ...snapshot,
+    createdById: currentForm.createdById,
+    createdBy: currentForm.createdBy,
+    collaborators: currentForm.collaborators,
+    responseCount: currentForm.responseCount,
+    viewCount: currentForm.viewCount,
+    _count: currentForm._count
+  };
+};
 export function buildFormSavePayload(currentForm: Form) {
   const {
     id,
@@ -50,8 +73,8 @@ export const createFormSlice: StateCreator<FormBuilderState, [], [], FormSlice> 
     set({ currentForm: newForm });
     if (emit) {
       get().emitChange(newForm);
+      get().saveToHistory();
     }
-    get().saveToHistory();
   },
   setShouldFocusField: (shouldFocus) => set({ shouldFocusField: shouldFocus }),
   setActiveSidebarTab: (tab) => set({ activeSidebarTab: tab }),
@@ -94,7 +117,7 @@ export const createHistorySlice: StateCreator<FormBuilderState, [], [], HistoryS
     if (!currentForm) return;
     const newHistory = history.slice(0, historyIndex + 1);
     newHistory.push({
-      form: JSON.parse(JSON.stringify(currentForm)),
+      form: createHistorySnapshot(currentForm),
       timestamp: Date.now()
     });
     if (newHistory.length > 50) {
@@ -106,29 +129,31 @@ export const createHistorySlice: StateCreator<FormBuilderState, [], [], HistoryS
     });
   },
   undo: () => {
-    const { history, historyIndex } = get();
+    const { history, historyIndex, currentForm } = get();
     if (historyIndex > 0) {
       const newIndex = historyIndex - 1;
       const previousState = history[newIndex];
+      const mergedState = mergeRuntimeFormState(previousState.form, currentForm);
       set({
-        currentForm: previousState.form,
+        currentForm: mergedState,
         historyIndex: newIndex,
         isUndoRedoAction: true
       });
-      get().emitChange(previousState.form);
+      get().emitChange(mergedState);
     }
   },
   redo: () => {
-    const { history, historyIndex } = get();
+    const { history, historyIndex, currentForm } = get();
     if (historyIndex < history.length - 1) {
       const newIndex = historyIndex + 1;
       const nextState = history[newIndex];
+      const mergedState = mergeRuntimeFormState(nextState.form, currentForm);
       set({
-        currentForm: nextState.form,
+        currentForm: mergedState,
         historyIndex: newIndex,
         isUndoRedoAction: true
       });
-      get().emitChange(nextState.form);
+      get().emitChange(mergedState);
     }
   }
 });

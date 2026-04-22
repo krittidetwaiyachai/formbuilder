@@ -14,7 +14,6 @@ export class CreateBundleFieldDto {
   @IsOptional()
   @IsString()
   id?: string;
-
   @IsEnum(FieldType)
   type: FieldType;
   @IsString()

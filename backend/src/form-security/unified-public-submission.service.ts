@@ -24,6 +24,7 @@ import { resolveCanonicalEmail } from './canonical-email.resolver';
 import { sha256 } from './verification-binding.util';
 import { PublicSubmissionSessionService } from './public-submission-session.service';
 import { generateOpaqueSessionToken } from './public-submission-session.util';
+import { SystemSettingsService } from '../system-settings/system-settings.service';
 @Injectable()export class
 UnifiedPublicSubmissionService {
   constructor(
@@ -35,7 +36,8 @@ UnifiedPublicSubmissionService {
   private readonly responsePersistenceService: ResponsePersistenceService,
   private readonly rateLimitService: RedisRateLimitService,
   private readonly turnstileService: TurnstileService,
-  private readonly publicSessionService: PublicSubmissionSessionService)
+  private readonly publicSessionService: PublicSubmissionSessionService,
+  private readonly systemSettingsService: SystemSettingsService)
   {}
   async getPublicForm(
   formId: string,
@@ -62,6 +64,7 @@ UnifiedPublicSubmissionService {
   userAgent?: string)
   {
     this.rateLimitService.requireSharedStore();
+    const rateLimitSettings = await this.systemSettingsService.getRateLimitSettings();
     const { session, cookieToken: nextCookieToken, isNew } =
     await this.publicSessionService.ensureSession(formId, cookieToken, ipAddress, userAgent);
     const form = await this.responsePersistenceService.loadPublishedForm(formId);
@@ -98,9 +101,17 @@ UnifiedPublicSubmissionService {
     }
     const ipHash = ipAddress ? this.encryptionService.hashIpAddress(ipAddress) : null;
     const emailHash = sha256(`${formId}:${canonicalEmail}`);
-    await this.rateLimitService.consume(`public:${formId}:verify:session:${session.id}`, 5, 10 * 60);
+    await this.rateLimitService.consume(
+      `public:${formId}:verify:session:${session.id}`,
+      rateLimitSettings.publicVerifySessionLimit,
+      rateLimitSettings.publicVerifyWindowSeconds
+    );
     if (ipHash) {
-      await this.rateLimitService.consume(`public:${formId}:verify:ip:${ipHash}`, 20, 10 * 60);
+      await this.rateLimitService.consume(
+        `public:${formId}:verify:ip:${ipHash}`,
+        rateLimitSettings.publicVerifyIpLimit,
+        rateLimitSettings.publicVerifyWindowSeconds
+      );
     }
     const existingRequest = await this.prisma.submissionVerificationRequest.findFirst({
       where: {
@@ -114,7 +125,10 @@ UnifiedPublicSubmissionService {
       orderBy: { createdAt: 'desc' }
     });
     const cooldownKey = `public:${formId}:verify:cooldown:${emailHash}:${session.id}`;
-    const cooldownAcquired = await this.rateLimitService.acquireCooldown(cooldownKey, 60);
+    const cooldownAcquired = await this.rateLimitService.acquireCooldown(
+      cooldownKey,
+      rateLimitSettings.verificationCooldownSeconds
+    );
     if (!cooldownAcquired && existingRequest) {
       return {
         status: 'PENDING',
@@ -168,12 +182,21 @@ UnifiedPublicSubmissionService {
   }
   async verifyEmailToken(token: string, ipAddress?: string) {
     this.rateLimitService.requireSharedStore();
+    const rateLimitSettings = await this.systemSettingsService.getRateLimitSettings();
     const tokenHash = sha256(token);
     const ipHash = ipAddress ? this.encryptionService.hashIpAddress(ipAddress) : null;
     if (ipHash) {
-      await this.rateLimitService.consume(`public:verify-token:ip:${ipHash}`, 20, 10 * 60);
+      await this.rateLimitService.consume(
+        `public:verify-token:ip:${ipHash}`,
+        rateLimitSettings.publicVerifyIpLimit,
+        rateLimitSettings.publicVerifyWindowSeconds
+      );
     }
-    await this.rateLimitService.consume(`public:verify-token:token:${tokenHash}`, 5, 10 * 60);
+    await this.rateLimitService.consume(
+      `public:verify-token:token:${tokenHash}`,
+      rateLimitSettings.publicVerifySessionLimit,
+      rateLimitSettings.publicVerifyWindowSeconds
+    );
     const verificationRequest = await this.prisma.submissionVerificationRequest.findFirst({
       where: {
         tokenHash,
@@ -268,6 +291,7 @@ UnifiedPublicSubmissionService {
   userAgent?: string)
   {
     this.rateLimitService.requireSharedStore();
+    const rateLimitSettings = await this.systemSettingsService.getRateLimitSettings();
     const { session, cookieToken: nextCookieToken, isNew } =
     await this.publicSessionService.ensureSession(formId, cookieToken, ipAddress, userAgent);
     const form = await this.responsePersistenceService.loadPublishedForm(formId);
@@ -296,9 +320,17 @@ UnifiedPublicSubmissionService {
       });
     }
     const ipHash = ipAddress ? this.encryptionService.hashIpAddress(ipAddress) : null;
-    await this.rateLimitService.consume(`public:${formId}:submit:session:${session.id}`, 10, 10 * 60);
+    await this.rateLimitService.consume(
+      `public:${formId}:submit:session:${session.id}`,
+      rateLimitSettings.publicSubmitSessionLimit,
+      rateLimitSettings.publicSubmitWindowSeconds
+    );
     if (ipHash) {
-      await this.rateLimitService.consume(`public:${formId}:submit:ip:${ipHash}`, 20, 10 * 60);
+      await this.rateLimitService.consume(
+        `public:${formId}:submit:ip:${ipHash}`,
+        rateLimitSettings.publicSubmitIpLimit,
+        rateLimitSettings.publicSubmitWindowSeconds
+      );
     }
     try {
       const submission = await this.prisma.$transaction(async (tx) => {

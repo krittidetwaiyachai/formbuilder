@@ -151,7 +151,6 @@ export default function DashboardPage() {
     if (!inviteToken || !isAuthenticated) {
       return;
     }
-
     let cancelled = false;
     const acceptInvitation = async () => {
       try {
@@ -180,7 +179,6 @@ export default function DashboardPage() {
         setSearchParams(nextParams, { replace: true });
       }
     };
-
     void acceptInvitation();
     return () => {
       cancelled = true;
@@ -687,4 +685,3 @@ export default function DashboardPage() {
             <ChevronDown className="w-5 h-5 stroke-[3]" />        </motion.div>      </div>
       }    </div>);
 }
-

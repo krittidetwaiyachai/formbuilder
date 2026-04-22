@@ -28,31 +28,20 @@ const FieldTypeButtonVisual = ({
                 md:hover:shadow-lg md:hover:-translate-y-1 relative overflow-hidden
                 active:scale-[0.98] active:bg-gray-50
                 ${theme.border}
-            `}>
-        <div
+            `}>        <div
           className={`
                     absolute inset-0 opacity-0 md:group-hover:opacity-100 transition-opacity duration-300
                     bg-gradient-to-br ${theme.bg} to-white pointer-events-none
-                `} />
-        <div
+                `} />        <div
           className={`
                     w-12 h-12 rounded-full flex items-center justify-center
                     ${theme.bg} ${theme.text} md:group-hover:scale-110 transition-transform duration-300
-                `}>
-          <Icon className="h-6 w-6" />
-        </div>
-        <span
-          className={`z-10 text-center text-[12px] font-semibold leading-[1.35] text-gray-700 md:group-hover:text-gray-900`}>
-          {translatedLabel}
-        </span>
-      </div>);
+                `}>          <Icon className="h-6 w-6" />        </div>        <span
+          className={`z-10 text-center text-[12px] font-semibold leading-[1.35] text-gray-700 md:group-hover:text-gray-900`}>          {translatedLabel}        </span>      </div>);
   }
   return (
     <div
-      className={`w-full flex items-center ${isCollapsed ? "justify-center px-1" : "px-3"} py-2 text-sm text-black bg-white md:hover:bg-gray-50 active:bg-gray-100 rounded-md border border-gray-400 transition-colors cursor-grab active:cursor-grabbing touch-none select-none`}>
-      <Icon className={`h-4 w-4 ${isCollapsed ? "" : "mr-2"}`} />{" "}
-      {!isCollapsed && <span>{translatedLabel}</span>}{" "}
-    </div>);
+      className={`w-full flex items-center ${isCollapsed ? "justify-center px-1" : "px-3"} py-2 text-sm text-black bg-white md:hover:bg-gray-50 active:bg-gray-100 rounded-md border border-gray-400 transition-colors cursor-grab active:cursor-grabbing touch-none select-none`}>      <Icon className={`h-4 w-4 ${isCollapsed ? "" : "mr-2"}`} />{" "}      {!isCollapsed && <span>{translatedLabel}</span>}{" "}    </div>);
 };
 export function FieldTypeButton({
   fieldType,
@@ -189,20 +178,16 @@ export function FieldTypeButton({
     };
   }, [handleCustomMobileDragStart, useCustomSidebarDrag]);
   return (
-    <div className="relative w-full h-full">
-      <div
+    <div className="relative w-full h-full">      <div
         className="relative z-0 select-none h-full"
         onClick={(e) => {
           if (isTouch && !isCollapsed && variant !== "grid") {
             handleTapAdd(e);
           }
-        }}>
-        <FieldTypeButtonVisual
+        }}>        <FieldTypeButtonVisual
           fieldType={fieldType}
           isCollapsed={isCollapsed}
-          variant={variant} />
-      </div>
-      {useCustomSidebarDrag &&
+          variant={variant} />      </div>      {useCustomSidebarDrag &&
       <div
         ref={customDragOverlayRef}
         className="absolute inset-0 z-20 bg-transparent"
@@ -213,6 +198,5 @@ export function FieldTypeButton({
           userSelect: "none",
           cursor: "grab"
         }} />
-      }
-    </div>);
+      }    </div>);
 }

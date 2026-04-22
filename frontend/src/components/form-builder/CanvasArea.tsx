@@ -155,9 +155,7 @@ export default function CanvasArea({
         transition={mobileLayoutTransition} />);
   };
   return (
-    <>
-      <Droppable droppableId="CANVAS" isCombineEnabled>
-        {(provided, snapshot) =>
+    <>      <Droppable droppableId="CANVAS" isCombineEnabled>        {(provided, snapshot) =>
         <div
           ref={provided.innerRef}
           {...provided.droppableProps}
@@ -171,13 +169,9 @@ export default function CanvasArea({
               onDeselect?.();
               setActiveContextMenu(null);
             }
-          }}>
-            {renderedTopLevelFields.length > 0 ?
-          <div className="flex flex-row flex-wrap content-start gap-3 w-full">
-                {renderMobilePlaceholder(0)}
-                {renderedTopLevelFields.map((field, index) =>
-            <React.Fragment key={field.id}>
-                    <motion.div
+          }}>          {renderedTopLevelFields.length > 0 ?
+          <div className="flex flex-row flex-wrap content-start gap-3 w-full">            {renderMobilePlaceholder(0)}            {renderedTopLevelFields.map((field, index) =>
+            <React.Fragment key={field.id}>              <motion.div
                 layout={shouldAnimateLayoutDuringDrag ? "position" : false}
                 transition={mobileLayoutTransition}
                 initial={field.id === droppedFieldId ?
@@ -188,8 +182,7 @@ export default function CanvasArea({
                 undefined}
                 className="w-full"
                 data-top-level-field-slot="true"
-                data-top-level-field-id={field.id}>
-                      <FieldItem
+                data-top-level-field-id={field.id}>                <FieldItem
                   field={field}
                   isSelected={
                   selectedFieldId === field.id ||
@@ -209,15 +202,9 @@ export default function CanvasArea({
                   allFields={visibleFields}
                   collaboratingUsers={getFieldUsers?.(field.id)}
                   onMobileDragHandlePointerDown={(event) =>
-                  onMobileCanvasDragStart?.(field, event)} />
-                    </motion.div>
-                    {renderMobilePlaceholder(index + 1)}
-                  </React.Fragment>
-            )}
-                {provided.placeholder}
-              </div> :
-          <>
-                {isAnyMobileDrag && activeMobileDropIndex === 0 ?
+                  onMobileCanvasDragStart?.(field, event)} />              </motion.div>              {renderMobilePlaceholder(index + 1)}            </React.Fragment>
+            )}            {provided.placeholder}          </div> :
+          <>            {isAnyMobileDrag && activeMobileDropIndex === 0 ?
             isMobileDraggingSidebar ?
             <motion.div
               aria-hidden="true"
@@ -231,17 +218,9 @@ export default function CanvasArea({
               initial={false}
               animate={{ height: canvasPlaceholderHeight, opacity: 1 }}
               transition={mobileLayoutTransition} /> :
-            null}
-                {!isAnyMobileDrag &&
-            <div className="flex flex-col items-center justify-center py-32 text-gray-400">
-                    <p className="text-sm font-medium">
-                      {t("builder.drag_drop_instructions")}
-                    </p>
-                  </div>
-            }
-                {provided.placeholder}
-              </>}
-            {activeContextMenu ?
+            null}            {!isAnyMobileDrag &&
+            <div className="flex flex-col items-center justify-center py-32 text-gray-400">              <p className="text-sm font-medium">                {t("builder.drag_drop_instructions")}              </p>            </div>
+            }            {provided.placeholder}          </>}          {activeContextMenu ?
           (() => {
             const field = visibleFields.find(
               (entry) => entry.id === activeContextMenu.fieldId
@@ -261,11 +240,8 @@ export default function CanvasArea({
                   setDeleteConfirm({ isOpen: true, fieldId: field.id });
                 }} />);
           })() :
-          null}
-          </div>
-        }
-      </Droppable>
-      <ConfirmDialog
+          null}        </div>
+        }      </Droppable>      <ConfirmDialog
         open={deleteConfirm.isOpen}
         onOpenChange={(open) =>
         !open && setDeleteConfirm((prev) => ({ ...prev, isOpen: false }))}
@@ -279,6 +255,5 @@ export default function CanvasArea({
         }}
         confirmText={t("common.delete")}
         cancelText={t("common.cancel")}
-        variant="destructive" />
-    </>);
+        variant="destructive" />    </>);
 }

@@ -6,10 +6,10 @@ import { SystemSettingsService } from '../system-settings/system-settings.servic
 @Injectable()export class
 AdminService {
   constructor(
-    private prisma: PrismaService,
-    private readonly mailService: MailService,
-    private readonly systemSettingsService: SystemSettingsService,
-  ) {}
+  private prisma: PrismaService,
+  private readonly mailService: MailService,
+  private readonly systemSettingsService: SystemSettingsService)
+  {}
   async getStats() {
     const now = new Date();
     const startOfThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -218,23 +218,23 @@ AdminService {
     const skip = (page - 1) * limit;
     const allowedActionFilter: Prisma.ActivityLogWhereInput = {
       OR: [
-        {
-          action: {
-            in: [
-              'CREATED',
-              'DELETED',
-              'PUBLISHED',
-              'COLLABORATOR_INVITED',
-              'COLLABORATOR_ADDED',
-              'COLLABORATOR_REMOVED']
-          }
-        },
-        {
-          AND: [
-            { action: 'UPDATED' },
-            { details: { path: ['settingsChanges'], not: [] } },
-            { details: { path: ['settingsChanges'], not: null } }]
-        }]
+      {
+        action: {
+          in: [
+          'CREATED',
+          'DELETED',
+          'PUBLISHED',
+          'COLLABORATOR_INVITED',
+          'COLLABORATOR_ADDED',
+          'COLLABORATOR_REMOVED']
+        }
+      },
+      {
+        AND: [
+        { action: 'UPDATED' },
+        { details: { path: ['settingsChanges'], not: [] } },
+        { details: { path: ['settingsChanges'], not: null } }]
+      }]
     };
     const andFilters: Prisma.ActivityLogWhereInput[] = [allowedActionFilter];
     if (action) {
@@ -285,7 +285,7 @@ AdminService {
       details: this.sanitizeSystemLogDetails(log.action, log.details as Prisma.JsonValue | null)
     }));
     const filteredLogs = sanitizedLogs.filter(
-      (log) => !(log.action === 'UPDATED' && !log.details),
+      (log) => !(log.action === 'UPDATED' && !log.details)
     );
     const removerIds = Array.from(
       new Set(
@@ -293,9 +293,9 @@ AdminService {
         filter((log) => log.action === 'COLLABORATOR_REMOVED').
         map((log) => {
           const details =
-            log.details && typeof log.details === 'object' && !Array.isArray(log.details) ?
-            log.details as Record<string, unknown> :
-            null;
+          log.details && typeof log.details === 'object' && !Array.isArray(log.details) ?
+          log.details as Record<string, unknown> :
+          null;
           return typeof details?.removedBy === 'string' ? details.removedBy : null;
         }).
         filter((value): value is string => Boolean(value))
@@ -304,17 +304,17 @@ AdminService {
     const removersById = removerIds.length > 0 ?
     new Map(
       (
-        await this.prisma.user.findMany({
-          where: { id: { in: removerIds } },
-          select: {
-            id: true,
-            email: true,
-            firstName: true,
-            lastName: true,
-            photoUrl: true
-          }
-        })
-      ).map((user) => [user.id, user])
+      await this.prisma.user.findMany({
+        where: { id: { in: removerIds } },
+        select: {
+          id: true,
+          email: true,
+          firstName: true,
+          lastName: true,
+          photoUrl: true
+        }
+      })).
+      map((user) => [user.id, user])
     ) :
     new Map<string, {
       id: string;
@@ -328,9 +328,9 @@ AdminService {
         return log;
       }
       const details =
-        log.details && typeof log.details === 'object' && !Array.isArray(log.details) ?
-        log.details as Record<string, unknown> :
-        null;
+      log.details && typeof log.details === 'object' && !Array.isArray(log.details) ?
+      log.details as Record<string, unknown> :
+      null;
       const removedBy = typeof details?.removedBy === 'string' ? details.removedBy : null;
       if (!removedBy) {
         return log;
@@ -340,23 +340,23 @@ AdminService {
         return log;
       }
       const removedUserName =
-        log.user && (log.user.firstName || log.user.lastName) ?
-        `${log.user.firstName || ''} ${log.user.lastName || ''}`.trim() :
-        null;
+      log.user && (log.user.firstName || log.user.lastName) ?
+      `${log.user.firstName || ''} ${log.user.lastName || ''}`.trim() :
+      null;
       const normalizedDetails: Record<string, unknown> = details ? { ...details } : {};
       if (typeof normalizedDetails.removedUserId !== 'string' || normalizedDetails.removedUserId.length === 0) {
         normalizedDetails.removedUserId = log.user.id;
       }
       if (
-        typeof normalizedDetails.removedUserEmail !== 'string' ||
-        normalizedDetails.removedUserEmail.length === 0
-      ) {
+      typeof normalizedDetails.removedUserEmail !== 'string' ||
+      normalizedDetails.removedUserEmail.length === 0)
+      {
         normalizedDetails.removedUserEmail = log.user.email;
       }
       if (
-        typeof normalizedDetails.removedUserName !== 'string' ||
-        normalizedDetails.removedUserName.length === 0
-      ) {
+      typeof normalizedDetails.removedUserName !== 'string' ||
+      normalizedDetails.removedUserName.length === 0)
+      {
         normalizedDetails.removedUserName = removedUserName;
       }
       return {
@@ -391,8 +391,76 @@ AdminService {
   }) {
     return this.systemSettingsService.updateEmailSettings(payload);
   }
-  async updateSystemInviteSettings(payload: { expiryDays?: number | string | null }) {
+  async updateSystemInviteSettings(payload: {expiryDays?: number | string | null;}) {
     return this.systemSettingsService.updateInviteSettings(payload);
+  }
+  async updateSystemContactSettings(payload: {
+    supportEmail?: string | null;
+    supportLineId?: string | null;
+  }) {
+    return this.systemSettingsService.updateContactSettings(payload);
+  }
+  async updateSystemBrandingSettings(payload: {
+    appName?: string | null;
+    logoUrl?: string | null;
+    primaryColor?: string | null;
+  }) {
+    return this.systemSettingsService.updateBrandingSettings(payload);
+  }
+  async updateSystemAuthPolicySettings(payload: {
+    sessionIdleTimeoutMinutes?: number | string | null;
+    maxFailedLoginAttempts?: number | string | null;
+    lockoutMinutes?: number | string | null;
+  }) {
+    return this.systemSettingsService.updateAuthPolicySettings(payload);
+  }
+  async updateSystemPasswordPolicySettings(payload: {
+    minLength?: number | string | null;
+    requireUppercase?: boolean | null;
+    requireLowercase?: boolean | null;
+    requireNumber?: boolean | null;
+    requireSymbol?: boolean | null;
+  }) {
+    return this.systemSettingsService.updatePasswordPolicySettings(payload);
+  }
+  async updateSystemRateLimitSettings(payload: {
+    authLoginLimit?: number | string | null;
+    authLoginWindowSeconds?: number | string | null;
+    publicVerifySessionLimit?: number | string | null;
+    publicVerifyIpLimit?: number | string | null;
+    publicVerifyWindowSeconds?: number | string | null;
+    publicSubmitSessionLimit?: number | string | null;
+    publicSubmitIpLimit?: number | string | null;
+    publicSubmitWindowSeconds?: number | string | null;
+    verificationCooldownSeconds?: number | string | null;
+  }) {
+    return this.systemSettingsService.updateRateLimitSettings(payload);
+  }
+  async updateSystemRetentionSettings(payload: {
+    autoCleanupEnabled?: boolean | null;
+    responsesDays?: number | string | null;
+    auditLogsDays?: number | string | null;
+    invitationsDays?: number | string | null;
+    cleanupIntervalHours?: number | string | null;
+  }) {
+    return this.systemSettingsService.updateRetentionSettings(payload);
+  }
+  async runSystemRetentionCleanup() {
+    return this.systemSettingsService.runRetentionCleanupNow();
+  }
+  async updateSystemBackupSettings(payload: {
+    autoEnabled?: boolean | null;
+    intervalHours?: number | string | null;
+    retentionDays?: number | string | null;
+    directory?: string | null;
+  }) {
+    return this.systemSettingsService.updateBackupSettings(payload);
+  }
+  async runSystemBackupNow() {
+    return this.systemSettingsService.runBackupNow();
+  }
+  async restoreSystemBackupLatest() {
+    return this.systemSettingsService.restoreLatestBackup();
   }
   async sendSystemTestEmail(to: string) {
     return this.mailService.sendTestEmail({ to });
@@ -480,49 +548,10 @@ AdminService {
       }
     });
   }
-  async updateRolePermissions(roleId: string, permissions: string[]) {
-    return this.prisma.role.update({
-      where: { id: roleId },
-      data: { permissions }
-    });
-  }
   async updateRoleDescription(roleId: string, description: string) {
     return this.prisma.role.update({
       where: { id: roleId },
       data: { description }
     });
-  }
-  async setUserPermissionOverrides(userId: string, permissions: string[] | null) {
-    const normalizedPermissions =
-      Array.isArray(permissions) && permissions.length === 0 ? null : permissions;
-    return this.prisma.user.update({
-      where: { id: userId },
-      data: { permissionOverrides: normalizedPermissions },
-      select: {
-        id: true,
-        email: true,
-        permissionOverrides: true
-      }
-    });
-  }
-  async getUserWithPermissions(userId: string) {
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-      select: {
-        id: true,
-        email: true,
-        firstName: true,
-        lastName: true,
-        permissionOverrides: true,
-        role: {
-          select: {
-            id: true,
-            name: true,
-            permissions: true
-          }
-        }
-      }
-    });
-    return user;
   }
 }

@@ -198,10 +198,7 @@ export default function MobileDrawer({
       stroke="currentColor"
       strokeWidth="2"
       strokeLinecap="round"
-      strokeLinejoin="round">
-          <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
-          <circle cx="12" cy="12" r="3" />
-        </svg>
+      strokeLinejoin="round">      <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />      <circle cx="12" cy="12" r="3" />    </svg>
   },
   activeSidebarTab === "logic" ?
   {
@@ -221,10 +218,7 @@ export default function MobileDrawer({
       stroke="currentColor"
       strokeWidth="2"
       strokeLinecap="round"
-      strokeLinejoin="round">
-              <path d="m12 19-7-7 7-7" />
-              <path d="M19 12H5" />
-            </svg>
+      strokeLinejoin="round">      <path d="m12 19-7-7 7-7" />      <path d="M19 12H5" />    </svg>
   } :
   {
     key: "logic",
@@ -243,14 +237,7 @@ export default function MobileDrawer({
       stroke="currentColor"
       strokeWidth="2"
       strokeLinecap="round"
-      strokeLinejoin="round">
-              <path d="M6 3v12" />
-              <path d="M18 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
-              <path d="M6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
-              <path d="M15 6a9 9 0 0 0-9 9" />
-              <path d="M18 15v6" />
-              <path d="M21 18h-6" />
-            </svg>
+      strokeLinejoin="round">      <path d="M6 3v12" />      <path d="M18 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />      <path d="M6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />      <path d="M15 6a9 9 0 0 0-9 9" />      <path d="M18 15v6" />      <path d="M21 18h-6" />    </svg>
   },
   {
     key: "properties",
@@ -266,10 +253,7 @@ export default function MobileDrawer({
       stroke="currentColor"
       strokeWidth="2"
       strokeLinecap="round"
-      strokeLinejoin="round">
-          <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-          <path d="M18.375 2.625a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4Z" />
-        </svg>
+      strokeLinejoin="round">      <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />      <path d="M18.375 2.625a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4Z" />    </svg>
   },
   {
     key: "fields",
@@ -285,10 +269,7 @@ export default function MobileDrawer({
       stroke="currentColor"
       strokeWidth="2"
       strokeLinecap="round"
-      strokeLinejoin="round">
-          <line x1="12" x2="12" y1="5" y2="19" />
-          <line x1="5" x2="19" y1="12" y2="12" />
-        </svg>
+      strokeLinejoin="round">      <line x1="12" x2="12" y1="5" y2="19" />      <line x1="5" x2="19" y1="12" y2="12" />    </svg>
   },
   {
     key: "undo",
@@ -308,10 +289,7 @@ export default function MobileDrawer({
       stroke="currentColor"
       strokeWidth="2"
       strokeLinecap="round"
-      strokeLinejoin="round">
-          <path d="M3 7v6h6" />
-          <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13" />
-        </svg>
+      strokeLinejoin="round">      <path d="M3 7v6h6" />      <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13" />    </svg>
   },
   {
     key: "redo",
@@ -331,10 +309,7 @@ export default function MobileDrawer({
       stroke="currentColor"
       strokeWidth="2"
       strokeLinecap="round"
-      strokeLinejoin="round">
-          <path d="M21 7v6h-6" />
-          <path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7" />
-        </svg>
+      strokeLinejoin="round">      <path d="M21 7v6h-6" />      <path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7" />    </svg>
   },
   {
     key: "theme",
@@ -346,26 +321,20 @@ export default function MobileDrawer({
     icon: <Palette className="w-5 h-5" />
   }];
   return (
-    <>
-      {drawerContent &&
-      <div className="md:hidden fixed inset-0 z-[9999] flex mobile-drawer-wrapper">
-          {shouldShowScrim &&
+    <>      {drawerContent &&
+      <div className="md:hidden fixed inset-0 z-[9999] flex mobile-drawer-wrapper">        {shouldShowScrim &&
         <div
           className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-in fade-in mobile-drawer-scrim"
           onClick={closeDrawer} />
-        }
-          <div
+        }        <div
           className={`mobile-drawer-panel relative w-full max-w-[92%] md:max-w-[400px] h-full bg-white shadow-2xl animate-in transition-opacity ${
           drawerContent === "fields" ?
           "slide-in-from-left mr-auto md:rounded-r-2xl" :
           "slide-in-from-right ml-auto md:rounded-l-2xl"} duration-300 flex flex-col overflow-visible opacity-100`
-          }>
-            {drawerContent !== "fields" &&
-          <div className="flex items-center justify-end border-b border-gray-100 bg-[linear-gradient(180deg,#ffffff_0%,#fbfbfa_100%)] px-5 py-3">
-                <button
+          }>          {drawerContent !== "fields" &&
+          <div className="flex items-center justify-end border-b border-gray-100 bg-[linear-gradient(180deg,#ffffff_0%,#fbfbfa_100%)] px-5 py-3">            <button
               onClick={closeDrawer}
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900">
-                  <svg
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900">              <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="18"
                 height="18"
@@ -374,18 +343,11 @@ export default function MobileDrawer({
                 stroke="currentColor"
                 strokeWidth="2"
                 strokeLinecap="round"
-                strokeLinejoin="round">
-                    <line x1="18" x2="6" y1="6" y2="18" />
-                    <line x1="6" x2="18" y1="6" y2="18" />
-                  </svg>
-                </button>
-              </div>
-          }
-            {drawerContent === "fields" &&
+                strokeLinejoin="round">                <line x1="18" x2="6" y1="6" y2="18" />                <line x1="6" x2="18" y1="6" y2="18" />              </svg>            </button>          </div>
+          }          {drawerContent === "fields" &&
           <button
             onClick={closeDrawer}
-            className="absolute top-4 right-4 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white/90 text-gray-500 shadow-sm backdrop-blur-sm transition-colors hover:bg-gray-100 hover:text-gray-900">
-                <svg
+            className="absolute top-4 right-4 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white/90 text-gray-500 shadow-sm backdrop-blur-sm transition-colors hover:bg-gray-100 hover:text-gray-900">            <svg
               xmlns="http://www.w3.org/2000/svg"
               width="18"
               height="18"
@@ -394,29 +356,16 @@ export default function MobileDrawer({
               stroke="currentColor"
               strokeWidth="2"
               strokeLinecap="round"
-              strokeLinejoin="round">
-                  <path d="M18 6 6 18" />
-                  <path d="m6 6 12 12" />
-                </svg>
-              </button>
-          }
-            <div className="flex-1 flex flex-col bg-white overflow-hidden">
-              {drawerContent === "fields" &&
+              strokeLinejoin="round">              <path d="M18 6 6 18" />              <path d="m6 6 12 12" />            </svg>          </button>
+          }          <div className="flex-1 flex flex-col bg-white overflow-hidden">            {drawerContent === "fields" &&
             <FieldSidebar
               onFieldSelected={closeDrawer}
               className="w-full h-full flex flex-col shadow-none border-none"
               mode="mobile" />
-            }
-              {(drawerContent === "properties" || drawerContent === "settings") &&
-            <div className="flex-1 overflow-y-auto">
-                  <PropertiesPanel currentPage={currentPage} variant="mobile" />
-                </div>
-            }
-            </div>
-          </div>
-        </div>
-      }
-      <motion.div
+            }            {(drawerContent === "properties" || drawerContent === "settings") &&
+            <div className="flex-1 overflow-y-auto">              <PropertiesPanel currentPage={currentPage} variant="mobile" />            </div>
+            }          </div>        </div>      </div>
+      }      <motion.div
         ref={fabRef}
         className="md:hidden absolute bottom-40 right-10 z-[90]"
         drag
@@ -425,9 +374,7 @@ export default function MobileDrawer({
         dragElastic={0.1}
         whileDrag={{ scale: 1.05 }}
         onPointerDown={(e) => e.stopPropagation()}
-        onDragEnd={updatePosition}>
-        <div className="absolute inset-0 flex items-center justify-center">
-          {actions.map((action, index) => {
+        onDragEnd={updatePosition}>        <div className="absolute inset-0 flex items-center justify-center">          {actions.map((action, index) => {
             const offset = actionOffsets[index];
             const transitionDelay = isOpen ? `${index * 35}ms` : "0ms";
             const visibleOpacity = action.disabled ? 0.3 : 1;
@@ -459,29 +406,17 @@ export default function MobileDrawer({
                   opacity: isOpen ? visibleOpacity : 0,
                   transitionDelay
                 }}
-                title={action.title}>
-                {isOpen &&
-                <span className="speed-dial-label" style={actionLabelStyle}>
-                    {action.title}
-                  </span>
-                }
-                {action.icon}
-              </button>);
-          })}
-        </div>
-        <div className="relative w-8 h-8 flex items-center justify-center z-50">
-          <LiquidFab
+                title={action.title}>                {isOpen &&
+                <span className="speed-dial-label" style={actionLabelStyle}>                  {action.title}                </span>
+                }                {action.icon}              </button>);
+          })}        </div>        <div className="relative w-8 h-8 flex items-center justify-center z-50">          <LiquidFab
             onClick={() => {
               updatePosition();
               setIsOpen(!isOpen);
             }}
-            isOpen={isOpen} />
-        </div>
-      </motion.div>
-      {isOpen &&
+            isOpen={isOpen} />        </div>      </motion.div>      {isOpen &&
       <div
         className="md:hidden fixed inset-0 z-[89] bg-black/30 backdrop-blur-[2px] animate-in fade-in"
         onClick={() => setIsOpen(false)} />
-      }
-    </>);
+      }    </>);
 }

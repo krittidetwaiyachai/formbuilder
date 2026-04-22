@@ -82,9 +82,9 @@ FormsController {
   async getFormActivity(
     @Param('id')id: string,
     @CurrentUser()user: User,
-    @Query('page')page: string = '1',
-    @Query('limit')limit: string = '20',
-    @Query('sort')sort: 'asc' | 'desc' = 'desc',
+  page: string = '1',
+  limit: string = '20',
+  sort: 'asc' | 'desc' = 'desc',
     @Query('action')action?: string,
     @Query('userId')userId?: string)
   {

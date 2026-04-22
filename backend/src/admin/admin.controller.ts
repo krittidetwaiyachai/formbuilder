@@ -14,11 +14,16 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { RoleType } from '@prisma/client';
-import { PermissionsGuard } from '../auth/permissions.guard';
-import { Permissions } from '../auth/decorators/permissions.decorator';
 import { AdminUpdateSystemEmailSettingsDto } from './dto/admin-update-system-email-settings.dto';
 import { AdminUpdateSystemInviteSettingsDto } from './dto/admin-update-system-invite-settings.dto';
 import { AdminSendTestEmailDto } from './dto/admin-send-test-email.dto';
+import { AdminUpdateSystemContactSettingsDto } from './dto/admin-update-system-contact-settings.dto';
+import { AdminUpdateSystemBrandingSettingsDto } from './dto/admin-update-system-branding-settings.dto';
+import { AdminUpdateSystemAuthPolicySettingsDto } from './dto/admin-update-system-auth-policy-settings.dto';
+import { AdminUpdateSystemPasswordPolicySettingsDto } from './dto/admin-update-system-password-policy-settings.dto';
+import { AdminUpdateSystemRateLimitSettingsDto } from './dto/admin-update-system-rate-limit-settings.dto';
+import { AdminUpdateSystemRetentionSettingsDto } from './dto/admin-update-system-retention-settings.dto';
+import { AdminUpdateSystemBackupSettingsDto } from './dto/admin-update-system-backup-settings.dto';
 @Controller('admin')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(RoleType.SUPER_ADMIN, RoleType.ADMIN)export class
@@ -43,8 +48,6 @@ AdminController {
     });
   }
   @Get('logs')
-  @UseGuards(PermissionsGuard)
-  @Permissions('VIEW_SYSTEM_LOGS')
   getSystemLogs(
     @Query('page')page?: string,
     @Query('limit')limit?: string,
@@ -67,8 +70,6 @@ AdminController {
   }
   @Patch('users/:id/ban')
   @Roles(RoleType.SUPER_ADMIN)
-  @UseGuards(PermissionsGuard)
-  @Permissions('MANAGE_USERS')
   async toggleBan(@Param('id')id: string) {
     try {
       return await this.adminService.toggleUserBan(id);
@@ -78,25 +79,8 @@ AdminController {
   }
   @Patch('users/:id/role')
   @Roles(RoleType.SUPER_ADMIN)
-  @UseGuards(PermissionsGuard)
-  @Permissions('MANAGE_USERS')
   updateRole(@Param('id')id: string, @Body('roleId')roleId: string) {
     return this.adminService.updateUserRole(id, roleId);
-  }
-  @Get('users/:id/permissions')
-  @Roles(RoleType.SUPER_ADMIN)
-  getUserPermissions(@Param('id')id: string) {
-    return this.adminService.getUserWithPermissions(id);
-  }
-  @Patch('users/:id/permissions')
-  @Roles(RoleType.SUPER_ADMIN)
-  @UseGuards(PermissionsGuard)
-  @Permissions('MANAGE_USERS')
-  setUserPermissions(
-    @Param('id')id: string,
-    @Body('permissions')permissions: string[] | null)
-  {
-    return this.adminService.setUserPermissionOverrides(id, permissions);
   }
   @Get('roles')
   getAllRoles() {
@@ -107,20 +91,8 @@ AdminController {
   getRoleById(@Param('id')id: string) {
     return this.adminService.getRoleById(id);
   }
-  @Patch('roles/:id/permissions')
-  @Roles(RoleType.SUPER_ADMIN)
-  @UseGuards(PermissionsGuard)
-  @Permissions('MANAGE_ROLES')
-  updateRolePermissions(
-    @Param('id')id: string,
-    @Body('permissions')permissions: string[])
-  {
-    return this.adminService.updateRolePermissions(id, permissions);
-  }
   @Patch('roles/:id/description')
   @Roles(RoleType.SUPER_ADMIN)
-  @UseGuards(PermissionsGuard)
-  @Permissions('MANAGE_ROLES')
   updateRoleDescription(
     @Param('id')id: string,
     @Body('description')description: string)
@@ -128,26 +100,58 @@ AdminController {
     return this.adminService.updateRoleDescription(id, description);
   }
   @Get('settings/system')
-  @UseGuards(PermissionsGuard)
-  @Permissions('MANAGE_SETTINGS')
   getSystemSettings() {
     return this.adminService.getSystemSettings();
   }
   @Patch('settings/system/email')
-  @UseGuards(PermissionsGuard)
-  @Permissions('MANAGE_SETTINGS')
   updateSystemEmailSettings(@Body()dto: AdminUpdateSystemEmailSettingsDto) {
     return this.adminService.updateSystemEmailSettings(dto);
   }
   @Patch('settings/system/invite')
-  @UseGuards(PermissionsGuard)
-  @Permissions('MANAGE_SETTINGS')
   updateSystemInviteSettings(@Body()dto: AdminUpdateSystemInviteSettingsDto) {
     return this.adminService.updateSystemInviteSettings(dto);
   }
+  @Patch('settings/system/contact')
+  updateSystemContactSettings(@Body()dto: AdminUpdateSystemContactSettingsDto) {
+    return this.adminService.updateSystemContactSettings(dto);
+  }
+  @Patch('settings/system/branding')
+  updateSystemBrandingSettings(@Body()dto: AdminUpdateSystemBrandingSettingsDto) {
+    return this.adminService.updateSystemBrandingSettings(dto);
+  }
+  @Patch('settings/system/auth-policy')
+  updateSystemAuthPolicySettings(@Body()dto: AdminUpdateSystemAuthPolicySettingsDto) {
+    return this.adminService.updateSystemAuthPolicySettings(dto);
+  }
+  @Patch('settings/system/password-policy')
+  updateSystemPasswordPolicySettings(@Body()dto: AdminUpdateSystemPasswordPolicySettingsDto) {
+    return this.adminService.updateSystemPasswordPolicySettings(dto);
+  }
+  @Patch('settings/system/rate-limit')
+  updateSystemRateLimitSettings(@Body()dto: AdminUpdateSystemRateLimitSettingsDto) {
+    return this.adminService.updateSystemRateLimitSettings(dto);
+  }
+  @Patch('settings/system/retention')
+  updateSystemRetentionSettings(@Body()dto: AdminUpdateSystemRetentionSettingsDto) {
+    return this.adminService.updateSystemRetentionSettings(dto);
+  }
+  @Post('settings/system/retention/run-cleanup')
+  runSystemRetentionCleanup() {
+    return this.adminService.runSystemRetentionCleanup();
+  }
+  @Patch('settings/system/backup')
+  updateSystemBackupSettings(@Body()dto: AdminUpdateSystemBackupSettingsDto) {
+    return this.adminService.updateSystemBackupSettings(dto);
+  }
+  @Post('settings/system/backup/run')
+  runSystemBackupNow() {
+    return this.adminService.runSystemBackupNow();
+  }
+  @Post('settings/system/backup/restore-latest')
+  restoreSystemBackupLatest() {
+    return this.adminService.restoreSystemBackupLatest();
+  }
   @Post('settings/system/email/test')
-  @UseGuards(PermissionsGuard)
-  @Permissions('MANAGE_SETTINGS')
   sendSystemTestEmail(@Body()dto: AdminSendTestEmailDto) {
     return this.adminService.sendSystemTestEmail(dto.to);
   }

@@ -9,61 +9,53 @@ import {
   ChevronLeft,
   Shield,
   FileText,
-  Settings
-} from "lucide-react";
+  Settings } from
+"lucide-react";
 import { useTranslation } from "react-i18next";
 import { useSmoothScroll } from "@/hooks/useSmoothScroll";
-
 type NavItem = {
   to: string;
   label: string;
-  icon: ComponentType<{ className?: string }>;
+  icon: ComponentType<{className?: string;}>;
 };
-
 export default function AdminLayout() {
   useSmoothScroll("admin-scroll-container");
-
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
   const { t } = useTranslation();
-
   const navItems: NavItem[] = [
-    {
-      to: "/admin/dashboard",
-      label: t("admin.nav.dashboard"),
-      icon: LayoutDashboard
-    },
-    {
-      to: "/admin/users",
-      label: t("admin.nav.users"),
-      icon: Users
-    },
-    {
-      to: "/admin/bundles",
-      label: t("admin.nav.bundles"),
-      icon: Package
-    },
-    {
-      to: "/admin/logs",
-      label: t("admin.nav.logs"),
-      icon: FileText
-    },
-    {
-      to: "/admin/settings",
-      label: t("admin.nav.settings"),
-      icon: Settings
-    }
-  ];
-
+  {
+    to: "/admin/dashboard",
+    label: t("admin.nav.dashboard"),
+    icon: LayoutDashboard
+  },
+  {
+    to: "/admin/users",
+    label: t("admin.nav.users"),
+    icon: Users
+  },
+  {
+    to: "/admin/bundles",
+    label: t("admin.nav.bundles"),
+    icon: Package
+  },
+  {
+    to: "/admin/logs",
+    label: t("admin.nav.logs"),
+    icon: FileText
+  },
+  {
+    to: "/admin/settings",
+    label: t("admin.nav.settings"),
+    icon: Settings
+  }];
   const handleLogout = () => {
     logout();
     navigate("/");
   };
-
   const handleBackToApp = () => {
     navigate("/dashboard");
   };
-
   return (
     <div className="min-h-screen flex bg-gray-50">
       <aside className="w-64 bg-gray-900 text-white flex flex-col">
@@ -78,25 +70,22 @@ export default function AdminLayout() {
             </div>
           </div>
         </div>
-
         <nav className="flex-1 p-4 space-y-1">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
-                  isActive
-                    ? "bg-white/10 text-white"
-                    : "text-gray-400 hover:text-white hover:bg-white/5"
-                }`
-              }>
+          {navItems.map((item) =>
+          <NavLink
+            key={item.to}
+            to={item.to}
+            className={({ isActive }) =>
+            `flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
+            isActive ?
+            "bg-white/10 text-white" :
+            "text-gray-400 hover:text-white hover:bg-white/5"}`
+            }>
               <item.icon className="w-5 h-5" />
               {item.label}
             </NavLink>
-          ))}
+          )}
         </nav>
-
         <div className="p-4 border-t border-gray-800 space-y-2">
           <button
             onClick={handleBackToApp}
@@ -104,21 +93,18 @@ export default function AdminLayout() {
             <ChevronLeft className="w-5 h-5" />
             {t("admin.layout.back")}
           </button>
-
           <div className="flex items-center gap-3 px-4 py-3">
-            {user?.photoUrl ? (
-              <img src={user.photoUrl} alt="" className="w-8 h-8 rounded-full" />
-            ) : (
-              <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center text-sm">
+            {user?.photoUrl ?
+            <img src={user.photoUrl} alt="" className="w-8 h-8 rounded-full" /> :
+            <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center text-sm">
                 {user?.firstName?.[0] || user?.email?.[0]?.toUpperCase()}
               </div>
-            )}
+            }
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium truncate">{user?.firstName || user?.email}</p>
               <p className="text-xs text-gray-500 truncate">{user?.email}</p>
             </div>
           </div>
-
           <button
             onClick={handleLogout}
             className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all">
@@ -127,10 +113,8 @@ export default function AdminLayout() {
           </button>
         </div>
       </aside>
-
       <main id="admin-scroll-container" className="flex-1 overflow-y-auto h-screen">
         <Outlet />
       </main>
-    </div>
-  );
+    </div>);
 }

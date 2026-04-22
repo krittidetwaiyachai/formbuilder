@@ -86,8 +86,7 @@ export const useFormSave = (id: string | undefined) => {
     if (!form) {
       return null;
     }
-    const { updatedAt, createdAt, ...contentToTrack } = form;
-    return JSON.stringify(contentToTrack);
+    return JSON.stringify(buildFormSavePayload(form));
   }, []);
   const flushPendingTimer = useCallback(() => {
     if (pendingTimerRef.current) {
@@ -123,8 +122,7 @@ export const useFormSave = (id: string | undefined) => {
   }, [buildCurrentFormString]);
   const handleSave = useCallback(async (isAutoSave = false, silent = false, checkDebounce = false) => {
     if (!currentForm) return;
-    const { updatedAt, createdAt, ...contentToTrack } = currentForm;
-    const currentFormStr = JSON.stringify(contentToTrack);
+    const currentFormStr = JSON.stringify(buildFormSavePayload(currentForm));
     const hasChanges = currentFormStr !== previousFormStrRef.current;
     if (!hasChanges) return;
     if (checkDebounce) {
@@ -175,8 +173,7 @@ export const useFormSave = (id: string | undefined) => {
   }, [currentForm?.updatedAt, lastSaved]);
   useEffect(() => {
     if (!currentForm) return;
-    const { updatedAt, createdAt, ...contentToTrack } = currentForm;
-    const currentFormStr = JSON.stringify(contentToTrack);
+    const currentFormStr = JSON.stringify(buildFormSavePayload(currentForm));
     if (firstRenderRef.current) {
       firstRenderRef.current = false;
       previousFormStrRef.current = currentFormStr;
@@ -217,8 +214,7 @@ export const useFormSave = (id: string | undefined) => {
       const href = link.getAttribute('href');
       if (!href || href.startsWith('http') || href.startsWith('mailto:')) return;
       const hasPendingSave = pendingTimerRef.current !== null;
-      const { updatedAt, createdAt, ...contentToTrack } = currentForm;
-      const currentFormStr = JSON.stringify(contentToTrack);
+      const currentFormStr = JSON.stringify(buildFormSavePayload(currentForm));
       if ((hasPendingSave || currentFormStr !== previousFormStrRef.current) && !isNavigating) {
         e.preventDefault();
         e.stopPropagation();
@@ -249,8 +245,7 @@ export const useFormSave = (id: string | undefined) => {
     const handlePopState = async () => {
       if (!currentForm || isNavigating) return;
       const hasPendingSave = pendingTimerRef.current !== null;
-      const { updatedAt, createdAt, ...contentToTrack } = currentForm;
-      const currentFormStr = JSON.stringify(contentToTrack);
+      const currentFormStr = JSON.stringify(buildFormSavePayload(currentForm));
       if (hasPendingSave || currentFormStr !== previousFormStrRef.current) {
         window.history.pushState(null, '', window.location.href);
         flushPendingTimer();

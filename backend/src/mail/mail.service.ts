@@ -2,17 +2,15 @@ import { Injectable, Logger } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 import { ConfigService } from '@nestjs/config';
 import { SystemSettingsService } from '../system-settings/system-settings.service';
-
 function getPrimaryFrontendUrl(rawFrontendUrl: string | undefined) {
   if (!rawFrontendUrl) {
     return 'http://localhost:5173';
   }
-  return rawFrontendUrl
-    .split(',')
-    .map((value) => value.trim().replace(/^"(.*)"$/, '$1'))
-    .find(Boolean) || 'http://localhost:5173';
+  return rawFrontendUrl.
+  split(',').
+  map((value) => value.trim().replace(/^"(.*)"$/, '$1')).
+  find(Boolean) || 'http://localhost:5173';
 }
-
 type MailRuntimeConfig = {
   host: string;
   port: number;
@@ -23,25 +21,21 @@ type MailRuntimeConfig = {
   fromName: string;
   enabled: boolean;
 };
-
-@Injectable()
-export class MailService {
+@Injectable()export class
+MailService {
   private transporter: nodemailer.Transporter | null = null;
   private transporterKey: string | null = null;
   private readonly logger = new Logger(MailService.name);
-
   constructor(
-    private readonly configService: ConfigService,
-    private readonly systemSettingsService: SystemSettingsService,
-  ) {}
-
+  private readonly configService: ConfigService,
+  private readonly systemSettingsService: SystemSettingsService)
+  {}
   private async getRuntimeConfig(): Promise<MailRuntimeConfig> {
     const effective = await this.systemSettingsService.getEffectiveEmailSettings();
     const enabled =
-      effective.smtpHost.trim().length > 0 &&
-      effective.smtpUser.trim().length > 0 &&
-      effective.smtpPass.trim().length > 0;
-
+    effective.smtpHost.trim().length > 0 &&
+    effective.smtpUser.trim().length > 0 &&
+    effective.smtpPass.trim().length > 0;
     return {
       host: effective.smtpHost,
       port: effective.smtpPort,
@@ -50,62 +44,55 @@ export class MailService {
       pass: effective.smtpPass,
       from: effective.smtpFrom,
       fromName: effective.smtpFromName,
-      enabled,
+      enabled
     };
   }
-
   private async getTransporter() {
     const config = await this.getRuntimeConfig();
     if (!config.enabled) {
       if (this.transporterKey !== '__mock__') {
         this.logger.warn(
-          'No SMTP configuration found in environment/system settings. Emails will be logged to console only.',
+          'No SMTP configuration found in environment/system settings. Emails will be logged to console only.'
         );
         this.transporterKey = '__mock__';
         this.transporter = null;
       }
       return { transporter: null, config };
     }
-
     const key = [
-      config.host,
-      config.port,
-      config.secure ? 'secure' : 'insecure',
-      config.user,
-      config.from,
-      config.fromName,
-    ].join('|');
-
+    config.host,
+    config.port,
+    config.secure ? 'secure' : 'insecure',
+    config.user,
+    config.from,
+    config.fromName].
+    join('|');
     if (this.transporter && this.transporterKey === key) {
       return { transporter: this.transporter, config };
     }
-
     this.transporter = nodemailer.createTransport({
       host: config.host,
       port: config.port,
       secure: config.secure,
       auth: {
         user: config.user,
-        pass: config.pass,
-      },
+        pass: config.pass
+      }
     });
     this.transporterKey = key;
     this.logger.log(`SMTP transporter configured for ${config.host}:${config.port}`);
     return { transporter: this.transporter, config };
   }
-
   private getFromAddress(config: MailRuntimeConfig) {
     return `"${config.fromName}" <${config.from}>`;
   }
-
   async sendNewSubmissionEmail(
-    to: string[],
-    formTitle: string,
-    submissionId: string,
-    answers: { formId?: string; [key: string]: unknown },
-  ) {
+  to: string[],
+  formTitle: string,
+  submissionId: string,
+  answers: {formId?: string;[key: string]: unknown;})
+  {
     if (!to || to.length === 0) return;
-
     const subject = `New Submission: ${formTitle}`;
     const frontendUrl = getPrimaryFrontendUrl(this.configService.get<string>('FRONTEND_URL'));
     const link = `${frontendUrl}/forms/${answers.formId || ''}/responses`;
@@ -125,7 +112,6 @@ export class MailService {
         </p>
       </div>
     `;
-
     const { transporter, config } = await this.getTransporter();
     if (transporter) {
       try {
@@ -133,7 +119,7 @@ export class MailService {
           from: this.getFromAddress(config),
           to: to.join(', '),
           subject,
-          html: htmlContent,
+          html: htmlContent
         });
         this.logger.log(`Email sent: ${info.messageId}`);
       } catch (error) {
@@ -141,11 +127,9 @@ export class MailService {
       }
       return;
     }
-
     this.logger.log(`[MOCK EMAIL] To: ${to.join(', ')} | Subject: ${subject}`);
   }
-
-  async sendFormVerificationEmail(params: { to: string; formTitle: string; verificationUrl: string }) {
+  async sendFormVerificationEmail(params: {to: string;formTitle: string;verificationUrl: string;}) {
     const { to, formTitle, verificationUrl } = params;
     const subject = `Verify your email for ${formTitle}`;
     const htmlContent = `
@@ -161,7 +145,6 @@ export class MailService {
         <p style="word-break: break-all; color: #555;">${verificationUrl}</p>
       </div>
     `;
-
     const { transporter, config } = await this.getTransporter();
     if (transporter) {
       try {
@@ -169,7 +152,7 @@ export class MailService {
           from: this.getFromAddress(config),
           to,
           subject,
-          html: htmlContent,
+          html: htmlContent
         });
         this.logger.log(`Verification email sent: ${info.messageId}`);
       } catch (error) {
@@ -177,10 +160,8 @@ export class MailService {
       }
       return;
     }
-
     this.logger.log(`[MOCK EMAIL] To: ${to} | Subject: ${subject} | Link: ${verificationUrl}`);
   }
-
   async sendCollaboratorInviteEmail(params: {
     to: string;
     formTitle: string;
@@ -188,11 +169,11 @@ export class MailService {
     invitedByName?: string;
     invitedByEmail?: string;
     expiresInDays?: number;
-  }): Promise<{ sent: boolean; mode: 'smtp' | 'mock' | 'failed' }> {
+  }): Promise<{sent: boolean;mode: 'smtp' | 'mock' | 'failed';}> {
     const { to, formTitle, acceptUrl, invitedByName, invitedByEmail, expiresInDays } = params;
     const subject = `You've been invited to collaborate on ${formTitle}`;
     const inviterLabel =
-      invitedByName && invitedByName.trim().length > 0 ? invitedByName : invitedByEmail || 'a teammate';
+    invitedByName && invitedByName.trim().length > 0 ? invitedByName : invitedByEmail || 'a teammate';
     const displayExpiryDays = Number.isFinite(expiresInDays) && (expiresInDays || 0) > 0 ? expiresInDays : 3;
     const htmlContent = `
       <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
@@ -207,7 +188,6 @@ export class MailService {
         <p style="word-break: break-all; color: #555;">${acceptUrl}</p>
       </div>
     `;
-
     const { transporter, config } = await this.getTransporter();
     if (transporter) {
       try {
@@ -215,7 +195,7 @@ export class MailService {
           from: this.getFromAddress(config),
           to,
           subject,
-          html: htmlContent,
+          html: htmlContent
         });
         this.logger.log(`Collaborator invite email sent: ${info.messageId}`);
         return { sent: true, mode: 'smtp' };
@@ -224,14 +204,12 @@ export class MailService {
         return { sent: false, mode: 'failed' };
       }
     }
-
     this.logger.log(`[MOCK EMAIL] To: ${to} | Subject: ${subject} | Link: ${acceptUrl}`);
     return { sent: false, mode: 'mock' };
   }
-
   async sendTestEmail(params: {
     to: string;
-  }): Promise<{ sent: boolean; mode: 'smtp' | 'mock' | 'failed'; reason?: string }> {
+  }): Promise<{sent: boolean;mode: 'smtp' | 'mock' | 'failed';reason?: string;}> {
     const { to } = params;
     const subject = 'Form Builder SMTP test email';
     const htmlContent = `
@@ -241,7 +219,6 @@ export class MailService {
         <p style="color: #666;">Sent at: ${new Date().toISOString()}</p>
       </div>
     `;
-
     const { transporter, config } = await this.getTransporter();
     if (transporter) {
       try {
@@ -249,7 +226,7 @@ export class MailService {
           from: this.getFromAddress(config),
           to,
           subject,
-          html: htmlContent,
+          html: htmlContent
         });
         this.logger.log(`SMTP test email sent: ${info.messageId}`);
         return { sent: true, mode: 'smtp' };
@@ -259,7 +236,6 @@ export class MailService {
         return { sent: false, mode: 'failed', reason };
       }
     }
-
     this.logger.log(`[MOCK EMAIL] To: ${to} | Subject: ${subject}`);
     return { sent: false, mode: 'mock' };
   }

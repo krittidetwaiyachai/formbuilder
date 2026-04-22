@@ -26,28 +26,24 @@ function toSocketOrigin(origin: string) {
   }
   return origin;
 }
-
 const toPositiveInt = (value: string | undefined, fallback: number): number => {
   const parsed = Number.parseInt(value || '', 10);
   return Number.isFinite(parsed) && parsed >= 0 ? parsed : fallback;
 };
-
 const shouldEnablePortFallback = (rawValue: string | undefined): boolean => {
   if (typeof rawValue === 'string') {
     return rawValue.toLowerCase() === 'true';
   }
   return process.env.NODE_ENV !== 'production';
 };
-
 const listenWithPortFallback = async (
-  app: NestExpressApplication,
-  initialPort: number,
-  logger: Logger,
-  enableFallback: boolean,
-  maxRetries: number,
-) => {
+app: NestExpressApplication,
+initialPort: number,
+logger: Logger,
+enableFallback: boolean,
+maxRetries: number) =>
+{
   let port = initialPort;
-
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
       await app.listen(port);
@@ -59,22 +55,20 @@ const listenWithPortFallback = async (
         throw error;
       }
       logger.warn(
-        `Port ${port} is already in use. Retrying on ${port + 1} (${attempt + 1}/${maxRetries})`,
+        `Port ${port} is already in use. Retrying on ${port + 1} (${attempt + 1}/${maxRetries})`
       );
       port += 1;
     }
   }
-
   throw new Error(`Failed to bind a port after ${maxRetries + 1} attempts`);
 };
-
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const configService = app.get(ConfigService);
   const trustProxyHopsRaw = configService.get<string>('TRUST_PROXY_HOPS');
-  const trustProxyHops = Number.isFinite(Number(trustProxyHopsRaw))
-    ? Math.max(0, Number(trustProxyHopsRaw))
-    : 0;
+  const trustProxyHops = Number.isFinite(Number(trustProxyHopsRaw)) ?
+  Math.max(0, Number(trustProxyHopsRaw)) :
+  0;
   app.set('trust proxy', trustProxyHops);
   app.use(require('compression')());
   app.use(express.json({ limit: '5mb' }));
@@ -109,12 +103,11 @@ async function bootstrap() {
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: [
-      'Content-Type',
-      'Authorization',
-      'Idempotency-Key',
-      'X-Request-Id',
-      'X-CSRF-Token',
-    ]
+    'Content-Type',
+    'Authorization',
+    'Idempotency-Key',
+    'X-Request-Id',
+    'X-CSRF-Token']
   });
   app.useGlobalPipes(
     new ValidationPipe({
@@ -128,16 +121,15 @@ async function bootstrap() {
   const enablePortFallback = shouldEnablePortFallback(configService.get<string>('PORT_AUTO_INCREMENT'));
   const maxPortFallbackRetries = toPositiveInt(
     configService.get<string>('PORT_AUTO_INCREMENT_MAX'),
-    10,
+    10
   );
   const activePort = await listenWithPortFallback(
     app,
     preferredPort,
     logger,
     enablePortFallback,
-    maxPortFallbackRetries,
+    maxPortFallbackRetries
   );
-
   logger.log(`🚀 Application is running on: http://localhost:${activePort}`);
   if (allowedOrigins.length > 0) {
     logger.log(`Allowed Origins: ${allowedOrigins.join(', ')}`);

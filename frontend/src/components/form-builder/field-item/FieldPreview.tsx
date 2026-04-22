@@ -65,27 +65,21 @@ export const FieldPreview: React.FC<FieldPreviewProps> = ({
           field={field}
           fieldStyle={fieldStyle}
           updateField={updateField}
-          isSelected={isSelected}
-        />
-      );
+          isSelected={isSelected} />);
     case FieldType.CHECKBOX:
       return (
         <CheckboxField
           field={field}
           fieldStyle={fieldStyle}
           updateField={updateField}
-          isSelected={isSelected}
-        />
-      );
+          isSelected={isSelected} />);
     case FieldType.RADIO:
       return (
         <RadioField
           field={field}
           fieldStyle={fieldStyle}
           updateField={updateField}
-          isSelected={isSelected}
-        />
-      );
+          isSelected={isSelected} />);
     case FieldType.DATE:
       return <DateField field={field} fieldStyle={fieldStyle} />;
     case FieldType.TIME:

@@ -13,9 +13,7 @@ import { BundlesService } from './bundles.service';
 import { CreateBundleDto } from './dto/create-bundle.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
-import { PermissionsGuard } from '../auth/permissions.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
-import { Permissions } from '../auth/decorators/permissions.decorator';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { RoleType } from '@prisma/client';
 interface User {
@@ -28,8 +26,7 @@ interface User {
 BundlesController {
   constructor(private readonly bundlesService: BundlesService) {}
   @Post()
-  @UseGuards(PermissionsGuard)
-  @Permissions('MANAGE_BUNDLES')
+  @Roles(RoleType.SUPER_ADMIN, RoleType.ADMIN)
   create(@CurrentUser()user: User, @Body()createBundleDto: CreateBundleDto) {
     return this.bundlesService.create(user.id, createBundleDto);
   }
@@ -57,8 +54,7 @@ BundlesController {
     );
   }
   @Patch(':id')
-  @UseGuards(PermissionsGuard)
-  @Permissions('MANAGE_BUNDLES')
+  @Roles(RoleType.SUPER_ADMIN, RoleType.ADMIN)
   update(
     @Param('id')id: string,
     @CurrentUser()user: User,
@@ -67,8 +63,7 @@ BundlesController {
     return this.bundlesService.update(id, user.id, updateData);
   }
   @Delete(':id')
-  @UseGuards(PermissionsGuard)
-  @Permissions('MANAGE_BUNDLES')
+  @Roles(RoleType.SUPER_ADMIN, RoleType.ADMIN)
   remove(@Param('id')id: string) {
     return this.bundlesService.remove(id);
   }

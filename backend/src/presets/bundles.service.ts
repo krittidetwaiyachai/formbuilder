@@ -6,9 +6,7 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateBundleDto, CreateBundleFieldDto } from './dto/create-bundle.dto';
 import { RoleType, Prisma } from '@prisma/client';
-
 export const BUNDLES_UPDATE_STRATEGY = 'in-place-v2';
-
 interface BundleOptions {
   deleted?: boolean;
 }
@@ -138,7 +136,6 @@ BundlesService {
     const bundle = await this.findOne(id);
     const { fields, ...bundleData } = updateData;
     const nextName = bundleData.name ?? bundle.name;
-
     const latestBundle = await this.prisma.bundle.findFirst({
       where: {
         name: nextName,
@@ -146,15 +143,12 @@ BundlesService {
       },
       orderBy: { version: 'desc' }
     });
-
     const version = latestBundle ? latestBundle.version + 1 : bundle.version + 1;
-
-    type UpsertBundleField = CreateBundleFieldDto & { id?: string };
+    type UpsertBundleField = CreateBundleFieldDto & {id?: string;};
     const incomingFields = (fields as UpsertBundleField[] | undefined)?.map((field, index) => ({
       ...field,
       order: field.order ?? index
     }));
-
     const updatedBundle = await this.prisma.$transaction(async (tx) => {
       await tx.bundle.update({
         where: { id },
@@ -163,15 +157,13 @@ BundlesService {
           description: bundleData.description ?? bundle.description,
           isPII: bundleData.isPII ?? bundle.isPII,
           isActive: bundleData.isActive ?? bundle.isActive,
-          options: (bundleData.options as Prisma.InputJsonValue) ?? (bundle.options as Prisma.InputJsonValue),
+          options: bundleData.options as Prisma.InputJsonValue ?? bundle.options as Prisma.InputJsonValue,
           version
         }
       });
-
       if (incomingFields) {
         const existingFieldIds = new Set(bundle.fields.map((field) => field.id));
         const retainedFieldIds = new Set<string>();
-
         for (const field of incomingFields) {
           const data = {
             type: field.type,
@@ -186,7 +178,6 @@ BundlesService {
             imageWidth: field.imageWidth,
             videoUrl: field.videoUrl
           };
-
           if (field.id && existingFieldIds.has(field.id)) {
             retainedFieldIds.add(field.id);
             await tx.bundleField.update({
@@ -195,7 +186,6 @@ BundlesService {
             });
             continue;
           }
-
           await tx.bundleField.create({
             data: {
               ...(field.id ? { id: field.id } : {}),
@@ -204,11 +194,9 @@ BundlesService {
             }
           });
         }
-
         const deletedFieldIds = bundle.fields.
         filter((field) => !retainedFieldIds.has(field.id)).
         map((field) => field.id);
-
         if (deletedFieldIds.length > 0) {
           await tx.bundleField.deleteMany({
             where: {
@@ -218,7 +206,6 @@ BundlesService {
           });
         }
       }
-
       return tx.bundle.findUnique({
         where: { id },
         include: {
@@ -228,33 +215,29 @@ BundlesService {
         }
       });
     });
-
     if (!updatedBundle) {
       throw new NotFoundException('Bundle not found');
     }
-
     return updatedBundle;
   }
   async remove(id: string) {
     const bundle = await this.findOne(id);
     const relatedBundles = await this.prisma.bundle.findMany({
       where: { name: bundle.name },
-      select: { id: true, options: true },
+      select: { id: true, options: true }
     });
-
     await this.prisma.$transaction(
       relatedBundles.map((item) => {
-        const currentOptions = (item.options as unknown as BundleOptions) || {};
+        const currentOptions = item.options as unknown as BundleOptions || {};
         return this.prisma.bundle.update({
           where: { id: item.id },
           data: {
             isActive: false,
-            options: { ...currentOptions, deleted: true } as Prisma.InputJsonValue,
-          },
+            options: { ...currentOptions, deleted: true } as Prisma.InputJsonValue
+          }
         });
-      }),
+      })
     );
-
     return { message: 'Bundle deactivated successfully' };
   }
 }

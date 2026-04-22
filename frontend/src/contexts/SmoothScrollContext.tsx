@@ -116,13 +116,11 @@ export function SmoothScrollProvider({
       lenisRef.current.resize();
     }
   }, []);
-
   const start = useCallback(() => {
     if (lenisRef.current) {
       lenisRef.current.start();
     }
   }, []);
-
   const stop = useCallback(() => {
     if (lenisRef.current) {
       lenisRef.current.stop();

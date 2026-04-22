@@ -61,20 +61,14 @@ export default function PublicFormRenderer(props: PublicFormRendererProps) {
   } = usePublicFormLogic(props);
   if (checkingSubmission || loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <motion.div
+      <div className="flex min-h-screen items-center justify-center">        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="text-center">
-          <Loader className="mx-auto mb-4" />
-          <p className="font-medium text-gray-500">{t("public.loading")}</p>
-        </motion.div>
-      </div>);
+          className="text-center">          <Loader className="mx-auto mb-4" />          <p className="font-medium text-gray-500">{t("public.loading")}</p>        </motion.div>      </div>);
   }
   if (hasAlreadySubmitted) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4">
-        <motion.div
+      <div className="min-h-screen flex items-center justify-center px-4">        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="max-w-md w-full rounded-2xl shadow-xl p-10 text-center border"
@@ -82,27 +76,15 @@ export default function PublicFormRenderer(props: PublicFormRendererProps) {
             backgroundColor: "var(--card-bg)",
             borderColor: "var(--card-border)",
             color: "var(--text)"
-          }}>
-          <div
+          }}>          <div
             className="mx-auto w-16 h-16 rounded-full flex items-center justify-center mb-6"
             style={{
               backgroundColor: "color-mix(in srgb, var(--primary) 10%, transparent)"
-            }}>
-            <CheckCircle className="h-8 w-8" style={{ color: "var(--primary)" }} />
-          </div>
-          <h2 className="text-2xl font-bold mb-4" style={{ color: "var(--text)" }}>
-            {t("public.already_submitted_title")}
-          </h2>
-          <p className="mb-6" style={{ color: "var(--text)", opacity: 0.8 }}>
-            {t("public.already_submitted_desc")}
-          </p>
-        </motion.div>
-      </div>);
+            }}>            <CheckCircle className="h-8 w-8" style={{ color: "var(--primary)" }} />          </div>          <h2 className="text-2xl font-bold mb-4" style={{ color: "var(--text)" }}>            {t("public.already_submitted_title")}          </h2>          <p className="mb-6" style={{ color: "var(--text)", opacity: 0.8 }}>            {t("public.already_submitted_desc")}          </p>        </motion.div>      </div>);
   }
   if (!form) {
     return (
-      <div className="h-full flex items-center justify-center px-4">
-        <motion.div
+      <div className="h-full flex items-center justify-center px-4">        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="max-w-md w-full rounded-2xl shadow-xl p-10 text-center border"
@@ -110,62 +92,33 @@ export default function PublicFormRenderer(props: PublicFormRendererProps) {
             backgroundColor: "var(--card-bg)",
             borderColor: "var(--card-border)",
             color: "var(--text)"
-          }}>
-          <FileQuestion className="mx-auto h-16 w-16 opacity-50 mb-4" />
-          <h2 className="text-2xl font-bold mb-4">
-            {t("public.form_not_found_title")}
-          </h2>
-          <p>{t("public.form_not_found_desc")}</p>
-        </motion.div>
-      </div>);
+          }}>          <FileQuestion className="mx-auto h-16 w-16 opacity-50 mb-4" />          <h2 className="text-2xl font-bold mb-4">            {t("public.form_not_found_title")}          </h2>          <p>{t("public.form_not_found_desc")}</p>        </motion.div>      </div>);
   }
   if (!isPreview && form.status !== FormStatus.PUBLISHED) {
     return (
-      <div className="h-full flex items-center justify-center px-4">
-        <motion.div
+      <div className="h-full flex items-center justify-center px-4">        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="text-center p-10 shadow-xl rounded-2xl border bg-white/90">
-          <Lock className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-          <h2 className="text-xl font-bold mb-2">{t("public.form_unavailable_title")}</h2>
-          <p className="text-gray-500">{t("public.form_unavailable_desc")}</p>
-        </motion.div>
-      </div>);
+          className="text-center p-10 shadow-xl rounded-2xl border bg-white/90">          <Lock className="mx-auto h-12 w-12 text-gray-400 mb-4" />          <h2 className="text-xl font-bold mb-2">{t("public.form_unavailable_title")}</h2>          <p className="text-gray-500">{t("public.form_unavailable_desc")}</p>        </motion.div>      </div>);
   }
   if (form.isQuiz && !isPreview && form.quizSettings?.requireSignIn && !isAuthenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4">
-        <motion.div
+      <div className="min-h-screen flex items-center justify-center px-4">        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="max-w-md w-full rounded-2xl shadow-xl p-10 text-center border bg-white/90">
-          <Lock className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-          <h2 className="text-xl font-bold mb-4">{t("public.auth_required_title")}</h2>
-          <p className="text-gray-500 mb-6">{t("public.auth_required_desc")}</p>
-          <button
+          className="max-w-md w-full rounded-2xl shadow-xl p-10 text-center border bg-white/90">          <Lock className="mx-auto h-12 w-12 text-gray-400 mb-4" />          <h2 className="text-xl font-bold mb-4">{t("public.auth_required_title")}</h2>          <p className="text-gray-500 mb-6">{t("public.auth_required_desc")}</p>          <button
             onClick={() => setIsLoginModalOpen(true)}
-            className="w-full py-2 px-4 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors">
-            {t("public.sign_in")}
-          </button>
-        </motion.div>
-        <LoginModal
+            className="w-full py-2 px-4 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors">            {t("public.sign_in")}          </button>        </motion.div>        <LoginModal
           isOpen={isLoginModalOpen}
           onClose={() => setIsLoginModalOpen(false)}
-          onSuccess={() => setIsLoginModalOpen(false)} />
-      </div>);
+          onSuccess={() => setIsLoginModalOpen(false)} />      </div>);
   }
   if (!availability.available && !isPreview) {
     return (
-      <div className="h-full flex items-center justify-center px-4">
-        <motion.div
+      <div className="h-full flex items-center justify-center px-4">        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="text-center p-10 shadow-xl rounded-2xl border bg-white/90">
-          <Lock className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-          <h2 className="text-xl font-bold mb-2">{t("public.quiz_unavailable_title")}</h2>
-          <p className="text-gray-500">{availability.message}</p>
-        </motion.div>
-      </div>);
+          className="text-center p-10 shadow-xl rounded-2xl border bg-white/90">          <Lock className="mx-auto h-12 w-12 text-gray-400 mb-4" />          <h2 className="text-xl font-bold mb-2">{t("public.quiz_unavailable_title")}</h2>          <p className="text-gray-500">{availability.message}</p>        </motion.div>      </div>);
   }
   if (submitted) {
     if (form.thankYouSettings?.isActive) {
@@ -181,9 +134,7 @@ export default function PublicFormRenderer(props: PublicFormRendererProps) {
             backgroundSize: "350px",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat"
-          }}>
-          <div className="relative z-10 w-full flex justify-center">
-            <ThankYouScreen
+          }}>          <div className="relative z-10 w-full flex justify-center">            <ThankYouScreen
               settings={form.thankYouSettings}
               globalSettings={form.settings}
               score={score}
@@ -194,9 +145,7 @@ export default function PublicFormRenderer(props: PublicFormRendererProps) {
               showExplanation={!!(form.isQuiz && form.quizSettings?.showExplanation)}
               quizReview={quizReview ?? undefined}
               isQuiz={form.isQuiz}
-              viewMode={viewMode} />
-          </div>
-        </div>);
+              viewMode={viewMode} />          </div>        </div>);
     }
     return (
       <div
@@ -209,8 +158,7 @@ export default function PublicFormRenderer(props: PublicFormRendererProps) {
           backgroundSize: "350px",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat"
-        }}>
-        <motion.div
+        }}>        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="max-w-3xl w-full min-h-[500px] rounded-[2.5rem] shadow-xl overflow-hidden flex flex-col border relative z-10"
@@ -219,37 +167,22 @@ export default function PublicFormRenderer(props: PublicFormRendererProps) {
             borderColor: "var(--card-border)",
             color: "var(--text)",
             backdropFilter: "blur(20px)"
-          }}>
-          <div className="flex flex-col items-center justify-center w-full min-h-[inherit] relative p-10">
-            <div
+          }}>          <div className="flex flex-col items-center justify-center w-full min-h-[inherit] relative p-10">            <div
               className="absolute top-0 left-0 w-64 h-64 rounded-full mix-blend-multiply filter blur-3xl opacity-20 -translate-x-1/2 -translate-y-1/2"
-              style={{ backgroundColor: "var(--primary)" }} />
-            <div
+              style={{ backgroundColor: "var(--primary)" }} />            <div
               className="absolute bottom-0 right-0 w-64 h-64 rounded-full mix-blend-multiply filter blur-3xl opacity-20 translate-x-1/2 translate-y-1/2"
-              style={{ backgroundColor: "var(--primary)" }} />
-            <motion.div
+              style={{ backgroundColor: "var(--primary)" }} />            <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.5, ease: "easeOut" }}
               className="w-28 h-28 rounded-3xl flex items-center justify-center border-4 border-white shadow-xl mb-8 relative z-10"
               style={{
                 backgroundColor: "color-mix(in srgb, var(--primary) 15%, white)"
-              }}>
-              <CheckCircle className="w-12 h-12" strokeWidth={1.5} style={{ color: "var(--primary)" }} />
-            </motion.div>
-            <h2
+              }}>              <CheckCircle className="w-12 h-12" strokeWidth={1.5} style={{ color: "var(--primary)" }} />            </motion.div>            <h2
               className="text-4xl md:text-6xl font-bold tracking-tight mb-6 relative z-10"
-              style={{ color: "var(--text)" }}>
-              {t("public.thank_you.title", "Thank you!")}
-            </h2>
-            <p
+              style={{ color: "var(--text)" }}>              {t("public.thank_you.title", "Thank you!")}            </h2>            <p
               className="text-xl font-normal leading-relaxed max-w-xl mx-auto relative z-10"
-              style={{ color: "var(--text)", opacity: 0.7 }}>
-              {t("public.thank_you.message", "Your submission has been received.")}
-            </p>
-          </div>
-        </motion.div>
-      </div>);
+              style={{ color: "var(--text)", opacity: 0.7 }}>              {t("public.thank_you.message", "Your submission has been received.")}            </p>          </div>        </motion.div>      </div>);
   }
   if (showWelcome && isWelcomeScreenActive) {
     return (
@@ -263,14 +196,10 @@ export default function PublicFormRenderer(props: PublicFormRendererProps) {
           backgroundSize: "350px",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat"
-        }}>
-        <div className="relative z-10 w-full flex justify-center">
-          <WelcomeScreen
+        }}>        <div className="relative z-10 w-full flex justify-center">          <WelcomeScreen
             settings={form.welcomeSettings}
             onStart={() => setShowWelcome(false)}
-            viewMode={viewMode} />
-        </div>
-      </div>);
+            viewMode={viewMode} />        </div>      </div>);
   }
   const isMobileView = viewMode === "mobile";
   const isTabletView = viewMode === "tablet";
@@ -289,9 +218,7 @@ export default function PublicFormRenderer(props: PublicFormRendererProps) {
       onTimeUp={handleTimeUp}
       cardStyleVars={cardStyleVars}
       onSubmit={handleSubmit(onSubmit)}
-      formRef={formRef}>
-      <AnimatePresence mode="wait">
-        <motion.div
+      formRef={formRef}>      <AnimatePresence mode="wait">        <motion.div
           key={isCardLayout ? currentCardIndex : currentPageIndex}
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -318,8 +245,7 @@ export default function PublicFormRenderer(props: PublicFormRendererProps) {
             boxShadow: "var(--card-shadow)",
             color: "var(--text)",
             ...cardStyleVars
-          }}>
-          <div
+          }}>          <div
             className={`${
             isCardLayout ?
             "relative z-20 flex-shrink-0 px-8 pt-8 pb-4 border-b" :
@@ -328,21 +254,15 @@ export default function PublicFormRenderer(props: PublicFormRendererProps) {
             style={{
               backgroundColor: isCardLayout ? "transparent" : "var(--card-bg)",
               borderColor: "var(--card-border)"
-            }}>
-            {isCardLayout && <div className="absolute top-0 left-0 w-full h-1.5 bg-black" />}
-            {(!isCardLayout && currentPageIndex === 0 || isCardLayout) &&
+            }}>            {isCardLayout && <div className="absolute top-0 left-0 w-full h-1.5 bg-black" />}            {(!isCardLayout && currentPageIndex === 0 || isCardLayout) &&
             <div
               className={
               isCardLayout ?
               `${isMobileView ? "p-4" : isTabletView ? "p-5" : "p-6 md:p-8"} space-y-2` :
               "space-y-2"
-              }>
-                {form.logoUrl &&
-              <div className="flex justify-center mb-6">
-                    <img src={form.logoUrl} alt="Logo" className="h-16 object-contain" />
-                  </div>
-              }
-                <h1
+              }>              {form.logoUrl &&
+              <div className="flex justify-center mb-6">                <img src={form.logoUrl} alt="Logo" className="h-16 object-contain" />              </div>
+              }              <h1
                 className={`font-bold ${
                 isMobileView ?
                 "text-lg" :
@@ -352,28 +272,20 @@ export default function PublicFormRenderer(props: PublicFormRendererProps) {
                 "text-2xl md:text-3xl" :
                 "text-3xl"}`
                 }
-                style={{ color: "var(--text)" }}>
-                  {form.title}
-                </h1>
-                {form.description &&
+                style={{ color: "var(--text)" }}>                {form.title}              </h1>              {form.description &&
               <div
                 className="prose prose-sm max-w-none mt-2"
                 dangerouslySetInnerHTML={{ __html: sanitize(form.description) }}
                 style={{ color: "var(--text)", opacity: 0.8 }} />
-              }
-                {form.settings?.collectEmail &&
+              }              {form.settings?.collectEmail &&
               <div
                 className="mt-6 p-4 rounded-lg border transition-colors"
                 style={{
                   backgroundColor: "color-mix(in srgb, var(--primary) 5%, transparent)",
                   borderColor: "color-mix(in srgb, var(--primary) 20%, transparent)"
-                }}>
-                    <label
+                }}>                <label
                   className="block text-sm font-medium mb-1"
-                  style={{ color: "var(--text)" }}>
-                      {t("public.email_label")} <span className="text-red-500">*</span>
-                    </label>
-                    <input
+                  style={{ color: "var(--text)" }}>                  {t("public.email_label")} <span className="text-red-500">*</span>                </label>                <input
                   type="email"
                   {...register("respondentEmail", {
                     required: t("public.email_required"),
@@ -389,21 +301,12 @@ export default function PublicFormRenderer(props: PublicFormRendererProps) {
                     borderRadius: "var(--radius)",
                     ...(errors.respondentEmail ? { borderColor: "#ef4444" } : {})
                   }}
-                  placeholder={t("public.placeholder.email")} />
-                    {errors.respondentEmail &&
-                <p className="mt-1 text-xs text-red-500 font-medium">
-                        {errors.respondentEmail.message as string}
-                      </p>
-                }
-                    <p
+                  placeholder={t("public.placeholder.email")} />                {errors.respondentEmail &&
+                <p className="mt-1 text-xs text-red-500 font-medium">                  {errors.respondentEmail.message as string}                </p>
+                }                <p
                   className="mt-2 text-xs flex items-center gap-1"
-                  style={{ color: "var(--primary)", opacity: 0.8 }}>
-                      <Lock className="w-3 h-3" />
-                      {t("public.email_collecting_notice")}
-                    </p>
-                  </div>
-              }
-                <FormVerificationPanel
+                  style={{ color: "var(--primary)", opacity: 0.8 }}>                  <Lock className="w-3 h-3" />                  {t("public.email_collecting_notice")}                </p>              </div>
+              }              <FormVerificationPanel
                 verificationRequired={verification.verificationRequired}
                 captchaRequired={verification.captchaRequired}
                 canonicalEmail={verification.canonicalEmail}
@@ -413,11 +316,8 @@ export default function PublicFormRenderer(props: PublicFormRendererProps) {
                 recovering={verification.recovering}
                 captchaResetSignal={verification.captchaResetSignal}
                 onCaptchaTokenChange={verification.setCaptchaToken}
-                onRequestVerification={verification.requestVerification} />
-              </div>
-            }
-          </div>
-          <div
+                onRequestVerification={verification.requestVerification} />            </div>
+            }          </div>          <div
             className={`${
             isCardLayout ?
             `flex-1 overflow-y-auto ${
@@ -432,8 +332,7 @@ export default function PublicFormRenderer(props: PublicFormRendererProps) {
               borderColor: "var(--card-border)"
             } :
             {}
-            }>
-            {isCardLayout ?
+            }>            {isCardLayout ?
             <CardLayout
               currentField={currentField ?? undefined}
               currentCardIndex={currentCardIndex}
@@ -451,9 +350,7 @@ export default function PublicFormRenderer(props: PublicFormRendererProps) {
               setValue={setValue}
               control={control}
               form={form} />
-            }
-          </div>
-          <FormNavigation
+            }          </div>          <FormNavigation
             isCardLayout={!!isCardLayout}
             isFirstPage={
             (isCardLayout ? currentCardIndex === 0 : currentPageIndex === 0) &&
@@ -467,8 +364,5 @@ export default function PublicFormRenderer(props: PublicFormRendererProps) {
             handlePrevious={isCardLayout ? handlePrevious : handlePreviousPage}
             handleNext={handleNext}
             submitting={submitting}
-            submitButtonText={form.settings?.submitButtonText || "Submit"} />
-        </motion.div>
-      </AnimatePresence>
-    </PublicFormLayout>);
+            submitButtonText={form.settings?.submitButtonText || "Submit"} />        </motion.div>      </AnimatePresence>    </PublicFormLayout>);
 }

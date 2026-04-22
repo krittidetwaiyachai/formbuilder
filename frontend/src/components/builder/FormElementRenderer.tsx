@@ -109,10 +109,7 @@ export default function FormElementRenderer({
         </div>);
     } else {
       return (
-        <Label>
-          {labelContent}
-          {required && <span className="text-destructive ml-1">*</span>}
-        </Label>);
+        <Label>          {labelContent}          {required && <span className="text-destructive ml-1">*</span>}        </Label>);
     }
   };
   const renderElement = () => {
@@ -121,143 +118,78 @@ export default function FormElementRenderer({
       case FieldType.EMAIL:
       case FieldType.NUMBER:
         return (
-          <div className="space-y-2">
-            {renderEditableLabel(element.label, element.required)}
-            <Input
+          <div className="space-y-2">            {renderEditableLabel(element.label, element.required)}            <Input
               type={element.type}
               placeholder={element.placeholder}
               disabled={isDesigner}
-              readOnly={isDesigner} />
-            {element.helperText &&
-            <p className="text-xs text-muted-foreground">
-                {element.helperText}
-              </p>
-            }
-          </div>);
+              readOnly={isDesigner} />            {element.helperText &&
+            <p className="text-xs text-muted-foreground">              {element.helperText}            </p>
+            }          </div>);
       case FieldType.TEXTAREA:
         return (
-          <div className="space-y-2">
-            {renderEditableLabel(element.label, element.required)}
-            <Textarea
+          <div className="space-y-2">            {renderEditableLabel(element.label, element.required)}            <Textarea
               placeholder={element.placeholder}
               rows={element.rows || 4}
               disabled={isDesigner}
-              readOnly={isDesigner} />
-            {element.helperText &&
-            <p className="text-xs text-muted-foreground">
-                {element.helperText}
-              </p>
-            }
-          </div>);
+              readOnly={isDesigner} />            {element.helperText &&
+            <p className="text-xs text-muted-foreground">              {element.helperText}            </p>
+            }          </div>);
       case FieldType.DROPDOWN:
         return (
-          <div className="space-y-2">
-            {renderEditableLabel(element.label, element.required)}
-            <select
+          <div className="space-y-2">            {renderEditableLabel(element.label, element.required)}            <select
               className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              disabled={isDesigner}>
-              <option value="">Select an option</option>
-              {(element as DropdownField).options?.items?.map(
+              disabled={isDesigner}>              <option value="">Select an option</option>              {(element as DropdownField).options?.items?.map(
                 (opt: CheckboxOption) =>
-                <option key={opt.id || opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-              )}
-            </select>
-            {element.helperText &&
-            <p className="text-xs text-muted-foreground">
-                {element.helperText}
-              </p>
-            }
-          </div>);
+                <option key={opt.id || opt.value} value={opt.value}>                  {opt.label}                </option>
+              )}            </select>            {element.helperText &&
+            <p className="text-xs text-muted-foreground">              {element.helperText}            </p>
+            }          </div>);
       case FieldType.CHECKBOX:
         return (
-          <div className="space-y-3">
-            {renderEditableLabel(element.label, element.required)}
-            <div className="space-y-2">
-              {(element as CheckboxField).options?.items?.map(
+          <div className="space-y-3">            {renderEditableLabel(element.label, element.required)}            <div className="space-y-2">              {(element as CheckboxField).options?.items?.map(
                 (opt: CheckboxOption) =>
                 <div
                   key={opt.id || opt.value}
-                  className="flex items-center space-x-2">
-                    <input
+                  className="flex items-center space-x-2">                  <input
                     type="checkbox"
                     id={opt.id || opt.value}
                     disabled={isDesigner}
-                    className="h-4 w-4 rounded border-gray-300" />
-                    <label htmlFor={opt.id || opt.value} className="text-sm">
-                      {opt.label}
-                    </label>
-                  </div>
-              )}
-            </div>
-            {element.helperText &&
-            <p className="text-xs text-muted-foreground">
-                {element.helperText}
-              </p>
-            }
-          </div>);
+                    className="h-4 w-4 rounded border-gray-300" />                  <label htmlFor={opt.id || opt.value} className="text-sm">                    {opt.label}                  </label>                </div>
+              )}            </div>            {element.helperText &&
+            <p className="text-xs text-muted-foreground">              {element.helperText}            </p>
+            }          </div>);
       case FieldType.RADIO:
         return (
-          <div className="space-y-3">
-            {renderEditableLabel(element.label, element.required)}
-            <div className="space-y-2">
-              {(element as RadioField).options?.items?.map(
+          <div className="space-y-3">            {renderEditableLabel(element.label, element.required)}            <div className="space-y-2">              {(element as RadioField).options?.items?.map(
                 (opt: CheckboxOption) =>
                 <div
                   key={opt.id || opt.value}
-                  className="flex items-center space-x-2">
-                    <input
+                  className="flex items-center space-x-2">                  <input
                     type="radio"
                     id={opt.id || opt.value}
                     name={element.id}
                     disabled={isDesigner}
-                    className="h-4 w-4" />
-                    <label htmlFor={opt.id || opt.value} className="text-sm">
-                      {opt.label}
-                    </label>
-                  </div>
-              )}
-            </div>
-            {element.helperText &&
-            <p className="text-xs text-muted-foreground">
-                {element.helperText}
-              </p>
-            }
-          </div>);
+                    className="h-4 w-4" />                  <label htmlFor={opt.id || opt.value} className="text-sm">                    {opt.label}                  </label>                </div>
+              )}            </div>            {element.helperText &&
+            <p className="text-xs text-muted-foreground">              {element.helperText}            </p>
+            }          </div>);
       case FieldType.DATE:
         return (
-          <div className="space-y-2">
-            {renderEditableLabel(element.label, element.required)}
-            <Input type="date" disabled={isDesigner} readOnly={isDesigner} />
-            {element.helperText &&
-            <p className="text-xs text-muted-foreground">
-                {element.helperText}
-              </p>
-            }
-          </div>);
+          <div className="space-y-2">            {renderEditableLabel(element.label, element.required)}            <Input type="date" disabled={isDesigner} readOnly={isDesigner} />            {element.helperText &&
+            <p className="text-xs text-muted-foreground">              {element.helperText}            </p>
+            }          </div>);
       case FieldType.RATE:
         return (
-          <div className="space-y-2">
-            {renderEditableLabel(element.label, element.required)}
-            <div className="flex gap-1">
-              {Array.from({ length: element.max || 5 }).map((_, i) =>
+          <div className="space-y-2">            {renderEditableLabel(element.label, element.required)}            <div className="flex gap-1">              {Array.from({ length: element.max || 5 }).map((_, i) =>
               <Button
                 key={i}
                 variant="ghost"
                 size="icon"
                 disabled={isDesigner}
-                className="h-8 w-8">
-                  <Star className="h-5 w-5 text-yellow-400" />
-                </Button>
-              )}
-            </div>
-            {element.helperText &&
-            <p className="text-xs text-muted-foreground">
-                {element.helperText}
-              </p>
-            }
-          </div>);
+                className="h-8 w-8">                <Star className="h-5 w-5 text-yellow-400" />              </Button>
+              )}            </div>            {element.helperText &&
+            <p className="text-xs text-muted-foreground">              {element.helperText}            </p>
+            }          </div>);
       case FieldType.HEADER:
         const handleHeadingBlur = (e: React.FocusEvent<HTMLHeadingElement>) => {
           isEditingRef.current = false;
@@ -360,15 +292,13 @@ export default function FormElementRenderer({
           }
         }, [isDesigner, isSelected]);
         return (
-          <div className="space-y-2">
-            {element.headingImage &&
+          <div className="space-y-2">            {element.headingImage &&
             <img
               src={element.headingImage}
               alt="Heading"
               className="w-full h-auto rounded-lg object-cover"
               style={{ maxHeight: "200px" }} />
-            }
-            <h2
+            }            <h2
               ref={headingRef}
               contentEditable={isDesigner}
               suppressContentEditableWarning={true}

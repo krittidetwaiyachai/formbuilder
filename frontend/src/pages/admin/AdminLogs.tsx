@@ -10,27 +10,23 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
-} from "@/components/ui/select";
-
+  SelectValue } from
+"@/components/ui/select";
 const ACTION_FILTERS = [
-  "CREATED",
-  "UPDATED",
-  "DELETED",
-  "PUBLISHED",
-  "COLLABORATOR_INVITED",
-  "COLLABORATOR_ADDED",
-  "COLLABORATOR_REMOVED"
-];
+"CREATED",
+"UPDATED",
+"DELETED",
+"PUBLISHED",
+"COLLABORATOR_INVITED",
+"COLLABORATOR_ADDED",
+"COLLABORATOR_REMOVED"];
 const ALL_ACTION_VALUE = "__ALL_ACTIONS__";
-
 type Severity = "low" | "medium" | "high";
 type BeforeAfterDiff = {
   property?: string;
   before: unknown;
   after: unknown;
 };
-
 function extractThemeName(value: unknown): string | null {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
     return null;
@@ -41,17 +37,15 @@ function extractThemeName(value: unknown): string | null {
   }
   return null;
 }
-
 function decodeBasicHtmlEntities(value: string) {
-  return value
-    .replaceAll("&nbsp;", " ")
-    .replaceAll("&amp;", "&")
-    .replaceAll("&lt;", "<")
-    .replaceAll("&gt;", ">")
-    .replaceAll("&quot;", '"')
-    .replaceAll("&#39;", "'");
+  return value.
+  replaceAll("&nbsp;", " ").
+  replaceAll("&amp;", "&").
+  replaceAll("&lt;", "<").
+  replaceAll("&gt;", ">").
+  replaceAll("&quot;", '"').
+  replaceAll("&#39;", "'");
 }
-
 function normalizeAuditText(value: string) {
   const trimmed = value.trim();
   if (!trimmed) {
@@ -61,33 +55,30 @@ function normalizeAuditText(value: string) {
   if (!hasHtmlTag) {
     return decodeBasicHtmlEntities(trimmed);
   }
-  const stripped = decodeBasicHtmlEntities(trimmed)
-    .replace(/<[^>]+>/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
+  const stripped = decodeBasicHtmlEntities(trimmed).
+  replace(/<[^>]+>/g, " ").
+  replace(/\s+/g, " ").
+  trim();
   return stripped || "(empty)";
 }
-
 function formatActionLabel(action: string) {
-  return action
-    .toLowerCase()
-    .replaceAll("_", " ")
-    .replace(/\b\w/g, (char) => char.toUpperCase());
+  return action.
+  toLowerCase().
+  replaceAll("_", " ").
+  replace(/\b\w/g, (char) => char.toUpperCase());
 }
-
 function resolveSeverity(action: string): Severity {
   const normalized = action.toLowerCase();
   if (normalized.includes("delete") || normalized.includes("ban")) return "high";
   if (
-    normalized.includes("update") ||
-    normalized.includes("publish") ||
-    normalized.includes("remove")
-  ) {
+  normalized.includes("update") ||
+  normalized.includes("publish") ||
+  normalized.includes("remove"))
+  {
     return "medium";
   }
   return "low";
 }
-
 function getSeverityStyles(severity: Severity) {
   if (severity === "high") {
     return {
@@ -106,7 +97,6 @@ function getSeverityStyles(severity: Severity) {
     badge: "bg-emerald-50 text-emerald-700 border-emerald-200"
   };
 }
-
 function normalizeDetails(details: unknown): unknown {
   if (typeof details !== "string") {
     return details;
@@ -121,7 +111,6 @@ function normalizeDetails(details: unknown): unknown {
     return details;
   }
 }
-
 function toCompactValue(value: unknown) {
   if (value === null || value === undefined) return "null";
   if (typeof value === "string") return normalizeAuditText(value);
@@ -132,7 +121,6 @@ function toCompactValue(value: unknown) {
     return String(value);
   }
 }
-
 function toPrettyJson(details: unknown) {
   const normalizedDetails = normalizeDetails(details);
   if (!normalizedDetails) return "";
@@ -143,44 +131,41 @@ function toPrettyJson(details: unknown) {
     return String(normalizedDetails);
   }
 }
-
 function extractBeforeAfter(details: unknown): BeforeAfterDiff | null {
   const normalizedDetails = normalizeDetails(details);
   if (!normalizedDetails || typeof normalizedDetails !== "object" || Array.isArray(normalizedDetails)) {
     return null;
   }
   const record = normalizedDetails as Record<string, unknown>;
-
   if (
-    Object.prototype.hasOwnProperty.call(record, "before") &&
-    Object.prototype.hasOwnProperty.call(record, "after")
-  ) {
+  Object.prototype.hasOwnProperty.call(record, "before") &&
+  Object.prototype.hasOwnProperty.call(record, "after"))
+  {
     return {
       property: typeof record.property === "string" ? record.property : undefined,
       before: record.before,
       after: record.after
     };
   }
-
-  const settingsChanges = Array.isArray(record.settingsChanges)
-    ? (record.settingsChanges as Array<Record<string, unknown>>)
-    : [];
+  const settingsChanges = Array.isArray(record.settingsChanges) ?
+  record.settingsChanges as Array<Record<string, unknown>> :
+  [];
   const firstSettingsDiff = settingsChanges.find(
     (change) =>
-      Object.prototype.hasOwnProperty.call(change, "before") &&
-      Object.prototype.hasOwnProperty.call(change, "after")
+    Object.prototype.hasOwnProperty.call(change, "before") &&
+    Object.prototype.hasOwnProperty.call(change, "after")
   );
   if (firstSettingsDiff) {
     const rawProperty =
-      typeof firstSettingsDiff.property === "string"
-        ? firstSettingsDiff.property.toLowerCase()
-        : "";
+    typeof firstSettingsDiff.property === "string" ?
+    firstSettingsDiff.property.toLowerCase() :
+    "";
     const themeBefore = extractThemeName(firstSettingsDiff.before);
     const themeAfter = extractThemeName(firstSettingsDiff.after);
     if (
-      rawProperty === "settings" &&
-      (themeBefore !== null || themeAfter !== null)
-    ) {
+    rawProperty === "settings" && (
+    themeBefore !== null || themeAfter !== null))
+    {
       return {
         property: "themeName",
         before: themeBefore ?? "none",
@@ -189,35 +174,34 @@ function extractBeforeAfter(details: unknown): BeforeAfterDiff | null {
     }
     return {
       property:
-        typeof firstSettingsDiff.property === "string"
-          ? firstSettingsDiff.property
-          : undefined,
+      typeof firstSettingsDiff.property === "string" ?
+      firstSettingsDiff.property :
+      undefined,
       before: firstSettingsDiff.before,
       after: firstSettingsDiff.after
     };
   }
-
-  const updatedFields = Array.isArray(record.updatedFields)
-    ? (record.updatedFields as Array<Record<string, unknown>>)
-    : [];
+  const updatedFields = Array.isArray(record.updatedFields) ?
+  record.updatedFields as Array<Record<string, unknown>> :
+  [];
   for (const field of updatedFields) {
-    const changes = Array.isArray(field.changes)
-      ? (field.changes as Array<Record<string, unknown>>)
-      : [];
+    const changes = Array.isArray(field.changes) ?
+    field.changes as Array<Record<string, unknown>> :
+    [];
     const firstFieldDiff = changes.find(
       (change) =>
-        Object.prototype.hasOwnProperty.call(change, "before") &&
-        Object.prototype.hasOwnProperty.call(change, "after")
+      Object.prototype.hasOwnProperty.call(change, "before") &&
+      Object.prototype.hasOwnProperty.call(change, "after")
     );
     if (firstFieldDiff) {
       const fieldLabel =
-        typeof field.label === "string" && field.label.trim().length > 0
-          ? normalizeAuditText(field.label)
-          : undefined;
+      typeof field.label === "string" && field.label.trim().length > 0 ?
+      normalizeAuditText(field.label) :
+      undefined;
       const property =
-        typeof firstFieldDiff.property === "string"
-          ? normalizeAuditText(firstFieldDiff.property)
-          : undefined;
+      typeof firstFieldDiff.property === "string" ?
+      normalizeAuditText(firstFieldDiff.property) :
+      undefined;
       return {
         property: fieldLabel ? `${fieldLabel}.${property || "change"}` : property,
         before: firstFieldDiff.before,
@@ -225,116 +209,111 @@ function extractBeforeAfter(details: unknown): BeforeAfterDiff | null {
       };
     }
   }
-
   const logicChanges =
-    record.logicChanges && typeof record.logicChanges === "object"
-      ? (record.logicChanges as Record<string, unknown>)
-      : null;
-  const logicUpdated = logicChanges && Array.isArray(logicChanges.updated)
-    ? (logicChanges.updated as Array<Record<string, unknown>>)
-    : [];
+  record.logicChanges && typeof record.logicChanges === "object" ?
+  record.logicChanges as Record<string, unknown> :
+  null;
+  const logicUpdated = logicChanges && Array.isArray(logicChanges.updated) ?
+  logicChanges.updated as Array<Record<string, unknown>> :
+  [];
   for (const updated of logicUpdated) {
-    const changes = Array.isArray(updated.changes)
-      ? (updated.changes as Array<Record<string, unknown>>)
-      : [];
+    const changes = Array.isArray(updated.changes) ?
+    updated.changes as Array<Record<string, unknown>> :
+    [];
     const firstLogicDiff = changes.find(
       (change) =>
-        Object.prototype.hasOwnProperty.call(change, "before") &&
-        Object.prototype.hasOwnProperty.call(change, "after")
+      Object.prototype.hasOwnProperty.call(change, "before") &&
+      Object.prototype.hasOwnProperty.call(change, "after")
     );
     if (firstLogicDiff) {
       return {
         property:
-          typeof firstLogicDiff.property === "string" ? firstLogicDiff.property : "logic",
+        typeof firstLogicDiff.property === "string" ? firstLogicDiff.property : "logic",
         before: firstLogicDiff.before,
         after: firstLogicDiff.after
       };
     }
   }
-
   return null;
 }
-
 function formatHumanDetails(
-  log: AdminActivityLog,
-  t: (key: string, options?: Record<string, unknown>) => string
-) {
+log: AdminActivityLog,
+t: (key: string, options?: Record<string, unknown>) => string)
+{
   const details = normalizeDetails(log.details);
   const detailRecord =
-    details && typeof details === "object" && !Array.isArray(details)
-      ? (details as Record<string, unknown>)
-      : {};
-
+  details && typeof details === "object" && !Array.isArray(details) ?
+  details as Record<string, unknown> :
+  {};
   switch (log.action) {
-    case "COLLABORATOR_INVITED": {
-      const invitedEmail =
-        typeof detailRecord.email === "string" && detailRecord.email.trim().length > 0
-          ? detailRecord.email.trim()
-          : null;
-      if (invitedEmail) {
-        return t("admin.logs.details_text.collaborator_invited", { email: invitedEmail });
+    case "COLLABORATOR_INVITED":{
+        const invitedEmail =
+        typeof detailRecord.email === "string" && detailRecord.email.trim().length > 0 ?
+        detailRecord.email.trim() :
+        null;
+        if (invitedEmail) {
+          return t("admin.logs.details_text.collaborator_invited", { email: invitedEmail });
+        }
+        return t("admin.logs.details_text.collaborator_invited_generic");
       }
-      return t("admin.logs.details_text.collaborator_invited_generic");
-    }
-    case "COLLABORATOR_ADDED": {
-      const acceptedFromInvitation = detailRecord.acceptedFromInvitation === true;
-      if (acceptedFromInvitation) {
-        return t("admin.logs.details_text.collaborator_added_from_invite");
+    case "COLLABORATOR_ADDED":{
+        const acceptedFromInvitation = detailRecord.acceptedFromInvitation === true;
+        if (acceptedFromInvitation) {
+          return t("admin.logs.details_text.collaborator_added_from_invite");
+        }
+        return t("admin.logs.details_text.collaborator_added");
       }
-      return t("admin.logs.details_text.collaborator_added");
-    }
-    case "COLLABORATOR_REMOVED": {
-      const removedUserNameFromDetails =
-        typeof detailRecord.removedUserName === "string" && detailRecord.removedUserName.trim().length > 0
-          ? detailRecord.removedUserName.trim()
-          : null;
-      const removedUserEmailFromDetails =
-        typeof detailRecord.removedUserEmail === "string" && detailRecord.removedUserEmail.trim().length > 0
-          ? detailRecord.removedUserEmail.trim()
-          : null;
-      const removedFallbackFullName = [log.user.firstName, log.user.lastName]
-        .filter((value): value is string => typeof value === "string" && value.trim().length > 0)
-        .join(" ")
-        .trim();
-      const removedName = removedUserNameFromDetails || removedFallbackFullName || log.user.email;
-      const removedEmail = removedUserEmailFromDetails || log.user.email;
-      const removedBy =
-        typeof detailRecord.removedBy === "string" && detailRecord.removedBy.trim().length > 0
-          ? detailRecord.removedBy.trim()
-          : null;
-      if (removedBy) {
-        return t("admin.logs.details_text.collaborator_removed_target_by", {
+    case "COLLABORATOR_REMOVED":{
+        const removedUserNameFromDetails =
+        typeof detailRecord.removedUserName === "string" && detailRecord.removedUserName.trim().length > 0 ?
+        detailRecord.removedUserName.trim() :
+        null;
+        const removedUserEmailFromDetails =
+        typeof detailRecord.removedUserEmail === "string" && detailRecord.removedUserEmail.trim().length > 0 ?
+        detailRecord.removedUserEmail.trim() :
+        null;
+        const removedFallbackFullName = [log.user.firstName, log.user.lastName].
+        filter((value): value is string => typeof value === "string" && value.trim().length > 0).
+        join(" ").
+        trim();
+        const removedName = removedUserNameFromDetails || removedFallbackFullName || log.user.email;
+        const removedEmail = removedUserEmailFromDetails || log.user.email;
+        const removedBy =
+        typeof detailRecord.removedBy === "string" && detailRecord.removedBy.trim().length > 0 ?
+        detailRecord.removedBy.trim() :
+        null;
+        if (removedBy) {
+          return t("admin.logs.details_text.collaborator_removed_target_by", {
+            name: removedName,
+            email: removedEmail
+          });
+        }
+        return t("admin.logs.details_text.collaborator_removed_target", {
           name: removedName,
           email: removedEmail
         });
       }
-      return t("admin.logs.details_text.collaborator_removed_target", {
-        name: removedName,
-        email: removedEmail
-      });
-    }
     case "CREATED":
       return t("admin.logs.details_text.created");
     case "DELETED":
       return t("admin.logs.details_text.deleted");
     case "PUBLISHED":
       return t("admin.logs.details_text.published");
-    case "UPDATED": {
-      const diff = extractBeforeAfter(log.details);
-      if (diff?.property) {
-        return t("admin.logs.details_text.updated_change", {
-          property: diff.property,
-          before: toCompactValue(diff.before),
-          after: toCompactValue(diff.after)
-        });
+    case "UPDATED":{
+        const diff = extractBeforeAfter(log.details);
+        if (diff?.property) {
+          return t("admin.logs.details_text.updated_change", {
+            property: diff.property,
+            before: toCompactValue(diff.before),
+            after: toCompactValue(diff.after)
+          });
+        }
+        return t("admin.logs.details_text.updated");
       }
-      return t("admin.logs.details_text.updated");
-    }
     default:
       return t("admin.logs.details_text.generic");
   }
 }
-
 export default function AdminLogs() {
   const { t } = useTranslation();
   const [logs, setLogs] = useState<AdminActivityLog[]>([]);
@@ -344,7 +323,6 @@ export default function AdminLogs() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [expandedRows, setExpandedRows] = useState<Record<string, boolean>>({});
-
   useEffect(() => {
     const timer = setTimeout(async () => {
       try {
@@ -365,19 +343,16 @@ export default function AdminLogs() {
         setLoading(false);
       }
     }, 250);
-
     return () => clearTimeout(timer);
   }, [actionFilter, page, searchQuery]);
-
   const hasPrev = page > 1;
   const hasNext = page < totalPages;
   const rows = useMemo(() => logs, [logs]);
-
   return (
     <PermissionGate
       permission="VIEW_SYSTEM_LOGS"
       fallback={
-        <div className="p-8">
+      <div className="p-8">
           <div className="bg-white rounded-2xl border border-gray-100 p-6 text-gray-500">
             {t("admin.logs.no_permission")}
           </div>
@@ -388,7 +363,6 @@ export default function AdminLogs() {
           <h1 className="text-3xl font-bold text-gray-900 mb-2">{t("admin.logs.title")}</h1>
           <p className="text-gray-500">{t("admin.logs.description")}</p>
         </div>
-
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
           <div className="p-4 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white flex flex-col md:flex-row gap-3">
             <div className="relative flex-1">
@@ -401,8 +375,7 @@ export default function AdminLogs() {
                   setSearchQuery(event.target.value);
                 }}
                 placeholder={t("admin.logs.search_placeholder")}
-                className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-400 transition-all text-sm"
-              />
+                className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-400 transition-all text-sm" />
             </div>
             <Select
               value={actionFilter || ALL_ACTION_VALUE}
@@ -419,57 +392,53 @@ export default function AdminLogs() {
                   className="rounded-lg text-sm data-[state=checked]:bg-slate-900 data-[state=checked]:text-white">
                   {t("admin.logs.action_all")}
                 </SelectItem>
-                {ACTION_FILTERS.map((action) => (
-                  <SelectItem
-                    key={action}
-                    value={action}
-                    className="rounded-lg text-sm data-[state=checked]:bg-slate-900 data-[state=checked]:text-white">
+                {ACTION_FILTERS.map((action) =>
+                <SelectItem
+                  key={action}
+                  value={action}
+                  className="rounded-lg text-sm data-[state=checked]:bg-slate-900 data-[state=checked]:text-white">
                     {formatActionLabel(action)}
                   </SelectItem>
-                ))}
+                )}
               </SelectContent>
             </Select>
           </div>
-
           <div className="p-4 bg-slate-50/50 space-y-3">
             {loading &&
-              Array.from({ length: 6 }).map((_, index) => (
-                <div key={index} className="bg-white border border-slate-200 rounded-2xl p-4 animate-pulse">
+            Array.from({ length: 6 }).map((_, index) =>
+            <div key={index} className="bg-white border border-slate-200 rounded-2xl p-4 animate-pulse">
                   <div className="h-4 bg-slate-200 rounded w-1/3 mb-3" />
                   <div className="h-4 bg-slate-200 rounded w-2/3 mb-2" />
                   <div className="h-4 bg-slate-200 rounded w-1/2" />
                 </div>
-              ))}
-
-            {!loading && rows.length === 0 && (
-              <div className="px-6 py-14 text-center text-gray-400 bg-white border border-slate-200 rounded-2xl">
+            )}
+            {!loading && rows.length === 0 &&
+            <div className="px-6 py-14 text-center text-gray-400 bg-white border border-slate-200 rounded-2xl">
                 {t("admin.logs.empty")}
               </div>
-            )}
-
+            }
             {!loading &&
-              rows.map((log) => {
-                const severity = resolveSeverity(log.action);
-                const severityStyles = getSeverityStyles(severity);
-                const detailsText = formatHumanDetails(log, t);
-                const beforeAfter = extractBeforeAfter(log.details);
-                const isExpanded = expandedRows[log.id] === true;
-                const toggleJson = () =>
-                  setExpandedRows((prev) => ({ ...prev, [log.id]: !prev[log.id] }));
-                const prettyJson = toPrettyJson(log.details);
-                const userName = log.user.firstName || log.user.email;
-                const userInitial = userName.trim().charAt(0).toUpperCase();
-
-                return (
-                  <Fragment key={log.id}>
+            rows.map((log) => {
+              const severity = resolveSeverity(log.action);
+              const severityStyles = getSeverityStyles(severity);
+              const detailsText = formatHumanDetails(log, t);
+              const beforeAfter = extractBeforeAfter(log.details);
+              const isExpanded = expandedRows[log.id] === true;
+              const toggleJson = () =>
+              setExpandedRows((prev) => ({ ...prev, [log.id]: !prev[log.id] }));
+              const prettyJson = toPrettyJson(log.details);
+              const userName = log.user.firstName || log.user.email;
+              const userInitial = userName.trim().charAt(0).toUpperCase();
+              return (
+                <Fragment key={log.id}>
                     <article
-                      className={`border border-slate-200 border-l-4 rounded-2xl bg-white shadow-sm p-4 ${severityStyles.card}`}>
+                    className={`border border-slate-200 border-l-4 rounded-2xl bg-white shadow-sm p-4 ${severityStyles.card}`}>
                       <div className="flex flex-wrap items-center gap-2 mb-3">
                         <span className="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
                           {format(new Date(log.createdAt), "yyyy-MM-dd HH:mm:ss")}
                         </span>
                         <span
-                          className={`px-2.5 py-1 rounded-full text-xs font-semibold border ${severityStyles.badge}`}>
+                        className={`px-2.5 py-1 rounded-full text-xs font-semibold border ${severityStyles.badge}`}>
                           {severity === "low" && <ShieldCheck className="inline w-3 h-3 mr-1" />}
                           {t(`admin.logs.severity.${severity}`)}
                         </span>
@@ -477,7 +446,6 @@ export default function AdminLogs() {
                           {formatActionLabel(log.action)}
                         </span>
                       </div>
-
                       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
                         <div className="space-y-2">
                           <p className="text-[11px] uppercase tracking-wide text-slate-500">
@@ -499,37 +467,34 @@ export default function AdminLogs() {
                             {log.form?.title || t("admin.activity.deleted_form")}
                           </p>
                         </div>
-
                         <div className="space-y-2">
                           <p className="text-[11px] uppercase tracking-wide text-slate-500">
                             {t("admin.logs.table.before_after")}
                           </p>
-                          {beforeAfter ? (
-                            <div className="space-y-2">
-                              {beforeAfter.property && (
-                                <p className="text-xs text-slate-500 truncate" title={beforeAfter.property}>
+                          {beforeAfter ?
+                        <div className="space-y-2">
+                              {beforeAfter.property &&
+                          <p className="text-xs text-slate-500 truncate" title={beforeAfter.property}>
                                   {beforeAfter.property}
                                 </p>
-                              )}
+                          }
                               <div className="flex items-center gap-2">
                                 <span
-                                  className="px-2 py-1 rounded-md text-xs bg-red-50 text-red-700 border border-red-100 truncate max-w-[160px]"
-                                  title={toCompactValue(beforeAfter.before)}>
+                              className="px-2 py-1 rounded-md text-xs bg-red-50 text-red-700 border border-red-100 truncate max-w-[160px]"
+                              title={toCompactValue(beforeAfter.before)}>
                                   {toCompactValue(beforeAfter.before)}
                                 </span>
                                 <span className="text-slate-400">→</span>
                                 <span
-                                  className="px-2 py-1 rounded-md text-xs bg-emerald-50 text-emerald-700 border border-emerald-100 truncate max-w-[160px]"
-                                  title={toCompactValue(beforeAfter.after)}>
+                              className="px-2 py-1 rounded-md text-xs bg-emerald-50 text-emerald-700 border border-emerald-100 truncate max-w-[160px]"
+                              title={toCompactValue(beforeAfter.after)}>
                                   {toCompactValue(beforeAfter.after)}
                                 </span>
                               </div>
-                            </div>
-                          ) : (
-                            <p className="text-sm text-slate-400">{t("admin.logs.before_after.none")}</p>
-                          )}
+                            </div> :
+                        <p className="text-sm text-slate-400">{t("admin.logs.before_after.none")}</p>
+                        }
                         </div>
-
                         <div className="space-y-2">
                           <p className="text-[11px] uppercase tracking-wide text-slate-500">
                             {t("admin.logs.table.details")}
@@ -539,31 +504,27 @@ export default function AdminLogs() {
                           </p>
                         </div>
                       </div>
-
                       <div className="mt-4 pt-3 border-t border-slate-200 flex items-center justify-between gap-3">
                         <code className="text-xs text-slate-600 bg-slate-100 px-2 py-1 rounded border border-slate-200">
                           {log.id.slice(0, 8)}
                         </code>
                         <button
-                          onClick={toggleJson}
-                          className="text-xs px-2.5 py-1.5 rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-100 transition-colors">
+                        onClick={toggleJson}
+                        className="text-xs px-2.5 py-1.5 rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-100 transition-colors">
                           {isExpanded ? t("admin.logs.json.hide") : t("admin.logs.json.view")}
                         </button>
                       </div>
                     </article>
-
-                    {isExpanded && (
-                      <div className="ml-2 mr-2 mt-[-6px] mb-2 bg-slate-900 border border-slate-700 rounded-xl p-4">
+                    {isExpanded &&
+                  <div className="ml-2 mr-2 mt-[-6px] mb-2 bg-slate-900 border border-slate-700 rounded-xl p-4">
                         <pre className="text-xs leading-5 text-emerald-300 overflow-x-auto">
                           {prettyJson || t("admin.logs.details.none")}
                         </pre>
                       </div>
-                    )}
-                  </Fragment>
-                );
-              })}
+                  }
+                  </Fragment>);
+            })}
           </div>
-
           <div className="px-6 py-4 border-t border-gray-100 bg-gray-50/70 flex items-center justify-between">
             <p className="text-sm text-gray-600">{t("admin.logs.page_info", { page, total: totalPages })}</p>
             <div className="flex items-center gap-2">
@@ -583,6 +544,5 @@ export default function AdminLogs() {
           </div>
         </div>
       </div>
-    </PermissionGate>
-  );
+    </PermissionGate>);
 }
