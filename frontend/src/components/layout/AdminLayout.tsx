@@ -9,7 +9,10 @@ import {
   ChevronLeft,
   Shield,
   FileText,
-  Settings } from
+  Settings,
+  Database,
+  Globe,
+  FileBox } from
 "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useSmoothScroll } from "@/hooks/useSmoothScroll";
@@ -22,7 +25,7 @@ export default function AdminLayout() {
   useSmoothScroll("admin-scroll-container");
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navItems: NavItem[] = [
   {
     to: "/admin/dashboard",
@@ -40,15 +43,26 @@ export default function AdminLayout() {
     icon: Package
   },
   {
+    to: "/admin/forms",
+    label: t("admin.nav.forms"),
+    icon: FileBox
+  },
+  {
     to: "/admin/logs",
     label: t("admin.nav.logs"),
     icon: FileText
+  },
+  {
+    to: "/admin/backup",
+    label: t("admin.nav.backup"),
+    icon: Database
   },
   {
     to: "/admin/settings",
     label: t("admin.nav.settings"),
     icon: Settings
   }];
+
   const handleLogout = () => {
     logout();
     navigate("/");
@@ -56,6 +70,13 @@ export default function AdminLayout() {
   const handleBackToApp = () => {
     navigate("/dashboard");
   };
+
+  const toggleLanguage = () => {
+    const newLang = i18n.language === 'th' ? 'en' : 'th';
+    i18n.changeLanguage(newLang);
+    localStorage.setItem('i18nLng', newLang);
+  };
+
   return (
     <div className="min-h-screen flex bg-gray-50">
       <aside className="w-64 bg-gray-900 text-white flex flex-col">
@@ -87,6 +108,12 @@ export default function AdminLayout() {
           )}
         </nav>
         <div className="p-4 border-t border-gray-800 space-y-2">
+          <button
+            onClick={toggleLanguage}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5 transition-all">
+            <Globe className="w-5 h-5" />
+            {i18n.language === 'th' ? 'English' : 'ไทย'}
+          </button>
           <button
             onClick={handleBackToApp}
             className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5 transition-all">

@@ -18,15 +18,13 @@ export class AdminCreateLocalUserDto {
   username: string;
 
   @IsEmail()
-  @IsOptional()
-  realEmail?: string;
+  realEmail: string;
 
   @IsString()
-  @IsOptional()
-  emailVerificationId?: string;
+  emailVerificationId: string;
 
   @IsString()
-  @MinLength(16)
+  @MinLength(8)
   password: string;
 
   @IsString()

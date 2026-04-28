@@ -1,27 +1,80 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
-@Injectable()export class
-ActivityLogService {
+import { RequestContext } from '../common/request-context';
+
+@Injectable()
+export class ActivityLogService {
   private readonly logger = new Logger(ActivityLogService.name);
+
   constructor(private prisma: PrismaService) {}
+
+  private buildDeviceInfo(userAgent?: string) {
+    const ua = (userAgent || '').trim();
+    if (!ua) return null;
+    const uaLower = ua.toLowerCase();
+    const os =
+      uaLower.includes('windows') ? 'Windows' :
+      uaLower.includes('mac os x') || uaLower.includes('macintosh') ? 'macOS' :
+      uaLower.includes('android') ? 'Android' :
+      uaLower.includes('iphone') || uaLower.includes('ipad') ? 'iOS' :
+      uaLower.includes('linux') ? 'Linux' :
+      'Unknown';
+
+    const browser =
+      uaLower.includes('edg/') || uaLower.includes('edge/') ? 'Edge' :
+      uaLower.includes('chrome/') && !uaLower.includes('chromium') ? 'Chrome' :
+      uaLower.includes('firefox/') ? 'Firefox' :
+      uaLower.includes('safari/') && !uaLower.includes('chrome/') ? 'Safari' :
+      'Unknown';
+
+    const deviceType = uaLower.includes('mobile') || os === 'Android' || os === 'iOS' ? 'mobile' : 'desktop';
+
+    return {
+      type: deviceType,
+      os,
+      browser,
+      userAgent: ua
+    };
+  }
+
+  private mergeDetails(details: Prisma.InputJsonValue | undefined, extras: Record<string, unknown>): Prisma.InputJsonValue {
+    if (!details) {
+      return extras as Prisma.InputJsonValue;
+    }
+    if (typeof details === 'object' && details !== null && !Array.isArray(details)) {
+      return { ...(details as Record<string, unknown>), ...extras } as Prisma.InputJsonValue;
+    }
+    return { value: details, ...extras } as Prisma.InputJsonValue;
+  }
+
   async log(formId: string, userId: string, action: string, details?: Prisma.InputJsonValue) {
+    const ctx = RequestContext.getStore();
+    const device = this.buildDeviceInfo(ctx?.userAgent);
+    const requestId = ctx?.requestId;
+    const enrichedDetails = this.mergeDetails(details, {
+      requestId,
+      device
+    });
+
     await this.prisma.activityLog.create({
       data: {
         formId,
         userId,
         action,
-        details
+        details: enrichedDetails
       }
     });
   }
+
   async getFormActivity(
-  formId: string,
-  page: number = 1,
-  limit: number = 20,
-  sort: 'asc' | 'desc' = 'desc',
-  action?: string,
-  userId?: string) {
+    formId: string,
+    page: number = 1,
+    limit: number = 20,
+    sort: 'asc' | 'desc' = 'desc',
+    action?: string,
+    userId?: string
+  ) {
     const skip = (page - 1) * limit;
     const where: Prisma.ActivityLogWhereInput = { formId };
     if (action && action !== 'ALL') {

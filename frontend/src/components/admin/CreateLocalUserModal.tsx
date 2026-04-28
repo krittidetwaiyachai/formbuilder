@@ -10,7 +10,7 @@ interface CreateLocalUserModalProps {
   onCreated: (user: AdminCreateLocalUserResponse) => void;
 }
 
-const generateSecurePassword = (length = 24): string => {
+const generateSecurePassword = (length = 12): string => {
   const uppercase = "ABCDEFGHJKLMNPQRSTUVWXYZ";
   const lowercase = "abcdefghjkmnpqrstuvwxyz";
   const digits = "23456789";
@@ -55,8 +55,8 @@ export default function CreateLocalUserModal({
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [roleId, setRoleId] = useState("");
-  const [password, setPassword] = useState(() => generateSecurePassword());
-  const [confirmPassword, setConfirmPassword] = useState(() => generateSecurePassword());
+  const [password, setPassword] = useState(() => generateSecurePassword(12));
+  const [confirmPassword, setConfirmPassword] = useState(() => generateSecurePassword(12));
   const [showPassword, setShowPassword] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -106,7 +106,7 @@ export default function CreateLocalUserModal({
     setFirstName("");
     setLastName("");
     setRoleId("");
-    const nextPassword = generateSecurePassword();
+    const nextPassword = generateSecurePassword(12);
     setPassword(nextPassword);
     setConfirmPassword(nextPassword);
     setShowPassword(false);
@@ -267,7 +267,7 @@ export default function CreateLocalUserModal({
   };
 
   const handleRegenPassword = () => {
-    const nextPassword = generateSecurePassword();
+    const nextPassword = generateSecurePassword(12);
     setPassword(nextPassword);
     setConfirmPassword(nextPassword);
     setCopied(false);
@@ -284,14 +284,35 @@ export default function CreateLocalUserModal({
   };
 
   const passwordsMatch = password === confirmPassword;
+  const passwordStrength = useMemo(() => {
+    const value = password;
+    if (!value) {
+      return { score: 0, label: t("admin.users.password_strength.very_low") };
+    }
+    let score = 0;
+    const length = value.length;
+    if (length >= 8) score += 1;
+    if (length >= 10) score += 1;
+    if (length >= 12) score += 1;
+    if (/[a-z]/.test(value)) score += 1;
+    if (/[A-Z]/.test(value)) score += 1;
+    if (/\d/.test(value)) score += 1;
+    if (/[^A-Za-z0-9]/.test(value)) score += 1;
+    if (score <= 2) return { score, label: t("admin.users.password_strength.very_low") };
+    if (score <= 4) return { score, label: t("admin.users.password_strength.low") };
+    if (score <= 5) return { score, label: t("admin.users.password_strength.medium") };
+    if (score <= 6) return { score, label: t("admin.users.password_strength.high") };
+    return { score, label: t("admin.users.password_strength.very_high") };
+  }, [password, t]);
+
   const canSubmit = useMemo(
     () =>
       username.trim().length > 0 &&
       roleId.length > 0 &&
-      password.length >= 16 &&
+      password.length >= 8 &&
       passwordsMatch &&
-      (!normalizedRealEmail || isRealEmailVerified),
-    [username, roleId, password, passwordsMatch, normalizedRealEmail, isRealEmailVerified]
+      isRealEmailVerified,
+    [username, roleId, password, passwordsMatch, isRealEmailVerified]
   );
 
   const handleSubmit = async () => {
@@ -305,8 +326,8 @@ export default function CreateLocalUserModal({
       }
       const response = await adminApi.createLocalUser({
         username: username.trim(),
-        realEmail: normalizedRealEmail || undefined,
-        emailVerificationId: normalizedRealEmail ? emailVerificationId : undefined,
+        realEmail: normalizedRealEmail,
+        emailVerificationId: emailVerificationId,
         password,
         firstName: firstName.trim() || undefined,
         lastName: lastName.trim() || undefined,
@@ -377,7 +398,7 @@ export default function CreateLocalUserModal({
                     />
                   </FormField>
 
-                  <FormField label={t("admin.users.create_real_email")}>
+                  <FormField label={t("admin.users.create_real_email")} required>
                     <div className="flex gap-2">
                       <input
                         type="email"
@@ -553,6 +574,9 @@ export default function CreateLocalUserModal({
                         {copied ? <Check className="w-4 h-4 text-gray-700" /> : <Copy className="w-4 h-4" />}
                       </button>
                     </div>
+                    <p className="mt-1.5 text-xs font-medium text-gray-600">
+                      {passwordStrength.label}
+                    </p>
                     <p className="mt-1.5 text-xs text-gray-400">
                       {t("admin.users.create_password_hint")}
                     </p>
@@ -656,10 +680,8 @@ function SuccessView({
         {t("admin.users.create_user_success_message")}
       </div>
       <div className="rounded-xl border border-gray-100 bg-gray-50 p-4 space-y-2 text-sm">
-        <InfoRow label={t("admin.users.create_username")} value={user.email} />
-        {user.realEmail && (
-          <InfoRow label={t("admin.users.create_real_email")} value={user.realEmail} />
-        )}
+        <InfoRow label={t("admin.users.create_username")} value={user.username || ""} />
+        <InfoRow label={t("admin.users.create_real_email")} value={user.email} />
         <InfoRow label={t("admin.users.create_role")} value={user.role.name} />
         <div className="flex items-center justify-between">
           <span className="text-gray-500">{t("admin.users.create_password")}:</span>

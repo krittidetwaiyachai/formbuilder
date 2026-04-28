@@ -146,7 +146,9 @@ AuthController {
     @Ip()ipAddress: string,
     @Res({ passthrough: true })res: Response)
   {
-    await this.consumeLoginRateLimit(ipAddress, loginDto.email);
+    const normalizedIdentifier = loginDto.identifier?.trim().toLowerCase();
+    const identifierForRateLimit = normalizedIdentifier && normalizedIdentifier.includes('@') ? normalizedIdentifier : undefined;
+    await this.consumeLoginRateLimit(ipAddress, identifierForRateLimit);
     await this.verifyAuthCaptcha(loginDto.captchaToken, ipAddress);
     const result = await this.authService.login(loginDto);
     return this.finalizeAuthResponse(res, result);

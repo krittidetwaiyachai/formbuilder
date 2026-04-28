@@ -1,8 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma, RoleType } from '@prisma/client';
 import { MailService } from '../mail/mail.service';
 import { SystemSettingsService } from '../system-settings/system-settings.service';
+import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
 @Injectable()export class
 AdminService {
   constructor(
@@ -10,6 +12,162 @@ AdminService {
   private readonly mailService: MailService,
   private readonly systemSettingsService: SystemSettingsService)
   {}
+
+  private normalizeEmail(value: string) {
+    return value.trim().toLowerCase();
+  }
+
+  private generateOtpCode(): string {
+    const bytes = crypto.randomBytes(4);
+    const num = bytes.readUInt32BE(0) % 1000000;
+    return String(num).padStart(6, '0');
+  }
+
+  private hashOtpCode(verificationId: string, normalizedEmail: string, code: string) {
+    return crypto.createHash('sha256').update(`${verificationId}|${normalizedEmail}|${code}`).digest('hex');
+  }
+
+  async requestLocalUserEmailVerification(rawEmail: string) {
+    const normalizedEmail = this.normalizeEmail(rawEmail);
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+      throw new BadRequestException('Invalid email');
+    }
+    const existing = await this.prisma.user.findUnique({ where: { email: normalizedEmail }, select: { id: true } });
+    if (existing) {
+      throw new ConflictException('Email already exists');
+    }
+    const cooldownSeconds = (await this.systemSettingsService.getRateLimitSettings()).verificationCooldownSeconds;
+    const latest = await (this.prisma as any).adminLocalUserEmailVerification.findFirst({
+      where: {
+        normalizedEmail,
+        verifiedAt: null,
+        expiresAt: { gt: new Date() }
+      } as any,
+      orderBy: { createdAt: 'desc' }
+    });
+    if (latest?.resendAvailableAt && latest.resendAvailableAt > new Date()) {
+      const left = Math.max(0, Math.ceil((latest.resendAvailableAt.getTime() - Date.now()) / 1000));
+      return {
+        verificationId: latest.id,
+        expiresAt: latest.expiresAt.toISOString(),
+        resendCooldownSeconds: left
+      };
+    }
+    const code = this.generateOtpCode();
+    const expiresInMinutes = 15;
+    const expiresAt = new Date(Date.now() + expiresInMinutes * 60 * 1000);
+    const resendAvailableAt = new Date(Date.now() + Math.max(30, cooldownSeconds || 60) * 1000);
+    const created = await (this.prisma as any).adminLocalUserEmailVerification.create({
+      data: {
+        email: normalizedEmail,
+        normalizedEmail,
+        codeHash: this.hashOtpCode('pending', normalizedEmail, code),
+        expiresAt,
+        resendAvailableAt
+      } as any
+    });
+    const codeHash = this.hashOtpCode(created.id, normalizedEmail, code);
+    await (this.prisma as any).adminLocalUserEmailVerification.update({
+      where: { id: created.id },
+      data: { codeHash }
+    });
+    await this.mailService.sendAdminLocalUserOtpEmail({
+      to: normalizedEmail,
+      code,
+      expiresInMinutes
+    });
+    return {
+      verificationId: created.id,
+      expiresAt: expiresAt.toISOString(),
+      resendCooldownSeconds: Math.max(0, Math.ceil((resendAvailableAt.getTime() - Date.now()) / 1000))
+    };
+  }
+
+  async verifyLocalUserEmail(payload: { verificationId: string; email: string; code: string }) {
+    const normalizedEmail = this.normalizeEmail(payload.email);
+    const verification = await (this.prisma as any).adminLocalUserEmailVerification.findUnique({
+      where: { id: payload.verificationId },
+    });
+    if (!verification || verification.normalizedEmail !== normalizedEmail) {
+      throw new BadRequestException('Invalid verification code');
+    }
+    if (verification.verifiedAt) {
+      return { verified: true, email: normalizedEmail };
+    }
+    if (verification.expiresAt <= new Date()) {
+      throw new BadRequestException('Invalid verification code');
+    }
+    const expected = this.hashOtpCode(verification.id, normalizedEmail, payload.code);
+    if (expected !== verification.codeHash) {
+      throw new BadRequestException('Invalid verification code');
+    }
+    await (this.prisma as any).adminLocalUserEmailVerification.update({
+      where: { id: verification.id },
+      data: { verifiedAt: new Date() }
+    });
+    return { verified: true, email: normalizedEmail };
+  }
+
+  async createLocalUser(dto: {
+    username: string;
+    realEmail: string;
+    emailVerificationId: string;
+    password: string;
+    firstName?: string;
+    lastName?: string;
+    roleId: string;
+  }) {
+    const username = dto.username.trim().toLowerCase();
+    const normalizedEmail = this.normalizeEmail(dto.realEmail);
+    const verification = await (this.prisma as any).adminLocalUserEmailVerification.findUnique({
+      where: { id: dto.emailVerificationId }
+    });
+    if (
+      !verification ||
+      verification.normalizedEmail !== normalizedEmail ||
+      !verification.verifiedAt ||
+      verification.expiresAt <= new Date()
+    ) {
+      throw new BadRequestException('Invalid verification code');
+    }
+    const [existingUsername, existingEmail] = await Promise.all([
+      this.prisma.user.findFirst({ where: { username } as any, select: { id: true } }),
+      this.prisma.user.findUnique({ where: { email: normalizedEmail }, select: { id: true } })
+    ]);
+    if (existingUsername) {
+      throw new ConflictException('Username already exists');
+    }
+    if (existingEmail) {
+      throw new ConflictException('Email already exists');
+    }
+    const passwordHash = await bcrypt.hash(dto.password, 12);
+    const created = await this.prisma.user.create({
+      data: {
+        username,
+        email: normalizedEmail,
+        password: passwordHash,
+        firstName: dto.firstName?.trim() || null,
+        lastName: dto.lastName?.trim() || null,
+        provider: 'local',
+        roleId: dto.roleId,
+        isActive: true,
+      } as any,
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        photoUrl: true,
+        provider: true,
+        isActive: true,
+        lastActiveAt: true,
+        createdAt: true,
+        role: { select: { id: true, name: true } }
+      } as any
+    });
+    return created;
+  }
   async getStats() {
     const now = new Date();
     const startOfThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -180,6 +338,7 @@ AdminService {
       orderBy: { createdAt: 'desc' },
       select: {
         id: true,
+        username: true,
         email: true,
         firstName: true,
         lastName: true,
@@ -194,7 +353,7 @@ AdminService {
             name: true
           }
         }
-      }
+      } as any
     }),
     this.prisma.user.count({ where })]
     );
@@ -207,6 +366,64 @@ AdminService {
         totalPages: Math.ceil(total / limit)
       }
     };
+  }
+
+  async findAllForms(params: { page?: number; limit?: number; search?: string }) {
+    const { page = 1, limit = 10, search } = params;
+    const safePage = Number.isFinite(page) && page > 0 ? page : 1;
+    const safeLimit = Number.isFinite(limit) && limit > 0 ? Math.min(limit, 100) : 10;
+    const skip = (safePage - 1) * safeLimit;
+    const searchTerm = search?.trim();
+
+    const where: Prisma.FormWhereInput = {};
+    if (searchTerm) {
+      where.OR = [
+        { id: { contains: searchTerm, mode: 'insensitive' } },
+        { title: { contains: searchTerm, mode: 'insensitive' } },
+        { createdBy: { email: { contains: searchTerm, mode: 'insensitive' } } }
+      ];
+    }
+
+    const [forms, total] = await Promise.all([
+      this.prisma.form.findMany({
+        where,
+        skip,
+        take: safeLimit,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          createdBy: {
+            select: {
+              id: true,
+              email: true,
+              firstName: true,
+              lastName: true,
+              photoUrl: true
+            }
+          },
+          _count: {
+            select: {
+              responses: true
+            }
+          }
+        }
+      }),
+      this.prisma.form.count({ where })
+    ]);
+
+    return {
+      data: forms,
+      meta: {
+        total,
+        page: safePage,
+        limit: safeLimit,
+        totalPages: Math.max(1, Math.ceil(total / safeLimit))
+      }
+    };
+  }
+
+  async deleteForm(formId: string) {
+    await this.prisma.form.delete({ where: { id: formId } });
+    return { message: 'Form deleted successfully' };
   }
   async getSystemLogs(params: {
     page?: number;
@@ -471,6 +688,12 @@ AdminService {
     }
     const record = details as Record<string, unknown>;
     const sanitized: Record<string, unknown> = {};
+    if (Object.prototype.hasOwnProperty.call(record, 'device')) {
+      sanitized.device = record.device;
+    }
+    if (Object.prototype.hasOwnProperty.call(record, 'requestId')) {
+      sanitized.requestId = record.requestId;
+    }
     if (Array.isArray(record.settingsChanges)) {
       const settingsChanges = record.settingsChanges.filter((change) => {
         if (!change || typeof change !== 'object' || Array.isArray(change)) {

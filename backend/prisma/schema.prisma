@@ -9,6 +9,7 @@ datasource db {
 
 model User {
   id           String         @id @default(uuid())
+  username     String?        @unique
   email        String         @unique
   password     String?
   firstName    String?
@@ -36,6 +37,22 @@ model User {
   role         Role           @relation(fields: [roleId], references: [id])
 
   @@map("users")
+}
+
+model AdminLocalUserEmailVerification {
+  id              String   @id @default(uuid())
+  email           String
+  normalizedEmail String
+  codeHash        String
+  expiresAt       DateTime
+  verifiedAt      DateTime?
+  resendAvailableAt DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([normalizedEmail])
+  @@index([expiresAt])
+  @@map("admin_local_user_email_verifications")
 }
 
 model Role {

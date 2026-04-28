@@ -16,6 +16,8 @@ import AdminProtectedRoute from './components/auth/AdminProtectedRoute';
 const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
 const AdminUsers = lazy(() => import("./pages/admin/AdminUsers"));
 const AdminBundles = lazy(() => import("./pages/admin/AdminBundles"));
+const AdminForms = lazy(() => import("./pages/admin/AdminForms"));
+const AdminBackup = lazy(() => import("./pages/admin/AdminBackup"));
 const BundleEditor = lazy(() => import("./pages/admin/BundleEditor"));
 const AdminLogs = lazy(() => import("./pages/admin/AdminLogs"));
 const AdminSettings = lazy(() => import("./pages/admin/AdminSettings"));
@@ -50,7 +52,9 @@ function AppContent() {
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="users" element={<AdminUsers />} />
             <Route path="bundles" element={<AdminBundles />} />
+            <Route path="forms" element={<AdminForms />} />
             <Route path="logs" element={<AdminLogs />} />
+            <Route path="backup" element={<AdminBackup />} />
             <Route path="settings" element={<AdminSettings />} />
           </Route>
         </Route>

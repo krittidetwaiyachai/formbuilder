@@ -25,7 +25,7 @@ export default function LoginModal({ isOpen, onClose, onSuccess, onContactClick 
   const { toast } = useToast();
   const { t } = useTranslation();
   const { start, stop } = useBuilderScroll();
-  const [email, setEmail] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isDesktop, setIsDesktop] = useState(() => window.innerWidth >= 768);
@@ -121,7 +121,7 @@ export default function LoginModal({ isOpen, onClose, onSuccess, onContactClick 
     setIsLoading(true);
     try {
       const res = await api.post("/auth/login", {
-        email,
+        identifier,
         password,
         captchaToken: captchaToken || undefined
       });
@@ -229,11 +229,13 @@ export default function LoginModal({ isOpen, onClose, onSuccess, onContactClick 
       <span className="font-semibold">{window.location.origin}</span> to the Google OAuth allowed
       origins, then update <span className="font-semibold">VITE_GOOGLE_ALLOWED_ORIGINS</span>.
     </div>;
+
   const captchaBlock = showCaptcha ?
   <div className={`flex flex-col items-center justify-center ${isDesktop ? "mb-5" : "mb-6"}`}>
       <TurnstileWidget onTokenChange={handleCaptchaTokenChange} resetSignal={captchaResetSignal} />
     </div> :
   null;
+
   const formFields =
   <form onSubmit={handleEmailLogin} className={isDesktop ? "space-y-6" : "space-y-5"}>
       <div>
@@ -246,9 +248,9 @@ export default function LoginModal({ isOpen, onClose, onSuccess, onContactClick 
           {t("auth.email")}
         </label>
         <input
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        type="text"
+        value={identifier}
+        onChange={(e) => setIdentifier(e.target.value)}
         className={
         isDesktop ?
         "w-full border-0 border-b-2 border-black/20 bg-transparent px-0 py-3 text-lg text-black outline-none transition-all placeholder:text-black/30 focus:border-black" :
@@ -290,44 +292,45 @@ export default function LoginModal({ isOpen, onClose, onSuccess, onContactClick 
         {isLoading ? t("auth.signing_in") : t("auth.sign_in_button")}
       </button>
     </form>;
+
   if (!isDesktop) {
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-0 backdrop-blur-xl">
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-white">
-          <div className="safe-area-pt safe-area-pb min-h-screen px-6 pb-10 pt-14">
-            <button
-              onClick={onClose}
-              className="safe-area-pt absolute left-4 top-4 rounded-full bg-gray-100 p-2 transition-colors active:bg-gray-200">
-              <ArrowLeft className="h-5 w-5 text-gray-700" />
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-0 backdrop-blur-xl">
+      <div className="fixed inset-0 z-50 overflow-y-auto bg-white">
+        <div className="safe-area-pt safe-area-pb min-h-screen px-6 pb-10 pt-14">
+          <button
+            onClick={onClose}
+            className="safe-area-pt absolute left-4 top-4 rounded-full bg-gray-100 p-2 transition-colors active:bg-gray-200">
+            <ArrowLeft className="h-5 w-5 text-gray-700" />
+          </button>
+          {onContactClick &&
+          <button
+            type="button"
+            onClick={onContactClick}
+            title={t("admin.layout.contact")}
+            aria-label={t("admin.layout.contact")}
+            className="safe-area-pt absolute right-4 top-4 rounded-full bg-gray-100 p-2 transition-colors active:bg-gray-200">
+              <Mail className="h-5 w-5 text-gray-700" />
             </button>
-            {onContactClick &&
-            <button
-              type="button"
-              onClick={onContactClick}
-              title={t("admin.layout.contact")}
-              aria-label={t("admin.layout.contact")}
-              className="safe-area-pt absolute right-4 top-4 rounded-full bg-gray-100 p-2 transition-colors active:bg-gray-200">
-                <Mail className="h-5 w-5 text-gray-700" />
-              </button>
-            }
-            <div className="mt-8">
-              <h1 className="mb-2 text-[32px] font-bold text-black">{t("auth.sign_in")}</h1>
-              <p className="mb-8 text-base text-gray-500">{t("auth.sign_in_subtitle")}</p>
-              <div className="mb-6 flex justify-center">{googleAuthBlock}</div>
-              {captchaBlock}
-              <div className="relative my-8">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-200"></div>
-                </div>
-                <div className="relative flex justify-center">
-                  <span className="bg-white px-4 text-sm text-gray-400">{t("auth.or_continue")}</span>
-                </div>
+          }
+          <div className="mt-8">
+            <h1 className="mb-2 text-[32px] font-bold text-black">{t("auth.sign_in")}</h1>
+            <p className="mb-8 text-base text-gray-500">{t("auth.sign_in_subtitle")}</p>
+            <div className="mb-6 flex justify-center">{googleAuthBlock}</div>
+            {captchaBlock}
+            <div className="relative my-8">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-200"></div>
               </div>
-              {formFields}
+              <div className="relative flex justify-center">
+                <span className="bg-white px-4 text-sm text-gray-400">{t("auth.or_continue")}</span>
+              </div>
             </div>
+            {formFields}
           </div>
         </div>
-      </div>);
+      </div>
+    </div>);
   }
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-xl">

@@ -37,6 +37,7 @@ export interface StatsResponse {
 }
 export interface AdminUser {
   id: string;
+  username?: string | null;
   email: string;
   firstName?: string;
   lastName?: string;
@@ -89,6 +90,35 @@ export interface AdminActivityLog {
 }
 export interface ActivityLogsResponse {
   data: AdminActivityLog[];
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}
+
+export interface AdminForm {
+  id: string;
+  title: string;
+  description?: string | null;
+  status: string;
+  createdAt: string;
+  updatedAt?: string;
+  createdBy: {
+    id: string;
+    email: string;
+    firstName?: string | null;
+    lastName?: string | null;
+    photoUrl?: string | null;
+  };
+  _count: {
+    responses: number;
+  };
+}
+
+export interface AdminFormsResponse {
+  data: AdminForm[];
   meta: {
     total: number;
     page: number;
@@ -219,8 +249,34 @@ export interface AdminUpdateSystemBackupSettingsPayload {
   retentionDays?: number | null;
   directory?: string | null;
 }
+
+export type AdminRequestLocalUserEmailVerificationResponse = {
+  verificationId: string;
+  expiresAt: string;
+  resendCooldownSeconds: number;
+};
+
+export type AdminVerifyLocalUserEmailResponse = {
+  verified: boolean;
+  email: string;
+};
+
+export type AdminCreateLocalUserResponse = AdminUser;
+
+export type AdminCreateLocalUserPayload = {
+  username: string;
+  realEmail: string;
+  emailVerificationId: string;
+  password: string;
+  firstName?: string;
+  lastName?: string;
+  roleId: string;
+};
 export const adminApi = {
   getStats: () => api.get<StatsResponse>('/admin/stats'),
+  getForms: (params?: { page?: number; limit?: number; search?: string }) =>
+    api.get<AdminFormsResponse>('/admin/forms', { params }),
+  deleteForm: (formId: string) => api.delete(`/admin/forms/${formId}`),
   getLogs: (params?: {
     page?: number;
     limit?: number;
@@ -264,6 +320,15 @@ export const adminApi = {
   restoreSystemBackupLatest: () =>
   api.post('/admin/settings/system/backup/restore-latest'),
   sendSystemTestEmail: (to: string) =>
-  api.post<{sent: boolean;mode: 'smtp' | 'mock' | 'failed';reason?: string;}>('/admin/settings/system/email/test', { to })
+  api.post<{sent: boolean;mode: 'smtp' | 'mock' | 'failed';reason?: string;}>('/admin/settings/system/email/test', { to }),
+
+  requestLocalUserEmailVerification: (email: string) =>
+  api.post<AdminRequestLocalUserEmailVerificationResponse>('/admin/users/local-email-verification/request', { email }),
+
+  verifyLocalUserEmail: (payload: { verificationId: string; email: string; code: string }) =>
+  api.post<AdminVerifyLocalUserEmailResponse>('/admin/users/local-email-verification/verify', payload),
+
+  createLocalUser: (payload: AdminCreateLocalUserPayload) =>
+  api.post<AdminCreateLocalUserResponse>('/admin/users/local', payload)
 };
 export default adminApi;

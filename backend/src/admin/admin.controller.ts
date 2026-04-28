@@ -4,6 +4,7 @@ import {
   Post,
   Patch,
   Param,
+  Delete,
   Query,
   Body,
   UseGuards,
@@ -14,6 +15,11 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { RoleType } from '@prisma/client';
+import { AdminCreateLocalUserDto } from './dto/admin-create-local-user.dto';
+import {
+  AdminRequestLocalUserEmailVerificationDto,
+  AdminVerifyLocalUserEmailDto
+} from './dto/admin-local-user-email-verification.dto';
 import { AdminUpdateSystemEmailSettingsDto } from './dto/admin-update-system-email-settings.dto';
 import { AdminUpdateSystemInviteSettingsDto } from './dto/admin-update-system-invite-settings.dto';
 import { AdminSendTestEmailDto } from './dto/admin-send-test-email.dto';
@@ -68,6 +74,26 @@ AdminController {
       action
     });
   }
+  @Get('forms')
+  getForms(
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+    @Query('search') search?: string
+  ) {
+    return this.adminService.findAllForms({
+      page: page ? parseInt(page, 10) : 1,
+      limit: limit ? parseInt(limit, 10) : 10,
+      search
+    });
+  }
+  @Delete('forms/:id')
+  async deleteForm(@Param('id') id: string) {
+    try {
+      return await this.adminService.deleteForm(id);
+    } catch {
+      throw new NotFoundException('Form not found');
+    }
+  }
   @Patch('users/:id/ban')
   @Roles(RoleType.SUPER_ADMIN)
   async toggleBan(@Param('id')id: string) {
@@ -81,6 +107,23 @@ AdminController {
   @Roles(RoleType.SUPER_ADMIN)
   updateRole(@Param('id')id: string, @Body('roleId')roleId: string) {
     return this.adminService.updateUserRole(id, roleId);
+  }
+  @Post('users/local-email-verification/request')
+  @Roles(RoleType.SUPER_ADMIN)
+  requestLocalUserEmailVerification(@Body()dto: AdminRequestLocalUserEmailVerificationDto) {
+    return this.adminService.requestLocalUserEmailVerification(dto.email);
+  }
+
+  @Post('users/local-email-verification/verify')
+  @Roles(RoleType.SUPER_ADMIN)
+  verifyLocalUserEmail(@Body()dto: AdminVerifyLocalUserEmailDto) {
+    return this.adminService.verifyLocalUserEmail(dto);
+  }
+
+  @Post('users/local')
+  @Roles(RoleType.SUPER_ADMIN)
+  createLocalUser(@Body()dto: AdminCreateLocalUserDto) {
+    return this.adminService.createLocalUser(dto);
   }
   @Get('roles')
   getAllRoles() {

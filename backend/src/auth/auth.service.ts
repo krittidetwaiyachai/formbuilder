@@ -191,12 +191,30 @@ AuthService {
     };
   }
   async login(loginDto: LoginDto) {
-    const { email, password } = loginDto;
+    const { identifier, password } = loginDto;
     const authPolicy = await this.systemSettingsService.getAuthPolicySettings();
-    const user = await this.prisma.user.findUnique({
-      where: { email },
+    const normalizedIdentifier = identifier?.trim().toLowerCase();
+    const user = await this.prisma.user.findFirst({
+      where: {
+        OR: [
+          { email: normalizedIdentifier },
+          { username: normalizedIdentifier }
+        ]
+      } as any,
       include: { role: true }
-    });
+    }) as unknown as {
+      id: string;
+      email: string;
+      password: string | null;
+      firstName: string | null;
+      lastName: string | null;
+      photoUrl: string | null;
+      isActive: boolean;
+      failedLoginAttempts: number;
+      lockedUntil: Date | null;
+      role: { name: string; permissions?: unknown };
+      permissionOverrides: unknown;
+    } | null;
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
