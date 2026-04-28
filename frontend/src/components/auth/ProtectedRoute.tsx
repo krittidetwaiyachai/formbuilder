@@ -6,7 +6,8 @@ export default function ProtectedRoute() {
   const navigate = useNavigate();
   if (!isAuthenticated) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-50/50 backdrop-blur-sm">        <LoginModal
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-50/50 backdrop-blur-sm">
+        <LoginModal
           isOpen={true}
           onClose={() => navigate("/")}
           onSuccess={() => {}} />

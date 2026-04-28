@@ -48,6 +48,7 @@ export function FieldContextMenu({
   const isMultiSelect =
   additionalSelectedIds.length > 0 && (
   selectedFieldId === field.id || additionalSelectedIds.includes(field.id));
+  const isShrunk = field.options?.shrink ?? field.shrink ?? false;
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -119,13 +120,16 @@ export function FieldContextMenu({
     onClick: () => duplicateField(field.id)
   },
   {
-    icon: field.shrink ?
+    icon: isShrunk ?
     <ArrowRightFromLine className="w-4 h-4 text-gray-700" /> :
     <ArrowLeftFromLine className="w-4 h-4 text-gray-700" />,
-    label: field.shrink ?
+    label: isShrunk ?
     t("builder.context.unshrink") :
     t("builder.context.shrink"),
-    onClick: () => updateField(field.id, { shrink: !field.shrink })
+    onClick: () => updateField(field.id, {
+      shrink: !isShrunk,
+      options: { ...field.options, shrink: !isShrunk }
+    })
   },
   {
     icon: <EyeOff className="w-4 h-4 text-gray-700" />,
@@ -228,6 +232,11 @@ export function FieldContextMenu({
               if (item.onClick) handleAction(item.onClick);
             }}
             className="w-full flex items-center px-3 py-2 text-[13px] text-gray-700 hover:bg-gray-100 hover:text-black transition-colors gap-3 group font-medium">
-            <span className="flex items-center justify-center w-5 h-5 group-hover:scale-105 transition-transform text-gray-400 group-hover:text-black">              {item.icon}            </span>            <span>{item.label}</span>          </button>);
-      })}    </div>);
+            <span className="flex items-center justify-center w-5 h-5 group-hover:scale-105 transition-transform text-gray-400 group-hover:text-black">
+              {item.icon}
+            </span>
+            <span>{item.label}</span>
+          </button>);
+      })}
+    </div>);
 }

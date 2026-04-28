@@ -57,6 +57,7 @@ export default function DashboardPage() {
   };
   const [forms, setForms] = useState<FormWithStats[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showDecorativeEffects, setShowDecorativeEffects] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const { scrollTo } = useSmoothScroll("dashboard-scroll-container", {
     enabled: !loading && !isLoginModalOpen
@@ -218,6 +219,18 @@ export default function DashboardPage() {
       document.documentElement.style.overflow = originalHtmlOverflow;
     };
   }, [isLoginModalOpen]);
+  useEffect(() => {
+    if (loading) {
+      setShowDecorativeEffects(false);
+      return;
+    }
+    const timer = window.setTimeout(() => {
+      setShowDecorativeEffects(true);
+    }, 1200);
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [loading]);
   const [isCreating, setIsCreating] = useState(false);
   const createNewForm = async () => {
     if (!isAuthenticated) {
@@ -382,11 +395,15 @@ export default function DashboardPage() {
   });
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">        <motion.div
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           className="flex flex-col items-center">
-          <Loader className="mb-4" />          <p className="text-gray-500 font-medium">{t("dashboard.loading")}</p>        </motion.div>      </div>);
+          <Loader className="mb-4" />
+          <p className="text-gray-500 font-medium">{t("dashboard.loading")}</p>
+        </motion.div>
+      </div>);
   }
   const ungroupedForms = filteredForms.filter((f) => !f.folderId);
   return (
@@ -398,13 +415,17 @@ export default function DashboardPage() {
           e.stopPropagation();
         }
       }}>
-      <BackgroundParticles />      {}      <div className="md:hidden">        <DashboardHeader
+      {showDecorativeEffects ? <BackgroundParticles /> : null}
+      {}
+      <div className="md:hidden">
+        <DashboardHeader
           username={user?.firstName}
           onCreateForm={createNewForm}
           isCreating={isCreating}
           onLogin={() => setIsLoginModalOpen(true)}
           onProfileClick={() => setIsProfileSheetOpen(true)} />
-      </div>      <MobileSearchFilters
+      </div>
+      <MobileSearchFilters
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         onFilterClick={() => setIsMobileFilterOpen(true)}
@@ -415,7 +436,8 @@ export default function DashboardPage() {
         activeFolderId={activeMobileFolderId}
         onFolderSelect={setActiveMobileFolderId}
         onCreateFolder={() => setIsCreateFolderModalOpen(true)} />
-      {}      <MobileFormsSection
+      {}
+      <MobileFormsSection
         forms={filteredForms}
         onCreateForm={createNewForm}
         isCreating={isCreating}
@@ -448,29 +470,36 @@ export default function DashboardPage() {
           setIsMobileMoveFolderSheetOpen(false);
           setIsCreateFolderModalOpen(true);
         }} />
-      {}      <div
+      {}
+      <div
         id="dashboard-scroll-container"
         className={`hidden md:block flex-1 ${isLoginModalOpen ? "overflow-hidden" : "overflow-y-auto"}`}>
-        {}        <DashboardHeader
+        {}
+        <DashboardHeader
           username={user?.firstName}
           onCreateForm={createNewForm}
           isCreating={isCreating}
           onLogin={() => setIsLoginModalOpen(true)}
           onProfileClick={() => setIsProfileSheetOpen(true)} />
-        {}        <div
+        {}
+        <div
           id="dashboard-content"
           className="sticky top-0 z-30 bg-gray-50/95 backdrop-blur-sm border-b border-gray-100 shadow-sm">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">            <SearchFilters
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <SearchFilters
               searchTerm={searchTerm}
               onSearchChange={setSearchTerm}
               filterStatus={filterStatus}
               onFilterChange={setFilterStatus} />
-          </div>        </div>        <DndContext
+          </div>
+        </div>
+        <DndContext
           sensors={sensors}
           collisionDetection={pointerWithin}
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8">            <FolderFilters
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8">
+            <FolderFilters
               folders={folders}
               activeFolderId={activeMobileFolderId}
               onFolderSelect={setActiveMobileFolderId}
@@ -504,7 +533,8 @@ export default function DashboardPage() {
                   formId
                 });
               }} />
-            }            {filteredForms.length === 0 &&
+            }
+            {filteredForms.length === 0 &&
             folders.length === 0 &&
             !searchTerm ?
             <EmptyState
@@ -532,7 +562,10 @@ export default function DashboardPage() {
               folders.find((f) => f.id === activeMobileFolderId)?.name :
               undefined
               } />
-            }          </div>          <DragOverlay>            {activeForm ?
+            }
+          </div>
+          <DragOverlay>
+            {activeForm ?
             <div
               className="opacity-90 scale-105 cursor-grabbing"
               style={{ width: "300px" }}>
@@ -546,7 +579,11 @@ export default function DashboardPage() {
                 onCollaboratorsClick={() => {}}
                 formatDate={formatDate} />
               </div> :
-            null}          </DragOverlay>        </DndContext>      </div>      <LoginModal
+            null}
+          </DragOverlay>
+        </DndContext>
+      </div>
+      <LoginModal
         isOpen={isLoginModalOpen}
         onClose={() => setIsLoginModalOpen(false)}
         onSuccess={() => setIsLoginModalOpen(false)} />
@@ -625,7 +662,8 @@ export default function DashboardPage() {
           }
         }}
         onDelete={() => handleDeleteForm(contextMenu.formId)} />
-      }      <ConfirmDialog
+      }
+      <ConfirmDialog
         open={deleteConfirmOpen}
         onOpenChange={setDeleteConfirmOpen}
         title={t("dashboard.confirm.delete_form.title")}
@@ -654,8 +692,13 @@ export default function DashboardPage() {
         isOpen={isProfileSheetOpen}
         onClose={() => setIsProfileSheetOpen(false)}
         username={user?.firstName || "User"} />
-      {}      {}      {filteredForms.length > 4 && !selectedForm &&
-      <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 hidden md:flex items-center justify-center pointer-events-none">        {}        <div className="absolute inset-0 flex items-center justify-center">          {[...Array(5)].map((_, i) =>
+      {}
+      {}
+      {filteredForms.length > 4 && !selectedForm &&
+      <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 hidden md:flex items-center justify-center pointer-events-none">
+        {}
+        <div className="absolute inset-0 flex items-center justify-center">
+          {[...Array(5)].map((_, i) =>
           <motion.div
             key={i}
             className="absolute w-2 h-2 bg-gradient-to-t from-indigo-400 to-purple-400 rounded-full"
@@ -675,13 +718,20 @@ export default function DashboardPage() {
               delay: i * 0.4,
               ease: "easeOut"
             }} />
-          )}        </div>        {}        {}        <motion.div
+          )}
+        </div>
+        {}
+        {}
+        <motion.div
           className="relative flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-b from-white to-gray-50 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/50 text-gray-700 hover:text-black hover:scale-110 transition-all duration-300 cursor-pointer pointer-events-auto"
           onClick={handleScroll}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           whileHover={{ y: -2, transition: { duration: 0.2 } }}
           title={t("common.scroll_down", "Scroll Down")}>
-            <ChevronDown className="w-5 h-5 stroke-[3]" />        </motion.div>      </div>
-      }    </div>);
+            <ChevronDown className="w-5 h-5 stroke-[3]" />
+        </motion.div>
+      </div>
+      }
+    </div>);
 }

@@ -26,13 +26,14 @@ export function ClassicLayout({
   form
 }: ClassicLayoutProps) {
   return (
-    <div className="flex flex-wrap gap-x-6 gap-y-6">      {currentPageFields.map((field, index) => {
-        const isShrunk =
-        field.options && "shrink" in field.options && field.options.shrink;
+    <div className="flex flex-wrap gap-x-7 gap-y-6">
+      {currentPageFields.map((field, index) => {
+        const isShrunk = field.options?.shrink === true || field.shrink === true;
         return (
           <div
             key={field.id}
-            className={`${isShrunk ? "w-full md:w-[calc(50%-0.75rem)]" : "w-full"}`}>
+            className={`${isShrunk ? "pr-0" : "w-full"}`}
+            style={isShrunk ? { width: "calc(50% - 0.875rem)" } : {}}>
             <FormFieldRenderer
               field={field}
               register={register}
@@ -45,5 +46,6 @@ export function ClassicLayout({
               }
               isPublic />
           </div>);
-      })}    </div>);
+      })}
+    </div>);
 }

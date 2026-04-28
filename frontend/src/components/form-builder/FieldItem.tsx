@@ -73,21 +73,31 @@ function FieldItem({
     }
   };
   const isPageBreak = field.type === FieldType.PAGE_BREAK;
-  const isShrunk = field.options?.shrink || field.shrink;
+  const isShrunk = field.options?.shrink === true || field.shrink === true;
   if (isOverlay) {
     return (
       <div
         style={style}
         className={`w-[calc(105%-4rem)] bg-white rounded-xl shadow-2xl p-4 border-2 ${fieldStyle.overlayBorder} ${fieldStyle.cardBorder} ring-4 ring-black/5 cursor-grabbing`}>
-        <div className="flex justify-center mb-3">          <div className="w-8 h-1 bg-gray-200 rounded-full" />        </div>        <div className="flex items-center gap-2 mb-2">          <div
+        <div className="flex justify-center mb-3">
+          <div className="w-8 h-1 bg-gray-200 rounded-full" />
+        </div>
+        <div className="flex items-center gap-2 mb-2">
+          <div
             className={`font-medium text-base truncate ${fieldStyle.iconColor}`}>
-            {field.label || t("common.untitled_field")}          </div>        </div>        <div className="h-8 w-full bg-gray-50 rounded border border-gray-100 flex items-center px-3 text-xs text-gray-400 font-medium select-none">          {t(`builder.fields.${field.type.toLowerCase()}`, field.type)}{" "}          {t("common.field")}        </div>      </div>);
+            {field.label || t("common.untitled_field")}
+          </div>
+        </div>
+        <div className="h-8 w-full bg-gray-50 rounded border border-gray-100 flex items-center px-3 text-xs text-gray-400 font-medium select-none">
+          {t(`builder.fields.${field.type.toLowerCase()}`, field.type)}{" "}
+          {t("common.field")}
+        </div>
+      </div>);
   }
   return (
-    <>      <div
-        className={`flex items-center gap-3 transition-all duration-200 ${
-        isShrunk ? "w-[calc(50%-0.375rem)]" : "w-full"}`
-        }>
+    <>
+      <div
+        className="flex w-full items-center gap-3 transition-all duration-200">
         <div
           ref={provided?.innerRef}
           {...provided?.draggableProps}
@@ -137,18 +147,27 @@ function FieldItem({
             }}>
               <div
               className={`mt-3 w-14 h-1.5 rounded-full transition-colors ${isSelected ? "bg-gray-400" : "bg-gray-200 hover:bg-gray-300"}`}>
-            </div>          </div>
-          }          {collaboratingUsers.length > 0 && !isDragging &&
-          <div className="absolute -top-8 left-4 flex flex-row gap-1 z-50 animate-in fade-in slide-in-from-top-2">            {collaboratingUsers.slice(0, 2).map((user) =>
+            </div>
+          </div>
+          }
+          {collaboratingUsers.length > 0 && !isDragging &&
+          <div className="absolute -top-8 left-4 flex flex-row gap-1 z-50 animate-in fade-in slide-in-from-top-2">
+            {collaboratingUsers.slice(0, 2).map((user) =>
             <div
               key={user.id}
               className="px-2 py-1 rounded-md text-xs font-medium text-white shadow-md flex items-center gap-1 min-w-[30px] justify-center"
               style={{ backgroundColor: user.color }}>
-                  <span>{user.name}</span>            </div>
-            )}            {collaboratingUsers.length > 2 &&
-            <div className="px-2 py-1 rounded-md text-xs font-medium text-white shadow-md flex items-center bg-gray-600">              <span>+{collaboratingUsers.length - 2}</span>            </div>
-            }          </div>
-          }          {!isOverlay && !isDragging && !hideDeleteAction &&
+                  <span>{user.name}</span>
+            </div>
+            )}
+            {collaboratingUsers.length > 2 &&
+            <div className="px-2 py-1 rounded-md text-xs font-medium text-white shadow-md flex items-center bg-gray-600">
+              <span>+{collaboratingUsers.length - 2}</span>
+            </div>
+            }
+          </div>
+          }
+          {!isOverlay && !isDragging && !hideDeleteAction &&
           <div
             className={`hidden md:flex absolute top-0 bottom-0 -right-14 w-14 items-center justify-center z-50 transition-all duration-200 ${
             isSelected ?
@@ -162,15 +181,20 @@ function FieldItem({
               }}
               className="h-10 w-10 flex items-center justify-center bg-white text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full shadow-sm border border-gray-200 transition-all hover:scale-110 hover:shadow-md"
               title={t("common.delete_field")}>
-                <Trash2 className="h-5 w-5" />            </button>          </div>
-          }          {(field.validation?.hidden || field.options?.hidden as boolean) &&
+                <Trash2 className="h-5 w-5" />
+            </button>
+          </div>
+          }
+          {(field.validation?.hidden || field.options?.hidden as boolean) &&
           !isOverlay &&
           !isDragging &&
           <div
             className="absolute top-2 right-2 z-20 bg-gray-100/80 p-1 rounded-full text-gray-500 backdrop-blur-sm"
             title={t("common.field_hidden")}>
-                <EyeOff className="h-4 w-4" />          </div>
-          }          <div
+                <EyeOff className="h-4 w-4" />
+          </div>
+          }
+          <div
             className={`${isDragging ? "px-4 py-6" : "px-4 pb-4 pt-8"} ${field.type === FieldType.HEADER || field.type === FieldType.PARAGRAPH ? "overflow-visible" : ""}`}
             style={
             !isDragging && (
@@ -213,12 +237,15 @@ function FieldItem({
                 allFields={allFields}
                 updateField={updateField} />
               </div> :
-            <>              {isOverlay || isDragging ?
-              <div className="h-10 bg-gray-50 rounded border border-gray-100 flex items-center px-3 text-xs text-gray-400 font-medium select-none">                {field.type === FieldType.TEXTAREA ?
+            <>
+              {isOverlay || isDragging ?
+              <div className="h-10 bg-gray-50 rounded border border-gray-100 flex items-center px-3 text-xs text-gray-400 font-medium select-none">
+                {field.type === FieldType.TEXTAREA ?
                 t("common.long_text") :
                 field.type === FieldType.ADDRESS ?
                 t("common.address") :
-                `${t(`builder.fields.${field.type.toLowerCase()}`, field.type)} ${t("common.field")}`}              </div> :
+                `${t(`builder.fields.${field.type.toLowerCase()}`, field.type)} ${t("common.field")}`}
+              </div> :
               <FieldLabel
                 field={field}
                 isSelected={isSelected}
@@ -234,13 +261,19 @@ function FieldItem({
                   allFields={allFields}
                   updateField={updateField} />
                   </FieldLabel>
-              }            </>
-            }          </div>          {isSelected && currentForm?.isQuiz && !isOverlay && !isDragging &&
+              }
+            </>
+            }
+          </div>
+          {isSelected && currentForm?.isQuiz && !isOverlay && !isDragging &&
           <InlineQuizBar
             field={field}
             currentForm={currentForm}
             allFields={allFields}
             onUpdate={updateField} />
-          }        </div>      </div>    </>);
+          }
+        </div>
+      </div>
+    </>);
 }
 export default React.memo(FieldItem);

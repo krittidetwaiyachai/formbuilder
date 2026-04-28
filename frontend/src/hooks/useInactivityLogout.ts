@@ -1,40 +1,24 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { useAuthStore } from '@/store/authStore';
-import api from '@/lib/api';
+import { usePublicSettings } from '@/hooks/usePublicSettings';
 const INACTIVITY_TIMEOUT = 30 * 60 * 1000;
 const WARNING_BEFORE = 2 * 60 * 1000;
 export function useInactivityLogout(onWarning?: () => void) {
   const { logout, isAuthenticated } = useAuthStore();
+  const { settings } = usePublicSettings();
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const warningRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const timeoutDurationRef = useRef(INACTIVITY_TIMEOUT);
   const warningDurationRef = useRef(WARNING_BEFORE);
   useEffect(() => {
-    let mounted = true;
-    const loadPolicy = async () => {
-      try {
-        const response = await api.get<{
-          authPolicy?: {
-            sessionIdleTimeoutMinutes?: number;
-          };
-        }>('/system/public-settings');
-        if (!mounted) return;
-        const timeoutMinutes = Number(response.data?.authPolicy?.sessionIdleTimeoutMinutes);
-        if (!Number.isFinite(timeoutMinutes) || timeoutMinutes <= 0) {
-          return;
-        }
-        const nextTimeoutMs = timeoutMinutes * 60 * 1000;
-        timeoutDurationRef.current = nextTimeoutMs;
-        warningDurationRef.current = Math.min(WARNING_BEFORE, Math.max(nextTimeoutMs - 1000, 1000));
-      } catch (error) {
-        console.error('Failed to load auth policy settings:', error);
-      }
-    };
-    void loadPolicy();
-    return () => {
-      mounted = false;
-    };
-  }, []);
+    const timeoutMinutes = Number(settings?.authPolicy?.sessionIdleTimeoutMinutes);
+    if (!Number.isFinite(timeoutMinutes) || timeoutMinutes <= 0) {
+      return;
+    }
+    const nextTimeoutMs = timeoutMinutes * 60 * 1000;
+    timeoutDurationRef.current = nextTimeoutMs;
+    warningDurationRef.current = Math.min(WARNING_BEFORE, Math.max(nextTimeoutMs - 1000, 1000));
+  }, [settings]);
   const clearTimers = useCallback(() => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);

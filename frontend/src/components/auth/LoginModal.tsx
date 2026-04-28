@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import api from "@/lib/api";
 import TurnstileWidget from "@/components/public-form/TurnstileWidget";
 import { useBuilderScroll } from "@/contexts/SmoothScrollContext";
+import { usePublicSettings } from "@/hooks/usePublicSettings";
 interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -32,6 +33,7 @@ export default function LoginModal({ isOpen, onClose, onSuccess, onContactClick 
   const [captchaResetSignal, setCaptchaResetSignal] = useState(0);
   const [pendingGoogleCredential, setPendingGoogleCredential] = useState<string | null>(null);
   const [passwordMinLength, setPasswordMinLength] = useState(6);
+  const { settings } = usePublicSettings();
   const googleAllowedOrigins = useMemo(
     () => parseAllowedOrigins(import.meta.env.VITE_GOOGLE_ALLOWED_ORIGINS),
     []
@@ -79,28 +81,11 @@ export default function LoginModal({ isOpen, onClose, onSuccess, onContactClick 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
   useEffect(() => {
-    let mounted = true;
-    const loadPublicSettings = async () => {
-      try {
-        const response = await api.get<{
-          passwordPolicy?: {
-            minLength?: number;
-          };
-        }>("/system/public-settings");
-        if (!mounted) return;
-        const minLength = Number(response.data?.passwordPolicy?.minLength);
-        if (Number.isFinite(minLength) && minLength >= 6) {
-          setPasswordMinLength(minLength);
-        }
-      } catch (error) {
-        console.error("Failed to load public auth settings:", error);
-      }
-    };
-    void loadPublicSettings();
-    return () => {
-      mounted = false;
-    };
-  }, []);
+    const minLength = Number(settings?.passwordPolicy?.minLength);
+    if (Number.isFinite(minLength) && minLength >= 6) {
+      setPasswordMinLength(minLength);
+    }
+  }, [settings]);
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
