@@ -1,0 +1,28 @@
+{
+  "name": "formbuilder",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "npm run dev:all",
+    "build": "npm run build:all",
+    "build:all": "concurrently \"npm run build:backend\" \"npm run build:frontend\"",
+    "build:backend": "cd backend && npm run build",
+    "build:frontend": "cd frontend && npm run build",
+    "dev:all": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && npm run start:nodemon",
+    "dev:frontend": "cd frontend && npm run dev",
+    "db:migrate": "cd backend && npx prisma migrate deploy",
+    "db:push": "cd backend && npx prisma db push",
+    "prisma": "cd backend && npx prisma",
+    "clean-comments": "node scripts/clean-comments.js"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.29.0",
+    "@babel/generator": "^7.29.1",
+    "@babel/parser": "^7.29.0",
+    "@babel/plugin-syntax-jsx": "^7.28.6",
+    "@babel/plugin-syntax-typescript": "^7.28.6",
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.1.14"
+  }
+}

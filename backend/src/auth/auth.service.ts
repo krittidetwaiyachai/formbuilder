@@ -1,0 +1,645 @@
+import {
+  Injectable,
+  UnauthorizedException,
+  BadRequestException,
+  Logger } from
+'@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
+import { PrismaService } from '../prisma/prisma.service';
+import { LoginDto } from './dto/login.dto';
+import { DEFAULT_USER_ROLE } from './auth.constants';
+import { DEFAULT_ROLE_PERMISSIONS } from './permissions.constants';
+import { ConfigService } from '@nestjs/config';
+import { EventsGateway } from '../events/events.gateway';
+import { SystemSettingsService } from '../system-settings/system-settings.service';
+import { MailService } from '../mail/mail.service';
+interface AuthTokenPayload {
+  sub: string;
+  email: string;
+  role: string;
+  sessionToken: string;
+  type?: 'access' | 'refresh';
+}
+@Injectable()export class
+AuthService {
+  private readonly logger = new Logger(AuthService.name);
+  private googleClient;
+  constructor(
+  private prisma: PrismaService,
+  private jwtService: JwtService,
+  private configService: ConfigService,
+  private eventsGateway: EventsGateway,
+  private readonly systemSettingsService: SystemSettingsService,
+  private readonly mailService: MailService)
+  {
+    const clientId = this.configService.get<string>('GOOGLE_CLIENT_ID');
+    if (clientId) {
+      const { OAuth2Client } = require('google-auth-library');
+      this.googleClient = new OAuth2Client(clientId);
+    }
+  }
+  private generateSessionToken(): string {
+    return crypto.randomBytes(32).toString('hex');
+  }
+  private parseExpiresInToMs(expiresIn: string): number {
+    const match = expiresIn.match(/^(\d+)(s|m|h|d)$/);
+    if (!match) {
+      return 7 * 24 * 60 * 60 * 1000;
+    }
+    const value = Number(match[1]);
+    const unit = match[2];
+    const multipliers: Record<string, number> = {
+      s: 1000,
+      m: 60000,
+      h: 3600000,
+      d: 86400000
+    };
+    return value * (multipliers[unit] || 86400000);
+  }
+  private signAccessToken(payload: AuthTokenPayload) {
+    return this.jwtService.sign({
+      ...payload,
+      type: 'access'
+    });
+  }
+  private signRefreshToken(payload: AuthTokenPayload) {
+    const refreshExpiresIn = (this.configService.get<string>(
+      'JWT_REFRESH_EXPIRES_IN'
+    ) || '7d') as `${number}${'s' | 'm' | 'h' | 'd'}`;
+    return this.jwtService.sign(
+      {
+        ...payload,
+        type: 'refresh'
+      },
+      { expiresIn: refreshExpiresIn }
+    );
+  }
+  private buildAuthUser(user: {
+    id: string;
+    email: string;
+    firstName: string | null;
+    lastName: string | null;
+    photoUrl: string | null;
+    provider: string;
+    role: {name: string;permissions?: unknown;};
+    permissionOverrides: unknown;
+  }) {
+    const rolePermissions = this.resolveRolePermissions(
+      user.role.name,
+      user.role.permissions
+    );
+    const effectivePermissions = this.resolveEffectivePermissions(
+      user.role.name,
+      rolePermissions,
+      user.permissionOverrides
+    );
+    return {
+      id: user.id,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      photoUrl: user.photoUrl,
+      provider: user.provider,
+      role: user.role.name,
+      permissions: effectivePermissions
+    };
+  }
+  private normalizePermissionArray(value: unknown): string[] {
+    if (!Array.isArray(value)) {
+      return [];
+    }
+    return value.filter(
+      (permission): permission is string =>
+      typeof permission === 'string' && permission.length > 0
+    );
+  }
+  private resolveRolePermissions(
+  roleName: string,
+  _rolePermissionsFromDb: unknown)
+  : string[] {
+    return DEFAULT_ROLE_PERMISSIONS[roleName] || [];
+  }
+  private resolveEffectivePermissions(
+  roleName: string,
+  resolvedRolePermissions: string[],
+  _permissionOverrides: unknown)
+  : string[] {
+    if (resolvedRolePermissions.length > 0) {
+      return resolvedRolePermissions;
+    }
+    return DEFAULT_ROLE_PERMISSIONS[roleName] || [];
+  }
+  private buildAuthTokens(payload: AuthTokenPayload) {
+    const refreshExpiresIn =
+    this.configService.get<string>('JWT_REFRESH_EXPIRES_IN') || '7d';
+    const refreshMaxAgeMs = this.parseExpiresInToMs(refreshExpiresIn);
+    return {
+      access_token: this.signAccessToken(payload),
+      refresh_token: this.signRefreshToken(payload),
+      refresh_token_max_age_ms: refreshMaxAgeMs
+    };
+  }
+  async loginWithGoogle(token: string) {
+    if (!this.googleClient) {
+      throw new Error('Google Client ID not configured');
+    }
+    const ticket = await this.googleClient.verifyIdToken({
+      idToken: token,
+      audience: this.configService.get<string>('GOOGLE_CLIENT_ID')
+    });
+    const payload = ticket.getPayload();
+    if (!payload) {
+      throw new UnauthorizedException('Invalid Google token');
+    }
+    const {
+      email,
+      sub: googleId,
+      email_verified: emailVerified,
+      given_name: firstName,
+      family_name: lastName,
+      picture: photoUrl
+    } = payload;
+    if (!email || emailVerified !== true) {
+      throw new UnauthorizedException('Google account email is not verified');
+    }
+    let user = await this.prisma.user.findUnique({
+      where: { email },
+      include: { role: true }
+    });
+    if (user) {
+      this.eventsGateway.server?.to(`user_${user.id}`).emit('force_logout');
+      const sessionToken = this.generateSessionToken();
+      user = await this.prisma.user.update({
+        where: { id: user.id },
+        data: {
+          googleId: user.googleId || googleId,
+          photoUrl,
+          provider: 'google',
+          sessionToken,
+          lastActiveAt: new Date()
+        },
+        include: { role: true }
+      });
+    } else {
+      const defaultRole = await this.prisma.role.findUnique({
+        where: { name: DEFAULT_USER_ROLE }
+      });
+      if (!defaultRole) {
+        throw new Error('Default role not found');
+      }
+      const sessionToken = this.generateSessionToken();
+      user = await this.prisma.user.create({
+        data: {
+          email,
+          firstName,
+          lastName,
+          googleId,
+          photoUrl,
+          provider: 'google',
+          roleId: defaultRole.id,
+          sessionToken,
+          lastActiveAt: new Date()
+        },
+        include: { role: true }
+      });
+    }
+    const jwtPayload: AuthTokenPayload = {
+      sub: user.id,
+      email: user.email,
+      role: user.role.name,
+      sessionToken: user.sessionToken || ''
+    };
+    return {
+      ...this.buildAuthTokens(jwtPayload),
+      user: this.buildAuthUser(user)
+    };
+  }
+  async login(loginDto: LoginDto) {
+    const { identifier, password } = loginDto;
+    const authPolicy = await this.systemSettingsService.getAuthPolicySettings();
+    const normalizedIdentifier = identifier?.trim().toLowerCase();
+    const user = (await this.prisma.user.findFirst({
+      where: {
+        OR: [
+        { email: normalizedIdentifier },
+        { username: normalizedIdentifier }]
+      } as any,
+      include: { role: true }
+    })) as unknown as {
+      id: string;
+      email: string;
+      password: string | null;
+      firstName: string | null;
+      lastName: string | null;
+      photoUrl: string | null;
+      provider: string;
+      isActive: boolean;
+      failedLoginAttempts: number;
+      lockedUntil: Date | null;
+      role: {name: string;permissions?: unknown;};
+      permissionOverrides: unknown;
+    } | null;
+    if (!user) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+    if (user.lockedUntil && user.lockedUntil > new Date()) {
+      throw new UnauthorizedException({
+        message: 'Account is temporarily locked',
+        code: 'ACCOUNT_LOCKED',
+        lockedUntil: user.lockedUntil.toISOString()
+      });
+    }
+    const isPasswordValid = await bcrypt.compare(password, user.password || '');
+    if (!isPasswordValid) {
+      const nextFailedAttempts = (user.failedLoginAttempts || 0) + 1;
+      const hasReachedThreshold =
+      nextFailedAttempts >= authPolicy.maxFailedLoginAttempts;
+      const lockUntil = hasReachedThreshold ?
+      new Date(Date.now() + authPolicy.lockoutMinutes * 60 * 1000) :
+      null;
+      await this.prisma.user.update({
+        where: { id: user.id },
+        data: {
+          failedLoginAttempts: hasReachedThreshold ? 0 : nextFailedAttempts,
+          lockedUntil: lockUntil
+        }
+      });
+      if (hasReachedThreshold && lockUntil) {
+        throw new UnauthorizedException({
+          message: 'Account is temporarily locked',
+          code: 'ACCOUNT_LOCKED',
+          lockedUntil: lockUntil.toISOString()
+        });
+      }
+      throw new UnauthorizedException('Invalid credentials');
+    }
+    if (user.isActive === false) {
+      throw new UnauthorizedException({
+        message: 'Account is disabled',
+        code: 'ACCOUNT_DISABLED'
+      });
+    }
+    this.eventsGateway.server?.to(`user_${user.id}`).emit('force_logout');
+    const sessionToken = this.generateSessionToken();
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: {
+        sessionToken,
+        lastActiveAt: new Date(),
+        failedLoginAttempts: 0,
+        lockedUntil: null
+      }
+    });
+    const jwtPayload: AuthTokenPayload = {
+      sub: user.id,
+      email: user.email,
+      role: user.role.name,
+      sessionToken
+    };
+    return {
+      ...this.buildAuthTokens(jwtPayload),
+      user: this.buildAuthUser(user)
+    };
+  }
+  async refreshAccessToken(refreshToken: string) {
+    if (!refreshToken) {
+      throw new UnauthorizedException('Refresh token is required');
+    }
+    let payload: AuthTokenPayload;
+    try {
+      payload = this.jwtService.verify<AuthTokenPayload>(refreshToken);
+    } catch {
+      throw new UnauthorizedException({
+        message: 'Invalid refresh token',
+        code: 'REFRESH_TOKEN_INVALID'
+      });
+    }
+    if (!payload?.sub || !payload?.sessionToken || payload.type !== 'refresh') {
+      throw new UnauthorizedException({
+        message: 'Invalid refresh token',
+        code: 'REFRESH_TOKEN_INVALID'
+      });
+    }
+    const user = await this.prisma.user.findUnique({
+      where: { id: payload.sub },
+      include: { role: true }
+    });
+    if (!user || !user.isActive) {
+      throw new UnauthorizedException({
+        message: 'Account is disabled',
+        code: 'ACCOUNT_DISABLED'
+      });
+    }
+    if (user.sessionToken !== payload.sessionToken) {
+      throw new UnauthorizedException({
+        message: 'Session expired',
+        code: 'SESSION_EXPIRED'
+      });
+    }
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: { lastActiveAt: new Date() }
+    });
+    const nextPayload: AuthTokenPayload = {
+      sub: user.id,
+      email: user.email,
+      role: user.role.name,
+      sessionToken: user.sessionToken || ''
+    };
+    return this.buildAuthTokens(nextPayload);
+  }
+  async revokeCurrentSession(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true }
+    });
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { sessionToken: null }
+    });
+    this.eventsGateway.server?.to(`user_${userId}`).emit('force_logout');
+    return { revoked: true };
+  }
+  async revokeAllUserSessions(userId: string) {
+    const result = await this.revokeCurrentSession(userId);
+    return { revokedSessions: result.revoked ? 1 : 0 };
+  }
+  async validateSession(
+  userId: string,
+  sessionToken: string)
+  : Promise<boolean> {
+    const authPolicy = await this.systemSettingsService.getAuthPolicySettings();
+    const sessionIdleTimeoutMs =
+    authPolicy.sessionIdleTimeoutMinutes * 60 * 1000;
+    const now = Date.now();
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { sessionToken: true, lastActiveAt: true }
+    });
+    if (!user || user.sessionToken !== sessionToken) {
+      return false;
+    }
+    if (
+    user.lastActiveAt &&
+    now - user.lastActiveAt.getTime() > sessionIdleTimeoutMs)
+    {
+      await this.prisma.user.update({
+        where: { id: userId },
+        data: { sessionToken: null }
+      });
+      return false;
+    }
+    if (!user.lastActiveAt || now - user.lastActiveAt.getTime() > 60 * 1000) {
+      await this.prisma.user.update({
+        where: { id: userId },
+        data: { lastActiveAt: new Date(now) }
+      });
+    }
+    return true;
+  }
+  async validateUser(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      include: { role: true }
+    });
+    if (!user) {
+      return null;
+    }
+    const rolePermissions = this.resolveRolePermissions(
+      user.role.name,
+      user.role.permissions
+    );
+    return {
+      id: user.id,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      role: user.role.name,
+      isActive: user.isActive,
+      rolePermissions,
+      permissionOverrides: null
+    };
+  }
+  private async generateOtpCode(email: string, type: string) {
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    const codeHash = await bcrypt.hash(code, 10);
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
+    await (this.prisma as any).userOtpVerification.updateMany({
+      where: { email, type, verifiedAt: null, expiresAt: { gt: new Date() } },
+      data: { expiresAt: new Date() }
+    });
+    const otpRecord = await (this.prisma as any).userOtpVerification.create({
+      data: {
+        email,
+        type,
+        codeHash,
+        expiresAt,
+        resendAvailableAt: new Date(Date.now() + 60 * 1000)
+      }
+    });
+    return { code, recordId: otpRecord.id };
+  }
+  async requestPasswordResetOtp(email: string) {
+    const normalizedEmail = email.trim().toLowerCase();
+    const user = await this.prisma.user.findFirst({
+      where: { email: normalizedEmail }
+    });
+    if (!user) {
+      return {
+        success: true,
+        message: 'If the email exists, an OTP has been sent.',
+        resendCooldownSeconds: 60
+      };
+    }
+    if (user.provider !== 'local') {
+      throw new UnauthorizedException(
+        `This account uses ${user.provider} sign-in. Please log in with ${user.provider} instead.`
+      );
+    }
+    const { code } = await this.generateOtpCode(user.email, 'PASSWORD_RESET');
+    const emailResult = await this.mailService.sendPasswordResetOtpEmail({
+      to: user.email,
+      code,
+      expiresInMinutes: 15
+    });
+    if (emailResult.mode === 'failed') {
+      throw new UnauthorizedException('Failed to send OTP email');
+    }
+    const response: Record<string, unknown> = {
+      success: true,
+      message: 'OTP sent successfully',
+      resendCooldownSeconds: 60,
+      expiresAt: new Date(Date.now() + 15 * 60 * 1000).toISOString()
+    };
+    if (emailResult.mode === 'mock') {
+      const isProductionEnv =
+      this.configService.get<string>('NODE_ENV') === 'production';
+      if (!isProductionEnv) {
+        console.warn(`[DEV] Password Reset OTP for ${user.email}: ${code}`);
+        response.devCode = code;
+      } else {
+        this.logger.error(
+          `SMTP is in mock mode in production! OTP for ${user.email} was NOT delivered.`
+        );
+      }
+    }
+    return response;
+  }
+  async verifyPasswordResetOtp(
+  email: string,
+  code: string,
+  newPassword?: string)
+  {
+    const normalizedEmail = email.trim().toLowerCase();
+    const activeOtp = await (this.prisma as any).userOtpVerification.findFirst({
+      where: {
+        email: normalizedEmail,
+        type: 'PASSWORD_RESET',
+        verifiedAt: null,
+        expiresAt: { gt: new Date() }
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+    if (!activeOtp) {
+      throw new UnauthorizedException('Invalid or expired OTP');
+    }
+    const isValid = await bcrypt.compare(code.trim(), activeOtp.codeHash);
+    if (!isValid) {
+      throw new UnauthorizedException('Invalid or expired OTP');
+    }
+    await (this.prisma as any).userOtpVerification.update({
+      where: { id: activeOtp.id },
+      data: { verifiedAt: new Date() }
+    });
+    if (newPassword) {
+      const passwordPolicy =
+      await this.systemSettingsService.getPasswordPolicySettings();
+      this.validatePasswordStrength(newPassword, passwordPolicy);
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      await this.prisma.user.update({
+        where: { email: normalizedEmail },
+        data: { password: hashedPassword }
+      });
+      return { success: true, message: 'Password has been reset successfully' };
+    }
+    return { success: true, message: 'OTP verified' };
+  }
+  async requestEmailVerification(userId: string, targetEmail: string) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new UnauthorizedException();
+    const normalizedEmail = targetEmail.trim().toLowerCase();
+    const existing = await this.prisma.user.findFirst({
+      where: { email: normalizedEmail, id: { not: userId } }
+    });
+    if (existing) {
+      throw new UnauthorizedException('Email is already in use');
+    }
+    if (user.email !== normalizedEmail) {
+      await this.prisma.user.update({
+        where: { id: userId },
+        data: { pendingEmail: normalizedEmail } as any
+      });
+    }
+    const { code } = await this.generateOtpCode(
+      normalizedEmail,
+      'EMAIL_VERIFICATION'
+    );
+    const emailResult = await this.mailService.sendEmailVerificationOtpEmail({
+      to: normalizedEmail,
+      code,
+      expiresInMinutes: 15
+    });
+    if (emailResult.mode === 'failed') {
+      throw new UnauthorizedException('Failed to send OTP email');
+    }
+    return {
+      success: true,
+      message: 'OTP sent successfully',
+      resendCooldownSeconds: 60,
+      expiresAt: new Date(Date.now() + 15 * 60 * 1000).toISOString()
+    };
+  }
+  async verifyEmailOtp(userId: string, code: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      include: { role: true }
+    });
+    if (!user) throw new UnauthorizedException();
+    const emailToVerify = (user as any).pendingEmail || user.email;
+    if (!emailToVerify) throw new UnauthorizedException('No email to verify');
+    const activeOtp = await (this.prisma as any).userOtpVerification.findFirst({
+      where: {
+        email: emailToVerify,
+        type: 'EMAIL_VERIFICATION',
+        verifiedAt: null,
+        expiresAt: { gt: new Date() }
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+    if (!activeOtp) {
+      throw new UnauthorizedException('Invalid or expired OTP');
+    }
+    const isValid = await bcrypt.compare(code.trim(), activeOtp.codeHash);
+    if (!isValid) {
+      throw new UnauthorizedException('Invalid or expired OTP');
+    }
+    await (this.prisma as any).userOtpVerification.update({
+      where: { id: activeOtp.id },
+      data: { verifiedAt: new Date() }
+    });
+    const updatedUser = await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        email: emailToVerify,
+        pendingEmail: null,
+        emailVerifiedAt: new Date()
+      } as any,
+      include: { role: true }
+    });
+    return {
+      success: true,
+      message: 'Email verified successfully',
+      user: this.buildAuthUser(updatedUser as any)
+    };
+  }
+  private validatePasswordStrength(
+  password: string,
+  policy: {
+    minLength: number;
+    requireUppercase: boolean;
+    requireLowercase: boolean;
+    requireNumber: boolean;
+    requireSymbol: boolean;
+  })
+  {
+    if (password.length < policy.minLength) {
+      throw new BadRequestException(
+        `Password must be at least ${policy.minLength} characters`
+      );
+    }
+    if (policy.requireUppercase && !/[A-Z]/.test(password)) {
+      throw new BadRequestException(
+        'Password must contain an uppercase letter'
+      );
+    }
+    if (policy.requireLowercase && !/[a-z]/.test(password)) {
+      throw new BadRequestException('Password must contain a lowercase letter');
+    }
+    if (policy.requireNumber && !/\d/.test(password)) {
+      throw new BadRequestException('Password must contain a number');
+    }
+    if (
+    policy.requireSymbol &&
+    !/[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\\/~`]/.test(password))
+    {
+      throw new BadRequestException(
+        'Password must contain a special character'
+      );
+    }
+  }
+}

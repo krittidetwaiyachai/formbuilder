@@ -1,0 +1,29 @@
+import { Module } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { FormsService } from './forms.service';
+import { FormsController } from './forms.controller';
+import { FormCollaboratorService } from './form-collaborator.service';
+import { PrismaModule } from '../prisma/prisma.module';
+import { ActivityLogModule } from '../activity-log/activity-log.module';
+import { FormGateway } from './form.gateway';
+import { MailModule } from '../mail/mail.module';
+import { SystemSettingsModule } from '../system-settings/system-settings.module';
+@Module({
+  imports: [
+  PrismaModule,
+  ActivityLogModule,
+  MailModule,
+  SystemSettingsModule,
+  ConfigModule,
+  JwtModule.registerAsync({
+    inject: [ConfigService],
+    useFactory: (configService: ConfigService) => ({
+      secret: configService.get<string>('JWT_SECRET') || 'secret'
+    })
+  })],
+  controllers: [FormsController],
+  providers: [FormsService, FormGateway, FormCollaboratorService],
+  exports: [FormsService, FormCollaboratorService]
+})export class
+FormsModule {}

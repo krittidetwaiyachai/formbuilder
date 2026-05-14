@@ -1,0 +1,124 @@
+.ProseMirror {
+  outline: none;
+  min-height: 80px;
+  padding: 0.5rem;
+  font-synthesis: style weight;
+}
+
+
+.ProseMirror ul, 
+.ProseMirror ol {
+    list-style: none !important;
+    padding-left: 0 !important;
+    margin-bottom: 0.5em;
+}
+
+.ProseMirror li {
+    position: relative;
+    padding-left: 1.5rem;
+    margin-bottom: 0.5em;
+    line-height: 1.6;
+}
+
+
+.ProseMirror ul li::before {
+    content: '' !important;
+    position: absolute;
+    left: 0.25rem;
+    top: 0.6em;
+    width: 0.35em;
+    height: 0.35em;
+    background-color: currentColor;
+    border-radius: 50%;
+}
+
+
+.ProseMirror ol {
+    counter-reset: section;
+}
+
+.ProseMirror ol li::before {
+    counter-increment: section;
+    content: counter(section) "." !important;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1.25rem;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.ProseMirror li p {
+    margin-bottom: 0;
+    display: inline-block; 
+    vertical-align: top;
+    width: 100%;
+}
+
+.ProseMirror p {
+  margin-bottom: 0.5em;
+}
+
+.ProseMirror h1 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+}
+
+.ProseMirror h2 {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+}
+
+.ProseMirror h3 {
+  font-size: 1.125rem;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+}
+
+.ProseMirror a {
+  color: #2563eb;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.ProseMirror em,
+.ProseMirror i {
+  font-style: italic;
+  font-synthesis: style;
+}
+
+.ProseMirror blockquote {
+  border-left: 3px solid #e5e7eb;
+  padding-left: 1rem;
+  color: #4b5563;
+  font-style: italic;
+}
+
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #9ca3af;
+  pointer-events: none;
+  height: 0;
+}
+
+
+:global(.dark) .ProseMirror {
+  color: #f3f4f6;
+}
+
+:global(.dark) .ProseMirror a {
+  color: #60a5fa;
+}
+
+:global(.dark) .ProseMirror blockquote {
+  border-left-color: #374151;
+  color: #9ca3af;
+}
+
+:global(.dark) .ProseMirror p.is-editor-empty:first-child::before {
+  color: #6b7280;
+}

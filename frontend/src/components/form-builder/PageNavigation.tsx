@@ -1,0 +1,582 @@
+import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
+import { motion } from "framer-motion";
+import {
+  Plus,
+  LayoutTemplate,
+  FileText,
+  CheckCircle2,
+  X,
+  ChevronLeft,
+  ChevronRight,
+  GripVertical,
+  ChevronDown,
+  Trash2,
+  ArrowUp } from
+"lucide-react";
+import { useTranslation } from "react-i18next";
+import { FieldType } from "@/types";
+import type { Field } from "@/types";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragOverlay } from
+"@dnd-kit/core";
+import type {
+  DragEndEvent,
+  DragStartEvent,
+  DropAnimation } from
+"@dnd-kit/core";
+import { restrictToHorizontalAxis } from "@dnd-kit/modifiers";
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  horizontalListSortingStrategy } from
+"@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+interface PageNavigationProps {
+  fields: Field[];
+  currentPage: number;
+  onPageChange: (page: number) => void;
+  onAddPage: () => void;
+  onAddWelcome?: () => void;
+  onAddThankYou?: () => void;
+  onDeletePage?: (pageIndex: number) => void;
+  onRenamePage?: (pageIndex: number, newTitle: string) => void;
+  onReorderPages?: (oldIndex: number, newIndex: number) => void;
+  hasWelcome?: boolean;
+  hasThankYou?: boolean;
+  showScrollTop?: boolean;
+  onScrollToTop?: () => void;
+  className?: string;
+}
+interface PageTabProps {
+  pageIndex: number;
+  currentPage: number;
+  totalContentPages: number;
+  pageTitle: string;
+  onPageChange?: (page: number) => void;
+  onDeletePage?: (pageIndex: number) => void;
+  onRenamePage?: (pageIndex: number, newTitle: string) => void;
+  isDragging?: boolean;
+  isOverlay?: boolean;
+  style?: React.CSSProperties;
+  dragListeners?: Record<string, Function>;
+  dragAttributes?: React.HTMLAttributes<HTMLDivElement>;
+}
+const PageTab = React.forwardRef<HTMLDivElement, PageTabProps>(
+  (
+  {
+    pageIndex,
+    currentPage,
+    totalContentPages,
+    pageTitle,
+    onPageChange,
+    onDeletePage,
+    onRenamePage,
+    isDragging,
+    isOverlay,
+    style,
+    dragListeners,
+    dragAttributes
+  },
+  ref) =>
+  {
+    const [isEditing, setIsEditing] = useState(false);
+    const [editValue, setEditValue] = useState(pageTitle);
+    const { t } = useTranslation();
+    useEffect(() => {
+      setEditValue(pageTitle);
+    }, [pageTitle]);
+    const handleDoubleClick = (e: React.MouseEvent) => {
+      e.stopPropagation();
+      if (!isOverlay) setIsEditing(true);
+    };
+    const handleRename = () => {
+      setIsEditing(false);
+      if (editValue.trim() && editValue !== pageTitle) {
+        onRenamePage?.(pageIndex, editValue);
+      } else {
+        setEditValue(pageTitle);
+      }
+    };
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+      if (e.key === "Enter") handleRename();else
+      if (e.key === "Escape") {
+        setIsEditing(false);
+        setEditValue(pageTitle);
+      }
+    };
+    return (
+      <div
+        ref={ref}
+        style={style}
+        className={`group relative flex items-center px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap flex-shrink-0 cursor-pointer border ${
+        currentPage === pageIndex ?
+        "bg-black text-white border-black shadow-sm" :
+        "bg-white text-gray-600 border-transparent hover:bg-gray-50"} ${
+        isDragging ? "opacity-0" : ""} ${isOverlay ? "shadow-2xl scale-105 cursor-grabbing opacity-100 z-50" : ""}`}
+        onClick={() => !isEditing && !isOverlay && onPageChange?.(pageIndex)}
+        {...dragAttributes}>        <div
+          {...dragListeners}
+          className="mr-2 cursor-grab active:cursor-grabbing hover:opacity-70 touch-none"
+          onClick={(e) => e.stopPropagation()}>          <GripVertical
+            className={`w-3 h-3 ${currentPage === pageIndex ? "text-gray-400" : "text-gray-300"}`} />        </div>        <FileText
+          className={`w-4 h-4 mr-2 ${currentPage === pageIndex ? "text-gray-300" : "text-gray-400"}`} />        {isEditing ?
+        <input
+          autoFocus
+          value={editValue}
+          onChange={(e) => setEditValue(e.target.value)}
+          onBlur={handleRename}
+          onKeyDown={handleKeyDown}
+          onClick={(e) => e.stopPropagation()}
+          className="bg-transparent border-b border-white/50 text-white focus:outline-none w-20 px-0.5" /> :
+        <span
+          onDoubleClick={handleDoubleClick}
+          title={t("builder.navigation.double_click_rename")}>          {pageTitle}        </span>
+        }        {totalContentPages > 1 &&
+        <span
+          onClick={(e) => {
+            e.stopPropagation();
+            onDeletePage?.(pageIndex);
+          }}
+          className="ml-2 w-4 h-4 flex items-center justify-center rounded-full hover:bg-white/20 hover:text-white transition-colors opacity-0 group-hover:opacity-100"
+          title={t("builder.navigation.delete_page")}>          <X
+            className={`w-3 h-3 ${currentPage === pageIndex ? "text-gray-400" : "text-gray-400"}`} />        </span>
+        }      </div>);
+  }
+);
+interface SortablePageTabProps extends PageTabProps {
+  id: string;
+}
+function SortablePageTab(props: SortablePageTabProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging
+  } = useSortable({ id: props.id });
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition
+  };
+  return (
+    <PageTab
+      {...props}
+      ref={setNodeRef}
+      style={style}
+      isDragging={isDragging}
+      dragAttributes={attributes}
+      dragListeners={listeners} />);
+}
+const dropAnimation: DropAnimation | null = null;
+export default function PageNavigation({
+  fields,
+  currentPage,
+  onPageChange,
+  onAddPage,
+  onAddWelcome,
+  onAddThankYou,
+  onDeletePage,
+  onRenamePage,
+  onReorderPages,
+  pageSettings = [],
+  hasWelcome = true,
+  hasThankYou = true,
+  showScrollTop = false,
+  onScrollToTop,
+  className = ""
+}: PageNavigationProps & {pageSettings?: {id: string;title: string;}[];}) {
+  const { t } = useTranslation();
+  const pageBreaks = fields.filter((f) => f.type === FieldType.PAGE_BREAK);
+  const totalContentPages = pageBreaks.length + 1;
+  const contentPages = Array.from({ length: totalContentPages }, (_, i) => i);
+  const [isMobilePagePickerOpen, setIsMobilePagePickerOpen] = useState(false);
+  const getPageTitle = (index: number) => {
+    if (pageSettings && pageSettings[index]) {
+      return pageSettings[index].title;
+    }
+    return t("builder.pagination.page", { index: index + 1 });
+  };
+  const orderedPages = [
+  ...(hasWelcome ? [-1] : []),
+  ...contentPages,
+  ...(hasThankYou ? [-2] : [])];
+  const currentOrderedIndex = orderedPages.indexOf(currentPage);
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [showMobileAddMenu, setShowMobileAddMenu] = useState(false);
+  const [activeDragId, setActiveDragId] = useState<string | null>(null);
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 4
+      }
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates
+    })
+  );
+  React.useEffect(() => {
+    if (containerRef.current) {
+      const activeTab = containerRef.current.querySelector(
+        '[data-active="true"]'
+      );
+      if (activeTab) {
+        activeTab.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+          inline: "center"
+        });
+      }
+    }
+  }, [currentPage]);
+  const handlePrevPage = () => {
+    if (currentOrderedIndex > 0) {
+      onPageChange(orderedPages[currentOrderedIndex - 1]);
+    }
+  };
+  const handleNextPage = () => {
+    if (currentOrderedIndex < orderedPages.length - 1) {
+      onPageChange(orderedPages[currentOrderedIndex + 1]);
+    }
+  };
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveDragId(event.active.id as string);
+    const currentIds = contentPages.map(
+      (_, i) => pageSettings[i]?.id || `page-idx-${i}`
+    );
+    const dragIndex = currentIds.indexOf(event.active.id as string);
+    if (dragIndex !== -1 && dragIndex !== currentPage) {
+      onPageChange(dragIndex);
+    }
+  };
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    setActiveDragId(null);
+    if (over && active.id !== over.id) {
+      const currentIds = contentPages.map(
+        (_, i) => pageSettings[i]?.id || `page-idx-${i}`
+      );
+      const oldIndex = currentIds.indexOf(active.id as string);
+      const newIndex = currentIds.indexOf(over.id as string);
+      if (oldIndex !== -1 && newIndex !== -1) {
+        onReorderPages?.(oldIndex, newIndex);
+      }
+    }
+  };
+  return (
+    <>      <div
+        className={`hidden md:flex bg-white border-t border-gray-200 shadow-lg items-center justify-between px-4 h-16 ${className}`}>        <div className="flex items-center space-x-1 mr-4 text-gray-400 flex-shrink-0 border-r border-gray-200 pr-4 h-8">          <button
+            onClick={handlePrevPage}
+            disabled={currentOrderedIndex <= 0}
+            className="p-1.5 hover:bg-gray-100 rounded-md disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+            title={t("builder.pagination.prev")}>            <ChevronLeft className="w-5 h-5" />          </button>          <button
+            onClick={handleNextPage}
+            disabled={
+            currentOrderedIndex === -1 ||
+            currentOrderedIndex >= orderedPages.length - 1
+            }
+            className="p-1.5 hover:bg-gray-100 rounded-md disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+            title={t("builder.pagination.next")}>            <ChevronRight className="w-5 h-5" />          </button>        </div>        <div
+          ref={containerRef}
+          className={`flex flex-1 items-center space-x-2 overflow-x-auto p-1 min-w-0 max-w-full 
+            [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar]:block 
+            [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-gray-300 hover:[&::-webkit-scrollbar-thumb]:bg-gray-400 
+            [&::-webkit-scrollbar-track]:bg-transparent pb-2`}
+          style={{ scrollbarWidth: "thin" }}>          {hasWelcome &&
+          <button
+            onClick={() => onPageChange(-1)}
+            data-active={currentPage === -1}
+            className={`
+                    group relative flex items-center px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 pr-2 flex-shrink-0 whitespace-nowrap border
+                    ${
+            currentPage === -1 ?
+            "bg-black text-white border-black shadow-sm" :
+            "bg-white text-gray-600 border-transparent hover:bg-gray-50"}
+                `
+            }>            <LayoutTemplate
+              className={`w-4 h-4 mr-2 ${currentPage === -1 ? "text-gray-300" : "text-gray-400"}`} />            {t("builder.pagination.welcome_page")}            <span
+              onClick={(e) => {
+                e.stopPropagation();
+                onDeletePage?.(-1);
+              }}
+              className="ml-2 w-4 h-4 flex items-center justify-center rounded-full hover:bg-white/20 transition-colors opacity-0 group-hover:opacity-100"
+              title={t("builder.pagination.delete_page")}>              <X className="w-3 h-3" />            </span>          </button>
+          }          {hasWelcome &&
+          <div className="w-px h-5 bg-gray-200 mx-1 flex-shrink-0" />
+          }          {}          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
+            modifiers={[restrictToHorizontalAxis]}>            <SortableContext
+              items={contentPages.map(
+                (_, i) => pageSettings?.[i]?.id || `page-idx-${i}`
+              )}
+              strategy={horizontalListSortingStrategy}>              <div className="flex items-center space-x-2">                {contentPages.map((pageIndex) => {
+                  const pageId =
+                  pageSettings?.[pageIndex]?.id || `page-idx-${pageIndex}`;
+                  return (
+                    <SortablePageTab
+                      key={pageId}
+                      id={pageId}
+                      pageIndex={pageIndex}
+                      currentPage={currentPage}
+                      totalContentPages={totalContentPages}
+                      pageTitle={getPageTitle(pageIndex)}
+                      onPageChange={onPageChange}
+                      onDeletePage={onDeletePage}
+                      onRenamePage={onRenamePage} />);
+                })}              </div>            </SortableContext>            <DragOverlay dropAnimation={dropAnimation}>              {activeDragId ?
+              <PageTab
+                pageIndex={orderedPages.findIndex(
+                  (idx) =>
+                  (pageSettings?.[idx]?.id || `page-idx-${idx}`) ===
+                  activeDragId
+                )}
+                currentPage={orderedPages.findIndex(
+                  (idx) =>
+                  (pageSettings?.[idx]?.id || `page-idx-${idx}`) ===
+                  activeDragId
+                )}
+                totalContentPages={totalContentPages}
+                pageTitle={(() => {
+                  const setting = pageSettings?.find(
+                    (s) => s.id === activeDragId
+                  );
+                  if (setting) return setting.title;
+                  return t("builder.pagination.page_generic");
+                })()}
+                isOverlay={true} /> :
+              null}            </DragOverlay>          </DndContext>          {hasThankYou &&
+          <div className="w-px h-5 bg-gray-200 mx-1 flex-shrink-0" />
+          }          {hasThankYou &&
+          <button
+            onClick={() => onPageChange(-2)}
+            data-active={currentPage === -2}
+            className={`
+                    group relative flex items-center px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 pr-2 flex-shrink-0 whitespace-nowrap border
+                    ${
+            currentPage === -2 ?
+            "bg-black text-white border-black shadow-sm" :
+            "bg-white text-gray-600 border-transparent hover:bg-gray-50"}
+                    `
+            }>            <CheckCircle2
+              className={`w-4 h-4 mr-2 ${currentPage === -2 ? "text-gray-300" : "text-gray-400"}`} />            {t("builder.pagination.end_page")}            <span
+              onClick={(e) => {
+                e.stopPropagation();
+                onDeletePage?.(-2);
+              }}
+              className="ml-2 w-4 h-4 flex items-center justify-center rounded-full hover:bg-white/20 transition-colors opacity-0 group-hover:opacity-100"
+              title={t("builder.pagination.delete_page")}>              <X className="w-3 h-3" />            </span>          </button>
+          }        </div>
+        <div className="relative ml-4 z-50">
+          {showScrollTop && onScrollToTop &&
+          <button
+            onClick={onScrollToTop}
+            className="absolute bottom-full right-0 mb-5 p-3 bg-white text-gray-600 rounded-full shadow-lg border border-gray-200 hover:bg-gray-50 transition-all duration-300 animate-in fade-in slide-in-from-bottom-4"
+            title={t("common.scroll_top")}>
+              <ArrowUp className="w-5 h-5" />
+            </button>
+          }
+          <div className="relative group/addpage">
+            <button
+              onClick={onAddPage}
+              className="flex items-center px-4 py-2 bg-black text-white text-sm font-medium rounded-lg shadow-sm hover:bg-gray-800 hover:shadow-md transition-all duration-200 active:scale-95">
+              <Plus className="h-4 w-4 mr-1.5" />
+              {t("builder.pagination.add_page")}
+            </button>
+            <div className="absolute bottom-full right-0 mb-2 w-52 bg-white rounded-xl shadow-xl border border-gray-100 py-1 opacity-0 invisible group-hover/addpage:opacity-100 group-hover/addpage:visible transition-all duration-200 transform origin-bottom-right scale-95 group-hover/addpage:scale-100">
+              <button
+                onClick={onAddPage}
+                className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-black flex items-center transition-colors first:rounded-t-xl">
+                <FileText className="w-4 h-4 mr-2.5 text-gray-400" />
+                {t("builder.pagination.page_generic")}
+              </button>
+              <button
+                onClick={() => !hasWelcome && onAddWelcome?.()}
+                disabled={hasWelcome}
+                className={`w-full text-left px-4 py-2.5 text-sm flex items-center transition-colors ${
+                hasWelcome ?
+                "text-gray-400 bg-gray-50 cursor-not-allowed" :
+                "text-gray-700 hover:bg-gray-50 hover:text-black"}`
+                }>
+                <LayoutTemplate
+                  className={`w-4 h-4 mr-2.5 ${hasWelcome ? "text-gray-300" : "text-gray-400"}`} />
+                {hasWelcome ?
+                `${t("builder.pagination.welcome_page")} ${t("builder.pagination.added")}` :
+                t("builder.pagination.welcome_page")}
+              </button>
+              <button
+                onClick={() => !hasThankYou && onAddThankYou?.()}
+                disabled={hasThankYou}
+                className={`w-full text-left px-4 py-2.5 text-sm flex items-center transition-colors last:rounded-b-xl ${
+                hasThankYou ?
+                "text-gray-400 bg-gray-50 cursor-not-allowed" :
+                "text-gray-700 hover:bg-gray-50 hover:text-black"}`
+                }>
+                <CheckCircle2
+                  className={`w-4 h-4 mr-2.5 ${hasThankYou ? "text-gray-300" : "text-gray-400"}`} />
+                {hasThankYou ?
+                `${t("builder.pagination.end_page")} ${t("builder.pagination.added")}` :
+                t("builder.pagination.end_page")}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>      <div
+        className={`md:hidden fixed bottom-0 left-0 right-0 z-[80] bg-white border-t border-gray-200 shadow-[0_-4px_20px_-5px_rgba(0,0,0,0.1)] px-3 h-16 flex items-center justify-between pb-safesafe ${className}`}>        <div className="flex items-center gap-1">          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              if (currentPage === -1) onDeletePage?.(-1);else
+              if (currentPage === -2) onDeletePage?.(-2);else
+              onDeletePage?.(currentPage);
+            }}
+            disabled={currentPage >= 0 && totalContentPages <= 1}
+            className="w-10 h-10 flex items-center justify-center rounded-full text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-gray-400 disabled:cursor-not-allowed"
+            title={
+            currentPage >= 0 && totalContentPages <= 1 ?
+            t("builder.pagination.last_page_delete_error") :
+            t("builder.pagination.delete_page")
+            }>            <Trash2 className="w-5 h-5" />          </button>          <button
+            onClick={handlePrevPage}
+            disabled={currentOrderedIndex <= 0}
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-50 text-gray-600 hover:bg-gray-100 disabled:opacity-30 disabled:bg-transparent transition-all">            <ChevronLeft className="w-5 h-5" />          </button>        </div>        <div className="flex-1 px-2 relative flex justify-center min-w-0">          <div className="relative inline-flex items-center justify-center max-w-full">            <button
+              type="button"
+              onClick={() => setIsMobilePagePickerOpen(true)}
+              aria-haspopup="dialog"
+              aria-expanded={isMobilePagePickerOpen}
+              className="flex items-center justify-between gap-2 bg-black text-white px-4 py-2.5 rounded-full shadow-lg text-sm font-medium w-full max-w-[180px] active:scale-[0.99] transition-transform">              <span className="truncate flex-1 text-left">                {currentPage === -1 ?
+                t("builder.pagination.welcome_page") :
+                currentPage === -2 ?
+                t("builder.pagination.end_page") :
+                getPageTitle(currentPage)}              </span>              {orderedPages.length > 1 &&
+              <div className="flex items-center gap-1 opacity-70 flex-shrink-0">                <span className="text-[10px] uppercase font-bold tracking-wider">                  {t("builder.pagination.more")}                </span>                <ChevronDown className="w-3 h-3" />              </div>
+              }            </button>          </div>        </div>
+        <div className="flex items-center gap-1 relative">
+          {showScrollTop && onScrollToTop &&
+          <button
+            onClick={onScrollToTop}
+            className="absolute bottom-full right-0 mb-4 p-2.5 bg-white text-gray-600 rounded-full shadow-lg border border-gray-200 hover:bg-gray-50 transition-all duration-300 z-[9999]"
+            title={t("common.scroll_top")}>
+              <ArrowUp className="w-4 h-4" />
+            </button>
+          }
+          <button
+            onClick={handleNextPage}
+            disabled={
+            currentOrderedIndex === -1 ||
+            currentOrderedIndex >= orderedPages.length - 1
+            }
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-50 text-gray-600 hover:bg-gray-100 disabled:opacity-30 disabled:bg-transparent transition-all">            <ChevronRight className="w-5 h-5" />          </button>          <div className="w-px h-6 bg-gray-200 mx-1"></div>          <div className="relative">            <button
+              onClick={() => setShowMobileAddMenu(!showMobileAddMenu)}
+              className="w-10 h-10 flex items-center justify-center rounded-full bg-black text-white shadow-lg active:scale-95 transition-all">              <Plus
+                className={`w-5 h-5 transition-transform duration-200 ${showMobileAddMenu ? "rotate-45" : ""}`} />            </button>            {showMobileAddMenu &&
+            createPortal(
+              <>                <div
+                  className="fixed inset-0 z-[9999]"
+                  onClick={() => setShowMobileAddMenu(false)} />                <div className="fixed bottom-24 right-4 w-64 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 z-[9999] overflow-hidden animate-in slide-in-from-bottom-2 fade-in duration-200">                  <button
+                    onClick={() => {
+                      onAddPage();
+                      setShowMobileAddMenu(false);
+                    }}
+                    className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-black flex items-center transition-colors border-b border-gray-50">                    <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center mr-3 text-gray-500">                      <FileText className="w-4 h-4" />                    </div>                    <div>                      <div className="font-medium">                        {t("builder.pagination.page_generic")}                      </div>                      <div className="text-xs text-gray-400">                        {t("builder.pagination.add_new_blank")}                      </div>                    </div>                  </button>                  <button
+                    onClick={() => {
+                      if (!hasWelcome) {
+                        onAddWelcome?.();
+                        setShowMobileAddMenu(false);
+                      }
+                    }}
+                    disabled={hasWelcome}
+                    className={`w-full text-left px-4 py-3 text-sm flex items-center transition-colors border-b border-gray-50 ${
+                    hasWelcome ?
+                    "opacity-50 cursor-not-allowed bg-gray-50/50" :
+                    "text-gray-700 hover:bg-gray-50 hover:text-black"}`
+                    }>                    <div
+                      className={`w-8 h-8 rounded-full flex items-center justify-center mr-3 ${hasWelcome ? "bg-gray-100 text-gray-300" : "bg-indigo-50 text-indigo-500"}`}>                      <LayoutTemplate className="w-4 h-4" />                    </div>                    <div className="flex-1">                      <div className="font-medium">                        {t("builder.pagination.welcome_page")}                      </div>                      <div className="text-xs text-gray-400">                        {hasWelcome ?
+                        t("builder.pagination.already_added") :
+                        t("builder.pagination.active_intro")}                      </div>                    </div>                    {hasWelcome &&
+                    <CheckCircle2 className="w-4 h-4 text-green-500 ml-2" />
+                    }                  </button>                  <button
+                    onClick={() => {
+                      if (!hasThankYou) {
+                        onAddThankYou?.();
+                        setShowMobileAddMenu(false);
+                      }
+                    }}
+                    disabled={hasThankYou}
+                    className={`w-full text-left px-4 py-3 text-sm flex items-center transition-colors ${
+                    hasThankYou ?
+                    "opacity-50 cursor-not-allowed bg-gray-50/50" :
+                    "text-gray-700 hover:bg-gray-50 hover:text-black"}`
+                    }>                    <div
+                      className={`w-8 h-8 rounded-full flex items-center justify-center mr-3 ${hasThankYou ? "bg-gray-100 text-gray-300" : "bg-emerald-50 text-emerald-500"}`}>                      <CheckCircle2 className="w-4 h-4" />                    </div>                    <div className="flex-1">                      <div className="font-medium">                        {t("builder.pagination.end_page")}                      </div>                      <div className="text-xs text-gray-400">                        {hasThankYou ?
+                        t("builder.pagination.already_added") :
+                        t("builder.pagination.active_success")}                      </div>                    </div>                    {hasThankYou &&
+                    <CheckCircle2 className="w-4 h-4 text-green-500 ml-2" />
+                    }                  </button>                </div>              </>,
+              document.body
+            )}          </div>        </div>      </div>      {isMobilePagePickerOpen &&
+      createPortal(
+        <>          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="fixed inset-0 z-[9998] bg-black/40 backdrop-blur-[2px]"
+            onClick={() => setIsMobilePagePickerOpen(false)} />          <motion.div
+            initial={{ y: "100%" }}
+            animate={{ y: 0 }}
+            transition={{ type: "spring", damping: 34, stiffness: 380, bounce: 0 }}
+            className="fixed inset-x-0 bottom-0 z-[9999]">            <div className="mx-auto max-w-md">              <div className="bg-white rounded-t-3xl shadow-2xl border border-gray-200 overflow-hidden">                <div className="px-4 pt-3 pb-2">                  <div className="w-10 h-1 bg-gray-200 rounded-full mx-auto mb-3" />                  <div className="flex items-center justify-between gap-3">                    <div className="min-w-0">                      <div className="text-sm font-semibold text-gray-900 truncate">                        {t("builder.pagination.page_generic")}                      </div>                      <div className="text-xs text-gray-500 truncate">                        {currentPage === -1 ?
+                        t("builder.pagination.welcome_page") :
+                        currentPage === -2 ?
+                        t("builder.pagination.end_page") :
+                        getPageTitle(currentPage)}                      </div>                    </div>                    <button
+                      type="button"
+                      onClick={() => setIsMobilePagePickerOpen(false)}
+                      className="w-9 h-9 rounded-full bg-gray-50 text-gray-700 flex items-center justify-center hover:bg-gray-100 transition-colors">                      <X className="w-4 h-4" />                    </button>                  </div>                </div>                <div className="max-h-[60vh] overflow-y-auto px-2 pb-2">                  {orderedPages.map((pageIdx) => {
+                    const isActive = currentPage === pageIdx;
+                    const title =
+                    pageIdx === -1 ?
+                    t("builder.pagination.welcome_page") :
+                    pageIdx === -2 ?
+                    t("builder.pagination.end_page") :
+                    getPageTitle(pageIdx);
+                    const Icon =
+                    pageIdx === -1 ? LayoutTemplate :
+                    pageIdx === -2 ? CheckCircle2 :
+                    FileText;
+                    return (
+                      <button
+                        key={pageIdx}
+                        type="button"
+                        onClick={() => {
+                          onPageChange(pageIdx);
+                          setIsMobilePagePickerOpen(false);
+                        }}
+                        className={`w-full flex items-center gap-3 px-3 py-3 rounded-2xl text-left transition-colors ${
+                        isActive ?
+                        "bg-black text-white" :
+                        "bg-white text-gray-800 hover:bg-gray-50"}`
+                        }>                        <div
+                          className={`w-9 h-9 rounded-2xl flex items-center justify-center flex-shrink-0 ${
+                          isActive ? "bg-white/10" : "bg-gray-100"}`
+                          }>                          <Icon className={`w-4 h-4 ${isActive ? "text-white" : "text-gray-600"}`} />                        </div>                        <div className="min-w-0 flex-1">                          <div className="text-sm font-medium truncate">                            {title}                          </div>                        </div>                        <div className="flex-shrink-0">                          {isActive &&
+                          <CheckCircle2 className="w-5 h-5 text-white/90" />
+                          }                        </div>                      </button>);
+                  })}                </div>                <div className="px-4 pt-1 pb-4">                  <button
+                    type="button"
+                    onClick={() => {
+                      onAddPage();
+                      setIsMobilePagePickerOpen(false);
+                    }}
+                    className="w-full mt-1 flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-gray-900 text-white font-medium shadow-lg active:scale-[0.99] transition-transform">                    <Plus className="w-4 h-4" />                    {t("builder.pagination.add_page")}                  </button>                </div>              </div>              <div className="h-[max(env(safe-area-inset-bottom),12px)] bg-white" />            </div>          </motion.div>        </>,
+        document.body
+      )}    </>);
+}

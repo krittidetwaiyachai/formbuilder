@@ -1,0 +1,596 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String         @id @default(uuid())
+  username     String?        @unique
+  email        String         @unique
+  password     String?
+  firstName    String?
+  lastName     String?
+  roleId       String
+  googleId     String?        @unique
+  photoUrl     String?
+  provider     String         @default("local")
+  sessionToken String?
+  isActive     Boolean        @default(true)
+  failedLoginAttempts Int     @default(0)
+  lockedUntil   DateTime?
+  permissionOverrides Json?
+  lastActiveAt DateTime?
+  emailVerifiedAt DateTime?
+  pendingEmail    String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  responses    FormResponse[]
+  formsCreated Form[]         @relation("FormCreator")
+  formsCollaborated Form[]    @relation("FormCollaborators")
+  collaboratorInvitationsSent FormCollaboratorInvitation[] @relation("FormCollaboratorInvitationInvitedBy")
+  collaboratorInvitationsReceived FormCollaboratorInvitation[] @relation("FormCollaboratorInvitationInvitedUser")
+  activityLogs ActivityLog[]
+  folders      Folder[]
+  bundlesCreated Bundle[]     @relation("BundleCreator")
+  role         Role           @relation(fields: [roleId], references: [id])
+
+  @@map("users")
+}
+
+model UserOtpVerification {
+  id              String   @id @default(uuid())
+  email           String
+  type            String
+  codeHash        String
+  expiresAt       DateTime
+  verifiedAt      DateTime?
+  resendAvailableAt DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([email, type])
+  @@index([expiresAt])
+  @@map("user_otp_verifications")
+}
+
+model AdminLocalUserEmailVerification {
+  id              String   @id @default(uuid())
+  email           String
+  normalizedEmail String
+  codeHash        String
+  expiresAt       DateTime
+  verifiedAt      DateTime?
+  resendAvailableAt DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([normalizedEmail])
+  @@index([expiresAt])
+  @@map("admin_local_user_email_verifications")
+}
+
+model Role {
+  id          String   @id @default(uuid())
+  name        RoleType @unique
+  description String?
+  permissions Json
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  users       User[]
+
+  @@map("roles")
+}
+
+model Folder {
+  id        String   @id @default(uuid())
+  name      String
+  color     String?  @default("#6366f1")
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  forms     Form[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@map("folders")
+}
+
+model Form {
+  id           String           @id @default(uuid())
+  title        String
+  description  String?
+  status       FormStatus       @default(DRAFT)
+  isQuiz       Boolean          @default(false)
+  viewCount    Int              @default(0)
+  quizSettings    Json?
+  welcomeSettings Json?
+  thankYouSettings Json?
+  settings        Json?
+  notificationSettings Json?
+  pageSettings    Json?
+  createdById  String
+  folderId     String?
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  conditions   FieldCondition[]
+  fields       Field[]
+  responses    FormResponse[]
+  createdBy    User             @relation("FormCreator", fields: [createdById], references: [id])
+  folder       Folder?          @relation(fields: [folderId], references: [id], onDelete: SetNull)
+  collaborators User[]          @relation("FormCollaborators")
+  collaboratorInvitations FormCollaboratorInvitation[]
+  bundleFields BundleField[]
+  logicRules   LogicRule[]
+  activityLogs ActivityLog[]
+  views        FormView[]
+  emailVerifications FormEmailVerification[]
+  verifiedSubmissionGrants FormVerifiedSubmissionGrant[]
+  publicSubmissionSessions PublicSubmissionSession[]
+  submissionVerificationRequests SubmissionVerificationRequest[]
+  submissionIdentityLocks SubmissionIdentityLock[]
+
+  @@map("forms")
+}
+
+model FormCollaboratorInvitation {
+  id                     String                       @id @default(uuid())
+  formId                 String
+  invitedByUserId        String                       @map("invitedByUserId")
+  invitedUserId          String?
+  invitedEmail           String
+  normalizedInvitedEmail String                       @map("normalizedInvitedEmail")
+  tokenHash              String                       @unique
+  status                 CollaboratorInvitationStatus @default(PENDING)
+  expiresAt              DateTime
+  acceptedAt             DateTime?
+  revokedAt              DateTime?
+  lastSentAt             DateTime                     @default(now()) @map("lastSentAt")
+  resendCount            Int                          @default(0) @map("resendCount")
+  metadata               Json?
+  createdAt              DateTime                     @default(now())
+  updatedAt              DateTime                     @updatedAt
+  form                   Form                         @relation(fields: [formId], references: [id], onDelete: Cascade)
+  invitedBy              User                         @relation("FormCollaboratorInvitationInvitedBy", fields: [invitedByUserId], references: [id], onDelete: Cascade)
+  invitedUser            User?                        @relation("FormCollaboratorInvitationInvitedUser", fields: [invitedUserId], references: [id], onDelete: SetNull)
+
+  @@index([formId, status, expiresAt])
+  @@index([formId, normalizedInvitedEmail, status])
+  @@index([invitedByUserId, createdAt])
+  @@map("form_collaborator_invitations")
+}
+
+model FormView {
+  id          String   @id @default(uuid())
+  formId      String
+  fingerprint String
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+  form        Form     @relation(fields: [formId], references: [id], onDelete: Cascade)
+
+  @@unique([formId, fingerprint])
+  @@map("form_views")
+}
+
+model Field {
+  id              String           @id @default(uuid())
+  formId          String
+  type            FieldType
+  label           String
+  placeholder     String?
+  required        Boolean          @default(false)
+  validation      Json?
+  order           Int              @default(0)
+  options         Json?
+  correctAnswer   String?
+  score           Int?
+  groupId         String?
+  shrink          Boolean          @default(false)
+  isPII           Boolean          @default(false)
+  imageUrl        String?
+  imageWidth      String?
+  videoUrl        String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  conditions      FieldCondition[] @relation("SourceField")
+  targetCondition FieldCondition[] @relation("TargetField")
+  logicConditions LogicCondition[]
+  logicActions    LogicAction[]
+  form            Form             @relation(fields: [formId], references: [id], onDelete: Cascade)
+  answers         ResponseAnswer[]
+  parentGroup     Field?           @relation("FieldGroup", fields: [groupId], references: [id], onDelete: Cascade)
+  childFields     Field[]          @relation("FieldGroup")
+
+  @@map("fields")
+}
+
+model FieldCondition {
+  id            String   @id @default(uuid())
+  formId        String
+  sourceFieldId String
+  targetFieldId String
+  operator      String
+  value         String
+  action        String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  form          Form     @relation(fields: [formId], references: [id], onDelete: Cascade)
+  sourceField   Field    @relation("SourceField", fields: [sourceFieldId], references: [id], onDelete: Cascade)
+  targetField   Field    @relation("TargetField", fields: [targetFieldId], references: [id], onDelete: Cascade)
+
+  @@map("field_conditions")
+}
+
+model LogicRule {
+  id          String           @id @default(uuid())
+  formId      String
+  name        String
+  logicType   String           @default("and")
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  form        Form             @relation(fields: [formId], references: [id], onDelete: Cascade)
+  conditions  LogicCondition[]
+  actions     LogicAction[]
+
+  @@map("logic_rules")
+}
+
+model LogicCondition {
+  id       String    @id @default(uuid())
+  ruleId   String
+  fieldId  String?
+  operator String
+  value    String?
+  rule     LogicRule @relation(fields: [ruleId], references: [id], onDelete: Cascade)
+  field    Field?    @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+
+  @@map("logic_conditions")
+}
+
+model LogicAction {
+  id      String    @id @default(uuid())
+  ruleId  String
+  type    String
+  fieldId String?
+  rule    LogicRule @relation(fields: [ruleId], references: [id], onDelete: Cascade)
+  field   Field?    @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+
+  @@map("logic_actions")
+}
+
+model Bundle {
+  id               String           @id @default(uuid())
+  name             String
+  description      String?
+  options          Json?
+  isPII            Boolean          @default(false)
+
+  version          Int              @default(1)
+  isActive         Boolean          @default(true)
+  createdById      String
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  fields           BundleField[]
+  createdBy        User             @relation("BundleCreator", fields: [createdById], references: [id])
+
+  @@unique([name, version])
+  @@map("bundles")
+}
+
+model BundleField {
+  id          String    @id @default(uuid())
+  bundleId    String
+  formId      String?
+  type        FieldType
+  label       String
+  placeholder String?
+  required    Boolean   @default(false)
+  validation  Json?
+  order       Int       @default(0)
+  options     Json?
+  isPII       Boolean   @default(false)
+  imageUrl    String?
+  imageWidth  String?
+  videoUrl    String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  form        Form?     @relation(fields: [formId], references: [id], onDelete: Cascade)
+  bundle      Bundle    @relation(fields: [bundleId], references: [id], onDelete: Cascade)
+
+  @@map("bundle_fields")
+}
+
+model FormResponse {
+  id          String           @id @default(uuid())
+  formId      String
+  userId      String?
+  submissionSessionId String?
+  verificationRequestId String?
+  respondentEmail String?
+  normalizedRespondentEmail String?
+  emailVerifiedAt DateTime?
+  emailVerificationId String?
+  submissionGrantId String?
+  sessionKey String?
+  ipAddress       String?
+  fingerprint String?
+  submittedAt DateTime         @default(now())
+  score       Int?
+  totalScore  Int?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  form        Form             @relation(fields: [formId], references: [id], onDelete: Cascade)
+  user        User?            @relation(fields: [userId], references: [id])
+  quizScore   QuizScore?
+  answers     ResponseAnswer[]
+  emailVerification FormEmailVerification? @relation(fields: [emailVerificationId], references: [id], onDelete: SetNull)
+  submissionGrant FormVerifiedSubmissionGrant? @relation(fields: [submissionGrantId], references: [id], onDelete: SetNull)
+  submissionSession PublicSubmissionSession? @relation(fields: [submissionSessionId], references: [id], onDelete: SetNull)
+  verificationRequest SubmissionVerificationRequest? @relation(fields: [verificationRequestId], references: [id], onDelete: SetNull)
+  identityLocks SubmissionIdentityLock[]
+
+  @@index([formId, userId])
+  @@index([formId, fingerprint])
+  @@index([formId, respondentEmail])
+  @@index([formId, normalizedRespondentEmail])
+  @@index([formId, ipAddress])
+  @@index([formId, sessionKey])
+  @@index([submissionSessionId])
+  @@index([verificationRequestId])
+  @@index([formId, submittedAt])
+  @@map("form_responses")
+}
+
+model PublicSubmissionSession {
+  id              String       @id @default(uuid())
+  formId          String
+  tokenHash       String       @unique
+  ipHash          String?
+  userAgentHash   String?
+  createdAt       DateTime     @default(now())
+  lastSeenAt      DateTime     @default(now())
+  expiresAt       DateTime
+  submittedAt     DateTime?
+  form            Form         @relation(fields: [formId], references: [id], onDelete: Cascade)
+  responses       FormResponse[]
+  verificationRequests SubmissionVerificationRequest[]
+
+  @@index([formId, expiresAt])
+  @@index([formId, submittedAt])
+  @@map("public_submission_sessions")
+}
+
+model SubmissionVerificationRequest {
+  id                      String       @id @default(uuid())
+  formId                  String
+  sessionId               String
+  canonicalEmailNormalized String
+  canonicalEmailHash      String
+  tokenHash               String       @unique
+  requestedIpHash         String?
+  requestedUserAgentHash  String?
+  verifiedAt              DateTime?
+  expiresAt               DateTime
+  consumedAt              DateTime?
+  invalidatedAt           DateTime?
+  createdAt               DateTime     @default(now())
+  form                    Form         @relation(fields: [formId], references: [id], onDelete: Cascade)
+  session                 PublicSubmissionSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  responses               FormResponse[]
+
+  @@index([formId, sessionId, createdAt])
+  @@index([formId, canonicalEmailHash, createdAt])
+  @@index([expiresAt])
+  @@map("submission_verification_requests")
+}
+
+model SubmissionIdentityLock {
+  id         String       @id @default(uuid())
+  formId     String
+  lockType   SubmissionIdentityLockType
+  lockKeyHash String
+  responseId String       @unique
+  createdAt  DateTime     @default(now())
+  form       Form         @relation(fields: [formId], references: [id], onDelete: Cascade)
+  response   FormResponse @relation(fields: [responseId], references: [id], onDelete: Cascade)
+
+  @@unique([formId, lockType, lockKeyHash])
+  @@map("submission_identity_locks")
+}
+
+model FormEmailVerification {
+  id              String   @id @default(uuid())
+  formId          String
+  email           String
+  normalizedEmail String
+  tokenHash       String   @unique
+  bindingId       String   @unique
+  expiresAt       DateTime
+  usedAt          DateTime?
+  verifiedAt      DateTime?
+  invalidatedAt   DateTime?
+  createdAt       DateTime @default(now())
+  ipAddress       String?
+  sessionKey      String?
+  form            Form     @relation(fields: [formId], references: [id], onDelete: Cascade)
+  responses       FormResponse[]
+  grants          FormVerifiedSubmissionGrant[]
+
+  @@index([formId, normalizedEmail])
+  @@index([formId, bindingId])
+  @@index([formId, normalizedEmail, verifiedAt])
+  @@index([expiresAt])
+  @@map("form_email_verifications")
+}
+
+model FormVerifiedSubmissionGrant {
+  id              String   @id @default(uuid())
+  formId          String
+  verificationId  String
+  bindingId       String
+  normalizedEmail String
+  grantHash       String   @unique
+  expiresAt       DateTime
+  consumedAt      DateTime?
+  invalidatedAt   DateTime?
+  createdAt       DateTime @default(now())
+  form            Form     @relation(fields: [formId], references: [id], onDelete: Cascade)
+  verification    FormEmailVerification @relation(fields: [verificationId], references: [id], onDelete: Cascade)
+  responses       FormResponse[]
+
+  @@index([formId, bindingId])
+  @@index([formId, normalizedEmail, consumedAt])
+  @@index([expiresAt])
+  @@map("form_verified_submission_grants")
+}
+
+model ResponseAnswer {
+  id         String       @id @default(uuid())
+  responseId String
+  fieldId    String?
+  value      String
+  isCorrect  Boolean?
+  createdAt  DateTime     @default(now())
+  field      Field?       @relation(fields: [fieldId], references: [id], onDelete: SetNull)
+  response   FormResponse @relation(fields: [responseId], references: [id], onDelete: Cascade)
+
+  @@index([responseId])
+  @@index([fieldId])
+  @@map("response_answers")
+}
+
+model QuizScore {
+  id         String       @id @default(uuid())
+  responseId String       @unique
+  score      Int
+  totalScore Int
+  percentage Float
+  createdAt  DateTime     @default(now())
+  response   FormResponse @relation(fields: [responseId], references: [id], onDelete: Cascade)
+
+  @@map("quiz_scores")
+}
+
+enum RoleType {
+  SUPER_ADMIN
+  ADMIN
+  EDITOR
+  VIEWER
+  USER
+}
+
+enum FieldType {
+  TEXT
+  TEXTAREA
+  NUMBER
+  EMAIL
+  PHONE
+  DROPDOWN
+  CHECKBOX
+  RADIO
+  DATE
+  TIME
+  RATE
+  HEADER
+  FULLNAME
+  ADDRESS
+  PARAGRAPH
+  SUBMIT
+  DIVIDER
+  SECTION_COLLAPSE
+  PAGE_BREAK
+  GROUP
+  MATRIX
+  TABLE
+}
+
+
+
+enum FormStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum SubmissionIdentityLockType {
+  CANONICAL_EMAIL
+  SESSION
+  IP
+}
+
+enum CollaboratorInvitationStatus {
+  PENDING
+  ACCEPTED
+  REVOKED
+  EXPIRED
+}
+
+model ActivityLog {
+  id        String   @id @default(uuid())
+  formId    String?
+  userId    String?
+  action    String
+  details   Json?
+  createdAt DateTime @default(now())
+
+  form Form? @relation(fields: [formId], references: [id], onDelete: SetNull)
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("activity_logs")
+}
+
+model SystemSetting {
+  id               String   @id @default("default")
+  smtpHost         String?
+  smtpPort         Int?
+  smtpSecure       Boolean  @default(false)
+  smtpUser         String?
+  smtpPass         String?
+  smtpFrom         String?
+  smtpFromName     String?
+  supportEmail     String?
+  supportLineId    String?
+  brandingAppName  String?
+  brandingLogoUrl  String?
+  brandingPrimaryColor String?
+  authSessionIdleTimeoutMinutes Int @default(30)
+  authMaxFailedLoginAttempts Int @default(5)
+  authLockoutMinutes Int @default(15)
+  passwordMinLength Int @default(8)
+  passwordRequireUppercase Boolean @default(true)
+  passwordRequireLowercase Boolean @default(true)
+  passwordRequireNumber Boolean @default(true)
+  passwordRequireSymbol Boolean @default(false)
+  rateAuthLoginLimit Int @default(10)
+  rateAuthLoginWindowSeconds Int @default(60)
+  ratePublicVerifySessionLimit Int @default(5)
+  ratePublicVerifyIpLimit Int @default(20)
+  ratePublicVerifyWindowSeconds Int @default(600)
+  ratePublicSubmitSessionLimit Int @default(10)
+  ratePublicSubmitIpLimit Int @default(20)
+  ratePublicSubmitWindowSeconds Int @default(600)
+  rateVerificationCooldownSeconds Int @default(60)
+  retentionAutoCleanupEnabled Boolean @default(false)
+  retentionResponsesDays Int?
+  retentionAuditLogsDays Int @default(180)
+  retentionInvitationsDays Int @default(90)
+  retentionCleanupIntervalHours Int @default(24)
+  retentionLastCleanupAt DateTime?
+  backupAutoEnabled Boolean @default(false)
+  backupIntervalHours Int @default(24)
+  backupRetentionDays Int @default(14)
+  backupDirectory String?
+  backupLastRunAt DateTime?
+  backupLastStatus String?
+  backupLastFile String?
+  backupLastError String?
+  inviteExpiryDays Int      @default(3)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("system_settings")
+}
