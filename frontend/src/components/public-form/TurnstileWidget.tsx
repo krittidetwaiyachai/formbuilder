@@ -82,6 +82,7 @@ export default function TurnstileWidget({
       widgetIdRef.current = window.turnstile.render(containerRef.current, {
         sitekey: siteKey,
         theme,
+        appearance: 'always',
         callback: (token) => onTokenChange(token),
         'expired-callback': () => onTokenChange(null),
         'error-callback': () => onTokenChange(null)
@@ -108,7 +109,7 @@ export default function TurnstileWidget({
   }, [resetSignal]);
   if (loadError) {
     return (
-      <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">        {loadError}      </div>);
+      <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">        {loadError}      </div>);
   }
   return <div ref={containerRef} className="min-h-[65px]" />;
 }

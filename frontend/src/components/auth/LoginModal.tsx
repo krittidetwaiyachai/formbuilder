@@ -51,10 +51,14 @@ export default function LoginModal({ isOpen, onClose, onSuccess, onContactClick 
   );
   const isGoogleOriginAllowed = googleAllowedOrigins.includes(window.location.origin);
   const authTurnstileRequired =
-  import.meta.env.VITE_AUTH_TURNSTILE_REQUIRED as string | undefined === "true";
-  const hasTurnstileSiteKey = Boolean(import.meta.env.VITE_CLOUDFLARE_TURNSTILE_SITE_KEY);
+  String(import.meta.env.VITE_AUTH_TURNSTILE_REQUIRED).trim().toLowerCase() === "true";
+  const hasTurnstileSiteKey = Boolean(
+    import.meta.env.VITE_CLOUDFLARE_TURNSTILE_SITE_KEY &&
+    import.meta.env.VITE_CLOUDFLARE_TURNSTILE_SITE_KEY.trim() !== ""
+  );
   const showCaptcha = authTurnstileRequired && hasTurnstileSiteKey;
   const captchaMisconfigured = authTurnstileRequired && !hasTurnstileSiteKey;
+  
   const handleCaptchaTokenChange = useCallback((token: string | null) => {
     setCaptchaToken(token);
   }, []);

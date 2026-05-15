@@ -10,6 +10,7 @@ interface FormNavigationProps {
   handleNext: () => void;
   submitting: boolean;
   submitButtonText?: string;
+  captchaContent?: React.ReactNode;
 }
 export function FormNavigation({
   isFirstPage,
@@ -17,44 +18,53 @@ export function FormNavigation({
   handlePrevious,
   handleNext,
   submitting,
-  submitButtonText = "Submit"
+  submitButtonText = "Submit",
+  captchaContent
 }: FormNavigationProps) {
   const { t } = useTranslation();
   return (
-    <div className="mt-12 pt-4 pb-8 flex items-center justify-between px-8 md:px-12">      <button
-        type="button"
-        onClick={handlePrevious}
-        disabled={isFirstPage}
-        className={`flex items-center gap-1.5 text-sm font-medium text-gray-400 hover:text-gray-600 disabled:opacity-0 transition-colors ${isFirstPage ? "pointer-events-none" : ""}`}>
-        <ChevronLeft className="h-4 w-4" />        {t("public.back")}      </button>      {!isLastPage ?
-      <motion.button
-        whileHover={{ scale: 1.02, filter: "brightness(1.1)" }}
-        whileTap={{ scale: 0.96 }}
-        type="button"
-        onClick={handleNext}
-        className="flex items-center gap-2 px-6 py-2.5 text-white text-sm font-medium shadow-lg hover:shadow-xl transition-all"
-        style={{
-          backgroundColor: "var(--primary)",
-          color: "#ffffff",
-          borderRadius: "var(--radius)"
-        }}>
-          {t("public.next")}        <ChevronRight className="h-4 w-4" />      </motion.button> :
-      <motion.button
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.96 }}
-        type="submit"
-        disabled={submitting}
-        className="flex items-center gap-2 px-6 py-2.5 text-white text-sm font-medium shadow-lg hover:shadow-xl transition-all disabled:opacity-70 disabled:cursor-not-allowed"
-        style={{
-          backgroundColor: "var(--primary)",
-          color: "#ffffff",
-          borderRadius: "var(--radius)"
-        }}>
-          {submitting ?
-        <Loader /> :
-        submitButtonText === "Submit" ?
-        t("public.submit") :
-        submitButtonText
-        }      </motion.button>
-      }    </div>);
+    <div className="mt-12 pt-4 pb-8 flex flex-wrap items-center justify-between px-8 md:px-12 gap-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        {isLastPage && captchaContent}
+        <button
+          type="button"
+          onClick={handlePrevious}
+          disabled={isFirstPage}
+          className={`flex items-center gap-1.5 text-sm font-medium text-gray-400 hover:text-gray-600 disabled:opacity-0 transition-colors ${isFirstPage ? "hidden" : "flex"}`}>
+          <ChevronLeft className="h-4 w-4" />        {t("public.back")}      </button>      
+      </div>
+      <div className="flex flex-col sm:flex-row items-end sm:items-center gap-4 ml-auto">
+        {!isLastPage ?
+        <motion.button
+          whileHover={{ scale: 1.02, filter: "brightness(1.1)" }}
+          whileTap={{ scale: 0.96 }}
+          type="button"
+          onClick={handleNext}
+          className="flex items-center gap-2 px-6 py-2.5 text-white text-sm font-medium shadow-lg hover:shadow-xl transition-all"
+          style={{
+            backgroundColor: "var(--primary)",
+            color: "#ffffff",
+            borderRadius: "var(--radius)"
+          }}>
+            {t("public.next")}        <ChevronRight className="h-4 w-4" />      </motion.button> :
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.96 }}
+          type="submit"
+          disabled={submitting}
+          className="flex items-center gap-2 px-6 py-2.5 text-white text-sm font-medium shadow-lg hover:shadow-xl transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+          style={{
+            backgroundColor: "var(--primary)",
+            color: "#ffffff",
+            borderRadius: "var(--radius)"
+          }}>
+            {submitting ?
+          <Loader /> :
+          submitButtonText === "Submit" ?
+          t("public.submit") :
+          submitButtonText
+          }      </motion.button>
+        }
+      </div>
+    </div>);
 }

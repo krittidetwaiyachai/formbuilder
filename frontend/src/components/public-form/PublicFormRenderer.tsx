@@ -306,17 +306,7 @@ export default function PublicFormRenderer(props: PublicFormRendererProps) {
                 }                <p
                   className="mt-2 text-xs flex items-center gap-1"
                   style={{ color: "var(--primary)", opacity: 0.8 }}>                  <Lock className="w-3 h-3" />                  {t("public.email_collecting_notice")}                </p>              </div>
-              }              <FormVerificationPanel
-                verificationRequired={verification.verificationRequired}
-                captchaRequired={verification.captchaRequired}
-                canonicalEmail={verification.canonicalEmail}
-                verificationStatus={verification.verificationStatus}
-                verificationMessage={verification.verificationMessage}
-                requesting={verification.requesting}
-                recovering={verification.recovering}
-                captchaResetSignal={verification.captchaResetSignal}
-                onCaptchaTokenChange={verification.setCaptchaToken}
-                onRequestVerification={verification.requestVerification} />            </div>
+              }                          </div>
             }          </div>          <div
             className={`${
             isCardLayout ?
@@ -350,7 +340,21 @@ export default function PublicFormRenderer(props: PublicFormRendererProps) {
               setValue={setValue}
               control={control}
               form={form} />
-            }          </div>          <FormNavigation
+            }          </div>          <FormNavigation
+            captchaContent={
+              <FormVerificationPanel
+                verificationRequired={verification.verificationRequired}
+                captchaRequired={verification.captchaRequired}
+                canonicalEmail={verification.canonicalEmail}
+                verificationStatus={verification.verificationStatus}
+                verificationMessage={verification.verificationMessage}
+                requesting={verification.requesting}
+                recovering={verification.recovering}
+                captchaResetSignal={verification.captchaResetSignal}
+                onCaptchaTokenChange={verification.setCaptchaToken}
+                onRequestVerification={verification.requestVerification}
+              />
+            }
             isCardLayout={!!isCardLayout}
             isFirstPage={
             (isCardLayout ? currentCardIndex === 0 : currentPageIndex === 0) &&

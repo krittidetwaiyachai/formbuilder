@@ -332,7 +332,55 @@ export function FormSettingsProperties({
                 onChange={(e) =>
                 updateSettings("collectEmail", e.target.checked)
                 }
-                className="sr-only peer" />              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>            </label>            <p className="mt-1 text-xs text-gray-500">              {t("settings.submission.email_desc")}            </p>          </div>          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("settings.submission.response_limit")}            </label>            <label className="relative inline-flex items-center cursor-pointer">              <input
+                className="sr-only peer" />              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>            </label>            <p className="mt-1 text-xs text-gray-500">              {t("settings.submission.email_desc")}            </p>          </div>          <div>            <label className="block text-sm font-medium text-black mb-1">              {t("settings.submission.require_email_verify", "Require Email Verification")}
+            </label>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                checked={settings.security?.requireEmailVerification || false}
+                onChange={(e) =>
+                  handleFormUpdate("settings", {
+                    ...settings,
+                    security: {
+                      ...(settings.security || {}),
+                      requireEmailVerification: e.target.checked
+                    }
+                  })
+                }
+                className="sr-only peer" />
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
+            </label>
+            <p className="mt-1 text-xs text-gray-500">
+              {t("settings.submission.require_email_verify_desc", "Require respondents to verify their email via OTP")}
+            </p>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-black mb-1">
+              {t("settings.submission.require_captcha", "Require Captcha")}
+            </label>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                checked={settings.security?.requireCaptcha || false}
+                onChange={(e) =>
+                  handleFormUpdate("settings", {
+                    ...settings,
+                    security: {
+                      ...(settings.security || {}),
+                      requireCaptcha: e.target.checked
+                    }
+                  })
+                }
+                className="sr-only peer" />
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-black"></div>
+            </label>
+            <p className="mt-1 text-xs text-gray-500">
+              {t("settings.submission.require_captcha_desc", "Protect form from spam using Cloudflare Turnstile")}
+            </p>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-black mb-1">
+              {t("settings.submission.response_limit")}            </label>            <label className="relative inline-flex items-center cursor-pointer">              <input
                 type="checkbox"
                 checked={hasResponseLimit}
                 onChange={(e) => {
